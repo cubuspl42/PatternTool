@@ -1,8 +1,8 @@
-# KotlinMultiplatformJvmJsHelloWorld
+# PatternTool
 
 ## Recommended repository setup
 
-### [Settings](https://github.com/cubuspl42/KotlinMultiplatformJvmJsHelloWorld/settings)
+### [Settings](https://github.com/cubuspl42/PatternTool/settings)
 
 #### Pull Requests
 
@@ -12,7 +12,7 @@
 - Allow auto-merge: **Yes** (default: **No**)
 - Automatically delete head branches: **Yes** (default: **No**)
 
-### [Rulesets](https://github.com/cubuspl42/KotlinMultiplatformJvmJsHelloWorld/settings/rules)
+### [Rulesets](https://github.com/cubuspl42/PatternTool/settings/rules)
 
 #### Main branch ruleset
 
