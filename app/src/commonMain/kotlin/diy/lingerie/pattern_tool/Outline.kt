@@ -1,11 +1,15 @@
 package diy.lingerie.pattern_tool
 
+import diy.lingerie.algebra.NumericObject
+import diy.lingerie.algebra.equalsWithTolerance
+import diy.lingerie.algebra.equalsWithToleranceOrNull
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.curves.bezier.PolyBezierCurve
+import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.shiftLeft
 import diy.lingerie.utils.iterable.splitBefore
@@ -15,12 +19,12 @@ import kotlin.jvm.JvmInline
 
 data class Outline(
     val links: List<Link>,
-) {
+) : NumericObject {
     data class EdgeMetadata(
         val seamAllowance: SeamAllowance,
     )
 
-    sealed class Joint {
+    sealed class Joint : NumericObject {
         abstract fun transformBy(
             transformation: Transformation,
         ): Joint
@@ -28,23 +32,38 @@ data class Outline(
         @JvmInline
         value class Anchor(
             val position: Point,
-        ) {
+        ) : NumericObject {
             fun transformBy(
                 transformation: Transformation,
             ): Anchor = Anchor(
                 position = position.transformBy(transformation = transformation),
             )
+
+            override fun equalsWithTolerance(
+                other: NumericObject,
+                tolerance: NumericObject.Tolerance,
+            ): Boolean = when {
+                other !is Anchor -> false
+                !position.equalsWithTolerance(other.position, tolerance) -> false
+                else -> true
+            }
         }
 
         @JvmInline
         value class Handle(
             val position: Point,
-        ) {
+        ) : NumericObject {
             fun transformBy(
                 transformation: Transformation,
             ): Handle = Handle(
                 position = position.transformBy(transformation = transformation),
             )
+
+            override fun equalsWithTolerance(other: NumericObject, tolerance: NumericObject.Tolerance): Boolean = when {
+                other !is Handle -> false
+                !position.equalsWithTolerance(other.position, tolerance) -> false
+                else -> true
+            }
         }
 
         /**
@@ -62,6 +81,27 @@ data class Outline(
                 anchor = anchor.transformBy(transformation = transformation),
                 frontHandle = frontHandle?.transformBy(transformation = transformation),
             )
+
+            override fun equalsWithTolerance(
+                other: NumericObject,
+                tolerance: NumericObject.Tolerance,
+            ): Boolean = when {
+                other !is Free -> false
+
+                !rearHandle.equalsWithToleranceOrNull(
+                    other.rearHandle,
+                    tolerance = tolerance,
+                ) -> false
+
+                !anchor.equalsWithTolerance(other.anchor, tolerance) -> false
+
+                !frontHandle.equalsWithToleranceOrNull(
+                    other.frontHandle,
+                    tolerance = tolerance,
+                ) -> false
+
+                else -> true
+            }
         }
 
         /**
@@ -122,6 +162,14 @@ data class Outline(
                 get() = Anchor(
                     position = controlLineSegment.evaluate(coord = anchorCoord),
                 )
+
+            override fun equalsWithTolerance(other: NumericObject, tolerance: NumericObject.Tolerance): Boolean = when {
+                other !is Smooth -> false
+                !rearHandle.equalsWithTolerance(other.rearHandle, tolerance) -> false
+                !anchorCoord.equalsWithTolerance(other.anchorCoord, tolerance) -> false
+                !frontHandle.equalsWithTolerance(other.frontHandle, tolerance) -> false
+                else -> true
+            }
         }
 
         abstract val rearHandle: Handle?
@@ -136,22 +184,30 @@ data class Outline(
         val intermediateJoints: List<Joint.Smooth>,
         val endHandle: Joint.Handle?,
         val metadata: EdgeMetadata,
-    ) {
+    ) : NumericObject {
         companion object {
             fun reconstruct(
-                edgeCurve: BezierCurve,
-                edgeMetadata: EdgeMetadata,
+                curveEdge: BezierCurve.Edge,
+                metadata: EdgeMetadata,
             ): Edge = Edge(
                 startHandle = Joint.Handle(
-                    position = edgeCurve.edge.firstControl,
+                    position = curveEdge.firstControl,
                 ),
-                intermediateJoints = edgeCurve.joints.map {
+                intermediateJoints = curveEdge.joints.map {
                     Joint.Smooth.reconstruct(bezierJoint = it)
                 },
                 endHandle = Joint.Handle(
-                    position = edgeCurve.edge.lastControl,
+                    position = curveEdge.lastControl,
                 ),
-                metadata = edgeMetadata,
+                metadata = metadata,
+            )
+
+            fun reconstruct(
+                bezierCurve: BezierCurve,
+                metadata: EdgeMetadata,
+            ): Edge = reconstruct(
+                curveEdge = bezierCurve.edge,
+                metadata = metadata,
             )
 
             fun line(
@@ -199,6 +255,26 @@ data class Outline(
 
         val seamAllowance: SeamAllowance
             get() = metadata.seamAllowance
+
+        override fun equalsWithTolerance(
+            other: NumericObject, tolerance: NumericObject.Tolerance
+        ): Boolean = when {
+            other !is Edge -> false
+
+            !startHandle.equalsWithToleranceOrNull(
+                other.startHandle,
+                tolerance = tolerance,
+            ) -> false
+
+            !intermediateJoints.equalsWithTolerance(other.intermediateJoints, tolerance) -> false
+
+            !endHandle.equalsWithToleranceOrNull(
+                other.endHandle,
+                tolerance = tolerance,
+            ) -> false
+
+            else -> true
+        }
     }
 
     /**
@@ -208,7 +284,30 @@ data class Outline(
     data class Link(
         val startAnchor: Joint.Anchor,
         val edge: Edge,
-    ) {
+    ) : NumericObject {
+        companion object {
+            fun reconstruct(
+                splineLink: ClosedSpline.Link,
+                edgeMetadata: EdgeMetadata,
+            ): Link = Link(
+                startAnchor = Joint.Anchor(
+                    position = splineLink.start,
+                ),
+                edge = when (val edge = splineLink.edge) {
+                    is BezierCurve.Edge -> Edge.reconstruct(
+                        curveEdge = edge,
+                        metadata = edgeMetadata,
+                    )
+
+                    is LineSegment.Edge -> Edge.line(
+                        metadata = edgeMetadata,
+                    )
+
+                    else -> throw IllegalArgumentException("The edge is not a supported type")
+                },
+            )
+        }
+
         fun bind(
             endAnchor: Joint.Anchor,
         ): Verge = Verge(
@@ -216,6 +315,15 @@ data class Outline(
             edge = edge,
             endAnchor = endAnchor,
         )
+
+        override fun equalsWithTolerance(other: NumericObject, tolerance: NumericObject.Tolerance): Boolean {
+            return when {
+                other !is Link -> false
+                !startAnchor.equalsWithTolerance(other.startAnchor, tolerance) -> false
+                !edge.equalsWithTolerance(other.edge, tolerance) -> false
+                else -> true
+            }
+        }
     }
 
     data class Verge(
@@ -242,8 +350,8 @@ data class Outline(
                     position = edgeCurve.start,
                 ),
                 edge = Edge.reconstruct(
-                    edgeCurve = edgeCurve,
-                    edgeMetadata = edgeMetadata,
+                    bezierCurve = edgeCurve,
+                    metadata = edgeMetadata,
                 ),
                 endAnchor = Joint.Anchor(
                     position = edgeCurve.end,
@@ -325,6 +433,18 @@ data class Outline(
                 Link(
                     startAnchor = verge.startAnchor,
                     edge = verge.edge,
+                )
+            },
+        )
+
+        fun reconstruct(
+            closedSpline: ClosedSpline,
+            edgeMetadata: EdgeMetadata,
+        ): Outline = Outline(
+            links = closedSpline.links.map { link ->
+                Link.reconstruct(
+                    splineLink = link,
+                    edgeMetadata = edgeMetadata,
                 )
             },
         )
@@ -466,5 +586,14 @@ data class Outline(
         return Outline.connect(
             remainingVerges + mirroredVerges,
         )
+    }
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance,
+    ): Boolean = when {
+        other !is Outline -> false
+        !links.equalsWithTolerance(other.links, tolerance = tolerance) -> false
+        else -> true
     }
 }
