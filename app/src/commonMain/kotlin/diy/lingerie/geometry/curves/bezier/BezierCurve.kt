@@ -1,5 +1,7 @@
 package diy.lingerie.geometry.curves.bezier
 
+import diy.lingerie.algebra.NumericObject
+import diy.lingerie.algebra.NumericObject.Tolerance
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.transformations.Transformation
@@ -9,7 +11,7 @@ abstract class BezierCurve : SegmentCurve() {
         val rearControl: Point,
         val coord: Coord,
         val frontControl: Point,
-    ) {
+    ) : NumericObject {
         val position: Point
             get() = TODO()
 
@@ -20,6 +22,17 @@ abstract class BezierCurve : SegmentCurve() {
             coord = coord,
             rearControl = rearControl.transformBy(transformation),
         )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: Tolerance,
+        ): Boolean = when {
+            other !is Joint -> false
+            !rearControl.equalsWithTolerance(other.rearControl, tolerance) -> false
+            !coord.equalsWithTolerance(other.coord, tolerance) -> false
+            !frontControl.equalsWithTolerance(other.frontControl, tolerance) -> false
+            else -> true
+        }
 
     }
 
