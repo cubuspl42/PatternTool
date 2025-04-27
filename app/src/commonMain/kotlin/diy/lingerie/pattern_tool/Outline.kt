@@ -18,6 +18,64 @@ data class Outline(
         val seamAllowance: SeamAllowance,
     )
 
+    sealed class Joint {
+        data class ControlSegment(
+            val anchorPosition: Point,
+            val handlePosition: Point,
+        )
+
+        /**
+         * An unconstrained (typically sharp) joint
+         */
+        data class Free(
+            override val rearHandlePosition: Point,
+            override val anchorPosition: Point,
+            override val frontHandlePosition: Point
+        ) : Joint()
+
+        /**
+         * A smooth joint
+         */
+        data class Smooth(
+            /**
+             * The control line segment going from the rear to the front handle
+             */
+            val controlLineSegment: LineSegment,
+            /**
+             * The coordinate of the anchor point on the control line segment
+             */
+            val anchorCoord: SegmentCurve.Coord,
+        ) : Joint() {
+            override val anchorPosition: Point
+                get() = controlLineSegment.evaluate(coord = anchorCoord)
+
+            override val rearHandlePosition: Point
+                get() = controlLineSegment.start
+
+            override val frontHandlePosition: Point
+                get() = controlLineSegment.end
+        }
+
+        val rearControlSegment: ControlSegment
+            get() = ControlSegment(
+                anchorPosition = anchorPosition,
+                handlePosition = rearHandlePosition,
+            )
+
+        val frontControlSegment: ControlSegment
+            get() = ControlSegment(
+                anchorPosition = anchorPosition,
+                handlePosition = frontHandlePosition,
+            )
+
+
+        abstract val rearHandlePosition: Point
+
+        abstract val anchorPosition: Point
+
+        abstract val frontHandlePosition: Point
+    }
+
     data class Edge(
         val curveEdge: SegmentCurve.Edge,
         val metadata: EdgeMetadata,
