@@ -1,0 +1,43 @@
+package diy.lingerie.geometry
+
+import diy.lingerie.geometry.curves.SegmentCurve
+import diy.lingerie.geometry.transformations.Transformation
+
+/**
+ * A line segment in the Euclidean plane. Typically, it can be considered a
+ * distinguished section of a specific straight line, but if the [start] and
+ * the [end] points are the same point, it can be considered a point lying on
+ * infinitely many lines.
+ */
+data class LineSegment(
+    override val start: Point,
+    override val end: Point,
+) : SegmentCurve() {
+    data object Edge : SegmentCurve.Edge() {
+        override fun bind(
+            start: Point,
+            end: Point,
+        ): SegmentCurve = LineSegment(
+            start = start,
+            end = end,
+        )
+
+        override fun transformBy(transformation: Transformation): Edge = this
+
+        override fun toString(): String = "LineSegment.Edge"
+    }
+
+    override val edge = Edge
+
+    override fun splitAt(
+        coord: Coord,
+    ): Pair<SegmentCurve, SegmentCurve> {
+        TODO("Not yet implemented")
+    }
+
+    val containingLine: Line?
+        get() = Line.throughPoints(
+            point0 = start,
+            point1 = end,
+        )
+}

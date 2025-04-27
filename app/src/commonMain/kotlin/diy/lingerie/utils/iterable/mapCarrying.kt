@@ -1,0 +1,37 @@
+package diy.lingerie.utils.iterable
+
+/**
+ * Transforms a list while carrying state between transformations.
+ *
+ * @param initialCarry The initial carry value.
+ * @param transform A function that takes the current carry and an element of the list,
+ * and returns a pair of the transformed element and the updated carry.
+ * @return A pair of the transformed list and the final carry value.
+ *
+ * Example:
+ * ```
+ * val list = listOf("AB", "CD", "EF")
+ * val (result, finalCarry) = list.mapCarrying(0) { carry, item ->
+ *     val newCarry = carry + item
+ *     val transformedItem = item * 2
+ *     transformedItem to newCarry
+ * }
+ * // result: [2, 4, 6]
+ * // finalCarry: 6
+ * ```
+ */
+fun <T, R, C> Iterable<T>.mapCarrying(
+    initialCarry: C,
+    transform: (C, T) -> Pair<R, C>,
+): Pair<List<R>, C> {
+    val result = mutableListOf<R>()
+    var carry = initialCarry
+
+    for (item in this) {
+        val (transformedItem, newCarry) = transform(carry, item)
+        result.add(transformedItem)
+        carry = newCarry
+    }
+
+    return Pair(result, carry)
+}
