@@ -1,5 +1,4 @@
 plugins {
-    // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.kotlinx.benchmark)
@@ -23,10 +22,13 @@ kotlin {
         }
 
         commonTest.dependencies {
-            implementation(kotlin("test"))
+            implementation(libs.kotlin.test)
         }
 
         jvmMain.dependencies {
+            implementation(libs.batik.anim)
+            implementation(libs.batik.svg.dom)
+            implementation(libs.batik.css)
         }
 
         jvmTest.dependencies {
