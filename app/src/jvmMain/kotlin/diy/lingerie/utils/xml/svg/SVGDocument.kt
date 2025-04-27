@@ -1,5 +1,6 @@
 package diy.lingerie.utils.xml.svg
 
+import org.apache.batik.anim.dom.SAXSVGDocumentFactory
 import org.apache.batik.anim.dom.SVGDOMImplementation
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGCircleElement
@@ -10,10 +11,22 @@ import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGPathSeg
 import org.w3c.dom.svg.SVGPathSegList
 import org.w3c.dom.svg.SVGRectElement
+import java.io.Reader
+
+object SVGDOMImplementationUtils {
+    fun getSVGDOMImplementation() = SVGDOMImplementation.getDOMImplementation() as SVGDOMImplementation
+}
 
 fun SVGDOMImplementation.createSvgDocument(): SVGDocument {
     val svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI
     return createDocument(svgNS, "svg", null) as SVGDocument
+}
+
+fun SAXSVGDocumentFactory.parseSvgDocument(
+    reader: Reader,
+): SVGDocument {
+    val uri = "file://Document.svg"
+    return createDocument(uri, reader) as SVGDocument
 }
 
 val SVGDocument.documentSvgElement: SVGElement
