@@ -53,3 +53,4 @@ data class ClosedSpline(
         else -> true
     }
 }
+

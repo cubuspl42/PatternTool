@@ -65,6 +65,20 @@ fun NumericObject.equalsWithRelativeTolerance(
     ),
 )
 
+fun <T : NumericObject> T?.equalsWithToleranceOrNull(
+    other: NumericObject?,
+    tolerance: Tolerance,
+): Boolean = when {
+    this != null && other != null -> equalsWithTolerance(
+        other = other,
+        tolerance = tolerance,
+    )
+
+    this == null && other == null -> true
+
+    else -> false
+}
+
 fun NumericObject.equalsWithNoTolerance(
     other: NumericObject,
 ): Boolean = equalsWithTolerance(
