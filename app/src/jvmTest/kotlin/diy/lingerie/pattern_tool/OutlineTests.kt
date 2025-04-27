@@ -184,9 +184,8 @@ class OutlineTests {
             ),
         )
 
-        val svgDocument = outline.dumpSvg(
-            svgDomImplementation = svgDomImplementation,
-        )
+        val svgRoot = outline.dumpSvg()
+        val svgDocument = svgRoot.toSvgDocument(svgDomImplementation = svgDomImplementation)
 
         svgDocument.writeToFile(
             Path("../output/outlineDumpSvg1.svg")

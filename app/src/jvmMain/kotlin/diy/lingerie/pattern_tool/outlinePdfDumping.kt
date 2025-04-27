@@ -40,9 +40,9 @@ val foRoot = FoRoot(
                         ),
                     ),
                 ),
-            )
+            ),
         ),
-    )
+    ),
 )
 
 fun Outline.dumpPdf(

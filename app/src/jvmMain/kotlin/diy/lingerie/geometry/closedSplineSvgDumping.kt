@@ -3,6 +3,8 @@ package diy.lingerie.geometry
 import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
+import diy.lingerie.simple_dom.SimpleColor
+import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.utils.awt.toHexString
 import diy.lingerie.utils.xml.svg.createPathElement
 import diy.lingerie.utils.xml.svg.fill
@@ -13,56 +15,34 @@ import org.w3c.dom.svg.SVGPathSeg
 import java.awt.Color
 
 fun ClosedSpline.toSvgPathElement(
-    document: SVGDocument,
-    color: Color = Color.BLACK,
-): SVGPathElement {
-    val pathElement = document.createPathElement()
-
+    color: SimpleColor = SimpleColor.black,
+): SvgPath {
     val edgeCurves = this.edgeCurves
     val start = edgeCurves.first().start
 
-    return pathElement.apply {
-        pathSegList.apply {
-            appendItem(
-                createSVGPathSegMovetoAbs(
-                    start.x.toFloat(),
-                    start.y.toFloat(),
-                ),
-            )
-
-            edgeCurves.forEach { edgeCurve ->
-                appendItem(
-                    edgeCurve.toSvgPathSeg(
-                        pathElement = pathElement
-                    ),
-                )
-            }
-
-            appendItem(
-                createSVGPathSegClosePath(),
-            )
-        }
-
-        fill = "none"
-        stroke = color.toHexString()
-    }
+    return SvgPath(
+        strokeColor = color,
+        segments = listOf(
+            SvgPath.Segment.MoveTo(
+                finalPoint = start,
+            ),
+        ) + edgeCurves.map { edgeCurve ->
+            edgeCurve.toSvgPathSeg()
+        } + listOf(
+            SvgPath.Segment.ClosePath,
+        ),
+    )
 }
 
-private fun SegmentCurve.toSvgPathSeg(
-    pathElement: SVGPathElement,
-): SVGPathSeg = when (this) {
-    is LineSegment -> pathElement.createSVGPathSegLinetoAbs(
-        end.x.toFloat(),
-        end.y.toFloat(),
+private fun SegmentCurve.toSvgPathSeg(): SvgPath.Segment = when (this) {
+    is LineSegment -> SvgPath.Segment.LineTo(
+        finalPoint = end,
     )
 
-    is MonoBezierCurve -> pathElement.createSVGPathSegCurvetoCubicAbs(
-        end.x.toFloat(),
-        end.y.toFloat(),
-        firstControl.x.toFloat(),
-        firstControl.y.toFloat(),
-        secondControl.x.toFloat(),
-        secondControl.y.toFloat(),
+    is MonoBezierCurve -> SvgPath.Segment.CubicBezierCurveTo(
+        controlPoint1 = firstControl,
+        controlPoint2 = secondControl,
+        finalPoint = end,
     )
 
     else -> throw UnsupportedOperationException("Unsupported segment curve: $this")
