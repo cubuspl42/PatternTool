@@ -6,7 +6,7 @@ import diy.lingerie.utils.xml.svg.documentSvgElement
 import org.w3c.dom.svg.SVGDocument
 import org.w3c.dom.svg.SVGPathElement
 
-fun Outline.Companion.load(
+fun Outline.Companion.loadSvg(
     svgDocument: SVGDocument,
 ): Outline {
     val singleElement = svgDocument.documentSvgElement.childElements.singleOrNull()

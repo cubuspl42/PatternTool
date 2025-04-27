@@ -9,8 +9,6 @@ import diy.lingerie.utils.iterable.withNextCyclic
 data class ClosedSpline(
     val links: List<Link>,
 ) : NumericObject {
-    companion object;
-
     data class Link(
         val start: Point,
         val edge: SegmentCurve.Edge,
@@ -32,6 +30,8 @@ data class ClosedSpline(
             else -> true
         }
     }
+
+    companion object;
 
     init {
         require(links.isNotEmpty())
