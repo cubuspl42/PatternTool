@@ -8,7 +8,6 @@ import diy.lingerie.test_utils.getResourceAsReader
 import diy.lingerie.utils.xml.svg.parseSvgDocument
 import diy.lingerie.utils.xml.writeToFile
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory
-import org.apache.batik.parser.PathHandler
 import kotlin.io.path.Path
 import kotlin.test.Test
 
@@ -254,7 +253,10 @@ class OutlineTests {
                         position = Point(181.7220001220703, 111.55500030517578),
                     ),
                     edge = Outline.Edge(
-                        startHandle = null, intermediateJoints = emptyList(), endHandle = null, metadata = edgeMetadata
+                        startHandle = null,
+                        intermediateJoints = emptyList(),
+                        endHandle = null,
+                        metadata = edgeMetadata,
                     ),
                 ),
                 Outline.Link(
@@ -276,7 +278,6 @@ class OutlineTests {
         )
 
         outline.dumpPdf(
-            foReader = foReader,
             outputPath = Path("../output/a4.pdf"),
         )
     }
