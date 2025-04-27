@@ -75,6 +75,20 @@ data class Outline(
             val anchorCoord: SegmentCurve.Coord,
             override val frontHandle: Handle,
         ) : Joint() {
+            companion object {
+                fun reconstruct(
+                    bezierJoint: BezierCurve.Joint,
+                ): Smooth = Smooth(
+                    rearHandle = Handle(
+                        position = bezierJoint.rearControl,
+                    ),
+                    anchorCoord = bezierJoint.coord,
+                    frontHandle = Handle(
+                        position = bezierJoint.frontControl,
+                    ),
+                )
+            }
+
             /**
              * The control line segment going from the rear to the front handle
              */
@@ -124,6 +138,22 @@ data class Outline(
         val metadata: EdgeMetadata,
     ) {
         companion object {
+            fun reconstruct(
+                edgeCurve: BezierCurve,
+                edgeMetadata: EdgeMetadata,
+            ): Edge = Edge(
+                startHandle = Joint.Handle(
+                    position = edgeCurve.edge.firstControl,
+                ),
+                intermediateJoints = edgeCurve.joints.map {
+                    Joint.Smooth.reconstruct(bezierJoint = it)
+                },
+                endHandle = Joint.Handle(
+                    position = edgeCurve.edge.lastControl,
+                ),
+                metadata = edgeMetadata,
+            )
+
             fun line(
                 metadata: EdgeMetadata,
             ): Edge = Edge(
@@ -202,10 +232,21 @@ data class Outline(
                 endAnchor = endAnchor,
             )
 
-            fun construct(
+            fun reconstruct(
                 edgeCurve: BezierCurve,
                 edgeMetadata: EdgeMetadata,
-            ): Verge = TODO()
+            ): Verge = Verge(
+                startAnchor = Joint.Anchor(
+                    position = edgeCurve.start,
+                ),
+                edge = Edge.reconstruct(
+                    edgeCurve = edgeCurve,
+                    edgeMetadata = edgeMetadata,
+                ),
+                endAnchor = Joint.Anchor(
+                    position = edgeCurve.end,
+                ),
+            )
         }
 
         val edgeCurve: BezierCurve
@@ -237,11 +278,11 @@ data class Outline(
             val (firstSubCurve, secondSubCurve) = edgeCurve.splitAt(coord = edgeCoord)
 
             return Pair(
-                Verge.construct(
+                Verge.reconstruct(
                     edgeCurve = firstSubCurve,
                     edgeMetadata = edge.metadata,
                 ),
-                Verge.construct(
+                Verge.reconstruct(
                     edgeCurve = secondSubCurve,
                     edgeMetadata = edge.metadata,
                 ),

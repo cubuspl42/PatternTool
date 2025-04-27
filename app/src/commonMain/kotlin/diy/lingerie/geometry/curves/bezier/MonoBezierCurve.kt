@@ -6,7 +6,7 @@ import diy.lingerie.geometry.transformations.Transformation
 
 data class MonoBezierCurve(
     override val start: Point,
-    val firstControl: Point,
+    override val firstControl: Point,
     val secondControl: Point,
     override val end: Point,
 ) : BezierCurve() {
@@ -34,12 +34,16 @@ data class MonoBezierCurve(
         }
     }
 
+    override val lastControl: Point
+        get() = secondControl
 
     override val edge: Edge
         get() = MonoBezierCurve.Edge(
             firstControl = firstControl,
             secondControl = secondControl,
         )
+
+    override val joints: List<Joint> = emptyList()
 
     override val subCurves: List<MonoBezierCurve>
         get() = listOf(this)

@@ -9,9 +9,9 @@ import diy.lingerie.geometry.transformations.Transformation
  */
 data class PolyBezierCurve(
     override val start: Point,
-    val firstControl: Point,
-    val joints: List<Joint>,
-    val lastControl: Point,
+    override val firstControl: Point,
+    override val joints: List<Joint>,
+    override val lastControl: Point,
     override val end: Point,
 ) : BezierCurve() {
     data class Edge(

@@ -38,6 +38,12 @@ abstract class BezierCurve : SegmentCurve() {
 
     abstract override val edge: BezierCurve.Edge
 
+    abstract val firstControl: Point
+
+    abstract val joints: List<Joint>
+
+    abstract val lastControl: Point
+
     abstract val subCurves: List<MonoBezierCurve>
 
     abstract override fun splitAt(
