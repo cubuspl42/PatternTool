@@ -4,6 +4,8 @@ import diy.lingerie.simple_dom.SimpleElement
 import org.apache.batik.anim.dom.SVGDOMImplementation
 import org.w3c.dom.Document
 import org.w3c.dom.Element
+import org.w3c.dom.svg.SVGGElement
+import org.w3c.dom.svg.SVGPathElement
 
 abstract class SvgElement : SimpleElement() {
     companion object {
@@ -13,4 +15,10 @@ abstract class SvgElement : SimpleElement() {
     protected fun Document.createSvgElement(
         name: String,
     ): Element = createElementNS(SVG_NS, "svg:$name")
+}
+
+fun Element.toSimpleElement(): SvgElement = when (this) {
+    is SVGPathElement -> toSimplePath()
+    is SVGGElement -> toSimpleGroup()
+    else -> error("Unsupported element type: ${this.tagName}")
 }

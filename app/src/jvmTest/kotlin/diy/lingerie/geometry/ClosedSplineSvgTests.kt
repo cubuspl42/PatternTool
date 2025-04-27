@@ -4,6 +4,7 @@ import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.simple_dom.SimpleUnit
 import diy.lingerie.simple_dom.svg.SvgRoot
+import diy.lingerie.simple_dom.svg.toSimplePath
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import diy.lingerie.test_utils.getResourceAsReader
 import diy.lingerie.utils.alsoApply
@@ -33,7 +34,7 @@ class ClosedSplineSvgTests {
         val svgDocument = svgDocumentFactory.parseSvgDocument(reader = reader)
         val svgPathElement = svgDocument.documentSvgElement.childElements.single() as SVGPathElement
 
-        val closedSpline = svgPathElement.toClosedSpline()
+        val closedSpline = svgPathElement.toSimplePath().toClosedSpline()
 
         assertEqualsWithTolerance(
             expected = ClosedSpline(

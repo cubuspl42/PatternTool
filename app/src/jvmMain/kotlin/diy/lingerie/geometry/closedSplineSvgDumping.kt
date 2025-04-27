@@ -24,7 +24,7 @@ fun ClosedSpline.toSvgPathElement(
         strokeColor = color,
         segments = listOf(
             SvgPath.Segment.MoveTo(
-                finalPoint = start,
+                targetPoint = start,
             ),
         ) + edgeCurves.map { edgeCurve ->
             edgeCurve.toSvgPathSeg()

@@ -1,42 +1,48 @@
 package diy.lingerie.geometry
 
-import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
+import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.untrail
-import diy.lingerie.utils.xml.svg.asList
-import diy.lingerie.utils.xml.svg.asSVGPathSegMovetoAbs
-import diy.lingerie.utils.xml.svg.match
-import diy.lingerie.utils.xml.svg.p
-import diy.lingerie.utils.xml.svg.p1
-import diy.lingerie.utils.xml.svg.p2
-import org.w3c.dom.svg.SVGPathElement
-import org.w3c.dom.svg.SVGPathSeg
 
-fun SVGPathElement.toClosedSpline(): ClosedSpline {
-    val (leadingSvgPathSegs, lastSvgPathSeg) = pathSegList.asList().untrail()!!
+fun SvgPath.toClosedSpline(): ClosedSpline {
+    val (firstSegment, trailingSegments) = segments.uncons()
+        ?: throw IllegalArgumentException("Path must contain at least one segment")
 
-    require(lastSvgPathSeg.pathSegType == SVGPathSeg.PATHSEG_CLOSEPATH)
+    firstSegment as? SvgPath.Segment.MoveTo ?: throw IllegalArgumentException("Path must start with a MoveTo segment")
 
-    val (firstPathSeg, trailingPathSegs) = leadingSvgPathSegs.uncons()!!
+    val originPoint = firstSegment.finalPoint
 
-    val originPathSeg =
-        firstPathSeg.asSVGPathSegMovetoAbs ?: throw IllegalArgumentException("First path segment is not a MoveTo")
-    val originPoint = originPathSeg.p
+    val (innerSegments, lastSegment) = trailingSegments.untrail()
+        ?: throw IllegalArgumentException("Path must contain at least two segments")
 
-    val (links, finalPoint) = trailingPathSegs.mapCarrying(
+    if (lastSegment != SvgPath.Segment.ClosePath) {
+        throw IllegalArgumentException("Path must end with a ClosePath segment")
+    }
+
+    val (links, finalPoint) = innerSegments.mapCarrying(
         initialCarry = originPoint,
-    ) { start, pathSeg ->
-        val (edge, finalPoint) = pathSeg.toCurveEdgeWithFinalPoint()
+    ) { start, segment ->
+        segment as? SvgPath.Segment.CurveSegment
+            ?: throw IllegalArgumentException("Each inner path segment must be a curve segment")
+
+        val edge = when (segment) {
+            is SvgPath.Segment.LineTo -> LineSegment.Edge
+
+            is SvgPath.Segment.CubicBezierCurveTo -> MonoBezierCurve.Edge(
+                firstControl = segment.controlPoint1,
+                secondControl = segment.controlPoint2,
+            )
+        }
 
         Pair(
             ClosedSpline.Link(
                 start = start,
                 edge = edge,
             ),
-            finalPoint,
+            segment.finalPoint,
         )
     }
 
@@ -48,24 +54,3 @@ fun SVGPathElement.toClosedSpline(): ClosedSpline {
         links = links,
     )
 }
-
-private fun SVGPathSeg.toCurveEdgeWithFinalPoint(): Pair<SegmentCurve.Edge, Point> = this.match(
-    moveToAbs = {
-        throw UnsupportedOperationException()
-    },
-    lineToAbs = {
-        Pair(
-            LineSegment.Edge,
-            it.p,
-        )
-    },
-    curveToCubicAbs = {
-        Pair(
-            MonoBezierCurve.Edge(
-                firstControl = it.p1,
-                secondControl = it.p2,
-            ),
-            it.p,
-        )
-    }
-)
