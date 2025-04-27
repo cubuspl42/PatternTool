@@ -14,10 +14,17 @@ import diy.lingerie.utils.iterable.withNextCyclic
 data class Outline(
     val links: List<Link>,
 ) {
-    data class Edge(
-        val curveEdge: SegmentCurve.Edge,
+    data class EdgeMetadata(
         val seamAllowance: SeamAllowance,
     )
+
+    data class Edge(
+        val curveEdge: SegmentCurve.Edge,
+        val metadata: EdgeMetadata,
+    ) {
+        val seamAllowance: SeamAllowance
+            get() = metadata.seamAllowance
+    }
 
     data class Link(
         val start: Point,
@@ -49,16 +56,16 @@ data class Outline(
         val end: Point,
     ) {
         companion object {
-            fun of(
-                segmentCurve: SegmentCurve,
-                seamAllowance: SeamAllowance,
+            fun construct(
+                edgeCurve: SegmentCurve,
+                edgeMetadata: EdgeMetadata,
             ): Segment = Segment(
-                start = segmentCurve.start,
+                start = edgeCurve.start,
                 edge = Edge(
-                    curveEdge = segmentCurve.edge,
-                    seamAllowance = seamAllowance,
+                    curveEdge = edgeCurve.edge,
+                    metadata = edgeMetadata,
                 ),
-                end = segmentCurve.end,
+                end = edgeCurve.end,
             )
         }
 
@@ -74,13 +81,13 @@ data class Outline(
             val (firstSubCurve, secondSubCurve) = edgeCurve.splitAt(coord = edgeCoord)
 
             return Pair(
-                Segment.of(
-                    segmentCurve = firstSubCurve,
-                    seamAllowance = edge.seamAllowance,
+                Segment.construct(
+                    edgeCurve = firstSubCurve,
+                    edgeMetadata = edge.metadata,
                 ),
-                Segment.of(
-                    segmentCurve = secondSubCurve,
-                    seamAllowance = edge.seamAllowance,
+                Segment.construct(
+                    edgeCurve = secondSubCurve,
+                    edgeMetadata = edge.metadata,
                 ),
             )
         }
@@ -151,7 +158,7 @@ data class Outline(
 
     fun cut(
         lineSegment: LineSegment,
-        cutSeamAllowance: SeamAllowance,
+        cutEdgeMetadata: EdgeMetadata,
     ): Pair<Outline, Outline> {
         val intersectionCoords = findIntersectionCoords(lineSegment = lineSegment)
 
@@ -164,7 +171,7 @@ data class Outline(
         return splitAt(
             firstSplitCoord = firstIntersectionCoord,
             secondSplitCoord = secondIntersectionCoord,
-            splitSeamAllowance = cutSeamAllowance,
+            splitEdgeMetadata = cutEdgeMetadata,
         )
     }
 
@@ -187,7 +194,7 @@ data class Outline(
     private fun splitAt(
         firstSplitCoord: Coord,
         secondSplitCoord: Coord,
-        splitSeamAllowance: SeamAllowance,
+        splitEdgeMetadata: EdgeMetadata,
     ): Pair<Outline, Outline> {
         val (firstEdgeIndex, firstEdgeCoord) = firstSplitCoord
         val (secondEdgeIndex, secondEdgeCoord) = secondSplitCoord
@@ -205,12 +212,12 @@ data class Outline(
 
         val firstSubOutline = closeSegments(
             segments = listOf(firstCentralSegment1) + trailingCentralSegments + firstBackSegment0,
-            closingSeamAllowance = splitSeamAllowance,
+            closingEdgeMetadata = splitEdgeMetadata,
         )
 
         val secondSubOutline = closeSegments(
             segments = listOf(firstBackSegment1) + trailingBackSegments + frontSegments + firstCentralSegment0,
-            closingSeamAllowance = splitSeamAllowance,
+            closingEdgeMetadata = splitEdgeMetadata,
         )
 
         return Pair(
@@ -221,17 +228,17 @@ data class Outline(
 
     private fun closeSegments(
         segments: List<Segment>,
-        closingSeamAllowance: SeamAllowance,
+        closingEdgeMetadata: EdgeMetadata,
     ): Outline {
         val firstSegment = segments.first()
         val lastSegment = segments.last()
 
-        val closingSegment = Segment.of(
-            segmentCurve = LineSegment(
+        val closingSegment = Segment.construct(
+            edgeCurve = LineSegment(
                 start = lastSegment.end,
                 end = firstSegment.start,
             ),
-            seamAllowance = closingSeamAllowance,
+            edgeMetadata = closingEdgeMetadata,
         )
 
         return Outline.connect(
