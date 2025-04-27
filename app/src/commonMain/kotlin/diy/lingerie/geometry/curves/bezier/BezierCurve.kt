@@ -7,7 +7,7 @@ import diy.lingerie.geometry.transformations.Transformation
 abstract class BezierCurve : SegmentCurve() {
     data class Joint(
         val rearControl: Point,
-        val t: Double,
+        val coord: Coord,
         val frontControl: Point,
     ) {
         val position: Point
@@ -17,13 +17,10 @@ abstract class BezierCurve : SegmentCurve() {
             transformation: Transformation,
         ): Joint = Joint(
             frontControl = frontControl.transformBy(transformation),
-            t = t,
+            coord = coord,
             rearControl = rearControl.transformBy(transformation),
         )
 
-        init {
-            require(t in 0.0..1.0)
-        }
     }
 
     abstract class Edge : SegmentCurve.Edge() {
@@ -42,4 +39,8 @@ abstract class BezierCurve : SegmentCurve() {
     abstract override val edge: BezierCurve.Edge
 
     abstract val subCurves: List<MonoBezierCurve>
+
+    abstract override fun splitAt(
+        coord: Coord,
+    ): Pair<BezierCurve, BezierCurve>
 }

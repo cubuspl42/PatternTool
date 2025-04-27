@@ -4,6 +4,9 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.transformations.Transformation
 
+/**
+ * A C1-continuous cubic poly-Bézier curve
+ */
 data class PolyBezierCurve(
     override val start: Point,
     val firstControl: Point,
@@ -89,7 +92,7 @@ data class PolyBezierCurve(
 
     override fun splitAt(
         coord: Coord,
-    ): Pair<SegmentCurve, SegmentCurve> {
+    ): Pair<PolyBezierCurve, PolyBezierCurve> {
         TODO("Not yet implemented")
     }
 
