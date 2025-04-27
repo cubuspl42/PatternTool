@@ -2,39 +2,22 @@ package diy.lingerie.geometry
 
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
-import diy.lingerie.simple_dom.SimpleUnit
+import diy.lingerie.simple_dom.pt
+import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
-import diy.lingerie.simple_dom.svg.toSimplePath
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import diy.lingerie.test_utils.getResourceAsReader
-import diy.lingerie.utils.alsoApply
-import diy.lingerie.utils.xml.childElements
-import diy.lingerie.utils.xml.svg.SVGDOMImplementationUtils
-import diy.lingerie.utils.xml.svg.SVGViewBox
-import diy.lingerie.utils.xml.svg.createSvgDocument
-import diy.lingerie.utils.xml.svg.documentSvgElement
-import diy.lingerie.utils.xml.svg.height
-import diy.lingerie.utils.xml.svg.parseSvgDocument
-import diy.lingerie.utils.xml.svg.viewBox
-import diy.lingerie.utils.xml.svg.width
-import diy.lingerie.utils.xml.writeToFile
-import org.apache.batik.anim.dom.SAXSVGDocumentFactory
-import org.apache.batik.anim.dom.SVGDOMImplementation
-import org.w3c.dom.svg.SVGPathElement
 import kotlin.io.path.Path
 import kotlin.test.Test
-
-val svgDocumentFactory = SAXSVGDocumentFactory(null)
-val svgDomImplementation: SVGDOMImplementation = SVGDOMImplementationUtils.getSVGDOMImplementation()
 
 class ClosedSplineSvgTests {
     @Test
     fun toClosedSplineTest() {
         val reader = ClosedSplineSvgTests::class.java.getResourceAsReader("closedPath1.svg")!!
-        val svgDocument = svgDocumentFactory.parseSvgDocument(reader = reader)
-        val svgPathElement = svgDocument.documentSvgElement.childElements.single() as SVGPathElement
+        val svgRoot = SvgRoot.parse(reader = reader)
+        val svgPath = svgRoot.children.single() as SvgPath
 
-        val closedSpline = svgPathElement.toSimplePath().toClosedSpline()
+        val closedSpline = svgPath.toClosedSpline()
 
         assertEqualsWithTolerance(
             expected = ClosedSpline(
@@ -117,17 +100,14 @@ class ClosedSplineSvgTests {
         )
 
         val svgRoot = SvgRoot(
-            width = 256,
-            height = 256,
-            unit = SimpleUnit.pt,
+            width = 256.pt,
+            height = 256.pt,
             children = listOf(
                 closedSpline.toSvgPathElement(),
             ),
         )
 
-        val svgDocument = svgRoot.toSvgDocument(svgDomImplementation = svgDomImplementation)
-
-        svgDocument.writeToFile(
+        svgRoot.writeToFile(
             Path("../output/closedSpline.svg")
         )
     }

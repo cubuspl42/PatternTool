@@ -1,6 +1,6 @@
 package diy.lingerie.simple_dom.fo
 
-import diy.lingerie.simple_dom.SimpleUnit
+import diy.lingerie.simple_dom.SimpleDimension
 import diy.lingerie.simple_dom.svg.SvgElement
 import org.apache.fop.util.XMLConstants
 import org.w3c.dom.Document
@@ -8,9 +8,8 @@ import org.w3c.dom.Element
 import javax.xml.parsers.DocumentBuilderFactory
 
 data class FoRoot(
-    val pageWidth: Int,
-    val pageHeight: Int,
-    val pageUnit: SimpleUnit,
+    val pageWidth: SimpleDimension,
+    val pageHeight: SimpleDimension,
     val blocks: List<FoSvgBlock>,
 ) : FoElement() {
     companion object {
@@ -43,8 +42,8 @@ data class FoRoot(
                 appendChild(
                     document.createFoElement("simple-page-master").apply {
                         setAttribute("master-name", MASTER_NAME)
-                        setAttribute("page-width", "${pageWidth}${pageUnit.suffix}")
-                        setAttribute("page-height", "${pageHeight}${pageUnit.suffix}")
+                        setAttribute("page-width", pageWidth.toDimensionString())
+                        setAttribute("page-height", pageHeight.toDimensionString())
 
                         appendChild(
                             document.createFoElement("region-body").apply {

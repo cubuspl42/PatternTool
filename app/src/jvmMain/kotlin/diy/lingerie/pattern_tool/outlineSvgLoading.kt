@@ -1,22 +1,19 @@
 package diy.lingerie.pattern_tool
 
 import diy.lingerie.geometry.toClosedSpline
-import diy.lingerie.simple_dom.svg.toSimplePath
-import diy.lingerie.utils.xml.childElements
-import diy.lingerie.utils.xml.svg.documentSvgElement
-import org.w3c.dom.svg.SVGDocument
-import org.w3c.dom.svg.SVGPathElement
+import diy.lingerie.simple_dom.svg.SvgPath
+import diy.lingerie.simple_dom.svg.SvgRoot
 
 fun Outline.Companion.loadSvg(
-    svgDocument: SVGDocument,
+    svgRoot: SvgRoot,
 ): Outline {
-    val singleElement = svgDocument.documentSvgElement.childElements.singleOrNull()
+    val singleElement = svgRoot.children.singleOrNull()
         ?: throw IllegalArgumentException("SVG document must contain a single element")
 
-    val svgPathElement =
-        singleElement as? SVGPathElement ?: throw IllegalArgumentException("The single element must be a path element")
+    val svgPath =
+        singleElement as? SvgPath ?: throw IllegalArgumentException("The single element must be a path element")
 
-    val closedSpline = svgPathElement.toSimplePath().toClosedSpline()
+    val closedSpline = svgPath.toClosedSpline()
 
     return Outline.reconstruct(
         closedSpline = closedSpline,
