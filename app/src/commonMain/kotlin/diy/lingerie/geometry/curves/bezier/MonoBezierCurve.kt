@@ -46,7 +46,7 @@ data class MonoBezierCurve(
 
     override fun splitAt(
         coord: Coord,
-    ): Pair<SegmentCurve, SegmentCurve> {
+    ): Pair<MonoBezierCurve, MonoBezierCurve> {
         TODO("Not yet implemented")
     }
 
