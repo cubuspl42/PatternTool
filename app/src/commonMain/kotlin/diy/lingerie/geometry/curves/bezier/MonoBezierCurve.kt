@@ -1,5 +1,8 @@
 package diy.lingerie.geometry.curves.bezier
 
+import diy.lingerie.algebra.NumericObject
+import diy.lingerie.algebra.NumericObject.Tolerance
+import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.transformations.Transformation
@@ -32,6 +35,16 @@ data class MonoBezierCurve(
         override fun transformBy(transformation: Transformation): SegmentCurve.Edge {
             TODO("Not yet implemented")
         }
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: Tolerance,
+        ): Boolean = when {
+            other !is MonoBezierCurve.Edge -> false
+            !firstControl.equalsWithTolerance(other.firstControl, tolerance) -> false
+            !secondControl.equalsWithTolerance(other.secondControl, tolerance) -> false
+            else -> true
+        }
     }
 
     override val lastControl: Point
@@ -56,5 +69,17 @@ data class MonoBezierCurve(
 
     override fun evaluate(coord: Coord): Point {
         TODO("Not yet implemented")
+    }
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: Tolerance,
+    ): Boolean = when {
+        other !is MonoBezierCurve -> false
+        !start.equalsWithTolerance(other.start, tolerance = tolerance) -> false
+        !firstControl.equalsWithTolerance(other.firstControl, tolerance = tolerance) -> false
+        !secondControl.equalsWithTolerance(other.secondControl, tolerance = tolerance) -> false
+        !end.equalsWithTolerance(other.end, tolerance = tolerance) -> false
+        else -> true
     }
 }

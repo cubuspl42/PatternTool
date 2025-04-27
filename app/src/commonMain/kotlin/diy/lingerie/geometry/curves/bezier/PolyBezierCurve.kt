@@ -1,7 +1,9 @@
 package diy.lingerie.geometry.curves.bezier
 
+import diy.lingerie.algebra.NumericObject
+import diy.lingerie.algebra.NumericObject.Tolerance
+import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.transformations.Transformation
 
 /**
@@ -48,6 +50,17 @@ data class PolyBezierCurve(
             },
             lastControl = lastControl.transformBy(transformation = transformation),
         )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: Tolerance,
+        ): Boolean = when {
+            other !is PolyBezierCurve.Edge -> false
+            !firstControl.equalsWithTolerance(other.firstControl, tolerance) -> false
+            !joints.equalsWithTolerance(other.joints, tolerance) -> false
+            !lastControl.equalsWithTolerance(other.lastControl, tolerance) -> false
+            else -> true
+        }
     }
 
     init {
@@ -98,5 +111,18 @@ data class PolyBezierCurve(
 
     override fun evaluate(coord: Coord): Point {
         TODO("Not yet implemented")
+    }
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: Tolerance,
+    ): Boolean = when {
+        other !is PolyBezierCurve -> false
+        !start.equalsWithTolerance(other.start, tolerance = tolerance) -> false
+        !firstControl.equalsWithTolerance(other.firstControl, tolerance = tolerance) -> false
+        !joints.equalsWithTolerance(other.joints, tolerance = tolerance) -> false
+        !lastControl.equalsWithTolerance(other.lastControl, tolerance = tolerance) -> false
+        !end.equalsWithTolerance(other.end, tolerance = tolerance) -> false
+        else -> true
     }
 }

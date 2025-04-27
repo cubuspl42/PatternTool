@@ -1,5 +1,7 @@
 package diy.lingerie.geometry
 
+import diy.lingerie.algebra.NumericObject
+import diy.lingerie.algebra.NumericObject.Tolerance
 import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.transformations.Transformation
 
@@ -24,6 +26,11 @@ data class LineSegment(
 
         override fun transformBy(transformation: Transformation): Edge = this
 
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: Tolerance,
+        ): Boolean = other == LineSegment.Edge
+
         override fun toString(): String = "LineSegment.Edge"
     }
 
@@ -37,6 +44,16 @@ data class LineSegment(
 
     override fun evaluate(coord: Coord): Point {
         TODO("Not yet implemented")
+    }
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: Tolerance,
+    ): Boolean = when {
+        other !is LineSegment -> false
+        !start.equalsWithTolerance(other.start, tolerance = tolerance) -> false
+        !end.equalsWithTolerance(other.end, tolerance = tolerance) -> false
+        else -> true
     }
 
     val containingLine: Line?
