@@ -49,4 +49,8 @@ data class MonoBezierCurve(
     ): Pair<SegmentCurve, SegmentCurve> {
         TODO("Not yet implemented")
     }
+
+    override fun evaluate(coord: Coord): Point {
+        TODO("Not yet implemented")
+    }
 }

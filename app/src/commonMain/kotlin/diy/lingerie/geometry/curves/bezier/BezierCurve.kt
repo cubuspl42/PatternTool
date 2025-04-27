@@ -1,6 +1,5 @@
 package diy.lingerie.geometry.curves.bezier
 
-import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.transformations.Transformation
