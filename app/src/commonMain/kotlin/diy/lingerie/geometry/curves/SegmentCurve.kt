@@ -64,4 +64,6 @@ abstract class SegmentCurve {
     abstract fun splitAt(
         coord: Coord,
     ): Pair<SegmentCurve, SegmentCurve>
+
+    abstract fun evaluate(coord: Coord): Point
 }

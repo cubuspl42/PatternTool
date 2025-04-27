@@ -35,6 +35,10 @@ data class LineSegment(
         TODO("Not yet implemented")
     }
 
+    override fun evaluate(coord: Coord): Point {
+        TODO("Not yet implemented")
+    }
+
     val containingLine: Line?
         get() = Line.throughPoints(
             point0 = start,
