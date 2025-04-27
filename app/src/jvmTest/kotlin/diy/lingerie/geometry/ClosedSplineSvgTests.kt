@@ -2,6 +2,8 @@ package diy.lingerie.geometry
 
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
+import diy.lingerie.simple_dom.SimpleUnit
+import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import diy.lingerie.test_utils.getResourceAsReader
 import diy.lingerie.utils.alsoApply
@@ -113,23 +115,16 @@ class ClosedSplineSvgTests {
             )
         )
 
-        val svgDocument = svgDomImplementation.createSvgDocument().alsoApply { document ->
-            documentSvgElement.apply {
-                width = "100%"
-                height = "100%"
+        val svgRoot = SvgRoot(
+            width = 256,
+            height = 256,
+            unit = SimpleUnit.pt,
+            children = listOf(
+                closedSpline.toSvgPathElement(),
+            ),
+        )
 
-                viewBox = SVGViewBox(
-                    xMin = 0.0,
-                    yMin = 0.0,
-                    width = 256.0,
-                    height = 256.0,
-                )
-
-                appendChild(
-                    closedSpline.toSvgPathElement(document = document),
-                )
-            }
-        }
+        val svgDocument = svgRoot.toSvgDocument(svgDomImplementation = svgDomImplementation)
 
         svgDocument.writeToFile(
             Path("../output/closedSpline.svg")

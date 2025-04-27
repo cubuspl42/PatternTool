@@ -16,7 +16,7 @@ data class FoRoot(
     companion object {
         private const val XMLNS_NS = XMLConstants.XMLNS_NAMESPACE_URI
 
-        private const val MASTER_NAME = "A4"
+        private const val MASTER_NAME = "main"
     }
 
     fun toDocument(): Document {
@@ -66,7 +66,6 @@ data class FoRoot(
 
                         blocks.forEach { block ->
                             appendChild(block.toRawElement(document = document))
-
                         }
                     },
                 )
