@@ -12,7 +12,16 @@ abstract class SegmentCurve {
          * The t-value for the basis function
          */
         val t: Double,
-    )
+    ) {
+        val complement: Coord
+            get() = Coord(
+                t = 1.0 - t,
+            )
+
+        init {
+            require(t in 0.0..1.0)
+        }
+    }
 
     /**
      * The intersection of two curves

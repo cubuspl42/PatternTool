@@ -4,12 +4,14 @@ import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.SegmentCurve
+import diy.lingerie.geometry.curves.bezier.BezierCurve
+import diy.lingerie.geometry.curves.bezier.PolyBezierCurve
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.shiftLeft
 import diy.lingerie.utils.iterable.splitBefore
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.withNextCyclic
+import kotlin.jvm.JvmInline
 
 data class Outline(
     val links: List<Link>,
@@ -19,136 +21,242 @@ data class Outline(
     )
 
     sealed class Joint {
-        data class ControlSegment(
-            val anchorPosition: Point,
-            val handlePosition: Point,
-        )
+        abstract fun transformBy(
+            transformation: Transformation,
+        ): Joint
+
+        @JvmInline
+        value class Anchor(
+            val position: Point,
+        ) {
+            fun transformBy(
+                transformation: Transformation,
+            ): Anchor = Anchor(
+                position = position.transformBy(transformation = transformation),
+            )
+        }
+
+        @JvmInline
+        value class Handle(
+            val position: Point,
+        ) {
+            fun transformBy(
+                transformation: Transformation,
+            ): Handle = Handle(
+                position = position.transformBy(transformation = transformation),
+            )
+        }
 
         /**
          * An unconstrained (typically sharp) joint
          */
         data class Free(
-            override val rearHandlePosition: Point,
-            override val anchorPosition: Point,
-            override val frontHandlePosition: Point
-        ) : Joint()
+            override val rearHandle: Handle?,
+            override val anchor: Anchor,
+            override val frontHandle: Handle?,
+        ) : Joint() {
+            override fun transformBy(
+                transformation: Transformation,
+            ): Free = Free(
+                rearHandle = rearHandle?.transformBy(transformation = transformation),
+                anchor = anchor.transformBy(transformation = transformation),
+                frontHandle = frontHandle?.transformBy(transformation = transformation),
+            )
+        }
 
         /**
          * A smooth joint
          */
         data class Smooth(
-            /**
-             * The control line segment going from the rear to the front handle
-             */
-            val controlLineSegment: LineSegment,
+            override val rearHandle: Handle,
             /**
              * The coordinate of the anchor point on the control line segment
              */
             val anchorCoord: SegmentCurve.Coord,
+            override val frontHandle: Handle,
         ) : Joint() {
-            override val anchorPosition: Point
-                get() = controlLineSegment.evaluate(coord = anchorCoord)
+            /**
+             * The control line segment going from the rear to the front handle
+             */
+            private val controlLineSegment: LineSegment
+                get() = LineSegment(
+                    start = rearHandle.position,
+                    end = frontHandle.position,
+                )
 
-            override val rearHandlePosition: Point
-                get() = controlLineSegment.start
+            fun toBezierJoint() = BezierCurve.Joint(
+                rearControl = rearHandle.position,
+                coord = anchorCoord,
+                frontControl = frontHandle.position,
+            )
 
-            override val frontHandlePosition: Point
-                get() = controlLineSegment.end
+            fun reversed(): Smooth = Smooth(
+                rearHandle = frontHandle,
+                anchorCoord = anchorCoord.complement,
+                frontHandle = rearHandle,
+            )
+
+            override fun transformBy(
+                transformation: Transformation,
+            ): Smooth = Smooth(
+                rearHandle = rearHandle.transformBy(transformation = transformation),
+                anchorCoord = anchorCoord,
+                frontHandle = frontHandle.transformBy(transformation = transformation),
+            )
+
+            override val anchor: Anchor
+                get() = Anchor(
+                    position = controlLineSegment.evaluate(coord = anchorCoord),
+                )
         }
 
-        val rearControlSegment: ControlSegment
-            get() = ControlSegment(
-                anchorPosition = anchorPosition,
-                handlePosition = rearHandlePosition,
-            )
+        abstract val rearHandle: Handle?
 
-        val frontControlSegment: ControlSegment
-            get() = ControlSegment(
-                anchorPosition = anchorPosition,
-                handlePosition = frontHandlePosition,
-            )
+        abstract val anchor: Anchor
 
-
-        abstract val rearHandlePosition: Point
-
-        abstract val anchorPosition: Point
-
-        abstract val frontHandlePosition: Point
+        abstract val frontHandle: Handle?
     }
 
     data class Edge(
-        val curveEdge: SegmentCurve.Edge,
+        val startHandle: Joint.Handle?,
+        val intermediateJoints: List<Joint.Smooth>,
+        val endHandle: Joint.Handle?,
         val metadata: EdgeMetadata,
     ) {
+        companion object {
+            fun line(
+                metadata: EdgeMetadata,
+            ): Edge = Edge(
+                startHandle = null,
+                intermediateJoints = emptyList(),
+                endHandle = null,
+                metadata = metadata,
+            )
+        }
+
+        fun isLine() = when {
+            startHandle != null -> false
+            endHandle != null -> false
+            intermediateJoints.isNotEmpty() -> false
+            else -> true
+        }
+
+        val startHandlePosition: Point?
+            get() = startHandle?.position
+
+        val endHandlePosition: Point?
+            get() = endHandle?.position
+
+        fun transformBy(
+            transformation: Transformation,
+        ): Edge {
+            return Edge(
+                startHandle = startHandle?.transformBy(transformation = transformation),
+                intermediateJoints = intermediateJoints.map {
+                    it.transformBy(transformation = transformation)
+                },
+                endHandle = endHandle?.transformBy(transformation = transformation),
+                metadata = metadata,
+            )
+        }
+
+        fun reversed(): Edge = Edge(
+            startHandle = endHandle,
+            intermediateJoints = intermediateJoints.reversed().map {
+                it.reversed()
+            },
+            endHandle = startHandle,
+            metadata = metadata,
+        )
+
         val seamAllowance: SeamAllowance
             get() = metadata.seamAllowance
     }
 
     data class Link(
-        val start: Point,
+        val startAnchor: Joint.Anchor,
         val edge: Edge,
     ) {
         fun bind(
-            end: Point,
-        ): Segment = Segment(
-            start = start,
+            endAnchor: Joint.Anchor,
+        ): Verge = Verge(
+            startAnchor = startAnchor,
             edge = edge,
-            end = end,
-        )
-
-        fun transformBy(
-            transformation: Transformation,
-        ): Link = Link(
-            start = start.transformBy(transformation = transformation),
-            edge = edge.copy(
-                curveEdge = edge.curveEdge.transformBy(
-                    transformation = transformation,
-                ),
-            ),
+            endAnchor = endAnchor,
         )
     }
 
-    data class Segment(
-        val start: Point,
+    data class Verge(
+        val startAnchor: Joint.Anchor,
         val edge: Edge,
-        val end: Point,
+        val endAnchor: Joint.Anchor,
     ) {
         companion object {
-            fun construct(
-                edgeCurve: SegmentCurve,
+            fun line(
+                startAnchor: Joint.Anchor,
                 edgeMetadata: EdgeMetadata,
-            ): Segment = Segment(
-                start = edgeCurve.start,
-                edge = Edge(
-                    curveEdge = edgeCurve.edge,
-                    metadata = edgeMetadata,
-                ),
-                end = edgeCurve.end,
+                endAnchor: Joint.Anchor,
+            ): Verge = Verge(
+                startAnchor = startAnchor,
+                edge = Edge.line(metadata = edgeMetadata),
+                endAnchor = endAnchor,
             )
+
+            fun construct(
+                edgeCurve: BezierCurve,
+                edgeMetadata: EdgeMetadata,
+            ): Verge = TODO()
         }
 
-        val edgeCurve: SegmentCurve
-            get() = edge.curveEdge.bind(
-                start = start,
-                end = end,
+        val edgeCurve: BezierCurve
+            get() = PolyBezierCurve(
+                start = startAnchorPosition,
+                firstControl = edge.startHandlePosition ?: startAnchorPosition,
+                joints = edge.intermediateJoints.map {
+                    it.toBezierJoint()
+                },
+                lastControl = edge.endHandlePosition ?: endAnchorPosition,
+                end = endAnchorPosition,
             )
+
+        val startAnchorPosition: Point
+            get() = startAnchor.position
+
+        val endAnchorPosition: Point
+            get() = endAnchor.position
+
+        fun reversed(): Verge = Verge(
+            startAnchor = endAnchor,
+            edge = edge.reversed(),
+            endAnchor = startAnchor,
+        )
 
         fun splitAt(
             edgeCoord: SegmentCurve.Coord,
-        ): Pair<Segment, Segment> {
+        ): Pair<Verge, Verge> {
             val (firstSubCurve, secondSubCurve) = edgeCurve.splitAt(coord = edgeCoord)
 
             return Pair(
-                Segment.construct(
+                Verge.construct(
                     edgeCurve = firstSubCurve,
                     edgeMetadata = edge.metadata,
                 ),
-                Segment.construct(
+                Verge.construct(
                     edgeCurve = secondSubCurve,
                     edgeMetadata = edge.metadata,
                 ),
             )
         }
+
+        fun transformBy(
+            transformation: Transformation,
+        ): Verge = Verge(
+            startAnchor = startAnchor.transformBy(transformation = transformation),
+            edge = edge.transformBy(
+                transformation = transformation,
+            ),
+            endAnchor = endAnchor.transformBy(transformation = transformation),
+        )
     }
 
     data class Coord(
@@ -164,55 +272,34 @@ data class Outline(
 
     companion object {
         fun connect(
-            segments: List<Segment>,
+            verges: List<Verge>,
         ): Outline = Outline(
-            links = segments.withNextCyclic().mapIndexed { index, (segment, nextSegment) ->
-                if (segment.end != nextSegment.start) {
-                    throw IllegalArgumentException("A segment #$index does not connect to the next segment")
+            links = verges.withNextCyclic().mapIndexed { index, (verge, nextSegment) ->
+                if (verge.endAnchorPosition != nextSegment.startAnchorPosition) {
+                    throw IllegalArgumentException("Verge #$index does not connect to the next verge")
                 }
 
                 Link(
-                    start = segment.start,
-                    edge = segment.edge,
+                    startAnchor = verge.startAnchor,
+                    edge = verge.edge,
                 )
             },
         )
-
-        fun reverse(
-            links: List<Link>,
-            end: Point,
-        ): List<Link> {
-            val (reversedLinks, _) = links.reversed().mapCarrying(
-                initialCarry = end,
-            ) { joint, link ->
-                Pair(
-                    Link(
-                        start = joint,
-                        edge = link.edge,
-                    ),
-                    link.start,
-                )
-            }
-
-            return reversedLinks
-        }
     }
 
     init {
         require(links.size >= 2)
     }
 
-    val segments: List<Segment>
+    val verges: List<Verge>
         get() = links.withNextCyclic().map { (link, nextLink) ->
-            Segment(
-                start = link.start,
-                edge = link.edge,
-                end = nextLink.start,
+            link.bind(
+                endAnchor = nextLink.startAnchor,
             )
         }
 
     val edgeCurves: List<SegmentCurve>
-        get() = segments.map { it.edgeCurve }
+        get() = verges.map { it.edgeCurve }
 
     fun cut(
         lineSegment: LineSegment,
@@ -257,7 +344,7 @@ data class Outline(
         val (firstEdgeIndex, firstEdgeCoord) = firstSplitCoord
         val (secondEdgeIndex, secondEdgeCoord) = secondSplitCoord
 
-        val (frontSegments, centralSegments, backSegments) = segments.splitBefore(
+        val (frontSegments, centralSegments, backSegments) = verges.splitBefore(
             firstIndex = firstEdgeIndex,
             secondIndex = secondEdgeIndex,
         )
@@ -269,12 +356,12 @@ data class Outline(
         val (firstBackSegment0, firstBackSegment1) = firstBackSegment.splitAt(edgeCoord = secondEdgeCoord)
 
         val firstSubOutline = closeSegments(
-            segments = listOf(firstCentralSegment1) + trailingCentralSegments + firstBackSegment0,
+            verges = listOf(firstCentralSegment1) + trailingCentralSegments + firstBackSegment0,
             closingEdgeMetadata = splitEdgeMetadata,
         )
 
         val secondSubOutline = closeSegments(
-            segments = listOf(firstBackSegment1) + trailingBackSegments + frontSegments + firstCentralSegment0,
+            verges = listOf(firstBackSegment1) + trailingBackSegments + frontSegments + firstCentralSegment0,
             closingEdgeMetadata = splitEdgeMetadata,
         )
 
@@ -285,50 +372,47 @@ data class Outline(
     }
 
     private fun closeSegments(
-        segments: List<Segment>,
+        verges: List<Verge>,
         closingEdgeMetadata: EdgeMetadata,
     ): Outline {
-        val firstSegment = segments.first()
-        val lastSegment = segments.last()
+        val firstSegment = verges.first()
+        val lastSegment = verges.last()
 
-        val closingSegment = Segment.construct(
-            edgeCurve = LineSegment(
-                start = lastSegment.end,
-                end = firstSegment.start,
-            ),
+        val closingVerge = Verge.line(
+            startAnchor = lastSegment.endAnchor,
             edgeMetadata = closingEdgeMetadata,
+            endAnchor = firstSegment.startAnchor,
         )
 
         return Outline.connect(
-            segments = segments + closingSegment,
+            verges = verges + closingVerge,
         )
     }
 
     /**
-     * Mirrors the outline against the edge at [edgeIndex].
+     * Mirrors the outline over the edge at [edgeIndex].
      */
     fun mirror(
         edgeIndex: Int,
     ): Outline {
-        val shiftedLinks = links.shiftLeft(edgeIndex)
+        val shiftedVerges = verges.shiftLeft(edgeIndex)
 
-        val (removedLink, remainingLinks) = shiftedLinks.uncons()!!
+        val (removedVerge, remainingVerges) = shiftedVerges.uncons()!!
 
-        if (removedLink.edge.curveEdge !is LineSegment.Edge) {
-            throw IllegalArgumentException("Cannot mirror against a non-line edge")
+        if (!removedVerge.edge.isLine()) {
+            throw IllegalArgumentException("Cannot mirror over a non-line verge")
         }
 
-        val mirrorPoint0 = removedLink.start
-        val mirrorPoint1 = remainingLinks.first().start
-        val mirrorLine = Line.throughPoints(mirrorPoint0, mirrorPoint1)
-            ?: throw IllegalArgumentException("Cannot mirror against a zero-length line")
+        val mirrorLine = Line.throughPoints(
+            removedVerge.startAnchorPosition,
+            removedVerge.endAnchorPosition,
+        ) ?: throw IllegalArgumentException("Cannot mirror over a zero-length line")
 
-        val reversedLinks = reverse(
-            links = remainingLinks,
-            end = removedLink.start,
-        )
+        val reversedVerges = remainingVerges.map {
+            it.reversed()
+        }
 
-        val mirroredLinks = reversedLinks.map {
+        val mirroredVerges = reversedVerges.map {
             it.transformBy(
                 transformation = Transformation.ReflectionOverLine(
                     line = mirrorLine,
@@ -336,8 +420,8 @@ data class Outline(
             )
         }
 
-        return Outline(
-            links = remainingLinks + mirroredLinks,
+        return Outline.connect(
+            remainingVerges + mirroredVerges,
         )
     }
 }
