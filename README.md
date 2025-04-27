@@ -29,6 +29,7 @@
 - Require linear history: **Yes** (default: **No**)
 - Require a pull request before merging: **Yes** (default: **No**)
 - Require status checks to pass: **Yes**
+  - Require branches to be up to date before merging: **Yes** (default: **No**)
   - Status checks that are required:
     - `test`
 - Allowed merge methods: **Rebase** (default: **Rebase, Merge, Squash**)
