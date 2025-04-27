@@ -2,24 +2,19 @@ package diy.lingerie.pattern_tool
 
 import diy.lingerie.geometry.ClosedSplineSvgTests
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.svgDomImplementation
+import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import diy.lingerie.test_utils.getResourceAsReader
-import diy.lingerie.utils.xml.svg.parseSvgDocument
-import diy.lingerie.utils.xml.writeToFile
-import org.apache.batik.anim.dom.SAXSVGDocumentFactory
 import kotlin.io.path.Path
 import kotlin.test.Test
-
-val svgDocumentFactory = SAXSVGDocumentFactory(null)
 
 class OutlineTests {
     @Test
     fun testLoadSvg() {
         val reader = ClosedSplineSvgTests::class.java.getResourceAsReader("closedPath1.svg")!!
-        val svgDocument = svgDocumentFactory.parseSvgDocument(reader = reader)
+        val svgRoot = SvgRoot.parse(reader = reader)
 
-        val outline = Outline.loadSvg(svgDocument = svgDocument)
+        val outline = Outline.loadSvg(svgRoot = svgRoot)
 
         val expectedEdgeMetadata = Outline.EdgeMetadata(
             seamAllowance = SeamAllowance(allowanceMm = 6.0),
@@ -185,9 +180,8 @@ class OutlineTests {
         )
 
         val svgRoot = outline.dumpSvg()
-        val svgDocument = svgRoot.toSvgDocument(svgDomImplementation = svgDomImplementation)
 
-        svgDocument.writeToFile(
+        svgRoot.writeToFile(
             Path("../output/outlineDumpSvg1.svg")
         )
     }

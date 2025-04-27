@@ -1,11 +1,10 @@
 package diy.lingerie.pattern_tool
 
+import diy.lingerie.geometry.Point
 import diy.lingerie.simple_dom.fo.FoRoot
 import diy.lingerie.simple_dom.fo.FoSvgBlock
-import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgGroup
-import diy.lingerie.geometry.Point
-import diy.lingerie.simple_dom.SimpleUnit
+import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
 import org.apache.fop.apps.FopFactory
 import org.apache.fop.apps.MimeConstants
@@ -19,13 +18,17 @@ import kotlin.io.path.outputStream
 val foRoot = FoRoot(
     pageWidth = PaperSizeConstants.A4.width,
     pageHeight = PaperSizeConstants.A4.height,
-    pageUnit = SimpleUnit.mm,
     blocks = listOf(
         FoSvgBlock(
             svgElement = SvgRoot(
                 width = PaperSizeConstants.A4.width,
                 height = PaperSizeConstants.A4.height,
-                unit = SimpleUnit.mm,
+                viewBox = SvgRoot.ViewBox(
+                    x = 0.0,
+                    y = 0.0,
+                    width = PaperSizeConstants.A4.width.value,
+                    height = PaperSizeConstants.A4.height.value,
+                ),
                 children = listOf(
                     SvgGroup(
                         children = listOf(
