@@ -37,6 +37,10 @@ fun ClosedSpline.toSvgPathElement(
                     ),
                 )
             }
+
+            appendItem(
+                createSVGPathSegClosePath(),
+            )
         }
 
         fill = "none"

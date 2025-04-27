@@ -59,7 +59,10 @@ data class Outline(
                 position = position.transformBy(transformation = transformation),
             )
 
-            override fun equalsWithTolerance(other: NumericObject, tolerance: NumericObject.Tolerance): Boolean = when {
+            override fun equalsWithTolerance(
+                other: NumericObject,
+                tolerance: NumericObject.Tolerance,
+            ): Boolean = when {
                 other !is Handle -> false
                 !position.equalsWithTolerance(other.position, tolerance) -> false
                 else -> true
@@ -163,7 +166,10 @@ data class Outline(
                     position = controlLineSegment.evaluate(coord = anchorCoord),
                 )
 
-            override fun equalsWithTolerance(other: NumericObject, tolerance: NumericObject.Tolerance): Boolean = when {
+            override fun equalsWithTolerance(
+                other: NumericObject,
+                tolerance: NumericObject.Tolerance,
+            ): Boolean = when {
                 other !is Smooth -> false
                 !rearHandle.equalsWithTolerance(other.rearHandle, tolerance) -> false
                 !anchorCoord.equalsWithTolerance(other.anchorCoord, tolerance) -> false
@@ -316,13 +322,14 @@ data class Outline(
             endAnchor = endAnchor,
         )
 
-        override fun equalsWithTolerance(other: NumericObject, tolerance: NumericObject.Tolerance): Boolean {
-            return when {
-                other !is Link -> false
-                !startAnchor.equalsWithTolerance(other.startAnchor, tolerance) -> false
-                !edge.equalsWithTolerance(other.edge, tolerance) -> false
-                else -> true
-            }
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance,
+        ): Boolean = when {
+            other !is Link -> false
+            !startAnchor.equalsWithTolerance(other.startAnchor, tolerance) -> false
+            !edge.equalsWithTolerance(other.edge, tolerance) -> false
+            else -> true
         }
     }
 
@@ -359,15 +366,25 @@ data class Outline(
             )
         }
 
-        val edgeCurve: BezierCurve
-            get() = PolyBezierCurve(
-                start = startAnchorPosition,
+        val curveEdge: PolyBezierCurve.Edge
+            get() = PolyBezierCurve.Edge(
                 firstControl = edge.startHandlePosition ?: startAnchorPosition,
                 joints = edge.intermediateJoints.map {
                     it.toBezierJoint()
                 },
                 lastControl = edge.endHandlePosition ?: endAnchorPosition,
+            )
+
+        val curve: BezierCurve
+            get() = curveEdge.bind(
+                start = startAnchorPosition,
                 end = endAnchorPosition,
+            )
+
+        val innerSplineLink: ClosedSpline.Link
+            get() = ClosedSpline.Link(
+                start = startAnchorPosition,
+                edge = curveEdge,
             )
 
         val startAnchorPosition: Point
@@ -385,7 +402,7 @@ data class Outline(
         fun splitAt(
             edgeCoord: SegmentCurve.Coord,
         ): Pair<Verge, Verge> {
-            val (firstSubCurve, secondSubCurve) = edgeCurve.splitAt(coord = edgeCoord)
+            val (firstSubCurve, secondSubCurve) = curve.splitAt(coord = edgeCoord)
 
             return Pair(
                 Verge.reconstruct(
@@ -462,7 +479,14 @@ data class Outline(
         }
 
     val edgeCurves: List<SegmentCurve>
-        get() = verges.map { it.edgeCurve }
+        get() = verges.map { it.curve }
+
+    val innerSpline: ClosedSpline
+        get() = ClosedSpline(
+            links = verges.map { verge ->
+                verge.innerSplineLink
+            },
+        )
 
     fun cut(
         lineSegment: LineSegment,
