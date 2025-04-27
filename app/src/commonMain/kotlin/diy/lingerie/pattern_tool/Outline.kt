@@ -179,16 +179,14 @@ data class Outline(
 
         fun transformBy(
             transformation: Transformation,
-        ): Edge {
-            return Edge(
-                startHandle = startHandle?.transformBy(transformation = transformation),
-                intermediateJoints = intermediateJoints.map {
-                    it.transformBy(transformation = transformation)
-                },
-                endHandle = endHandle?.transformBy(transformation = transformation),
-                metadata = metadata,
-            )
-        }
+        ): Edge = Edge(
+            startHandle = startHandle?.transformBy(transformation = transformation),
+            intermediateJoints = intermediateJoints.map {
+                it.transformBy(transformation = transformation)
+            },
+            endHandle = endHandle?.transformBy(transformation = transformation),
+            metadata = metadata,
+        )
 
         fun reversed(): Edge = Edge(
             startHandle = endHandle,
@@ -203,6 +201,10 @@ data class Outline(
             get() = metadata.seamAllowance
     }
 
+    /**
+     * A link in the chain describing the outline fully. Together with the next
+     * adjacent link, it can be used to construct a verge.
+     */
     data class Link(
         val startAnchor: Joint.Anchor,
         val edge: Edge,
