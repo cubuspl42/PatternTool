@@ -32,7 +32,9 @@ class PatternGenerator(
     private val pagesDumpDirectoryPath: Path
         get() = outputDirectoryPath.resolve("pages")
 
-    fun generatePattern() {
+    fun generatePattern(
+        direction: PatternGenerationDirection,
+    ) {
         outputDirectoryPath.createDirectories()
         pagesDumpDirectoryPath.createDirectories()
 

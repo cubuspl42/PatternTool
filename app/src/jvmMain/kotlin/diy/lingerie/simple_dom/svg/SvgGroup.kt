@@ -8,12 +8,17 @@ import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGGElement
 
 data class SvgGroup(
+    val id: String? = null,
     val transformation: Transformation? = null,
     val children: List<SvgElement>,
 ) : SvgElement() {
     override fun toRawElement(
         document: Document,
     ): Element = document.createSvgElement("g").apply {
+        id?.let {
+            setAttribute("id", it)
+        }
+
         transformation?.let {
             val value = it.toSvgTransformationString()
             setAttribute("transform", value)
@@ -33,6 +38,7 @@ fun SVGGElement.toSimpleGroup(): SvgGroup {
     }
 
     return SvgGroup(
+        id = getAttributeOrNull("id"),
         children = childElements.mapNotNull { it.toSimpleElement() },
     )
 }
