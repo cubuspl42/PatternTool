@@ -2,10 +2,19 @@ package diy.lingerie.simple_dom.fo
 
 import diy.lingerie.simple_dom.SimpleDimension
 import diy.lingerie.simple_dom.svg.SvgElement
+import org.apache.fop.apps.FopFactory
+import org.apache.fop.apps.MimeConstants
 import org.apache.fop.util.XMLConstants
 import org.w3c.dom.Document
 import org.w3c.dom.Element
+import java.io.File
+import java.io.OutputStream
+import java.nio.file.Path
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.sax.SAXResult
+import kotlin.io.path.outputStream
 
 data class FoRoot(
     val pageWidth: SimpleDimension,
@@ -18,7 +27,7 @@ data class FoRoot(
         private const val MASTER_NAME = "main"
     }
 
-    fun toDocument(): Document {
+    private fun toDocument(): Document {
         val factory = DocumentBuilderFactory.newInstance().apply {
             isNamespaceAware = true
         }
@@ -30,6 +39,31 @@ data class FoRoot(
                 toRawElement(document = this),
             )
         }
+    }
+
+    fun writePdfToFile(
+        pdfFilePath: Path,
+    ) {
+        pdfFilePath.outputStream().use { fileOutputStream ->
+            writePdfToStream(outputStream = fileOutputStream)
+        }
+    }
+
+    fun writePdfToStream(
+        outputStream: OutputStream,
+    ) {
+        val fopFactory = FopFactory.newInstance(File(".").toURI())
+        val transformerFactory = TransformerFactory.newInstance()
+        val foUserAgent = fopFactory.newFOUserAgent()
+
+        val transformer = transformerFactory.newTransformer()
+
+        val fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, outputStream)
+
+        transformer.transform(
+            DOMSource(toDocument()),
+            SAXResult(fop.defaultHandler),
+        )
     }
 
     override fun toRawElement(
