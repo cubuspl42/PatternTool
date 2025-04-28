@@ -19,12 +19,12 @@ class PatternGenerator(
     private val outputDirectoryPath: Path
         get() = workingDirectoryPath.resolve("output")
 
-    private val pagesOutputDirectoryPath: Path
+    private val pagesDumpDirectoryPath: Path
         get() = outputDirectoryPath.resolve("pages")
 
     fun generatePattern() {
         outputDirectoryPath.createDirectories()
-        pagesOutputDirectoryPath.createDirectories()
+        pagesDumpDirectoryPath.createDirectories()
 
         val svgRootByName = inputDirectoryPath.listDirectoryEntries("*.svg").associate { filePath ->
             filePath.nameWithoutExtension to SvgRoot.parse(
@@ -44,6 +44,10 @@ class PatternGenerator(
 
         val patternDocument = patternLayout.layOut(
             patternPieceById = patternPieceById,
+        )
+
+        patternDocument.dump(
+            dumpDirectoryPath = pagesDumpDirectoryPath,
         )
 
         patternDocument.format().writePdfToFile(
