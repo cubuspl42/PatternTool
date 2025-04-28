@@ -9,12 +9,24 @@ sealed class Transformation {
     data class ReflectionOverLine(
         val line: Line,
     ) : Transformation() {
+        override fun toSvgTransformationString(): String {
+            TODO("Not yet implemented")
+        }
+
         override val components: List<PrimitiveTransformation>
             get() = TODO("Not yet implemented")
 
         override fun transform(point: Point): Point {
             TODO("Not yet implemented")
         }
+    }
+
+    object Identity : Transformation() {
+        override fun toSvgTransformationString(): String = ""
+
+        override val components: List<PrimitiveTransformation> = emptyList()
+
+        override fun transform(point: Point): Point = point
     }
 
     companion object {
@@ -26,6 +38,8 @@ sealed class Transformation {
             },
         )
     }
+
+    abstract fun toSvgTransformationString(): String
 
     abstract val components: List<PrimitiveTransformation>
 
@@ -52,6 +66,8 @@ sealed class PrimitiveTransformation : Transformation() {
     data class Translation(
         val translationVector: Vector2,
     ) : PrimitiveTransformation() {
+        override fun toSvgTransformationString(): String = "translate(${translationVector.x}, ${translationVector.y})"
+
         override fun transform(point: Point): Point = Point(
             x = point.x + translationVector.x,
             y = point.y + translationVector.y,
@@ -61,6 +77,8 @@ sealed class PrimitiveTransformation : Transformation() {
     data class Scaling(
         val scaleVector: Vector2,
     ) : PrimitiveTransformation() {
+        override fun toSvgTransformationString(): String = "scale(${scaleVector.x}, ${scaleVector.y})"
+
         override fun transform(point: Point): Point = Point(
             x = point.x * scaleVector.x,
             y = point.y * scaleVector.y,
@@ -73,6 +91,8 @@ sealed class PrimitiveTransformation : Transformation() {
     data class Rotation(
         val angle: Angle,
     ) : PrimitiveTransformation() {
+        override fun toSvgTransformationString(): String = "rotate(${angle.fiInDegrees})"
+
         override fun transform(point: Point): Point = Point(
             x = point.x * angle.cosFi - point.y * angle.sinFi,
             y = point.x * angle.sinFi + point.y * angle.cosFi,
@@ -93,7 +113,11 @@ sealed class ComplexTransformation : Transformation() {
 
 data class CombinedTransformation(
     override val components: List<PrimitiveTransformation>,
-) : ComplexTransformation()
+) : ComplexTransformation() {
+    override fun toSvgTransformationString(): String = components.joinToString(separator = " ") { transformation ->
+        transformation.toSvgTransformationString()
+    }
+}
 
 sealed class ShiftedTransformation : ComplexTransformation() {
     final override val components: List<PrimitiveTransformation>

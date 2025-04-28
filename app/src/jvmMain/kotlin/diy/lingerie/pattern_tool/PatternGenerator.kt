@@ -32,21 +32,21 @@ class PatternGenerator(
             )
         }
 
-        val patternPieceOutlineById = patternPiecePreparator.preparePatternPieceOutlines(
+        val patternPieceOutlineSet = patternPiecePreparator.preparePatternPieceOutlines(
             svgRootByName = svgRootByName,
         )
 
-        val patternPieceById = patternPieceOutlineById.mapValues { (_, outline) ->
+        val patternPieceById = patternPieceOutlineSet.patternPieceOutlineById.mapValues { (_, outline) ->
             PatternPiece(
                 outline = outline,
             )
         }
 
-        val patternFoRoot = patternLayout.toFoRoot(
+        val patternDocument = patternLayout.layOut(
             patternPieceById = patternPieceById,
         )
 
-        patternFoRoot.writePdfToFile(
+        patternDocument.format().writePdfToFile(
             pdfFilePath = outputDirectoryPath.resolve("pattern.pdf"),
         )
     }

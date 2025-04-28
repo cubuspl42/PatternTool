@@ -18,6 +18,9 @@ data class Angle(
         )
     }
 
+    val fiInDegrees: Double
+        get() = fi * 180.0 / PI
+
     val cosFi: Double
         get() = cos(fi)
 

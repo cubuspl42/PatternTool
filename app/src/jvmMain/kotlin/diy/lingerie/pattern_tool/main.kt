@@ -40,18 +40,20 @@ class MainCommand : CliktCommand() {
             patternPiecePreparator = object : PatternPiecePreparator() {
                 override fun preparePatternPieceOutlines(
                     svgRootByName: Map<String, SvgRoot>,
-                ): Map<PatternPieceId, Outline> {
+                ): PatternPieceOutlineSet {
                     val upperCupSvgRoot =
                         svgRootByName["upperCup"] ?: throw IllegalArgumentException("upperCup not found")
                     val innerLowerCupSvgRoot =
                         svgRootByName["innerLowerCup"] ?: throw IllegalArgumentException("innerLowerCup not found")
 
-                    return mapOf(
-                        MyPatternPieceId.UpperCup to Outline.loadSvg(
-                            svgRoot = upperCupSvgRoot,
-                        ),
-                        MyPatternPieceId.InnerLowerCup to Outline.loadSvg(
-                            svgRoot = innerLowerCupSvgRoot,
+                    return PatternPieceOutlineSet(
+                        patternPieceOutlineById = mapOf(
+                            MyPatternPieceId.UpperCup to Outline.loadSvg(
+                                svgRoot = upperCupSvgRoot,
+                            ),
+                            MyPatternPieceId.InnerLowerCup to Outline.loadSvg(
+                                svgRoot = innerLowerCupSvgRoot,
+                            ),
                         ),
                     )
                 }
@@ -65,7 +67,7 @@ class MainCommand : CliktCommand() {
                                 rotationAngle = Angle.zero,
                             ),
                             MyPatternPieceId.InnerLowerCup to PatternPieceLayout(
-                                position = Point.origin,
+                                position = Point(x = 0.0, y = 100.0),
                                 rotationAngle = Angle.zero,
                             ),
                         ),
