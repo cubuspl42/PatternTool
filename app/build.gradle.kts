@@ -1,7 +1,10 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.kotlinx.benchmark)
+    alias(libs.plugins.shadow)
 }
 
 repositories {
@@ -30,10 +33,18 @@ kotlin {
             implementation(libs.batik.svg.dom)
             implementation(libs.batik.css)
             implementation(libs.fop)
+            implementation(libs.clikt)
         }
 
         jvmTest.dependencies {
         }
+    }
+}
+
+tasks.withType<ShadowJar> {
+    archiveClassifier.set("") // Ensures the output JAR has no additional classifier
+    manifest {
+        attributes["Main-Class"] = "diy.lingerie.pattern_tool.MainKt"
     }
 }
 

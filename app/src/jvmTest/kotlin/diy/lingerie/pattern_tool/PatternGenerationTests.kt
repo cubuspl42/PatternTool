@@ -3,7 +3,7 @@ package diy.lingerie.pattern_tool
 import diy.lingerie.geometry.Angle
 import diy.lingerie.geometry.Point
 import diy.lingerie.simple_dom.svg.SvgRoot
-import diy.lingerie.test_utils.getResourceAsReader
+import diy.lingerie.utils.getResourceAsReader
 import kotlin.io.path.Path
 import kotlin.io.path.outputStream
 import kotlin.test.Test
@@ -48,8 +48,6 @@ class PatternGenerationTests {
             )
         )
 
-        Path("../output/pattern.pdf").outputStream().use { fileOutputStream ->
-            patternDocument.dumpPdf(outputStream = fileOutputStream)
-        }
+        patternDocument.dumpPdf(outputPath = Path("../output"))
     }
 }
