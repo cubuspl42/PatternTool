@@ -73,7 +73,9 @@ class MainCommand : CliktCommand() {
                     ),
                 ),
             ),
-        ).generatePattern()
+        ).generatePattern(
+            direction = direction,
+        )
     }
 }
 
