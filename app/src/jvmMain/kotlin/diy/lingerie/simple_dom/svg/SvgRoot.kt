@@ -59,7 +59,6 @@ data class SvgRoot(
 
         private val svgDomImplementation: SVGDOMImplementation = SVGDOMImplementationUtils.getSVGDOMImplementation()
 
-
         fun parse(
             reader: Reader,
         ): SvgRoot {
@@ -72,16 +71,12 @@ data class SvgRoot(
     fun writeToFile(
         path: Path,
     ) {
-        toSvgDocument(
-            svgDomImplementation = svgDomImplementation,
-        ).writeToFile(
+        toSvgDocument().writeToFile(
             filePath = path,
         )
     }
 
-    fun toSvgDocument(
-        svgDomImplementation: SVGDOMImplementation,
-    ): SVGDocument = svgDomImplementation.createSvgDocument().apply {
+    private fun toSvgDocument(): SVGDocument = svgDomImplementation.createSvgDocument().apply {
         setup(
             document = this,
             root = documentSvgElement,

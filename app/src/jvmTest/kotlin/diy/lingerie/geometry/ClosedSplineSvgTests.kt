@@ -103,7 +103,7 @@ class ClosedSplineSvgTests {
             width = 256.pt,
             height = 256.pt,
             children = listOf(
-                closedSpline.toSvgPathElement(),
+                closedSpline.toSvgPath(),
             ),
         )
 
