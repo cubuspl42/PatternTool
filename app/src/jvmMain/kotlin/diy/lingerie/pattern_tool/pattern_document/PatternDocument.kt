@@ -2,6 +2,7 @@ package diy.lingerie.pattern_tool.pattern_document
 
 import diy.lingerie.pattern_tool.PaperSizeConstants
 import diy.lingerie.simple_dom.fo.FoRoot
+import java.nio.file.Path
 
 data class PatternDocument(
     val patternPages: List<PatternPage>,
@@ -13,4 +14,15 @@ data class PatternDocument(
             pageLayout.format()
         },
     )
+
+    fun dump(
+        dumpDirectoryPath: Path,
+    ) {
+        patternPages.forEachIndexed { pageIndex, page ->
+            page.dump(
+                dumpDirectoryPath = dumpDirectoryPath,
+                pageIndex = pageIndex,
+            )
+        }
+    }
 }

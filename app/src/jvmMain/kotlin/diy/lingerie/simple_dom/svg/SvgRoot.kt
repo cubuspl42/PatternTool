@@ -13,7 +13,6 @@ import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGDocument
 import java.io.Reader
 import java.nio.file.Path
-import kotlin.io.path.Path
 
 data class SvgRoot(
     val children: List<SvgElement>,
@@ -69,10 +68,10 @@ data class SvgRoot(
     }
 
     fun writeToFile(
-        path: Path,
+        filePath: Path,
     ) {
         toSvgDocument().writeToFile(
-            filePath = path,
+            filePath = filePath,
         )
     }
 
