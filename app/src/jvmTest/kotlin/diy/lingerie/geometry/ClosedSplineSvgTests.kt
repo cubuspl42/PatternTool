@@ -6,7 +6,7 @@ import diy.lingerie.simple_dom.pt
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.test_utils.assertEqualsWithTolerance
-import diy.lingerie.test_utils.getResourceAsReader
+import diy.lingerie.utils.getResourceAsReader
 import kotlin.io.path.Path
 import kotlin.test.Test
 

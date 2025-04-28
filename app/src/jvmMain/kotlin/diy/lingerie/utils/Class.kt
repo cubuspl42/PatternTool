@@ -1,4 +1,4 @@
-package diy.lingerie.test_utils
+package diy.lingerie.utils
 
 import java.io.Reader
 

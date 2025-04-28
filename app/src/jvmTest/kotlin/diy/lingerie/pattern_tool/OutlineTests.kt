@@ -4,7 +4,7 @@ import diy.lingerie.geometry.ClosedSplineSvgTests
 import diy.lingerie.geometry.Point
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.test_utils.assertEqualsWithTolerance
-import diy.lingerie.test_utils.getResourceAsReader
+import diy.lingerie.utils.getResourceAsReader
 import kotlin.io.path.Path
 import kotlin.test.Test
 
