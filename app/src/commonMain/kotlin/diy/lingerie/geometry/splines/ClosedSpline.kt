@@ -4,6 +4,7 @@ import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.SegmentCurve
+import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.withNextCyclic
 
 data class ClosedSpline(
@@ -29,6 +30,13 @@ data class ClosedSpline(
             !edge.equalsWithTolerance(other.edge, tolerance) -> false
             else -> true
         }
+
+        fun transformBy(
+            transformation: Transformation,
+        ): Link = Link(
+            start = start.transformBy(transformation = transformation),
+            edge = edge.transformBy(transformation = transformation),
+        )
     }
 
     companion object;
@@ -44,6 +52,12 @@ data class ClosedSpline(
             )
         }
 
+    fun transformBy(
+        transformation: Transformation,
+    ): ClosedSpline = ClosedSpline(
+        links = links.map { it.transformBy(transformation = transformation) },
+    )
+
     override fun equalsWithTolerance(
         other: NumericObject,
         tolerance: NumericObject.Tolerance,
@@ -53,4 +67,3 @@ data class ClosedSpline(
         else -> true
     }
 }
-

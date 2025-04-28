@@ -5,16 +5,8 @@ import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.svg.SvgPath
-import diy.lingerie.utils.awt.toHexString
-import diy.lingerie.utils.xml.svg.createPathElement
-import diy.lingerie.utils.xml.svg.fill
-import diy.lingerie.utils.xml.svg.stroke
-import org.w3c.dom.svg.SVGDocument
-import org.w3c.dom.svg.SVGPathElement
-import org.w3c.dom.svg.SVGPathSeg
-import java.awt.Color
 
-fun ClosedSpline.toSvgPathElement(
+fun ClosedSpline.toSvgPath(
     color: SimpleColor = SimpleColor.black,
 ): SvgPath {
     val edgeCurves = this.edgeCurves

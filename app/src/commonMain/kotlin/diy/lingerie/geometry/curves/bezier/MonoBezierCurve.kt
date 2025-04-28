@@ -32,9 +32,12 @@ data class MonoBezierCurve(
             end = end,
         )
 
-        override fun transformBy(transformation: Transformation): SegmentCurve.Edge {
-            TODO("Not yet implemented")
-        }
+        override fun transformBy(
+            transformation: Transformation,
+        ): SegmentCurve.Edge = MonoBezierCurve.Edge(
+            firstControl = firstControl.transformBy(transformation = transformation),
+            secondControl = secondControl.transformBy(transformation = transformation),
+        )
 
         override fun equalsWithTolerance(
             other: NumericObject,

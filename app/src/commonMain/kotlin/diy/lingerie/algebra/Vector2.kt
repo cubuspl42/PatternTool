@@ -6,6 +6,13 @@ data class Vector2(
     val x: Double,
     val y: Double,
 ) : NumericObject {
+    companion object {
+        fun each(a: Double): Vector2 = Vector2(
+            x = a,
+            y = a,
+        )
+    }
+
     val a0: Double
         get() = x
 
@@ -21,4 +28,9 @@ data class Vector2(
         !a1.equalsWithTolerance(other.a1, tolerance = tolerance) -> false
         else -> true
     }
+
+    operator fun unaryMinus(): Vector2 = Vector2(
+        x = -x,
+        y = -y,
+    )
 }

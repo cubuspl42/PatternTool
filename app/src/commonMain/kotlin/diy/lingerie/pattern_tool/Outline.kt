@@ -17,6 +17,9 @@ import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.withNextCyclic
 import kotlin.jvm.JvmInline
 
+/**
+ * Pattern piece outline. All coordinates are in millimeters.
+ */
 data class Outline(
     val links: List<Link>,
 ) : NumericObject {
@@ -454,6 +457,10 @@ data class Outline(
             },
         )
 
+        /**
+         * @param closedSpline - Closed spline to reconstruct the outline from.
+         * Must be expressed in millimeters.
+         */
         fun reconstruct(
             closedSpline: ClosedSpline,
             edgeMetadata: EdgeMetadata,
