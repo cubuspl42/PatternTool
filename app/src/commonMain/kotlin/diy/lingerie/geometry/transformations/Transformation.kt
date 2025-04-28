@@ -4,17 +4,30 @@ import diy.lingerie.algebra.Vector2
 import diy.lingerie.geometry.Angle
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.Point
-import kotlin.math.cos
-import kotlin.math.sin
 
 sealed class Transformation {
     data class ReflectionOverLine(
         val line: Line,
     ) : Transformation() {
+        override val components: List<PrimitiveTransformation>
+            get() = TODO("Not yet implemented")
+
         override fun transform(point: Point): Point {
             TODO("Not yet implemented")
         }
     }
+
+    companion object {
+        fun combine(
+            transformations: List<Transformation>,
+        ): CombinedTransformation = CombinedTransformation(
+            components = transformations.flatMap {
+                it.components
+            },
+        )
+    }
+
+    abstract val components: List<PrimitiveTransformation>
 
     abstract fun transform(
         point: Point,
@@ -22,6 +35,20 @@ sealed class Transformation {
 }
 
 sealed class PrimitiveTransformation : Transformation() {
+    companion object {
+        fun combine(
+            transformations: List<PrimitiveTransformation>,
+        ): CombinedTransformation = CombinedTransformation(
+            components = transformations,
+        )
+
+        fun combine(
+            vararg transformations: PrimitiveTransformation,
+        ): CombinedTransformation = combine(
+            transformations = transformations.toList(),
+        )
+    }
+
     data class Translation(
         val translationVector: Vector2,
     ) : PrimitiveTransformation() {
@@ -51,6 +78,9 @@ sealed class PrimitiveTransformation : Transformation() {
             y = point.x * angle.sinFi + point.y * angle.cosFi,
         )
     }
+
+    final override val components: List<PrimitiveTransformation>
+        get() = listOf(this)
 }
 
 sealed class ComplexTransformation : Transformation() {
@@ -59,11 +89,9 @@ sealed class ComplexTransformation : Transformation() {
     ): Point = components.fold(point) { acc, transformation ->
         transformation.transform(acc)
     }
-
-    abstract val components: List<PrimitiveTransformation>
 }
 
-data class MixedTransformation(
+data class CombinedTransformation(
     override val components: List<PrimitiveTransformation>,
 ) : ComplexTransformation()
 

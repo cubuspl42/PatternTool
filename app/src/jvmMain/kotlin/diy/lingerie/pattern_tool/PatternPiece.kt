@@ -3,7 +3,7 @@ package diy.lingerie.pattern_tool
 import diy.lingerie.geometry.Angle
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.splines.ClosedSpline
-import diy.lingerie.geometry.transformations.MixedTransformation
+import diy.lingerie.geometry.transformations.CombinedTransformation
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 
 data class PatternPiece(
@@ -22,11 +22,9 @@ data class PatternPiece(
 ) {
     val outlineInnerSplineGlobal: ClosedSpline
         get() = outline.innerSpline.transformBy(
-            transformation = MixedTransformation(
-                listOf(
-                    PrimitiveTransformation.Rotation(angle = rotationAngle),
-                    PrimitiveTransformation.Translation(translationVector = position.pointVector),
-                ),
+            transformation = PrimitiveTransformation.combine(
+                PrimitiveTransformation.Rotation(angle = rotationAngle),
+                PrimitiveTransformation.Translation(translationVector = position.pointVector),
             ),
         )
 }

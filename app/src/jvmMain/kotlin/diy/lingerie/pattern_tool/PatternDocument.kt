@@ -1,9 +1,6 @@
 package diy.lingerie.pattern_tool
 
-import diy.lingerie.geometry.toSvgPath
 import diy.lingerie.simple_dom.fo.FoRoot
-import diy.lingerie.simple_dom.fo.FoSvgBlock
-import diy.lingerie.simple_dom.svg.SvgRoot
 import org.apache.fop.apps.FopFactory
 import org.apache.fop.apps.MimeConstants
 import java.io.File
@@ -13,23 +10,13 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.sax.SAXResult
 
 data class PatternDocument(
-    val patternPieces: List<PatternPiece>,
+    val pages: List<PatternPage>,
 ) {
     fun toFoRoot(): FoRoot = FoRoot(
         pageWidth = PaperSizeConstants.A4.width,
         pageHeight = PaperSizeConstants.A4.height,
-        blocks = patternPieces.map { patternPiece ->
-            val closedSpline = patternPiece.outlineInnerSplineGlobal
-
-            FoSvgBlock(
-                svgElement = SvgRoot(
-                    width = PaperSizeConstants.A4.width,
-                    height = PaperSizeConstants.A4.height,
-                    children = listOf(
-                        closedSpline.toSvgPath(),
-                    ),
-                ),
-            )
+        blocks = pages.map { page ->
+            page.toPageFoBlock()
         },
     )
 
