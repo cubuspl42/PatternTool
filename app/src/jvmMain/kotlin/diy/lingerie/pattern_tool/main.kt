@@ -17,9 +17,8 @@ import diy.lingerie.pattern_tool.layout.PatternPieceLayout
 import diy.lingerie.simple_dom.svg.SvgRoot
 import java.nio.file.Path
 
-sealed interface MyPatternPieceId : PatternPieceId {
-    data object UpperCup : MyPatternPieceId
-    data object InnerLowerCup : MyPatternPieceId
+enum class PatternPieceId {
+    UpperCup, InnerLowerCup,
 }
 
 class MainCommand : CliktCommand() {
@@ -48,10 +47,10 @@ class MainCommand : CliktCommand() {
 
                     return PatternPieceOutlineSet(
                         patternPieceOutlineById = mapOf(
-                            MyPatternPieceId.UpperCup to Outline.loadSvg(
+                            PatternPieceId.UpperCup to Outline.loadSvg(
                                 svgRoot = upperCupSvgRoot,
                             ),
-                            MyPatternPieceId.InnerLowerCup to Outline.loadSvg(
+                            PatternPieceId.InnerLowerCup to Outline.loadSvg(
                                 svgRoot = innerLowerCupSvgRoot,
                             ),
                         ),
@@ -59,14 +58,14 @@ class MainCommand : CliktCommand() {
                 }
             },
             patternLayout = PatternLayout(
-                patternPageLayouts = listOf(
+                pageLayouts = listOf(
                     PatternPageLayout(
-                        patternPieceLayoutById = mapOf(
-                            MyPatternPieceId.UpperCup to PatternPieceLayout(
+                        pieceLayoutById = mapOf(
+                            PatternPieceId.UpperCup to PatternPieceLayout(
                                 position = Point.origin,
                                 rotationAngle = Angle.zero,
                             ),
-                            MyPatternPieceId.InnerLowerCup to PatternPieceLayout(
+                            PatternPieceId.InnerLowerCup to PatternPieceLayout(
                                 position = Point(x = 0.0, y = 100.0),
                                 rotationAngle = Angle.zero,
                             ),

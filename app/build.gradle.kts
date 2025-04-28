@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.kotlinx.benchmark)
     alias(libs.plugins.shadow)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 repositories {
@@ -22,6 +23,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.benchmark.runtime)
+            implementation(libs.kotlinx.serialization.json)
         }
 
         commonTest.dependencies {
