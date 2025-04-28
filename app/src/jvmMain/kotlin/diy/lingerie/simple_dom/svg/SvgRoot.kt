@@ -117,7 +117,7 @@ fun SVGDocument.toSimple(): SvgRoot {
         width = width,
         height = height,
         viewBox = viewBox,
-        children = documentSvgElement.childElements.map {
+        children = documentSvgElement.childElements.mapNotNull {
             it.toSimpleElement()
         },
     )

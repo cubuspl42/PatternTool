@@ -17,8 +17,8 @@ abstract class SvgElement : SimpleElement() {
     ): Element = createElementNS(SVG_NS, "svg:$name")
 }
 
-fun Element.toSimpleElement(): SvgElement = when (this) {
+fun Element.toSimpleElement(): SvgElement? = when (this) {
     is SVGPathElement -> toSimplePath()
     is SVGGElement -> toSimpleGroup()
-    else -> error("Unsupported element type: ${this.tagName}")
+    else -> null
 }

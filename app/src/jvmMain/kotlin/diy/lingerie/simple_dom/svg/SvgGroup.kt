@@ -18,5 +18,5 @@ data class SvgGroup(
 }
 
 fun SVGGElement.toSimpleGroup(): SvgGroup = SvgGroup(
-    children = childElements.map { it.toSimpleElement() },
+    children = childElements.mapNotNull { it.toSimpleElement() },
 )
