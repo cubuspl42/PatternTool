@@ -1,6 +1,7 @@
 package diy.lingerie.geometry.transformations
 
 import diy.lingerie.algebra.Vector2
+import diy.lingerie.geometry.Angle
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.Point
 import kotlin.math.cos
@@ -43,11 +44,11 @@ sealed class PrimitiveTransformation : Transformation() {
      * @param angle - angle in radians
      */
     data class Rotation(
-        val angle: Double,
+        val angle: Angle,
     ) : PrimitiveTransformation() {
         override fun transform(point: Point): Point = Point(
-            x = point.x * cos(angle) - point.y * sin(angle),
-            y = point.x * sin(angle) + point.y * cos(angle),
+            x = point.x * angle.cosFi - point.y * angle.sinFi,
+            y = point.x * angle.sinFi + point.y * angle.cosFi,
         )
     }
 }
@@ -61,6 +62,10 @@ sealed class ComplexTransformation : Transformation() {
 
     abstract val components: List<PrimitiveTransformation>
 }
+
+data class MixedTransformation(
+    override val components: List<PrimitiveTransformation>,
+) : ComplexTransformation()
 
 sealed class ShiftedTransformation : ComplexTransformation() {
     final override val components: List<PrimitiveTransformation>

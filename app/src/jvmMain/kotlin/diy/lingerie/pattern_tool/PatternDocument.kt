@@ -13,22 +13,24 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.sax.SAXResult
 
 data class PatternDocument(
-    val outlines: List<Outline>,
+    val patternPieces: List<PatternPiece>,
 ) {
     fun toFoRoot(): FoRoot = FoRoot(
         pageWidth = PaperSizeConstants.A4.width,
         pageHeight = PaperSizeConstants.A4.height,
-        blocks = outlines.map { outline ->
+        blocks = patternPieces.map { patternPiece ->
+            val closedSpline = patternPiece.outlineInnerSplineGlobal
+
             FoSvgBlock(
                 svgElement = SvgRoot(
                     width = PaperSizeConstants.A4.width,
                     height = PaperSizeConstants.A4.height,
                     children = listOf(
-                        outline.innerSpline.toSvgPath(),
+                        closedSpline.toSvgPath(),
                     ),
                 ),
             )
-        }
+        },
     )
 
     fun dumpPdf(

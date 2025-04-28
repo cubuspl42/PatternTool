@@ -8,6 +8,13 @@ import diy.lingerie.geometry.transformations.Transformation
 data class Point(
     val pointVector: Vector2,
 ) : NumericObject {
+    companion object {
+        val origin: Point = Point(
+            x = 0.0,
+            y = 0.0,
+        )
+    }
+
     constructor(
         x: Double,
         y: Double,
