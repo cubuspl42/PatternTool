@@ -6,7 +6,7 @@ import diy.lingerie.geometry.toSvgPath
 import diy.lingerie.geometry.transformations.CombinedTransformation
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.pattern_tool.PatternPiece
-import diy.lingerie.simple_dom.svg.SvgPath
+import diy.lingerie.simple_dom.svg.SvgGroup
 
 data class PatternPieceLayout(
     /**
@@ -24,9 +24,12 @@ data class PatternPieceLayout(
             PrimitiveTransformation.Translation(translationVector = position.pointVector),
         )
 
-    fun toSvgElement(
+    fun layOut(
         patternPiece: PatternPiece,
-    ): SvgPath {
-        return patternPiece.outline.innerSpline.toSvgPath()
-    }
+    ): SvgGroup = SvgGroup(
+        transformation = transformation,
+        children = listOf(
+            patternPiece.outline.innerSpline.toSvgPath()
+        ),
+    )
 }

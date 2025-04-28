@@ -41,6 +41,10 @@ kotlin {
     }
 }
 
+tasks.shadowJar {
+    mergeServiceFiles()
+}
+
 tasks.withType<ShadowJar> {
     archiveClassifier.set("") // Ensures the output JAR has no additional classifier
     manifest {
