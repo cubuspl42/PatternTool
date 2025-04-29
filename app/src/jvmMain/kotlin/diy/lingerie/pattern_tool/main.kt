@@ -63,11 +63,11 @@ class MainCommand : CliktCommand() {
                         pieceLayoutById = mapOf(
                             PatternPieceId.UpperCup to PatternPieceLayout(
                                 position = Point.origin,
-                                rotationAngle = Angle.zero,
+                                rotationAngle = Angle.Zero,
                             ),
                             PatternPieceId.InnerLowerCup to PatternPieceLayout(
                                 position = Point(x = 0.0, y = 100.0),
-                                rotationAngle = Angle.zero,
+                                rotationAngle = Angle.Zero,
                             ),
                         ),
                     ),

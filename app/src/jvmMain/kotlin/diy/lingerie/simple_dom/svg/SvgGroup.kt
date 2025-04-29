@@ -1,16 +1,13 @@
 package diy.lingerie.simple_dom.svg
 
-import diy.lingerie.algebra.Vector2
 import diy.lingerie.geometry.Angle
 import diy.lingerie.geometry.transformations.CombinedTransformation
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.xml.childElements
-import diy.lingerie.utils.xml.svg.asList
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGGElement
-import org.w3c.dom.svg.SVGTransform
 import org.w3c.dom.svg.SVGTransformList
 
 data class SvgGroup(
@@ -47,47 +44,35 @@ fun SVGGElement.toSimpleGroup(): SvgGroup = SvgGroup(
 fun CombinedTransformation.Companion.fromSvgTransformList(
     transformList: SVGTransformList,
 ): CombinedTransformation {
-    val svgTransforms = transformList.asList()
+    val consolidatedMatrix = transformList.consolidate().matrix
 
-    val primitiveTransformations = svgTransforms.reversed().flatMap {
-        Transformation.fromSvgTransform(it)
+    val r11 = consolidatedMatrix.a.toDouble()
+    val r21 = consolidatedMatrix.b.toDouble()
+    val r12 = consolidatedMatrix.c.toDouble()
+    val r22 = consolidatedMatrix.d.toDouble()
+
+    val tx = consolidatedMatrix.e.toDouble()
+    val ty = consolidatedMatrix.f.toDouble()
+
+    if (r11 != r22 || r12 != -r21) {
+        throw IllegalArgumentException("Unsupported transformation matrix: $r11, $r12, $r21, $r22, $tx, $ty")
     }
+
+    val cosFi = r11
+    val sinFi = r21
 
     return CombinedTransformation(
-        components = primitiveTransformations,
-    )
-}
-
-fun Transformation.Companion.fromSvgTransform(
-    transform: SVGTransform,
-): List<PrimitiveTransformation> {
-    val e = transform.matrix.e.toDouble()
-    val f = transform.matrix.f.toDouble()
-
-    val type = transform.type
-    val angle = transform.angle.toDouble()
-
-    val translation = PrimitiveTransformation.Translation(
-        translationVector = Vector2(
-            x = e,
-            y = f,
+        components = listOf(
+            PrimitiveTransformation.Rotation(
+                angle = Angle.Trigonometric(
+                    cosFi = cosFi,
+                    sinFi = sinFi,
+                ),
+            ),
+            PrimitiveTransformation.Translation(
+                tx = tx,
+                ty = ty,
+            ),
         ),
     )
-
-    return when (type) {
-        SVGTransform.SVG_TRANSFORM_TRANSLATE -> listOf(translation)
-
-        SVGTransform.SVG_TRANSFORM_ROTATE -> {
-            val rotation = PrimitiveTransformation.Rotation(
-                angle = Angle.ofDegrees(angle),
-            )
-
-            when {
-                e == 0.0 && f == 0.0 -> listOf(rotation)
-                else -> listOf(rotation, translation)
-            }
-        }
-
-        else -> throw IllegalArgumentException("Unsupported transformation type: $type")
-    }
 }

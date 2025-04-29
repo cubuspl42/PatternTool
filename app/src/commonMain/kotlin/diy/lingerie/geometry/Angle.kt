@@ -1,29 +1,61 @@
 package diy.lingerie.geometry
 
 import kotlin.math.PI
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
-/**
- * @param fi The angle value in radians.
- */
-data class Angle(
-    val fi: Double,
-) {
+sealed class Angle {
     companion object {
-        val zero: Angle = Angle(fi = 0.0)
-
-        fun ofDegrees(value: Double): Angle = Angle(
+        fun ofDegrees(value: Double): Angle = Radial(
             fi = value * PI / 180.0,
         )
+    }
+
+    data object Zero : Angle() {
+        override val fi: Double
+            get() = 0.0
+
+        override val cosFi: Double
+            get() = 1.0
+
+        override val sinFi: Double
+            get() = 0.0
+    }
+
+    data class Radial(
+        override val fi: Double
+    ) : Angle() {
+        override val cosFi: Double
+            get() = cos(fi)
+
+        override val sinFi: Double
+            get() = sin(fi)
+    }
+
+    data class Trigonometric(
+        override val cosFi: Double,
+        override val sinFi: Double,
+    ) : Angle() {
+        override val fi: Double
+            get() = atan2(sinFi, cosFi)
     }
 
     val fiInDegrees: Double
         get() = fi * 180.0 / PI
 
-    val cosFi: Double
-        get() = cos(fi)
+    /**
+     * @param fi The angle value in radians.
+     */
+    abstract val fi: Double
 
-    val sinFi: Double
-        get() = sin(fi)
+    /**
+     * Cosine of the angle.
+     */
+    abstract val cosFi: Double
+
+    /**
+     * Sine of the angle.
+     */
+    abstract val sinFi: Double
 }
