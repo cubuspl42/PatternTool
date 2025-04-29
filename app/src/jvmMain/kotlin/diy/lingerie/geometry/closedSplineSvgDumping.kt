@@ -13,7 +13,10 @@ fun ClosedSpline.toSvgPath(
     val start = edgeCurves.first().start
 
     return SvgPath(
-        strokeColor = color,
+        stroke = SvgPath.Stroke(
+            color = color,
+            width = 1.0,
+        ),
         segments = listOf(
             SvgPath.Segment.MoveTo(
                 targetPoint = start,

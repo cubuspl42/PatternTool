@@ -1,13 +1,17 @@
 package diy.lingerie.simple_dom.svg
 
+import diy.lingerie.algebra.NumericObject
+import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.simple_dom.SimpleDimension
 import diy.lingerie.utils.xml.childElements
+import diy.lingerie.utils.xml.svg.MinimalCssContext
 import diy.lingerie.utils.xml.svg.SVGDOMImplementationUtils
 import diy.lingerie.utils.xml.svg.createSvgDocument
 import diy.lingerie.utils.xml.svg.documentSvgElement
 import diy.lingerie.utils.xml.writeToFile
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory
 import org.apache.batik.anim.dom.SVGDOMImplementation
+import org.apache.batik.anim.dom.SVGOMDocument
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGDocument
@@ -30,8 +34,20 @@ data class SvgRoot(
         val y: Double,
         val width: Double,
         val height: Double,
-    ) {
+    ) : NumericObject {
         fun toViewBoxString(): String = "$x $y $width $height"
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance
+        ): Boolean = when {
+            other !is ViewBox -> false
+            !x.equalsWithTolerance(other.x, tolerance) -> false
+            !y.equalsWithTolerance(other.y, tolerance) -> false
+            !width.equalsWithTolerance(other.width, tolerance) -> false
+            !height.equalsWithTolerance(other.height, tolerance) -> false
+            else -> true
+        }
 
         companion object {
             fun parse(string: String): ViewBox {
@@ -62,8 +78,12 @@ data class SvgRoot(
             reader: Reader,
         ): SvgRoot {
             val uri = "file://Document.svg"
-            val svgDocument = svgDocumentFactory.createDocument(uri, reader) as SVGDocument
-            return svgDocument.toSimple()
+
+            val document = svgDocumentFactory.createDocument(uri, reader) as SVGOMDocument
+
+            document.cssEngine = svgDomImplementation.createCSSEngine(document, MinimalCssContext())
+
+            return document.toSimple()
         }
     }
 
@@ -104,6 +124,19 @@ data class SvgRoot(
             document = document,
             root = this,
         )
+    }
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance
+    ): Boolean {
+        return when {
+            other !is SvgRoot -> false
+            !width.equalsWithTolerance(other.width, tolerance) -> false
+            !height.equalsWithTolerance(other.height, tolerance) -> false
+            !viewBox.equalsWithTolerance(other.viewBox, tolerance) -> false
+            else -> true
+        }
     }
 }
 

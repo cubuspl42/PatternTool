@@ -2,6 +2,7 @@ package diy.lingerie.utils.xml.svg
 
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory
 import org.apache.batik.anim.dom.SVGDOMImplementation
+import org.apache.batik.anim.dom.SVGOMDocument
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGDocument
@@ -23,10 +24,16 @@ fun SVGDOMImplementation.createSvgDocument(): SVGDocument {
 }
 
 fun SAXSVGDocumentFactory.parseSvgDocument(
+    svgDomImplementation: SVGDOMImplementation,
     reader: Reader,
 ): SVGDocument {
     val uri = "file://Document.svg"
-    return createDocument(uri, reader) as SVGDocument
+
+    val document = createDocument(uri, reader) as SVGOMDocument
+
+    document.cssEngine = svgDomImplementation.createCSSEngine(document, MinimalCssContext())
+
+    return document
 }
 
 val SVGDocument.documentSvgElement: SVGElement

@@ -1,5 +1,7 @@
 package diy.lingerie.simple_dom.fo
 
+import diy.lingerie.algebra.NumericObject
+import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.simple_dom.SimpleDimension
 import diy.lingerie.simple_dom.svg.SvgElement
 import org.apache.fop.apps.FopFactory
@@ -104,5 +106,16 @@ data class FoRoot(
                 )
             },
         )
+    }
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance,
+    ): Boolean = when {
+        other !is FoRoot -> false
+        !pageWidth.equalsWithTolerance(other.pageWidth, tolerance) -> false
+        !pageHeight.equalsWithTolerance(other.pageHeight, tolerance) -> false
+        !blocks.equalsWithTolerance(other.blocks, tolerance) -> false
+        else -> true
     }
 }

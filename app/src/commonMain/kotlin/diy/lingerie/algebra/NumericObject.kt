@@ -33,6 +33,12 @@ interface NumericObject {
             ): Boolean = abs(value - reference) <= relativeTolerance * abs(reference)
         }
 
+        companion object {
+            val Default = Absolute(
+                absoluteTolerance = 10e-6,
+            )
+        }
+
         abstract fun equalsApproximately(
             value: Double,
             reference: Double,

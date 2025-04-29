@@ -1,10 +1,15 @@
 package diy.lingerie.simple_dom.svg
 
+import diy.lingerie.algebra.NumericObject
+import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.simple_dom.SimpleColor
+import diy.lingerie.simple_dom.toSimpleColor
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.xml.svg.asList
+import diy.lingerie.utils.xml.svg.getComputedStyle
+import org.apache.batik.css.engine.SVGCSSEngine
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGPathElement
@@ -14,15 +19,19 @@ import org.w3c.dom.svg.SVGPathSegCurvetoCubicRel
 import org.w3c.dom.svg.SVGPathSegMovetoAbs
 
 data class SvgPath(
-    val strokeColor: SimpleColor = SimpleColor.black,
+    val stroke: Stroke,
     val segments: List<Segment>,
 ) : SvgElement() {
-    sealed class Segment {
+    sealed class Segment : NumericObject {
         data object ClosePath : Segment() {
             override val finalPointOrNull: Nothing?
                 get() = null
 
             override fun toPathSegString(): String = "Z"
+
+            override fun equalsWithTolerance(
+                other: NumericObject, tolerance: NumericObject.Tolerance
+            ): Boolean = other == ClosePath
         }
 
         sealed class ActiveSegment : Segment() {
@@ -41,12 +50,26 @@ data class SvgPath(
                 get() = targetPoint
 
             override fun toPathSegString(): String = "M${finalPoint.toSvgString()}"
+
+            override fun equalsWithTolerance(
+                other: NumericObject, tolerance: NumericObject.Tolerance
+            ): Boolean = when (other) {
+                is MoveTo -> targetPoint.equalsWithTolerance(other.targetPoint, tolerance)
+                else -> false
+            }
         }
 
         data class LineTo(
             override val finalPoint: Point,
         ) : CurveSegment() {
             override fun toPathSegString(): String = "L${finalPoint.toSvgString()}"
+
+            override fun equalsWithTolerance(
+                other: NumericObject, tolerance: NumericObject.Tolerance
+            ): Boolean = when (other) {
+                is LineTo -> finalPoint.equalsWithTolerance(other.finalPoint, tolerance)
+                else -> false
+            }
         }
 
         data class CubicBezierCurveTo(
@@ -56,30 +79,66 @@ data class SvgPath(
         ) : CurveSegment() {
             override fun toPathSegString(): String =
                 "C${controlPoint1.toSvgString()} ${controlPoint2.toSvgString()} ${finalPoint.toSvgString()}"
+
+            override fun equalsWithTolerance(
+                other: NumericObject, tolerance: NumericObject.Tolerance
+            ): Boolean = when {
+                other !is CubicBezierCurveTo -> false
+                !controlPoint1.equalsWithTolerance(other.controlPoint1, tolerance) -> false
+                !controlPoint2.equalsWithTolerance(other.controlPoint2, tolerance) -> false
+                !finalPoint.equalsWithTolerance(other.finalPoint, tolerance) -> false
+                else -> true
+            }
         }
 
         abstract val finalPointOrNull: Point?
 
         abstract fun toPathSegString(): String
 
-
         protected fun Point.toSvgString(): String = "${x},${y}"
     }
+
+    data class Stroke(
+        val color: SimpleColor,
+        val width: Double,
+    ) : NumericObject {
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance
+        ): Boolean = when {
+            other !is Stroke -> false
+            color != other.color -> false
+            !width.equalsWithTolerance(other.width, tolerance) -> false
+            else -> true
+        }
+    }
+
 
     override fun toRawElement(
         document: Document,
     ): Element = document.createSvgElement("path").apply {
         setAttribute("fill", "none")
-        setAttribute("stroke", strokeColor.toHexString())
+        setAttribute("stroke", stroke.color.toHexString())
+        setAttribute("stroke-width", stroke.width.toString())
         setAttribute("d", segments.joinToString(" ") { it.toPathSegString() })
+    }
+
+    override fun equalsWithTolerance(
+        other: NumericObject, tolerance: NumericObject.Tolerance
+    ): Boolean = when {
+        other !is SvgPath -> false
+        !stroke.equalsWithTolerance(other.stroke, tolerance) -> false
+        !segments.equalsWithTolerance(other.segments, tolerance) -> false
+        else -> true
     }
 }
 
 fun SVGPathElement.toSimplePath(): SvgPath {
+
     val (segments, _) = pathSegList.asList().mapCarrying(
         initialCarry = Point.origin,
     ) { currentPoint, svgPathSeg ->
-        val segment = svgPathSeg.toSimple(currentPoint = currentPoint)
+        val segment = svgPathSeg.toSimpleSegment(currentPoint = currentPoint)
 
         Pair(
             segment,
@@ -87,13 +146,20 @@ fun SVGPathElement.toSimplePath(): SvgPath {
         )
     }
 
+
+    val strokeColor = getComputedStyle(SVGCSSEngine.STROKE_INDEX).toSimpleColor()
+    val strokeWidth = getComputedStyle(SVGCSSEngine.STROKE_WIDTH_INDEX).floatValue.toDouble()
+
     return SvgPath(
-        strokeColor = SimpleColor.black,
+        stroke = SvgPath.Stroke(
+            color = strokeColor,
+            width = strokeWidth,
+        ),
         segments = segments,
     )
 }
 
-fun SVGPathSeg.toSimple(
+fun SVGPathSeg.toSimpleSegment(
     currentPoint: Point,
 ): SvgPath.Segment = when (pathSegType) {
     SVGPathSeg.PATHSEG_MOVETO_ABS -> {

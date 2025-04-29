@@ -1,5 +1,7 @@
 package diy.lingerie.simple_dom.svg
 
+import diy.lingerie.algebra.NumericObject
+import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Angle
 import diy.lingerie.geometry.transformations.CombinedTransformation
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
@@ -30,6 +32,18 @@ data class SvgGroup(
         children.forEach { child ->
             appendChild(child.toRawElement(document = document))
         }
+    }
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance
+    ): Boolean = when {
+        other !is SvgGroup -> false
+        id != other.id -> false
+        transformation != other.transformation -> false
+        children.size != other.children.size -> false
+        !children.equalsWithTolerance(other.children, tolerance) -> false
+        else -> true
     }
 }
 
