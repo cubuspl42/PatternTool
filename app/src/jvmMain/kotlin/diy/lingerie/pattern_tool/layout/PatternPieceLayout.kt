@@ -33,29 +33,29 @@ data class PatternPieceLayout(
             )
 
             val transformation = svgGroup.transformation ?: throw IllegalArgumentException(
-                "Pattern piece layout must have a transformation"
+                "Pattern piece must have a transformation"
             )
 
             val combinedTransformation = transformation as? CombinedTransformation
-                ?: throw IllegalArgumentException("Pattern piece layout must have a combined transformation")
+                ?: throw IllegalArgumentException("Pattern piece must have a combined transformation")
 
             if (combinedTransformation.components.size != 2) {
-                throw IllegalArgumentException("Pattern piece layout must have exactly two transformations")
+                throw IllegalArgumentException("Pattern piece must have exactly two sub-transformations")
             }
 
             val (firstTransformation, secondTransformation) = combinedTransformation.components
 
-            val translation =
-                firstTransformation as? PrimitiveTransformation.Translation ?: throw IllegalArgumentException(
-                    "Pattern piece layout must have a translation transformation as the first component"
-                )
-
-            val rotation = secondTransformation as? PrimitiveTransformation.Rotation ?: throw IllegalArgumentException(
+            val rotation = firstTransformation as? PrimitiveTransformation.Rotation ?: throw IllegalArgumentException(
                 "Pattern piece layout must have a rotation transformation as the second component"
             )
 
+            val translation =
+                secondTransformation as? PrimitiveTransformation.Translation ?: throw IllegalArgumentException(
+                    "Pattern piece layout must have a translation transformation as the first component"
+                )
+
             return pieceId to PatternPieceLayout(
-                position = Point(pointVector = -translation.translationVector),
+                position = Point(pointVector = translation.translationVector),
                 rotationAngle = rotation.angle,
             )
         }

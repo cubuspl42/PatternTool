@@ -1,13 +1,21 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package diy.lingerie.pattern_tool.layout
 
 import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
 import diy.lingerie.pattern_tool.pattern_document.PatternDocument
 import diy.lingerie.simple_dom.svg.SvgRoot
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.encodeToStream
 import java.nio.file.Path
+import kotlin.io.path.inputStream
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.nameWithoutExtension
+import kotlin.io.path.outputStream
 import kotlin.io.path.reader
 
 @Serializable
@@ -15,6 +23,16 @@ data class PatternLayout(
     val pageLayouts: List<PatternPageLayout>,
 ) {
     companion object {
+        private val json = Json { prettyPrint = true }
+
+        private const val DEFAULT_FILENAME = "layout.json"
+
+        fun load(
+            workingDirectoryPath: Path,
+        ): PatternLayout = workingDirectoryPath.resolve(DEFAULT_FILENAME).inputStream().use { fileInputStream ->
+            json.decodeFromStream<PatternLayout>(stream = fileInputStream)
+        }
+
         fun reconstruct(
             dumpDirectoryPath: Path,
         ): PatternLayout = PatternLayout(
@@ -44,4 +62,15 @@ data class PatternLayout(
             patternPieceLayout.layOut(patternPieceById = patternPieceById)
         },
     )
+
+    fun dump(
+        workingDirectoryPath: Path,
+    ) {
+        workingDirectoryPath.resolve(DEFAULT_FILENAME).outputStream().use {
+            json.encodeToStream(
+                value = this,
+                stream = it,
+            )
+        }
+    }
 }

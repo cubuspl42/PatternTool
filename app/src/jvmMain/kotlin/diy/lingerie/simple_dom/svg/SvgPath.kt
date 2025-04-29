@@ -1,15 +1,16 @@
 package diy.lingerie.simple_dom.svg
 
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.simple_dom.SimpleColor
-import diy.lingerie.utils.xml.childElements
+import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.xml.svg.asList
 import org.w3c.dom.Document
 import org.w3c.dom.Element
-import org.w3c.dom.svg.SVGGElement
 import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGPathSeg
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicAbs
+import org.w3c.dom.svg.SVGPathSegCurvetoCubicRel
 import org.w3c.dom.svg.SVGPathSegMovetoAbs
 
 data class SvgPath(
@@ -18,10 +19,16 @@ data class SvgPath(
 ) : SvgElement() {
     sealed class Segment {
         data object ClosePath : Segment() {
+            override val finalPointOrNull: Nothing?
+                get() = null
+
             override fun toPathSegString(): String = "Z"
         }
 
         sealed class ActiveSegment : Segment() {
+            final override val finalPointOrNull: Point
+                get() = finalPoint
+
             abstract val finalPoint: Point
         }
 
@@ -51,6 +58,8 @@ data class SvgPath(
                 "C${controlPoint1.toSvgString()} ${controlPoint2.toSvgString()} ${finalPoint.toSvgString()}"
         }
 
+        abstract val finalPointOrNull: Point?
+
         abstract fun toPathSegString(): String
 
 
@@ -66,12 +75,27 @@ data class SvgPath(
     }
 }
 
-fun SVGPathElement.toSimplePath(): SvgPath = SvgPath(
-    strokeColor = SimpleColor.black,
-    segments = pathSegList.asList().map { it.toSimple() },
-)
+fun SVGPathElement.toSimplePath(): SvgPath {
+    val (segments, _) = pathSegList.asList().mapCarrying(
+        initialCarry = Point.origin,
+    ) { currentPoint, svgPathSeg ->
+        val segment = svgPathSeg.toSimple(currentPoint = currentPoint)
 
-fun SVGPathSeg.toSimple(): SvgPath.Segment = when (pathSegType) {
+        Pair(
+            segment,
+            segment.finalPointOrNull ?: currentPoint,
+        )
+    }
+
+    return SvgPath(
+        strokeColor = SimpleColor.black,
+        segments = segments,
+    )
+}
+
+fun SVGPathSeg.toSimple(
+    currentPoint: Point,
+): SvgPath.Segment = when (pathSegType) {
     SVGPathSeg.PATHSEG_MOVETO_ABS -> {
         this as SVGPathSegMovetoAbs
 
@@ -113,7 +137,32 @@ fun SVGPathSeg.toSimple(): SvgPath.Segment = when (pathSegType) {
         )
     }
 
+    SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL -> {
+        this as SVGPathSegCurvetoCubicRel
+
+        SvgPath.Segment.CubicBezierCurveTo(
+            controlPoint1 = PrimitiveTransformation.Translation(
+                tx = x1.toDouble(),
+                ty = y1.toDouble(),
+            ).transform(
+                point = currentPoint,
+            ),
+            controlPoint2 = PrimitiveTransformation.Translation(
+                tx = x2.toDouble(),
+                ty = y2.toDouble(),
+            ).transform(
+                point = currentPoint,
+            ),
+            finalPoint = PrimitiveTransformation.Translation(
+                tx = x.toDouble(),
+                ty = y.toDouble(),
+            ).transform(
+                point = currentPoint,
+            ),
+        )
+    }
+
     SVGPathSeg.PATHSEG_CLOSEPATH -> SvgPath.Segment.ClosePath
 
-    else -> error("Unsupported path segment type: $pathSegType")
+    else -> error("Unsupported path segment type: $pathSegType (${this.pathSegTypeAsLetter})")
 }
