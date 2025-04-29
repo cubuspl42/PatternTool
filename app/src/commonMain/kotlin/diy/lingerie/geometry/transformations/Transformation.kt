@@ -66,6 +66,16 @@ sealed class PrimitiveTransformation : Transformation() {
     data class Translation(
         val translationVector: Vector2,
     ) : PrimitiveTransformation() {
+        constructor(
+            tx: Double,
+            ty: Double,
+        ) : this(
+            translationVector = Vector2(
+                x = tx,
+                y = ty,
+            ),
+        )
+
         override fun toSvgTransformationString(): String = "translate(${translationVector.x}, ${translationVector.y})"
 
         override fun transform(point: Point): Point = Point(
@@ -114,9 +124,12 @@ sealed class ComplexTransformation : Transformation() {
 data class CombinedTransformation(
     override val components: List<PrimitiveTransformation>,
 ) : ComplexTransformation() {
-    override fun toSvgTransformationString(): String = components.joinToString(separator = " ") { transformation ->
-        transformation.toSvgTransformationString()
-    }
+    companion object;
+
+    override fun toSvgTransformationString(): String =
+        components.reversed().joinToString(separator = " ") { transformation ->
+            transformation.toSvgTransformationString()
+        }
 }
 
 sealed class ShiftedTransformation : ComplexTransformation() {

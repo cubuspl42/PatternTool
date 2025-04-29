@@ -1,16 +1,16 @@
 package diy.lingerie.utils.xml.svg
 
 import org.w3c.dom.DOMException
-import org.w3c.dom.svg.SVGPathSeg
-import org.w3c.dom.svg.SVGPathSegList
+import org.w3c.dom.svg.SVGTransform
+import org.w3c.dom.svg.SVGTransformList
 
-fun SVGPathSegList.asList(): List<SVGPathSeg> = object : AbstractList<SVGPathSeg>() {
+fun SVGTransformList.asList(): List<SVGTransform> = object : AbstractList<SVGTransform>() {
     override val size: Int
         get() = numberOfItems
 
     override fun get(
         index: Int,
-    ): SVGPathSeg {
+    ): SVGTransform {
         try {
             return getItem(index)
         } catch (e: DOMException) {

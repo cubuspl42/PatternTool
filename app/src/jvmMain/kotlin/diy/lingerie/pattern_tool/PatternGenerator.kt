@@ -19,10 +19,6 @@ class PatternGenerator(
     private val patternPiecePreparator: PatternPiecePreparator,
     private val patternLayout: PatternLayout,
 ) {
-    companion object {
-        private val json = Json { prettyPrint = true }
-    }
-
     private val inputDirectoryPath: Path
         get() = workingDirectoryPath.resolve("input")
 
@@ -54,19 +50,32 @@ class PatternGenerator(
             )
         }
 
+        val patternLayout = when (direction) {
+            PatternGenerationDirection.Forward -> PatternLayout.load(
+                workingDirectoryPath = workingDirectoryPath,
+            )
+
+            PatternGenerationDirection.Backward -> PatternLayout.reconstruct(
+                dumpDirectoryPath = pagesDumpDirectoryPath,
+            )
+        }
+
         val patternDocument = patternLayout.layOut(
             patternPieceById = patternPieceById,
         )
 
-        patternDocument.dump(
-            dumpDirectoryPath = pagesDumpDirectoryPath,
-        )
+        when (direction) {
+            PatternGenerationDirection.Forward -> {
+                patternDocument.dump(
+                    dumpDirectoryPath = pagesDumpDirectoryPath,
+                )
+            }
 
-        workingDirectoryPath.resolve("layout.json").outputStream().use {
-            json.encodeToStream(
-                value = patternLayout,
-                stream = it,
-            )
+            PatternGenerationDirection.Backward -> {
+                patternLayout.dump(
+                    workingDirectoryPath = workingDirectoryPath,
+                )
+            }
         }
 
         patternDocument.format().writePdfToFile(
