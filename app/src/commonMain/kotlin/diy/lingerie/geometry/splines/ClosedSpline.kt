@@ -39,7 +39,13 @@ data class ClosedSpline(
         )
     }
 
-    companion object;
+    companion object {
+        fun fuse(
+            edgeCurves: List<SegmentCurve>,
+        ): ClosedSpline {
+            TODO()
+        }
+    }
 
     init {
         require(links.isNotEmpty())

@@ -70,6 +70,12 @@ data class MonoBezierCurve(
         TODO("Not yet implemented")
     }
 
+    override fun findOffsetCurve(
+        offset: Double,
+    ): BezierCurve {
+        TODO("Not yet implemented")
+    }
+
     override fun evaluate(coord: Coord): Point {
         TODO("Not yet implemented")
     }

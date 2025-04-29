@@ -63,6 +63,14 @@ data class PolyBezierCurve(
         }
     }
 
+    companion object {
+        fun connect(
+            curves: List<BezierCurve>,
+        ): PolyBezierCurve {
+            TODO()
+        }
+    }
+
     init {
         require(joints.isNotEmpty())
     }
@@ -108,6 +116,14 @@ data class PolyBezierCurve(
     ): Pair<PolyBezierCurve, PolyBezierCurve> {
         TODO("Not yet implemented")
     }
+
+    override fun findOffsetCurve(
+        offset: Double,
+    ): BezierCurve = connect(
+        curves = subCurves.map {
+            it.findOffsetCurve(offset = offset)
+        },
+    )
 
     override fun evaluate(coord: Coord): Point {
         TODO("Not yet implemented")
