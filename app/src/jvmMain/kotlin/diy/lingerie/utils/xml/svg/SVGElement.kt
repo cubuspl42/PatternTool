@@ -1,12 +1,8 @@
 package diy.lingerie.utils.xml.svg
 
-import diy.lingerie.simple_dom.SimpleColor
 import org.apache.batik.anim.dom.SVGOMDocument
 import org.apache.batik.css.engine.CSSStylableElement
-import org.apache.batik.css.engine.SVGCSSEngine.STROKE_INDEX
-import org.apache.batik.css.engine.value.RGBColorValue
 import org.apache.batik.css.engine.value.Value
-import org.w3c.dom.css.CSSPrimitiveValue
 import org.w3c.dom.svg.SVGElement
 
 var SVGElement.width: String
@@ -71,6 +67,7 @@ var SVGElement.viewBox: SVGViewBox
 
 fun SVGElement.getComputedStyle(propertyIndex: Int): Value {
     val document = this.ownerDocument as SVGOMDocument
-    return document.cssEngine.getComputedStyle(this as CSSStylableElement, null, propertyIndex)
+    val value = document.cssEngine.getComputedStyle(this as CSSStylableElement, null, propertyIndex)
+    return value
 }
 

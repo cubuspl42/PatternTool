@@ -109,6 +109,21 @@ fun List<Double>.equalsWithTolerance(
     }
 }
 
+@JvmName("equalsWithToleranceOrNullListDouble")
+fun List<Double>?.equalsWithToleranceOrNull(
+    other: List<Double>?,
+    tolerance: Tolerance,
+): Boolean = when {
+    this != null && other != null -> equalsWithTolerance(
+        other = other,
+        tolerance = tolerance,
+    )
+
+    this == null && other == null -> true
+
+    else -> false
+}
+
 @JvmName("equalsWithToleranceListNumericObject")
 fun List<NumericObject>.equalsWithTolerance(
     other: List<NumericObject>,
