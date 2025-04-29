@@ -1,9 +1,12 @@
 package diy.lingerie.simple_dom
 
+import diy.lingerie.algebra.NumericObject
+import diy.lingerie.algebra.equalsWithTolerance
+
 data class SimpleDimension(
     val value: Double,
     val unit: SimpleUnit,
-) {
+) : NumericObject {
     companion object {
         private val regex = Regex("([0-9.]+)([a-zA-Z%]+)")
 
@@ -26,6 +29,16 @@ data class SimpleDimension(
     }
 
     fun toDimensionString(): String = "$value${unit.string}"
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance
+    ): Boolean = when {
+        other !is SimpleDimension -> false
+        !value.equalsWithTolerance(other.value, tolerance = tolerance) -> false
+        unit != other.unit -> false
+        else -> true
+    }
 }
 
 val Double.mm: SimpleDimension

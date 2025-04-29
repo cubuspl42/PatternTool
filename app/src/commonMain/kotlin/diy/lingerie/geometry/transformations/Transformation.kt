@@ -1,11 +1,12 @@
 package diy.lingerie.geometry.transformations
 
+import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.Vector2
 import diy.lingerie.geometry.Angle
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.Point
 
-sealed class Transformation {
+sealed class Transformation : NumericObject {
     data class ReflectionOverLine(
         val line: Line,
     ) : Transformation() {
@@ -19,6 +20,13 @@ sealed class Transformation {
         override fun transform(point: Point): Point {
             TODO("Not yet implemented")
         }
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance
+        ): Boolean {
+            TODO("Not yet implemented")
+        }
     }
 
     object Identity : Transformation() {
@@ -27,6 +35,13 @@ sealed class Transformation {
         override val components: List<PrimitiveTransformation> = emptyList()
 
         override fun transform(point: Point): Point = point
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance
+        ): Boolean {
+            TODO("Not yet implemented")
+        }
     }
 
     companion object {
@@ -82,6 +97,13 @@ sealed class PrimitiveTransformation : Transformation() {
             x = point.x + translationVector.x,
             y = point.y + translationVector.y,
         )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance
+        ): Boolean {
+            TODO("Not yet implemented")
+        }
     }
 
     data class Scaling(
@@ -93,6 +115,13 @@ sealed class PrimitiveTransformation : Transformation() {
             x = point.x * scaleVector.x,
             y = point.y * scaleVector.y,
         )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance
+        ): Boolean {
+            TODO("Not yet implemented")
+        }
     }
 
     /**
@@ -107,6 +136,13 @@ sealed class PrimitiveTransformation : Transformation() {
             x = point.x * angle.cosFi - point.y * angle.sinFi,
             y = point.x * angle.sinFi + point.y * angle.cosFi,
         )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance
+        ): Boolean {
+            TODO("Not yet implemented")
+        }
     }
 
     final override val components: List<PrimitiveTransformation>
@@ -130,6 +166,13 @@ data class CombinedTransformation(
         components.reversed().joinToString(separator = " ") { transformation ->
             transformation.toSvgTransformationString()
         }
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance,
+    ): Boolean {
+        TODO("Not yet implemented")
+    }
 }
 
 sealed class ShiftedTransformation : ComplexTransformation() {
