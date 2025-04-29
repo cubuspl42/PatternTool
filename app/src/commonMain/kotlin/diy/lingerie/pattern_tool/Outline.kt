@@ -396,6 +396,11 @@ data class Outline(
         val endAnchorPosition: Point
             get() = endAnchor.position
 
+        val seamOffsetCurve: SegmentCurve
+            get() = curve.findOffsetCurve(
+                offset = edge.seamAllowance.allowanceMm,
+            )
+
         fun reversed(): Verge = Verge(
             startAnchor = endAnchor,
             edge = edge.reversed(),
@@ -408,11 +413,11 @@ data class Outline(
             val (firstSubCurve, secondSubCurve) = curve.splitAt(coord = edgeCoord)
 
             return Pair(
-                Verge.reconstruct(
+                reconstruct(
                     edgeCurve = firstSubCurve,
                     edgeMetadata = edge.metadata,
                 ),
-                Verge.reconstruct(
+                reconstruct(
                     edgeCurve = secondSubCurve,
                     edgeMetadata = edge.metadata,
                 ),
@@ -472,6 +477,24 @@ data class Outline(
                 )
             },
         )
+
+        private fun closeSegments(
+            verges: List<Verge>,
+            closingEdgeMetadata: EdgeMetadata,
+        ): Outline {
+            val firstSegment = verges.first()
+            val lastSegment = verges.last()
+
+            val closingVerge = Verge.line(
+                startAnchor = lastSegment.endAnchor,
+                edgeMetadata = closingEdgeMetadata,
+                endAnchor = firstSegment.startAnchor,
+            )
+
+            return connect(
+                verges = verges + closingVerge,
+            )
+        }
     }
 
     init {
@@ -494,6 +517,12 @@ data class Outline(
                 verge.innerSplineLink
             },
         )
+
+    fun findSeamContour(): ClosedSpline = ClosedSpline.fuse(
+        edgeCurves = verges.map {
+            it.seamOffsetCurve
+        },
+    )
 
     fun cut(
         lineSegment: LineSegment,
@@ -565,24 +594,6 @@ data class Outline(
         )
     }
 
-    private fun closeSegments(
-        verges: List<Verge>,
-        closingEdgeMetadata: EdgeMetadata,
-    ): Outline {
-        val firstSegment = verges.first()
-        val lastSegment = verges.last()
-
-        val closingVerge = Verge.line(
-            startAnchor = lastSegment.endAnchor,
-            edgeMetadata = closingEdgeMetadata,
-            endAnchor = firstSegment.startAnchor,
-        )
-
-        return Outline.connect(
-            verges = verges + closingVerge,
-        )
-    }
-
     /**
      * Mirrors the outline over the edge at [edgeIndex].
      */
@@ -614,7 +625,7 @@ data class Outline(
             )
         }
 
-        return Outline.connect(
+        return connect(
             remainingVerges + mirroredVerges,
         )
     }

@@ -62,4 +62,8 @@ abstract class BezierCurve : SegmentCurve() {
     abstract override fun splitAt(
         coord: Coord,
     ): Pair<BezierCurve, BezierCurve>
+
+    abstract fun findOffsetCurve(
+        offset: Double,
+    ): BezierCurve
 }
