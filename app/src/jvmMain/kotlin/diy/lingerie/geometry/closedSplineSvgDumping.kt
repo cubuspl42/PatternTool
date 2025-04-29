@@ -7,16 +7,13 @@ import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.svg.SvgPath
 
 fun ClosedSpline.toSvgPath(
-    color: SimpleColor = SimpleColor.black,
+    stroke: SvgPath.Stroke = SvgPath.Stroke.default,
 ): SvgPath {
     val edgeCurves = this.edgeCurves
     val start = edgeCurves.first().start
 
     return SvgPath(
-        stroke = SvgPath.Stroke(
-            color = color,
-            width = 1.0,
-        ),
+        stroke = stroke,
         segments = listOf(
             SvgPath.Segment.MoveTo(
                 targetPoint = start,

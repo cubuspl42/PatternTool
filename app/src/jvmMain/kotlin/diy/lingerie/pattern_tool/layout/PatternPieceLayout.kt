@@ -10,7 +10,9 @@ import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
+import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.svg.SvgGroup
+import diy.lingerie.simple_dom.svg.SvgPath
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -74,7 +76,13 @@ data class PatternPieceLayout(
         id = pieceId.name,
         transformation = transformation,
         children = listOf(
-            patternPiece.outline.innerSpline.toSvgPath()
+            patternPiece.outline.innerSpline.toSvgPath(
+                stroke = SvgPath.Stroke(
+                    color = SimpleColor.black,
+                    width = 0.4,
+                    dashArray = listOf(2.0, 1.0),
+                ),
+            )
         ),
     )
 }

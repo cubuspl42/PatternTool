@@ -2,9 +2,11 @@ package diy.lingerie.simple_dom.svg
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.equalsWithTolerance
+import diy.lingerie.algebra.equalsWithToleranceOrNull
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.simple_dom.SimpleColor
+import diy.lingerie.simple_dom.toList
 import diy.lingerie.simple_dom.toSimpleColor
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.xml.svg.asList
@@ -101,18 +103,28 @@ data class SvgPath(
     data class Stroke(
         val color: SimpleColor,
         val width: Double,
+        val dashArray: List<Double>? = null,
     ) : NumericObject {
+        companion object {
+            val default = Stroke(
+                color = SimpleColor.black,
+                width = 1.0,
+            )
+        }
+
+        fun toDashArrayString(): String? =
+            dashArray?.joinToString(" ") { it.toString() }
+
         override fun equalsWithTolerance(
-            other: NumericObject,
-            tolerance: NumericObject.Tolerance
+            other: NumericObject, tolerance: NumericObject.Tolerance
         ): Boolean = when {
             other !is Stroke -> false
             color != other.color -> false
             !width.equalsWithTolerance(other.width, tolerance) -> false
+            !dashArray.equalsWithToleranceOrNull(other.dashArray, tolerance) -> false
             else -> true
         }
     }
-
 
     override fun toRawElement(
         document: Document,
@@ -120,6 +132,11 @@ data class SvgPath(
         setAttribute("fill", "none")
         setAttribute("stroke", stroke.color.toHexString())
         setAttribute("stroke-width", stroke.width.toString())
+
+        stroke.toDashArrayString()?.let {
+            setAttribute("stroke-dasharray", it)
+        }
+
         setAttribute("d", segments.joinToString(" ") { it.toPathSegString() })
     }
 
@@ -134,7 +151,6 @@ data class SvgPath(
 }
 
 fun SVGPathElement.toSimplePath(): SvgPath {
-
     val (segments, _) = pathSegList.asList().mapCarrying(
         initialCarry = Point.origin,
     ) { currentPoint, svgPathSeg ->
@@ -146,14 +162,15 @@ fun SVGPathElement.toSimplePath(): SvgPath {
         )
     }
 
-
     val strokeColor = getComputedStyle(SVGCSSEngine.STROKE_INDEX).toSimpleColor()
     val strokeWidth = getComputedStyle(SVGCSSEngine.STROKE_WIDTH_INDEX).floatValue.toDouble()
+    val strokeDashArray = getComputedStyle(SVGCSSEngine.STROKE_DASHARRAY_INDEX).toList()
 
     return SvgPath(
         stroke = SvgPath.Stroke(
-            color = strokeColor,
+            color = strokeColor ?: SimpleColor.black,
             width = strokeWidth,
+            dashArray = strokeDashArray?.map { it.floatValue.toDouble() },
         ),
         segments = segments,
     )

@@ -47,33 +47,37 @@ class SvgPathTests {
                     d="M12.3 45.6 L78.9 12.3 C34.5 67.8, 90.1 23.4, 56.7 89.0 Z"
                     stroke="red"
                     stroke-width="2"
+                    stroke-dasharray="5, 2"
                 />
             """.trimIndent(),
         )
 
         val path = pathElement.toSimplePath()
 
-        assertEqualsWithTolerance(
-            expected = SvgPath(
-                stroke = SvgPath.Stroke(
-                    color = SimpleColor.red,
-                    width = 2.0,
-                ),
-                segments = listOf(
-                    SvgPath.Segment.MoveTo(
-                        targetPoint = Point(x = 12.3, y = 45.6),
-                    ),
-                    SvgPath.Segment.LineTo(
-                        finalPoint = Point(x = 78.9, y = 12.3),
-                    ),
-                    SvgPath.Segment.CubicBezierCurveTo(
-                        controlPoint1 = Point(x = 34.5, y = 67.8),
-                        controlPoint2 = Point(x = 90.1, y = 23.4),
-                        finalPoint = Point(x = 56.7, y = 89.0),
-                    ),
-                    SvgPath.Segment.ClosePath,
-                ),
+        val expectedPath = SvgPath(
+            stroke = SvgPath.Stroke(
+                color = SimpleColor.red,
+                width = 2.0,
+                dashArray = listOf(5.0, 2.0),
             ),
+            segments = listOf(
+                SvgPath.Segment.MoveTo(
+                    targetPoint = Point(x = 12.3, y = 45.6),
+                ),
+                SvgPath.Segment.LineTo(
+                    finalPoint = Point(x = 78.9, y = 12.3),
+                ),
+                SvgPath.Segment.CubicBezierCurveTo(
+                    controlPoint1 = Point(x = 34.5, y = 67.8),
+                    controlPoint2 = Point(x = 90.1, y = 23.4),
+                    finalPoint = Point(x = 56.7, y = 89.0),
+                ),
+                SvgPath.Segment.ClosePath,
+            ),
+        )
+
+        assertEqualsWithTolerance(
+            expected = expectedPath,
             actual = path,
         )
     }

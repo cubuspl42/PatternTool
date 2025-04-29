@@ -1,9 +1,6 @@
 package diy.lingerie.simple_dom
 
 import org.apache.batik.css.engine.value.RGBColorValue
-import org.apache.batik.css.engine.value.Value
-import org.w3c.dom.css.CSSPrimitiveValue
-import kotlin.math.roundToInt
 
 data class SimpleColor(
     val red: Int,
@@ -24,28 +21,4 @@ data class SimpleColor(
     }
 
     fun toHexString(): String = String.format("#%02X%02X%02X", red, green, blue)
-}
-
-fun RGBColorValue.toSimpleColor(): SimpleColor {
-    val red = this.red
-    val green = this.green
-    val blue = this.blue
-
-    return SimpleColor(
-        red = red.floatValue.toInt(),
-        green = green.floatValue.toInt(),
-        blue = blue.floatValue.toInt(),
-    )
-}
-
-fun Value.toSimpleColor(): SimpleColor {
-    if (primitiveType != CSSPrimitiveValue.CSS_RGBCOLOR) {
-        throw IllegalArgumentException("Value is not a color")
-    }
-
-    return SimpleColor(
-        red = red.floatValue.roundToInt(),
-        green = green.floatValue.roundToInt(),
-        blue = blue.floatValue.roundToInt(),
-    )
 }
