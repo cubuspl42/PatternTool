@@ -22,17 +22,19 @@ object AngleSerializer : KSerializer<Angle> {
         }
     }
 
-    override fun deserialize(decoder: Decoder): Angle {
-        return decoder.decodeStructure(descriptor) {
-            var fi = 0.0
-            while (true) {
-                when (val index = decodeElementIndex(descriptor)) {
-                    0 -> fi = decodeDoubleElement(descriptor, 0)
-                    CompositeDecoder.DECODE_DONE -> break
-                    else -> throw SerializationException("Unexpected index: $index")
-                }
+    override fun deserialize(
+        decoder: Decoder,
+    ): Angle = decoder.decodeStructure(descriptor) {
+        var fi = 0.0
+
+        while (true) {
+            when (val index = decodeElementIndex(descriptor)) {
+                0 -> fi = decodeDoubleElement(descriptor, 0)
+                CompositeDecoder.DECODE_DONE -> break
+                else -> throw SerializationException("Unexpected index: $index")
             }
-            Angle(fi)
         }
+
+        Angle.Radial(fi = fi)
     }
 }
