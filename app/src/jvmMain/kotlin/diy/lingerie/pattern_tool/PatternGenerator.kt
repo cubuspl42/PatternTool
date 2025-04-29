@@ -5,19 +5,15 @@ package diy.lingerie.pattern_tool
 import diy.lingerie.pattern_tool.layout.PatternLayout
 import diy.lingerie.simple_dom.svg.SvgRoot
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToStream
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.nameWithoutExtension
-import kotlin.io.path.outputStream
 import kotlin.io.path.reader
 
 class PatternGenerator(
     private val workingDirectoryPath: Path,
     private val patternPiecePreparator: PatternPiecePreparator,
-    private val patternLayout: PatternLayout,
 ) {
     private val inputDirectoryPath: Path
         get() = workingDirectoryPath.resolve("input")

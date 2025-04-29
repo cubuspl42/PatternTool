@@ -9,16 +9,11 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
-import diy.lingerie.geometry.Angle
-import diy.lingerie.geometry.Point
-import diy.lingerie.pattern_tool.layout.PatternLayout
-import diy.lingerie.pattern_tool.layout.PatternPageLayout
-import diy.lingerie.pattern_tool.layout.PatternPieceLayout
 import diy.lingerie.simple_dom.svg.SvgRoot
 import java.nio.file.Path
 
 enum class PatternPieceId {
-    UpperCup, InnerLowerCup,
+    UpperCup, InnerLowerCup, OuterLowerCup,
 }
 
 class MainCommand : CliktCommand() {
@@ -42,8 +37,12 @@ class MainCommand : CliktCommand() {
                 ): PatternPieceOutlineSet {
                     val upperCupSvgRoot =
                         svgRootByName["upperCup"] ?: throw IllegalArgumentException("upperCup not found")
+
                     val innerLowerCupSvgRoot =
                         svgRootByName["innerLowerCup"] ?: throw IllegalArgumentException("innerLowerCup not found")
+
+                    val outerLowerCupSvgRoot =
+                        svgRootByName["outerLowerCup"] ?: throw IllegalArgumentException("outerLowerCup not found")
 
                     return PatternPieceOutlineSet(
                         patternPieceOutlineById = mapOf(
@@ -53,26 +52,13 @@ class MainCommand : CliktCommand() {
                             PatternPieceId.InnerLowerCup to Outline.loadSvg(
                                 svgRoot = innerLowerCupSvgRoot,
                             ),
+                            PatternPieceId.OuterLowerCup to Outline.loadSvg(
+                                svgRoot = outerLowerCupSvgRoot,
+                            ),
                         ),
                     )
                 }
             },
-            patternLayout = PatternLayout(
-                pageLayouts = listOf(
-                    PatternPageLayout(
-                        pieceLayoutById = mapOf(
-                            PatternPieceId.UpperCup to PatternPieceLayout(
-                                position = Point.origin,
-                                rotationAngle = Angle.Zero,
-                            ),
-                            PatternPieceId.InnerLowerCup to PatternPieceLayout(
-                                position = Point(x = 0.0, y = 100.0),
-                                rotationAngle = Angle.Zero,
-                            ),
-                        ),
-                    ),
-                ),
-            ),
         ).generatePattern(
             direction = direction,
         )
