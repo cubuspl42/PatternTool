@@ -16,7 +16,8 @@ interface NumericObject {
             val absoluteTolerance: Double,
         ) : Tolerance() {
             override fun equalsApproximately(
-                value: Double, reference: Double
+                value: Double,
+                reference: Double,
             ): Boolean = abs(value - reference) <= absoluteTolerance
         }
 

@@ -7,7 +7,7 @@ import diy.lingerie.geometry.transformations.Transformation
 
 data class Point(
     val pointVector: Vector2,
-) : NumericObject {
+) : SpatialObject, NumericObject {
     companion object {
         fun areCollinear(
             firstPoint: Point,
@@ -21,6 +21,13 @@ data class Point(
         val origin: Point = Point(
             x = 0.0,
             y = 0.0,
+        )
+
+        fun distanceBetween(
+            one: Point,
+            another: Point,
+        ): Span = Span(
+            valueSquared = (one.pointVector - another.pointVector).magnitudeSquared,
         )
     }
 
@@ -51,5 +58,17 @@ data class Point(
         other !is Point -> false
         !pointVector.equalsWithTolerance(other.pointVector, tolerance = tolerance) -> false
         else -> true
+    }
+
+    override fun equalsSpatially(
+        other: SpatialObject,
+        tolerance: SpatialObject.SpatialTolerance,
+    ): Boolean = when {
+        other !is Point -> false
+
+        else -> Point.distanceBetween(this, other).equalsSpatially(
+            Span.Zero,
+            tolerance = tolerance,
+        )
     }
 }

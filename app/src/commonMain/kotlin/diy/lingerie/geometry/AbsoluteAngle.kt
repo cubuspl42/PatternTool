@@ -94,7 +94,7 @@ sealed class AbsoluteAngle {
             first: Vector2,
             second: Vector2,
         ): AbsoluteAngle {
-            val lengthProduct = first.length * second.length
+            val lengthProduct = first.magnitude * second.magnitude
 
             return AbsoluteAngle.Trigonometric(
                 cosFi = first.dot(second) / lengthProduct,
