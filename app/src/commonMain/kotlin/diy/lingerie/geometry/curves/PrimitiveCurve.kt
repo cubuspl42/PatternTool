@@ -4,7 +4,7 @@ import diy.lingerie.algebra.NumericObject
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.transformations.Transformation
 
-abstract class PrimitiveCurve : Curve() {
+abstract class PrimitiveCurve : OpenCurve() {
     /**
      * Find the intersections of this curve (also referred to as the "subject
      * curve") with the [other] curve.
@@ -25,6 +25,10 @@ abstract class PrimitiveCurve : Curve() {
             transformation: Transformation,
         ): Edge
     }
+
+    // TODO: Make this final
+    override val subCurves: List<PrimitiveCurve>
+        get() = listOf(this)
 
     abstract val start: Point
 
