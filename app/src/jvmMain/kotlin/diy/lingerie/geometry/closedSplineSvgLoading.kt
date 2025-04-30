@@ -8,7 +8,7 @@ import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.untrail
 
-fun SvgPath.toClosedSpline(): ClosedSpline<*> {
+fun SvgPath.toClosedSpline(): ClosedSpline {
     val (firstSegment, trailingSegments) = segments.uncons()
         ?: throw IllegalArgumentException("Path must contain at least one segment")
 

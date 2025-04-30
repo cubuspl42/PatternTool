@@ -469,7 +469,7 @@ data class Outline(
          * Must be expressed in millimeters.
          */
         fun reconstruct(
-            closedSpline: ClosedSpline<*>,
+            closedSpline: ClosedSpline,
             edgeMetadata: EdgeMetadata,
         ): Outline = Outline(
             links = closedSpline.cyclicLinks.map { link ->
@@ -513,14 +513,14 @@ data class Outline(
     val edgeCurves: List<PrimitiveCurve>
         get() = verges.map { it.curve }
 
-    val innerSpline: ClosedSpline<*>
+    val innerSpline: ClosedSpline
         get() = ClosedSpline.positionallyContinuous(
             links = verges.map { verge ->
                 verge.innerSplineLink
             },
         )
 
-    fun findSeamContour(): ClosedSpline<*> = ClosedSpline.fuse(
+    fun findSeamContour(): ClosedSpline = ClosedSpline.fuse(
         edgeCurves = verges.map {
             it.seamOffsetCurve
         },
