@@ -11,6 +11,7 @@ import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.curves.bezier.PolyBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
+import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.shiftLeft
 import diy.lingerie.utils.iterable.splitBefore
@@ -297,7 +298,7 @@ data class Outline(
     ) : NumericObject {
         companion object {
             fun reconstruct(
-                splineLink: diy.lingerie.geometry.splines.SplineLink,
+                splineLink: Spline.Link,
                 edgeMetadata: EdgeMetadata,
             ): Link = Link(
                 startAnchor = Joint.Anchor(
@@ -385,8 +386,8 @@ data class Outline(
                 end = endAnchorPosition,
             )
 
-        val innerSplineLink: diy.lingerie.geometry.splines.SplineLink
-            get() = diy.lingerie.geometry.splines.SplineLink(
+        val innerSplineLink: Spline.Link
+            get() = Spline.Link(
                 start = startAnchorPosition,
                 edge = curveEdge,
             )

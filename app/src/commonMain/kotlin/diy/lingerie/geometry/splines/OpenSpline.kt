@@ -11,7 +11,7 @@ import diy.lingerie.utils.iterable.withNextCyclic
  * A composite open curve assumed to be tangent-continuous (G1).
  */
 data class OpenSpline private constructor(
-    val sequentialLinks: List<SplineLink>,
+    val sequentialLinks: List<Spline.Link>,
 ) : OpenCurve(), Spline {
     init {
         require(sequentialLinks.isNotEmpty())
@@ -41,7 +41,7 @@ data class OpenSpline private constructor(
         else -> true
     }
 
-    override val links: List<SplineLink>
+    override val links: List<Spline.Link>
         get() = sequentialLinks
 
     override val subCurves: List<PrimitiveCurve>
