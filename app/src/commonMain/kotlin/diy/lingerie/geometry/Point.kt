@@ -3,6 +3,7 @@ package diy.lingerie.geometry
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
 import diy.lingerie.algebra.Vector2
+import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 
 data class Point(
@@ -70,5 +71,22 @@ data class Point(
             Span.Zero,
             tolerance = tolerance,
         )
+    }
+
+    fun translateByDistance(
+        direction: Direction.Precise,
+        distance: Span,
+    ): Point {
+
+        TODO()
+    }
+
+    fun reflectedBy(mirror: Point): Point {
+        val translation = PrimitiveTransformation.Translation.between(
+            origin = this,
+            target = mirror,
+        )
+
+        return translation.transform(mirror)
     }
 }

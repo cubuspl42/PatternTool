@@ -41,6 +41,12 @@ data class SvgPath(
                 get() = finalPoint
 
             abstract val finalPoint: Point
+
+            val effectiveReflectedControlPoint: Point
+                get() = when (this) {
+                    is CubicBezierSegment -> controlPoint2.reflectedBy(finalPoint)
+                    else -> finalPoint
+                }
         }
 
         sealed class CurveSegment : ActiveSegment()
@@ -74,11 +80,15 @@ data class SvgPath(
             }
         }
 
+        sealed class CubicBezierSegment : CurveSegment() {
+            abstract val controlPoint2: Point
+        }
+
         data class CubicBezierCurveTo(
             val controlPoint1: Point,
-            val controlPoint2: Point,
+            override val controlPoint2: Point,
             override val finalPoint: Point,
-        ) : CurveSegment() {
+        ) : CubicBezierSegment() {
             override fun toPathSegString(): String =
                 "C${controlPoint1.toSvgString()} ${controlPoint2.toSvgString()} ${finalPoint.toSvgString()}"
 
@@ -87,6 +97,22 @@ data class SvgPath(
             ): Boolean = when {
                 other !is CubicBezierCurveTo -> false
                 !controlPoint1.equalsWithTolerance(other.controlPoint1, tolerance) -> false
+                !controlPoint2.equalsWithTolerance(other.controlPoint2, tolerance) -> false
+                !finalPoint.equalsWithTolerance(other.finalPoint, tolerance) -> false
+                else -> true
+            }
+        }
+
+        data class SmoothCubicBezierCurveTo(
+            override val controlPoint2: Point,
+            override val finalPoint: Point,
+        ) : CubicBezierSegment() {
+            override fun toPathSegString(): String = "S${controlPoint2.toSvgString()} ${finalPoint.toSvgString()}"
+
+            override fun equalsWithTolerance(
+                other: NumericObject, tolerance: NumericObject.Tolerance
+            ): Boolean = when {
+                other !is SmoothCubicBezierCurveTo -> false
                 !controlPoint2.equalsWithTolerance(other.controlPoint2, tolerance) -> false
                 !finalPoint.equalsWithTolerance(other.finalPoint, tolerance) -> false
                 else -> true
@@ -112,8 +138,7 @@ data class SvgPath(
             )
         }
 
-        fun toDashArrayString(): String? =
-            dashArray?.joinToString(" ") { it.toString() }
+        fun toDashArrayString(): String? = dashArray?.joinToString(" ") { it.toString() }
 
         override fun equalsWithTolerance(
             other: NumericObject, tolerance: NumericObject.Tolerance

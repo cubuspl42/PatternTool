@@ -1,6 +1,6 @@
 package diy.lingerie.geometry
 
-import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
+import diy.lingerie.geometry.curves.bezier.MonoBezierCurve.Edge
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.utils.iterable.mapCarrying
@@ -31,10 +31,12 @@ fun SvgPath.toClosedSpline(): ClosedSpline {
         val edge = when (segment) {
             is SvgPath.Segment.LineTo -> LineSegment.Edge
 
-            is SvgPath.Segment.CubicBezierCurveTo -> MonoBezierCurve.Edge(
+            is SvgPath.Segment.CubicBezierCurveTo -> Edge(
                 firstControl = segment.controlPoint1,
                 secondControl = segment.controlPoint2,
             )
+
+            is SvgPath.Segment.SmoothCubicBezierCurveTo -> TODO()
         }
 
         Pair(
