@@ -28,8 +28,11 @@ data class Vector2(
         other: Vector2,
     ): Double = a0 * other.a1 - a1 * other.a0
 
-    val length: Double
-        get() = sqrt(x * x + y * y)
+    val magnitudeSquared: Double
+        get() = x * x + y * y
+
+    val magnitude: Double
+        get() = sqrt(magnitudeSquared)
 
     override fun equalsWithTolerance(
         other: NumericObject,
@@ -44,5 +47,12 @@ data class Vector2(
     operator fun unaryMinus(): Vector2 = Vector2(
         x = -x,
         y = -y,
+    )
+
+    operator fun minus(
+        other: Vector2,
+    ): Vector2 = Vector2(
+        x = a0 - other.a0,
+        y = a1 - other.a1,
     )
 }

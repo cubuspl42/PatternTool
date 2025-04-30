@@ -365,7 +365,7 @@ sealed class RelativeAngle {
             first: Vector2,
             second: Vector2,
         ): RelativeAngle {
-            val lengthProduct = first.length * second.length
+            val lengthProduct = first.magnitude * second.magnitude
 
             return Trigonometric(
                 cosFi = first.dot(second) / lengthProduct,
