@@ -1,6 +1,7 @@
 package diy.lingerie.algebra
 
 import diy.lingerie.algebra.NumericObject.Tolerance
+import kotlin.math.sqrt
 
 data class Vector2(
     val x: Double,
@@ -18,6 +19,17 @@ data class Vector2(
 
     val a1: Double
         get() = y
+
+    fun dot(
+        other: Vector2,
+    ): Double = a0 * other.a0 + a1 * other.a1
+
+    fun cross(
+        other: Vector2,
+    ): Double = a0 * other.a1 - a1 * other.a0
+
+    val length: Double
+        get() = sqrt(x * x + y * y)
 
     override fun equalsWithTolerance(
         other: NumericObject,

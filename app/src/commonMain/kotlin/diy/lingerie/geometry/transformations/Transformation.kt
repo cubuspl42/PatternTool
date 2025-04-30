@@ -2,7 +2,7 @@ package diy.lingerie.geometry.transformations
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.Vector2
-import diy.lingerie.geometry.Angle
+import diy.lingerie.geometry.RelativeAngle
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.Point
 
@@ -128,7 +128,7 @@ sealed class PrimitiveTransformation : Transformation() {
      * @param angle - angle in radians
      */
     data class Rotation(
-        val angle: Angle,
+        val angle: RelativeAngle,
     ) : PrimitiveTransformation() {
         override fun toSvgTransformationString(): String = "rotate(${angle.fiInDegrees})"
 

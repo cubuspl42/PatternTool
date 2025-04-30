@@ -2,7 +2,7 @@ package diy.lingerie.simple_dom.svg
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.equalsWithTolerance
-import diy.lingerie.geometry.Angle
+import diy.lingerie.geometry.RelativeAngle
 import diy.lingerie.geometry.transformations.CombinedTransformation
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
@@ -78,7 +78,7 @@ fun CombinedTransformation.Companion.fromSvgTransformList(
     return CombinedTransformation(
         components = listOf(
             PrimitiveTransformation.Rotation(
-                angle = Angle.Trigonometric(
+                angle = RelativeAngle.Trigonometric(
                     cosFi = cosFi,
                     sinFi = sinFi,
                 ),

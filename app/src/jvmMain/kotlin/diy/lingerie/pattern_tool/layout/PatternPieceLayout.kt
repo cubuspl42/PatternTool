@@ -1,13 +1,12 @@
 package diy.lingerie.pattern_tool.layout
 
-import diy.lingerie.geometry.Angle
+import diy.lingerie.geometry.RelativeAngle
 import diy.lingerie.geometry.AngleSerializer
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.PointSerializer
 import diy.lingerie.geometry.toSvgPath
 import diy.lingerie.geometry.transformations.CombinedTransformation
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
-import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
 import diy.lingerie.simple_dom.SimpleColor
@@ -24,7 +23,7 @@ data class PatternPieceLayout(
     /**
      * Rotation angle relative to the local origin
      */
-    @Serializable(with = AngleSerializer::class) val rotationAngle: Angle,
+    @Serializable(with = AngleSerializer::class) val rotationAngle: RelativeAngle,
 ) {
     companion object {
         fun reconstruct(
