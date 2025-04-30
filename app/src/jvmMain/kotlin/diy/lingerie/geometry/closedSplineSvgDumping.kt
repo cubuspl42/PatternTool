@@ -6,7 +6,7 @@ import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.svg.SvgPath
 
-fun ClosedSpline.toSvgPath(
+fun ClosedSpline<*>.toSvgPath(
     stroke: SvgPath.Stroke = SvgPath.Stroke.default,
 ): SvgPath {
     val edgeCurves = this.edgeCurves

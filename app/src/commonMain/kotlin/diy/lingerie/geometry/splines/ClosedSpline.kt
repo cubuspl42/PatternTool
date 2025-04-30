@@ -7,7 +7,7 @@ import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.withNextCyclic
 
-data class ClosedSpline(
+data class ClosedSpline<G: SplineContinuity.Positional> private constructor(
     val links: List<Link>,
 ) : NumericObject {
     data class Link(
@@ -40,9 +40,15 @@ data class ClosedSpline(
     }
 
     companion object {
+        fun positionallyContinuous(
+            links: List<Link>,
+        ): ClosedSpline<SplineContinuity.Positional> = ClosedSpline(
+            links = links,
+        )
+
         fun fuse(
             edgeCurves: List<SegmentCurve>,
-        ): ClosedSpline {
+        ): ClosedSpline<*> {
             TODO()
         }
     }
@@ -60,15 +66,17 @@ data class ClosedSpline(
 
     fun transformBy(
         transformation: Transformation,
-    ): ClosedSpline = ClosedSpline(
-        links = links.map { it.transformBy(transformation = transformation) },
+    ): ClosedSpline<G> = ClosedSpline(
+        links = links.map {
+            it.transformBy(transformation = transformation)
+        },
     )
 
     override fun equalsWithTolerance(
         other: NumericObject,
         tolerance: NumericObject.Tolerance,
     ): Boolean = when {
-        other !is ClosedSpline -> false
+        other !is ClosedSpline<*> -> false
         !links.equalsWithTolerance(other.links, tolerance) -> false
         else -> true
     }

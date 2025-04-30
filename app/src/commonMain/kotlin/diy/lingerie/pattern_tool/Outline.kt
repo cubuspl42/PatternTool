@@ -10,6 +10,7 @@ import diy.lingerie.geometry.curves.SegmentCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.curves.bezier.PolyBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
+import diy.lingerie.geometry.splines.SplineContinuity
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.shiftLeft
 import diy.lingerie.utils.iterable.splitBefore
@@ -467,7 +468,7 @@ data class Outline(
          * Must be expressed in millimeters.
          */
         fun reconstruct(
-            closedSpline: ClosedSpline,
+            closedSpline: ClosedSpline<*>,
             edgeMetadata: EdgeMetadata,
         ): Outline = Outline(
             links = closedSpline.links.map { link ->
@@ -511,14 +512,14 @@ data class Outline(
     val edgeCurves: List<SegmentCurve>
         get() = verges.map { it.curve }
 
-    val innerSpline: ClosedSpline
-        get() = ClosedSpline(
+    val innerSpline: ClosedSpline<*>
+        get() = ClosedSpline.positionallyContinuous(
             links = verges.map { verge ->
                 verge.innerSplineLink
             },
         )
 
-    fun findSeamContour(): ClosedSpline = ClosedSpline.fuse(
+    fun findSeamContour(): ClosedSpline<*> = ClosedSpline.fuse(
         edgeCurves = verges.map {
             it.seamOffsetCurve
         },
