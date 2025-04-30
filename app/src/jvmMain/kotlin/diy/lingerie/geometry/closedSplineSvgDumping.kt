@@ -8,7 +8,7 @@ import diy.lingerie.simple_dom.svg.SvgPath
 fun ClosedSpline<*>.toSvgPath(
     stroke: SvgPath.Stroke = SvgPath.Stroke.default,
 ): SvgPath {
-    val edgeCurves = this.edgeCurves
+    val edgeCurves = this.cyclicEdgeCurves
     val start = edgeCurves.first().start
 
     return SvgPath(

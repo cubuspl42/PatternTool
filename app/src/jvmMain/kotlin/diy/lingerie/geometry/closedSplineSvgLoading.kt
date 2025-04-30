@@ -2,7 +2,7 @@ package diy.lingerie.geometry
 
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve.Edge
 import diy.lingerie.geometry.splines.ClosedSpline
-import diy.lingerie.geometry.splines.SplineContinuity
+import diy.lingerie.geometry.splines.SplineLink
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.uncons
@@ -41,7 +41,7 @@ fun SvgPath.toClosedSpline(): ClosedSpline<*> {
         }
 
         Pair(
-            ClosedSpline.Link(
+            SplineLink(
                 start = start,
                 edge = edge,
             ),

@@ -57,7 +57,7 @@ abstract class BezierCurve : PrimitiveCurve() {
 
     abstract val lastControl: Point
 
-    abstract val subCurves: List<MonoBezierCurve>
+    abstract override val subCurves: List<MonoBezierCurve>
 
     abstract override fun splitAt(
         coord: Coord,

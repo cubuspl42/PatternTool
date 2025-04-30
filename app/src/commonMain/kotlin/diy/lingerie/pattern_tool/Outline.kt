@@ -6,7 +6,7 @@ import diy.lingerie.algebra.equalsWithToleranceOrNull
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.Curve
+import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.curves.bezier.PolyBezierCurve
@@ -119,7 +119,7 @@ data class Outline(
             /**
              * The coordinate of the anchor point on the control line segment
              */
-            val anchorCoord: Curve.Coord,
+            val anchorCoord: OpenCurve.Coord,
             override val frontHandle: Handle,
         ) : Joint() {
             companion object {
@@ -297,7 +297,7 @@ data class Outline(
     ) : NumericObject {
         companion object {
             fun reconstruct(
-                splineLink: ClosedSpline.Link,
+                splineLink: diy.lingerie.geometry.splines.SplineLink,
                 edgeMetadata: EdgeMetadata,
             ): Link = Link(
                 startAnchor = Joint.Anchor(
@@ -385,8 +385,8 @@ data class Outline(
                 end = endAnchorPosition,
             )
 
-        val innerSplineLink: ClosedSpline.Link
-            get() = ClosedSpline.Link(
+        val innerSplineLink: diy.lingerie.geometry.splines.SplineLink
+            get() = diy.lingerie.geometry.splines.SplineLink(
                 start = startAnchorPosition,
                 edge = curveEdge,
             )
@@ -409,7 +409,7 @@ data class Outline(
         )
 
         fun splitAt(
-            edgeCoord: Curve.Coord,
+            edgeCoord: OpenCurve.Coord,
         ): Pair<Verge, Verge> {
             val (firstSubCurve, secondSubCurve) = curve.splitAt(coord = edgeCoord)
 
@@ -444,7 +444,7 @@ data class Outline(
         /**
          * The local coord on the edge at [edgeIndex]
          */
-        val edgeCoord: Curve.Coord,
+        val edgeCoord: OpenCurve.Coord,
     )
 
     companion object {
@@ -471,7 +471,7 @@ data class Outline(
             closedSpline: ClosedSpline<*>,
             edgeMetadata: EdgeMetadata,
         ): Outline = Outline(
-            links = closedSpline.links.map { link ->
+            links = closedSpline.cyclicLinks.map { link ->
                 Link.reconstruct(
                     splineLink = link,
                     edgeMetadata = edgeMetadata,

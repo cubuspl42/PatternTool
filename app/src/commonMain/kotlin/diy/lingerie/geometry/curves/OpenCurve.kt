@@ -5,7 +5,11 @@ import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
 import kotlin.jvm.JvmInline
 
-abstract class Curve : NumericObject {
+/**
+ * A curve defined in range t [0, 1] that is open (having a specified start and
+ * end point).
+ */
+abstract class OpenCurve : NumericObject {
     @JvmInline
     value class Coord(
         /**
@@ -51,4 +55,6 @@ abstract class Curve : NumericObject {
          */
         abstract val otherCoord: Coord
     }
+
+    abstract val subCurves: List<PrimitiveCurve>
 }
