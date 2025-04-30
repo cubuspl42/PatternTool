@@ -74,7 +74,7 @@ data class Point(
     }
 
     fun translateByDistance(
-        direction: Direction.Precise,
+        direction: Direction,
         distance: Span,
     ): Point {
 
