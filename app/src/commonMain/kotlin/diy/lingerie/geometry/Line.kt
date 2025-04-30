@@ -32,7 +32,6 @@ sealed interface Direction {
     val directionVector: Vector2
 }
 
-
 data class Line(
     val representativePoint: Point,
     val vagueDirection: Direction.Vague,

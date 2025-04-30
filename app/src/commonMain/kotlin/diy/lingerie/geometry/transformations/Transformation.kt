@@ -81,6 +81,15 @@ sealed class PrimitiveTransformation : Transformation() {
     data class Translation(
         val translationVector: Vector2,
     ) : PrimitiveTransformation() {
+        companion object {
+            fun between(
+                origin: Point,
+                target: Point,
+            ): Translation = Translation(
+                translationVector = target.pointVector - origin.pointVector,
+            )
+        }
+
         constructor(
             tx: Double,
             ty: Double,
