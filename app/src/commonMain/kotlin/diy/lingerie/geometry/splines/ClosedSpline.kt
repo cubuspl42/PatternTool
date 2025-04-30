@@ -3,7 +3,7 @@ package diy.lingerie.geometry.splines
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.SegmentCurve
+import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.withNextCyclic
 
@@ -12,11 +12,11 @@ data class ClosedSpline<G: SplineContinuity.Positional> private constructor(
 ) : NumericObject {
     data class Link(
         val start: Point,
-        val edge: SegmentCurve.Edge,
+        val edge: PrimitiveCurve.Edge,
     ) : NumericObject {
         fun bind(
             end: Point,
-        ): SegmentCurve = edge.bind(
+        ): PrimitiveCurve = edge.bind(
             start = start,
             end = end,
         )
@@ -47,7 +47,7 @@ data class ClosedSpline<G: SplineContinuity.Positional> private constructor(
         )
 
         fun fuse(
-            edgeCurves: List<SegmentCurve>,
+            edgeCurves: List<PrimitiveCurve>,
         ): ClosedSpline<*> {
             TODO()
         }
@@ -57,7 +57,7 @@ data class ClosedSpline<G: SplineContinuity.Positional> private constructor(
         require(links.isNotEmpty())
     }
 
-    val edgeCurves: List<SegmentCurve>
+    val edgeCurves: List<PrimitiveCurve>
         get() = links.withNextCyclic().map { (link, nextLink) ->
             link.bind(
                 end = nextLink.start,

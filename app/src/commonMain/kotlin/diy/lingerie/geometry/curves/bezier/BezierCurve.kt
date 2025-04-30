@@ -3,10 +3,10 @@ package diy.lingerie.geometry.curves.bezier
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.SegmentCurve
+import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 
-abstract class BezierCurve : SegmentCurve() {
+abstract class BezierCurve : PrimitiveCurve() {
     data class Joint(
         val rearControl: Point,
         val coord: Coord,
@@ -36,7 +36,7 @@ abstract class BezierCurve : SegmentCurve() {
 
     }
 
-    abstract class Edge : SegmentCurve.Edge() {
+    abstract class Edge : PrimitiveCurve.Edge() {
         abstract val firstControl: Point
 
         abstract val joints: List<Joint>

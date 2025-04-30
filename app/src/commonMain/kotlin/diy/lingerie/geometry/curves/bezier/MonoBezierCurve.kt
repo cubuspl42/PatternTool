@@ -2,9 +2,8 @@ package diy.lingerie.geometry.curves.bezier
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
-import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.SegmentCurve
+import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 
 data class MonoBezierCurve(
@@ -34,7 +33,7 @@ data class MonoBezierCurve(
 
         override fun transformBy(
             transformation: Transformation,
-        ): SegmentCurve.Edge = MonoBezierCurve.Edge(
+        ): PrimitiveCurve.Edge = MonoBezierCurve.Edge(
             firstControl = firstControl.transformBy(transformation = transformation),
             secondControl = secondControl.transformBy(transformation = transformation),
         )
