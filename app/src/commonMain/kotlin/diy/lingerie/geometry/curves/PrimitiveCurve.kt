@@ -30,11 +30,7 @@ abstract class PrimitiveCurve : OpenCurve() {
     override val subCurves: List<PrimitiveCurve>
         get() = listOf(this)
 
-    abstract val start: Point
-
     abstract val edge: Edge
-
-    abstract val end: Point
 
     abstract fun splitAt(
         coord: Coord,
