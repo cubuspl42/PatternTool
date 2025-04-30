@@ -6,11 +6,10 @@ import diy.lingerie.algebra.equalsWithToleranceOrNull
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.SegmentCurve
+import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.curves.bezier.PolyBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
-import diy.lingerie.geometry.splines.SplineContinuity
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.shiftLeft
 import diy.lingerie.utils.iterable.splitBefore
@@ -119,7 +118,7 @@ data class Outline(
             /**
              * The coordinate of the anchor point on the control line segment
              */
-            val anchorCoord: SegmentCurve.Coord,
+            val anchorCoord: PrimitiveCurve.Coord,
             override val frontHandle: Handle,
         ) : Joint() {
             companion object {
@@ -397,7 +396,7 @@ data class Outline(
         val endAnchorPosition: Point
             get() = endAnchor.position
 
-        val seamOffsetCurve: SegmentCurve
+        val seamOffsetCurve: PrimitiveCurve
             get() = curve.findOffsetCurve(
                 offset = edge.seamAllowance.allowanceMm,
             )
@@ -409,7 +408,7 @@ data class Outline(
         )
 
         fun splitAt(
-            edgeCoord: SegmentCurve.Coord,
+            edgeCoord: PrimitiveCurve.Coord,
         ): Pair<Verge, Verge> {
             val (firstSubCurve, secondSubCurve) = curve.splitAt(coord = edgeCoord)
 
@@ -444,7 +443,7 @@ data class Outline(
         /**
          * The local coord on the edge at [edgeIndex]
          */
-        val edgeCoord: SegmentCurve.Coord,
+        val edgeCoord: PrimitiveCurve.Coord,
     )
 
     companion object {
@@ -509,7 +508,7 @@ data class Outline(
             )
         }
 
-    val edgeCurves: List<SegmentCurve>
+    val edgeCurves: List<PrimitiveCurve>
         get() = verges.map { it.curve }
 
     val innerSpline: ClosedSpline<*>

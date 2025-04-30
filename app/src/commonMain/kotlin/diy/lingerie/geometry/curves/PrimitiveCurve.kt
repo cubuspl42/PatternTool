@@ -3,11 +3,10 @@ package diy.lingerie.geometry.curves
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.transformations.Transformation
 import kotlin.jvm.JvmInline
 
-abstract class SegmentCurve : NumericObject {
+abstract class PrimitiveCurve : NumericObject {
     @JvmInline
     value class Coord(
         /**
@@ -59,7 +58,7 @@ abstract class SegmentCurve : NumericObject {
      * curve") with the [other] curve.
      */
     fun findIntersections(
-        other: SegmentCurve,
+        other: PrimitiveCurve,
     ): Set<Intersection> {
         TODO()
     }
@@ -68,7 +67,7 @@ abstract class SegmentCurve : NumericObject {
         abstract fun bind(
             start: Point,
             end: Point,
-        ): SegmentCurve
+        ): PrimitiveCurve
 
         abstract fun transformBy(
             transformation: Transformation,
@@ -83,7 +82,7 @@ abstract class SegmentCurve : NumericObject {
 
     abstract fun splitAt(
         coord: Coord,
-    ): Pair<SegmentCurve, SegmentCurve>
+    ): Pair<PrimitiveCurve, PrimitiveCurve>
 
     abstract fun evaluate(coord: Coord): Point
 }

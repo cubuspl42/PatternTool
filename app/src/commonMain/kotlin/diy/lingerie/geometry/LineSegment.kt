@@ -2,7 +2,7 @@ package diy.lingerie.geometry
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
-import diy.lingerie.geometry.curves.SegmentCurve
+import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 
 /**
@@ -14,12 +14,12 @@ import diy.lingerie.geometry.transformations.Transformation
 data class LineSegment(
     override val start: Point,
     override val end: Point,
-) : SegmentCurve() {
-    data object Edge : SegmentCurve.Edge() {
+) : PrimitiveCurve() {
+    data object Edge : PrimitiveCurve.Edge() {
         override fun bind(
             start: Point,
             end: Point,
-        ): SegmentCurve = LineSegment(
+        ): PrimitiveCurve = LineSegment(
             start = start,
             end = end,
         )
@@ -38,7 +38,7 @@ data class LineSegment(
 
     override fun splitAt(
         coord: Coord,
-    ): Pair<SegmentCurve, SegmentCurve> {
+    ): Pair<PrimitiveCurve, PrimitiveCurve> {
         TODO("Not yet implemented")
     }
 

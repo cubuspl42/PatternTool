@@ -1,9 +1,8 @@
 package diy.lingerie.geometry
 
-import diy.lingerie.geometry.curves.SegmentCurve
+import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
-import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.svg.SvgPath
 
 fun ClosedSpline<*>.toSvgPath(
@@ -26,7 +25,7 @@ fun ClosedSpline<*>.toSvgPath(
     )
 }
 
-private fun SegmentCurve.toSvgPathSeg(): SvgPath.Segment = when (this) {
+private fun PrimitiveCurve.toSvgPathSeg(): SvgPath.Segment = when (this) {
     is LineSegment -> SvgPath.Segment.LineTo(
         finalPoint = end,
     )
