@@ -2,6 +2,7 @@ package diy.lingerie.geometry.splines
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.equalsWithTolerance
+import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
@@ -43,6 +44,12 @@ data class OpenSpline private constructor(
 
     override val links: List<Spline.Link>
         get() = sequentialLinks
+
+    override val start: Point
+        get() = TODO("Not yet implemented")
+
+    override val end: Point
+        get() = TODO("Not yet implemented")
 
     override val subCurves: List<PrimitiveCurve>
         get() = sequentialCurves

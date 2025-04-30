@@ -56,5 +56,9 @@ abstract class OpenCurve : NumericObject {
         abstract val otherCoord: Coord
     }
 
+    abstract val start: Point
+
+    abstract val end: Point
+
     abstract val subCurves: List<PrimitiveCurve>
 }

@@ -2,6 +2,7 @@ package diy.lingerie.geometry.splines
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.equalsWithTolerance
+import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.withNextCyclic
@@ -20,7 +21,7 @@ data class ClosedSpline private constructor(
         )
 
         fun fuse(
-            edgeCurves: List<PrimitiveCurve>,
+            edgeCurves: List<OpenCurve>,
         ): ClosedSpline {
             TODO()
         }
