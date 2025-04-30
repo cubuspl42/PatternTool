@@ -11,12 +11,12 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
 
-object AngleSerializer : KSerializer<Angle> {
+object AngleSerializer : KSerializer<RelativeAngle> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Angle") {
         element<Double>("fi")
     }
 
-    override fun serialize(encoder: Encoder, value: Angle) {
+    override fun serialize(encoder: Encoder, value: RelativeAngle) {
         encoder.encodeStructure(descriptor) {
             encodeDoubleElement(descriptor, 0, value.fi)
         }
@@ -24,7 +24,7 @@ object AngleSerializer : KSerializer<Angle> {
 
     override fun deserialize(
         decoder: Decoder,
-    ): Angle = decoder.decodeStructure(descriptor) {
+    ): RelativeAngle = decoder.decodeStructure(descriptor) {
         var fi = 0.0
 
         while (true) {
@@ -35,6 +35,6 @@ object AngleSerializer : KSerializer<Angle> {
             }
         }
 
-        Angle.Radial(fi = fi)
+        RelativeAngle.Radial(fi = fi)
     }
 }

@@ -1,0 +1,425 @@
+package diy.lingerie.geometry
+
+import diy.lingerie.algebra.Vector2
+import kotlin.math.PI
+import kotlin.math.absoluteValue
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+
+/**
+ * A relative angle between some reference arm and some other arm, in the range
+ * -PI <= fi < PI.
+ */
+sealed class RelativeAngle {
+    data class RadialTolerance(
+        val fiTolerance: Double,
+    ) {
+        init {
+            require(fiTolerance < PI / 8)
+        }
+
+        val cosFiThreshold = cos(fiTolerance)
+    }
+
+    /**
+     * 0° (0)
+     */
+    data object Zero : RelativeAngle() {
+        override fun isZeroWithRadialTolerance(
+            tolerance: RadialTolerance,
+        ): Boolean = true
+
+        override val isAcute: Boolean
+            get() = true
+
+        override val fi: Double
+            get() = 0.0
+
+        override val cosFi: Double
+            get() = 1.0
+
+        override val sinFi: Double
+            get() = 0.0
+
+        override val minor: AbsoluteAngle
+            get() = AbsoluteAngle.Zero
+
+        override fun unaryMinus(): RelativeAngle = Zero
+
+        override fun minus(
+            other: RelativeAngle,
+        ): RelativeAngle = -other
+
+        override fun differenceFromRadial(
+            minuend: Radial,
+        ): RelativeAngle = minuend
+
+        override val differenceFromRight: RelativeAngle
+            get() = Right
+
+        override val differenceFromStraight: RelativeAngle
+            get() = Straight
+
+        override val differenceFromCake: RelativeAngle
+            get() = Cake
+    }
+
+    /**
+     * 90° (PI / 2)
+     */
+    data object Right : RelativeAngle() {
+        override fun isZeroWithRadialTolerance(
+            tolerance: RadialTolerance,
+        ): Boolean = false
+
+        override val isAcute: Boolean
+            get() = false
+
+        override val fi: Double
+            get() = PI / 2
+
+        override val cosFi: Double
+            get() = 0.0
+
+        override val sinFi: Double
+            get() = 1.0
+
+        override val minor: AbsoluteAngle
+            get() = AbsoluteAngle.Right
+
+        override fun unaryMinus(): RelativeAngle = Straight
+
+        override fun minus(
+            other: RelativeAngle,
+        ): RelativeAngle = other.differenceFromRight
+
+        override fun differenceFromRadial(
+            minuend: Radial,
+        ): RelativeAngle = Radial.normalize(
+            fi = minuend.fi - PI / 2,
+        )
+
+        override val differenceFromRight: RelativeAngle
+            get() = RelativeAngle.Zero
+
+        override val differenceFromStraight: RelativeAngle
+            get() = Straight
+
+        override val differenceFromCake: RelativeAngle
+            get() = Cake
+    }
+
+    /**
+     * 180° (PI)
+     */
+    data object Straight : RelativeAngle() {
+        override fun isZeroWithRadialTolerance(
+            tolerance: RadialTolerance,
+        ): Boolean = false
+
+        override val isAcute: Boolean
+            get() = false
+
+        override val fi: Double
+            get() = PI
+
+        override val cosFi: Double
+            get() = -1.0
+
+        override val sinFi: Double
+            get() = 0.0
+
+        override val minor: AbsoluteAngle
+            get() = TODO("Not yet implemented")
+
+        override fun unaryMinus(): RelativeAngle = Cake
+
+        override fun minus(
+            other: RelativeAngle,
+        ): RelativeAngle = other.differenceFromStraight
+
+        override fun differenceFromRadial(
+            minuend: Radial,
+        ): RelativeAngle = Radial.normalize(
+            fi = minuend.fi - PI,
+        )
+
+        override val differenceFromRight: RelativeAngle
+            get() = Right
+
+        override val differenceFromStraight: RelativeAngle
+            get() = Zero
+
+        override val differenceFromCake: RelativeAngle
+            get() = Straight
+    }
+
+    /**
+     * 270° (3 * PI / 2)
+     */
+    internal data object Cake : RelativeAngle() {
+        override fun isZeroWithRadialTolerance(
+            tolerance: RadialTolerance,
+        ): Boolean = false
+
+        override val isAcute: Boolean
+            get() = false
+
+        override val fi: Double
+            get() = 3 * PI / 2
+
+        override val cosFi: Double
+            get() = 0.0
+
+        override val sinFi: Double
+            get() = -1.0
+
+        override val minor: AbsoluteAngle
+            get() = AbsoluteAngle.Right
+
+        override fun unaryMinus(): RelativeAngle = Right
+
+        override fun minus(
+            other: RelativeAngle,
+        ): RelativeAngle = other.differenceFromCake
+
+        override fun differenceFromRadial(
+            minuend: Radial,
+        ): RelativeAngle = Radial.normalize(
+            fi = minuend.fi - 3 * PI / 2,
+        )
+
+        override val differenceFromRight: RelativeAngle
+            get() = Straight
+
+        override val differenceFromStraight: RelativeAngle
+            get() = Cake
+
+        override val differenceFromCake: RelativeAngle
+            get() = Zero
+    }
+
+    data class Radial(
+        override val fi: Double
+    ) : RelativeAngle() {
+        override fun isZeroWithRadialTolerance(
+            tolerance: RadialTolerance,
+        ): Boolean = fi.absoluteValue < tolerance.fiTolerance
+
+        override val isAcute: Boolean
+            get() = fi >= 0 && fi < PI / 2
+
+        companion object {
+            /**
+             * @param fi The relative angle value in radians, unconstrained
+             */
+            fun normalize(
+                fi: Double,
+            ): Radial {
+                val normalized = fi % (2 * PI)
+
+                return Radial(
+                    fi = when {
+                        normalized < -PI -> normalized + 2 * PI
+                        normalized > PI -> normalized - 2 * PI
+                        else -> normalized
+                    },
+                )
+            }
+        }
+
+        init {
+            require(fi in -PI..PI) {
+                "Angle must be in the range [0, 2*PI], but was $fi"
+            }
+        }
+
+        override val cosFi: Double = cos(fi)
+
+        override val sinFi: Double = sin(fi)
+
+        override val minor: AbsoluteAngle
+            get() = AbsoluteAngle.Radial(
+                fi = fi.absoluteValue,
+            )
+
+        override fun minus(
+            other: RelativeAngle,
+        ): RelativeAngle = other.differenceFromRadial(
+            minuend = this,
+        )
+
+        override fun differenceFromRadial(
+            other: Radial,
+        ): RelativeAngle = Radial.normalize(
+            fi = other.fi - fi,
+        )
+
+        override fun unaryMinus(): RelativeAngle = Radial.normalize(
+            fi = -fi,
+        )
+
+        override val differenceFromRight: RelativeAngle
+            get() = Radial.normalize(
+                fi = PI / 2 - fi,
+            )
+
+        override val differenceFromStraight: RelativeAngle
+            get() = Radial.normalize(
+                fi = PI - fi,
+            )
+
+        override val differenceFromCake: RelativeAngle
+            get() = Radial.normalize(
+                fi = 3 * PI / 2 - fi,
+            )
+    }
+
+    data class Trigonometric(
+        override val cosFi: Double,
+        override val sinFi: Double,
+    ) : RelativeAngle() {
+        override fun isZeroWithRadialTolerance(
+            tolerance: RadialTolerance,
+        ): Boolean = when {
+            isAcute -> cosFi > tolerance.cosFiThreshold
+            else -> false
+        }
+
+        override val isAcute: Boolean
+            get() = sinFi >= 0 && cosFi >= 0
+
+        override val fi: Double
+            get() = atan2(sinFi, cosFi)
+
+        override val minor: AbsoluteAngle
+            get() = AbsoluteAngle.Trigonometric(
+                cosFi = cosFi,
+            )
+
+        override fun unaryMinus(): RelativeAngle = Trigonometric(
+            cosFi = cosFi,
+            sinFi = -sinFi,
+        )
+
+        override fun minus(other: RelativeAngle): RelativeAngle = Trigonometric(
+            cosFi = this.cosFi * other.cosFi + this.sinFi * other.sinFi,
+            sinFi = this.sinFi * other.cosFi - this.cosFi * other.sinFi,
+        )
+
+        override fun differenceFromRadial(minuend: Radial): RelativeAngle {
+            val baseSinFi = minuend.sinFi
+            val baseCosFi = minuend.cosFi
+
+            return Trigonometric(
+                cosFi = baseCosFi * this.cosFi + baseSinFi * this.sinFi,
+                sinFi = baseSinFi * this.cosFi - baseCosFi * this.sinFi,
+            )
+        }
+
+        override val differenceFromRight: RelativeAngle
+            get() = Trigonometric(
+                cosFi = sinFi,
+                sinFi = -cosFi,
+            )
+
+        override val differenceFromStraight: RelativeAngle
+            get() = Trigonometric(
+                cosFi = -cosFi,
+                sinFi = -sinFi,
+            )
+
+        override val differenceFromCake: RelativeAngle
+            get() = Trigonometric(
+                cosFi = -sinFi,
+                sinFi = cosFi,
+            )
+    }
+
+    companion object {
+        fun betweenVectors(
+            first: Vector2,
+            second: Vector2,
+        ): RelativeAngle {
+            val lengthProduct = first.length * second.length
+
+            return Trigonometric(
+                cosFi = first.dot(second) / lengthProduct,
+                sinFi = first.cross(second) / lengthProduct,
+            )
+        }
+
+        fun ofDegrees(value: Double): RelativeAngle = Radial.normalize(
+            fi = value * PI / 180.0,
+        )
+    }
+
+    val fiInDegrees: Double
+        get() = fi * 180.0 / PI
+
+    abstract fun isZeroWithRadialTolerance(
+        tolerance: RadialTolerance,
+    ): Boolean
+
+    fun equalsWithRadialTolerance(
+        other: RelativeAngle,
+        tolerance: RadialTolerance,
+    ): Boolean {
+        val difference = this - other
+        return difference.isZeroWithRadialTolerance(tolerance = tolerance)
+    }
+
+    /**
+     * The angle is acute if it is in the range [0, PI / 2), i.e. lies in the
+     * first quadrant.
+     */
+    abstract val isAcute: Boolean
+
+    /**
+     * @param fi The angle value in radians (0 <= fi < 2 * PI).
+     */
+    abstract val fi: Double
+
+    /**
+     * Cosine of the angle (-1 <= cosFi <= 1)
+     */
+    abstract val cosFi: Double
+
+    /**
+     * Sine of the angle (-1 <= sinFi <= 1)
+     */
+    abstract val sinFi: Double
+
+    abstract val minor: AbsoluteAngle
+
+    /**
+     * -fi
+     */
+    abstract operator fun unaryMinus(): RelativeAngle
+
+    /**
+     * fi - other.fi
+     */
+    abstract operator fun minus(other: RelativeAngle): RelativeAngle
+
+    /**
+     * other.fi - fi
+     */
+    abstract fun differenceFromRadial(minuend: Radial): RelativeAngle
+
+    /**
+     * 90° - fi
+     */
+    abstract val differenceFromRight: RelativeAngle
+
+    /**
+     * 180° - fi
+     */
+    abstract val differenceFromStraight: RelativeAngle
+
+    /**
+     * 270° - fi
+     */
+    abstract val differenceFromCake: RelativeAngle
+}

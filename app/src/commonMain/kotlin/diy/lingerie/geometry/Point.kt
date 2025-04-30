@@ -9,6 +9,15 @@ data class Point(
     val pointVector: Vector2,
 ) : NumericObject {
     companion object {
+        fun areCollinear(
+            firstPoint: Point,
+            secondPoint: Point,
+            testPoint: Point,
+            tolerance: Tolerance,
+        ): Boolean {
+            TODO()
+        }
+
         val origin: Point = Point(
             x = 0.0,
             y = 0.0,
