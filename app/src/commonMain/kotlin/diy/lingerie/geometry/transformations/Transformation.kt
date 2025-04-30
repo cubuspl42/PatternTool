@@ -2,9 +2,9 @@ package diy.lingerie.geometry.transformations
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.Vector2
-import diy.lingerie.geometry.RelativeAngle
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.RelativeAngle
 
 sealed class Transformation : NumericObject {
     data class ReflectionOverLine(
@@ -23,7 +23,7 @@ sealed class Transformation : NumericObject {
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance
+            tolerance: NumericObject.Tolerance,
         ): Boolean {
             TODO("Not yet implemented")
         }
@@ -38,7 +38,7 @@ sealed class Transformation : NumericObject {
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance
+            tolerance: NumericObject.Tolerance,
         ): Boolean {
             TODO("Not yet implemented")
         }
@@ -100,7 +100,7 @@ sealed class PrimitiveTransformation : Transformation() {
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance
+            tolerance: NumericObject.Tolerance,
         ): Boolean {
             TODO("Not yet implemented")
         }
@@ -118,28 +118,77 @@ sealed class PrimitiveTransformation : Transformation() {
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance
+            tolerance: NumericObject.Tolerance,
         ): Boolean {
             TODO("Not yet implemented")
         }
     }
 
-    /**
-     * @param angle - angle in radians
-     */
-    data class Rotation(
+    data class Rotation private constructor(
         val angle: RelativeAngle,
     ) : PrimitiveTransformation() {
+        companion object {
+            /**
+             * The identity rotation (±0 degrees)
+             */
+            val Identity = Rotation(
+                angle = RelativeAngle.Zero,
+            )
+
+            /**
+             * The quarter rotation in the clockwise direction (+90 degrees; +Pi/2 radians)
+             */
+            val QuarterClockwise = Rotation(
+                angle = RelativeAngle.Right,
+            )
+
+            /**
+             * The quarter rotation in the counterclockwise direction (-90 degrees; -Pi/2 radians)
+             */
+            val QuarterCounterClockwise = Rotation(
+                angle = -RelativeAngle.Right,
+            )
+
+            /**
+             * The half rotation (±180 degrees; ±Pi radians)
+             */
+            val Half = Rotation(
+                angle = RelativeAngle.Straight,
+            )
+
+            fun trigonometric(
+                cosFi: Double,
+                sinFi: Double,
+            ): Rotation = Rotation(
+                angle = RelativeAngle.Trigonometric(
+                    cosFi = cosFi,
+                    sinFi = sinFi,
+                )
+            )
+
+            fun relative(
+                angle: RelativeAngle,
+            ): Rotation = Rotation(
+                angle = angle,
+            )
+        }
+
+        private val cosFi: Double
+            get() = angle.cosFi
+
+        private val sinFi: Double
+            get() = angle.sinFi
+
         override fun toSvgTransformationString(): String = "rotate(${angle.fiInDegrees})"
 
         override fun transform(point: Point): Point = Point(
-            x = point.x * angle.cosFi - point.y * angle.sinFi,
-            y = point.x * angle.sinFi + point.y * angle.cosFi,
+            x = point.x * cosFi - point.y * sinFi,
+            y = point.x * sinFi + point.y * cosFi,
         )
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance
+            tolerance: NumericObject.Tolerance,
         ): Boolean {
             TODO("Not yet implemented")
         }

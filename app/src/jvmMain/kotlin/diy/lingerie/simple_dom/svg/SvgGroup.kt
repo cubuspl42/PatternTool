@@ -35,8 +35,7 @@ data class SvgGroup(
     }
 
     override fun equalsWithTolerance(
-        other: NumericObject,
-        tolerance: NumericObject.Tolerance
+        other: NumericObject, tolerance: NumericObject.Tolerance
     ): Boolean = when {
         other !is SvgGroup -> false
         id != other.id -> false
@@ -77,11 +76,9 @@ fun CombinedTransformation.Companion.fromSvgTransformList(
 
     return CombinedTransformation(
         components = listOf(
-            PrimitiveTransformation.Rotation(
-                angle = RelativeAngle.Trigonometric(
-                    cosFi = cosFi,
-                    sinFi = sinFi,
-                ),
+            PrimitiveTransformation.Rotation.trigonometric(
+                cosFi = cosFi,
+                sinFi = sinFi,
             ),
             PrimitiveTransformation.Translation(
                 tx = tx,

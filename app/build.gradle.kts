@@ -41,6 +41,14 @@ kotlin {
         jvmTest.dependencies {
         }
     }
+
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            listOf(
+                "-Xconsistent-data-class-copy-visibility",
+            ),
+        )
+    }
 }
 
 tasks.shadowJar {

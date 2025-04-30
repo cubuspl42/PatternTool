@@ -12,7 +12,7 @@ class RelativeAngleTests {
         )
 
         assertEquals(
-            expected = RelativeAngle.Cake,
+            expected = RelativeAngle.NegativeStraight,
             actual = RelativeAngle.Zero - RelativeAngle.Straight,
         )
     }
