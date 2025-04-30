@@ -6,6 +6,7 @@ import diy.lingerie.algebra.equalsWithToleranceOrNull
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.curves.Curve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.curves.bezier.PolyBezierCurve
@@ -118,7 +119,7 @@ data class Outline(
             /**
              * The coordinate of the anchor point on the control line segment
              */
-            val anchorCoord: PrimitiveCurve.Coord,
+            val anchorCoord: Curve.Coord,
             override val frontHandle: Handle,
         ) : Joint() {
             companion object {
@@ -408,7 +409,7 @@ data class Outline(
         )
 
         fun splitAt(
-            edgeCoord: PrimitiveCurve.Coord,
+            edgeCoord: Curve.Coord,
         ): Pair<Verge, Verge> {
             val (firstSubCurve, secondSubCurve) = curve.splitAt(coord = edgeCoord)
 
@@ -443,7 +444,7 @@ data class Outline(
         /**
          * The local coord on the edge at [edgeIndex]
          */
-        val edgeCoord: PrimitiveCurve.Coord,
+        val edgeCoord: Curve.Coord,
     )
 
     companion object {
