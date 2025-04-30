@@ -6,12 +6,15 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.withNextCyclic
+import diy.lingerie.utils.iterable.withPrevious
 
 /**
  * A composite open curve assumed to be tangent-continuous (G1).
  */
 data class OpenSpline private constructor(
+    val firstCurve: PrimitiveCurve,
     val sequentialLinks: List<Spline.Link>,
 ) : OpenCurve(), Spline {
     init {
@@ -19,15 +22,25 @@ data class OpenSpline private constructor(
     }
 
     val sequentialCurves: List<PrimitiveCurve>
-        get() = sequentialLinks.withNextCyclic().map { (link, nextLink) ->
-            link.bind(
-                end = nextLink.start,
-            )
+        get() {
+            val (trailingCurves, _) = sequentialLinks.mapCarrying(
+                initialCarry = firstCurve.end,
+            ) { start, link ->
+                Pair(
+                    link.bind(
+                        start = start,
+                    ),
+                    link.end,
+                )
+            }
+
+            return listOf(firstCurve) + trailingCurves
         }
 
-    fun transformBy(
+    override fun transformBy(
         transformation: Transformation,
     ): OpenSpline = OpenSpline(
+        firstCurve = firstCurve.transformBy(transformation),
         sequentialLinks = sequentialLinks.map {
             it.transformBy(transformation = transformation)
         },

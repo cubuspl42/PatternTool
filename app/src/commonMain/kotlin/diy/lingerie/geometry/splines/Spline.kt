@@ -11,11 +11,11 @@ import diy.lingerie.geometry.transformations.Transformation
  */
 interface Spline {
     data class Link(
-        val start: Point,
         val edge: PrimitiveCurve.Edge,
+        val end: Point,
     ) : NumericObject {
         fun bind(
-            end: Point,
+            start: Point,
         ): PrimitiveCurve = edge.bind(
             start = start,
             end = end,
@@ -26,16 +26,16 @@ interface Spline {
             tolerance: NumericObject.Tolerance,
         ): Boolean = when {
             other !is Link -> false
-            !start.equalsWithTolerance(other.start, tolerance) -> false
             !edge.equalsWithTolerance(other.edge, tolerance) -> false
+            !end.equalsWithTolerance(other.end, tolerance) -> false
             else -> true
         }
 
         fun transformBy(
             transformation: Transformation,
         ): Link = Link(
-            start = start.transformBy(transformation = transformation),
             edge = edge.transformBy(transformation = transformation),
+            end = end.transformBy(transformation = transformation),
         )
     }
 

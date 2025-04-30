@@ -4,6 +4,7 @@ import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
 import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.transformations.Transformation
 
 /**
@@ -110,6 +111,10 @@ data class PolyBezierCurve(
                 ),
             )
         }
+
+    override fun transformBy(transformation: Transformation): PolyBezierCurve {
+        TODO("Not yet implemented")
+    }
 
     override fun splitAt(
         coord: Coord,

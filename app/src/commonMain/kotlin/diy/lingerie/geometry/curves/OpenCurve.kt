@@ -3,6 +3,8 @@ package diy.lingerie.geometry.curves
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.splines.OpenSpline
+import diy.lingerie.geometry.transformations.Transformation
 import kotlin.jvm.JvmInline
 
 /**
@@ -61,4 +63,8 @@ abstract class OpenCurve : NumericObject {
     abstract val end: Point
 
     abstract val subCurves: List<PrimitiveCurve>
+
+    abstract fun transformBy(
+        transformation: Transformation,
+    ): OpenCurve
 }

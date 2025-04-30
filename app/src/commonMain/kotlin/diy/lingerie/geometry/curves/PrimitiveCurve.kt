@@ -2,6 +2,7 @@ package diy.lingerie.geometry.curves
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.Transformation
 
 abstract class PrimitiveCurve : OpenCurve() {
@@ -21,6 +22,15 @@ abstract class PrimitiveCurve : OpenCurve() {
             end: Point,
         ): PrimitiveCurve
 
+        fun semiBind(
+            end: Point,
+        ): Spline.Link {
+            return Spline.Link(
+                edge = this,
+                end = end,
+            )
+        }
+
         abstract fun transformBy(
             transformation: Transformation,
         ): Edge
@@ -37,4 +47,8 @@ abstract class PrimitiveCurve : OpenCurve() {
     ): Pair<PrimitiveCurve, PrimitiveCurve>
 
     abstract fun evaluate(coord: Coord): Point
+
+    abstract override fun transformBy(
+        transformation: Transformation,
+    ): PrimitiveCurve
 }

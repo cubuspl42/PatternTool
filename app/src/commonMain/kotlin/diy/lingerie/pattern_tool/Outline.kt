@@ -17,6 +17,7 @@ import diy.lingerie.utils.iterable.shiftLeft
 import diy.lingerie.utils.iterable.splitBefore
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.withNextCyclic
+import diy.lingerie.utils.iterable.withPreviousCyclic
 import kotlin.jvm.JvmInline
 
 /**
@@ -293,17 +294,14 @@ data class Outline(
      * adjacent link, it can be used to construct a verge.
      */
     data class Link(
-        val startAnchor: Joint.Anchor,
         val edge: Edge,
+        val endAnchor: Joint.Anchor,
     ) : NumericObject {
         companion object {
             fun reconstruct(
                 splineLink: Spline.Link,
                 edgeMetadata: EdgeMetadata,
             ): Link = Link(
-                startAnchor = Joint.Anchor(
-                    position = splineLink.start,
-                ),
                 edge = when (val edge = splineLink.edge) {
                     is BezierCurve.Edge -> Edge.reconstruct(
                         curveEdge = edge,
@@ -316,11 +314,14 @@ data class Outline(
 
                     else -> throw IllegalArgumentException("The edge is not a supported type")
                 },
+                endAnchor = Joint.Anchor(
+                    position = splineLink.end,
+                ),
             )
         }
 
         fun bind(
-            endAnchor: Joint.Anchor,
+            startAnchor: Joint.Anchor,
         ): Verge = Verge(
             startAnchor = startAnchor,
             edge = edge,
@@ -332,8 +333,8 @@ data class Outline(
             tolerance: NumericObject.Tolerance,
         ): Boolean = when {
             other !is Link -> false
-            !startAnchor.equalsWithTolerance(other.startAnchor, tolerance) -> false
             !edge.equalsWithTolerance(other.edge, tolerance) -> false
+            !endAnchor.equalsWithTolerance(other.endAnchor, tolerance) -> false
             else -> true
         }
     }
@@ -388,8 +389,8 @@ data class Outline(
 
         val innerSplineLink: Spline.Link
             get() = Spline.Link(
-                start = startAnchorPosition,
                 edge = curveEdge,
+                end = endAnchorPosition,
             )
 
         val startAnchorPosition: Point
@@ -458,8 +459,8 @@ data class Outline(
                 }
 
                 Link(
-                    startAnchor = verge.startAnchor,
                     edge = verge.edge,
+                    endAnchor = verge.endAnchor,
                 )
             },
         )
@@ -504,9 +505,9 @@ data class Outline(
     }
 
     val verges: List<Verge>
-        get() = links.withNextCyclic().map { (link, nextLink) ->
+        get() = links.withPreviousCyclic().map { (prevLink, link) ->
             link.bind(
-                endAnchor = nextLink.startAnchor,
+                startAnchor = prevLink.endAnchor,
             )
         }
 

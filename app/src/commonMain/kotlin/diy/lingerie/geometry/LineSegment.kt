@@ -2,6 +2,7 @@ package diy.lingerie.geometry
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
+import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 
@@ -61,4 +62,11 @@ data class LineSegment(
             point0 = start,
             point1 = end,
         )
+
+    override fun transformBy(
+        transformation: Transformation,
+    ): LineSegment = LineSegment(
+        start = start.transformBy(transformation = transformation),
+        end = end.transformBy(transformation = transformation),
+    )
 }
