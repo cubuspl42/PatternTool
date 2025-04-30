@@ -9,19 +9,19 @@ import diy.lingerie.utils.iterable.withNextCyclic
 /**
  * A composite closed curve guaranteed only to be positionally-continuous (C0).
  */
-data class ClosedSpline<G : SplineContinuity.Positional> private constructor(
+data class ClosedSpline private constructor(
     val cyclicLinks: List<Spline.Link>,
 ) : Spline, NumericObject {
     companion object {
         fun positionallyContinuous(
             links: List<Spline.Link>,
-        ): ClosedSpline<SplineContinuity.Positional> = ClosedSpline(
+        ): ClosedSpline = ClosedSpline(
             cyclicLinks = links,
         )
 
         fun fuse(
             edgeCurves: List<PrimitiveCurve>,
-        ): ClosedSpline<*> {
+        ): ClosedSpline {
             TODO()
         }
     }
@@ -39,7 +39,7 @@ data class ClosedSpline<G : SplineContinuity.Positional> private constructor(
 
     fun transformBy(
         transformation: Transformation,
-    ): ClosedSpline<G> = ClosedSpline(
+    ): ClosedSpline = ClosedSpline(
         cyclicLinks = cyclicLinks.map {
             it.transformBy(transformation = transformation)
         },
@@ -49,7 +49,7 @@ data class ClosedSpline<G : SplineContinuity.Positional> private constructor(
         other: NumericObject,
         tolerance: NumericObject.Tolerance,
     ): Boolean = when {
-        other !is ClosedSpline<*> -> false
+        other !is ClosedSpline -> false
         !cyclicLinks.equalsWithTolerance(other.cyclicLinks, tolerance) -> false
         else -> true
     }
