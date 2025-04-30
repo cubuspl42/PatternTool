@@ -17,7 +17,7 @@ fun SvgPath.toClosedSpline(): ClosedSpline {
     val originPoint = firstSegment.finalPoint
 
     val (innerSegments, lastSegment) = trailingSegments.untrail()
-        ?: throw IllegalArgumentException("Path must contain at least two segments")
+        ?: throw IllegalArgumentException("Path must contain a closing segment")
 
     if (lastSegment != SvgPath.Segment.ClosePath) {
         throw IllegalArgumentException("Path must end with a ClosePath segment")
@@ -25,26 +25,12 @@ fun SvgPath.toClosedSpline(): ClosedSpline {
 
     val (links, finalPoint) = innerSegments.mapCarrying(
         initialCarry = originPoint,
-    ) { start, segment ->
+    ) { currentPoint, segment ->
         segment as? SvgPath.Segment.CurveSegment
             ?: throw IllegalArgumentException("Each inner path segment must be a curve segment")
 
-        val edge = when (segment) {
-            is SvgPath.Segment.LineTo -> LineSegment.Edge
-
-            is SvgPath.Segment.CubicBezierCurveTo -> Edge(
-                firstControl = segment.controlPoint1,
-                secondControl = segment.controlPoint2,
-            )
-
-            is SvgPath.Segment.SmoothCubicBezierCurveTo -> TODO()
-        }
-
         Pair(
-            Spline.Link(
-                start = start,
-                edge = edge,
-            ),
+            segment.toLink(),
             segment.finalPoint,
         )
     }
@@ -56,4 +42,23 @@ fun SvgPath.toClosedSpline(): ClosedSpline {
     return ClosedSpline.positionallyContinuous(
         links = links,
     )
+}
+
+fun SvgPath.Segment.CurveSegment.toLink(): Spline.Link {
+    val edge = toEdge()
+
+    return edge.semiBind(
+        end = finalPoint,
+    )
+}
+
+fun SvgPath.Segment.CurveSegment.toEdge() = when (this) {
+    is SvgPath.Segment.LineTo -> LineSegment.Edge
+
+    is SvgPath.Segment.CubicBezierCurveTo -> Edge(
+        firstControl = controlPoint1,
+        secondControl = controlPoint2,
+    )
+
+    is SvgPath.Segment.SmoothCubicBezierCurveTo -> TODO()
 }

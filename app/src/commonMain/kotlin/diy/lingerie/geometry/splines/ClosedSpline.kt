@@ -5,7 +5,7 @@ import diy.lingerie.algebra.equalsWithTolerance
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.utils.iterable.withNextCyclic
+import diy.lingerie.utils.iterable.withPreviousCyclic
 
 /**
  * A composite closed curve guaranteed only to be positionally-continuous (C0).
@@ -32,9 +32,9 @@ data class ClosedSpline private constructor(
     }
 
     val cyclicCurves: List<PrimitiveCurve>
-        get() = cyclicLinks.withNextCyclic().map { (link, nextLink) ->
-            link.bind(
-                end = nextLink.start,
+        get() = cyclicLinks.withPreviousCyclic().map { (prevLink, link) ->
+            prevLink.bind(
+                start = prevLink.end,
             )
         }
 

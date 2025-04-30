@@ -3,6 +3,7 @@ package diy.lingerie.geometry.curves.bezier
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 
@@ -62,6 +63,15 @@ data class MonoBezierCurve(
 
     override val subCurves: List<MonoBezierCurve>
         get() = listOf(this)
+
+    override fun transformBy(
+        transformation: Transformation,
+    ): MonoBezierCurve = MonoBezierCurve(
+        start = start.transformBy(transformation = transformation),
+        firstControl = firstControl.transformBy(transformation = transformation),
+        secondControl = secondControl.transformBy(transformation = transformation),
+        end = end.transformBy(transformation = transformation),
+    )
 
     override fun splitAt(
         coord: Coord,
