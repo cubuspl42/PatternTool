@@ -64,7 +64,7 @@ data class PatternPieceLayout(
 
     val transformation: CombinedTransformation
         get() = PrimitiveTransformation.Companion.combine(
-            PrimitiveTransformation.Rotation(angle = rotationAngle),
+            PrimitiveTransformation.Rotation.relative(angle = rotationAngle),
             PrimitiveTransformation.Translation(translationVector = position.pointVector),
         )
 

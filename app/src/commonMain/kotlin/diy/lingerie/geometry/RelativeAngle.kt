@@ -42,6 +42,9 @@ sealed class RelativeAngle {
         override val sinFi: Double
             get() = 0.0
 
+        override val absolute: RelativeAngle
+            get() = Zero
+
         override val minor: AbsoluteAngle
             get() = AbsoluteAngle.Zero
 
@@ -62,7 +65,7 @@ sealed class RelativeAngle {
             get() = Straight
 
         override val differenceFromCake: RelativeAngle
-            get() = Cake
+            get() = NegativeStraight
     }
 
     /**
@@ -85,6 +88,9 @@ sealed class RelativeAngle {
         override val sinFi: Double
             get() = 1.0
 
+        override val absolute: RelativeAngle
+            get() = Right
+
         override val minor: AbsoluteAngle
             get() = AbsoluteAngle.Right
 
@@ -101,13 +107,13 @@ sealed class RelativeAngle {
         )
 
         override val differenceFromRight: RelativeAngle
-            get() = RelativeAngle.Zero
+            get() = Zero
 
         override val differenceFromStraight: RelativeAngle
             get() = Straight
 
         override val differenceFromCake: RelativeAngle
-            get() = Cake
+            get() = NegativeStraight
     }
 
     /**
@@ -130,10 +136,13 @@ sealed class RelativeAngle {
         override val sinFi: Double
             get() = 0.0
 
+        override val absolute: RelativeAngle
+            get() = Straight
+
         override val minor: AbsoluteAngle
             get() = TODO("Not yet implemented")
 
-        override fun unaryMinus(): RelativeAngle = Cake
+        override fun unaryMinus(): RelativeAngle = NegativeStraight
 
         override fun minus(
             other: RelativeAngle,
@@ -156,9 +165,9 @@ sealed class RelativeAngle {
     }
 
     /**
-     * 270° (3 * PI / 2)
+     * -90° (-PI / 2)
      */
-    internal data object Cake : RelativeAngle() {
+    internal data object NegativeStraight : RelativeAngle() {
         override fun isZeroWithRadialTolerance(
             tolerance: RadialTolerance,
         ): Boolean = false
@@ -167,13 +176,16 @@ sealed class RelativeAngle {
             get() = false
 
         override val fi: Double
-            get() = 3 * PI / 2
+            get() = -PI / 2
 
         override val cosFi: Double
             get() = 0.0
 
         override val sinFi: Double
             get() = -1.0
+
+        override val absolute: RelativeAngle
+            get() = Straight
 
         override val minor: AbsoluteAngle
             get() = AbsoluteAngle.Right
@@ -194,7 +206,7 @@ sealed class RelativeAngle {
             get() = Straight
 
         override val differenceFromStraight: RelativeAngle
-            get() = Cake
+            get() = NegativeStraight
 
         override val differenceFromCake: RelativeAngle
             get() = Zero
@@ -235,9 +247,14 @@ sealed class RelativeAngle {
             }
         }
 
-        override val cosFi: Double = cos(fi)
+        override val cosFi: Double by lazy { cos(fi) }
 
-        override val sinFi: Double = sin(fi)
+        override val sinFi: Double by lazy { sin(fi) }
+
+        override val absolute: RelativeAngle
+            get() = Radial(
+                fi = fi.absoluteValue,
+            )
 
         override val minor: AbsoluteAngle
             get() = AbsoluteAngle.Radial(
@@ -252,26 +269,26 @@ sealed class RelativeAngle {
 
         override fun differenceFromRadial(
             other: Radial,
-        ): RelativeAngle = Radial.normalize(
+        ): RelativeAngle = normalize(
             fi = other.fi - fi,
         )
 
-        override fun unaryMinus(): RelativeAngle = Radial.normalize(
+        override fun unaryMinus(): RelativeAngle = normalize(
             fi = -fi,
         )
 
         override val differenceFromRight: RelativeAngle
-            get() = Radial.normalize(
+            get() = normalize(
                 fi = PI / 2 - fi,
             )
 
         override val differenceFromStraight: RelativeAngle
-            get() = Radial.normalize(
+            get() = normalize(
                 fi = PI - fi,
             )
 
         override val differenceFromCake: RelativeAngle
-            get() = Radial.normalize(
+            get() = normalize(
                 fi = 3 * PI / 2 - fi,
             )
     }
@@ -292,6 +309,12 @@ sealed class RelativeAngle {
 
         override val fi: Double
             get() = atan2(sinFi, cosFi)
+
+        override val absolute: RelativeAngle
+            get() = when {
+                sinFi >= 0 -> this
+                else -> -this
+            }
 
         override val minor: AbsoluteAngle
             get() = AbsoluteAngle.Trigonometric(
@@ -377,7 +400,7 @@ sealed class RelativeAngle {
     abstract val isAcute: Boolean
 
     /**
-     * @param fi The angle value in radians (0 <= fi < 2 * PI).
+     * @param fi The angle value in radians
      */
     abstract val fi: Double
 
@@ -390,6 +413,8 @@ sealed class RelativeAngle {
      * Sine of the angle (-1 <= sinFi <= 1)
      */
     abstract val sinFi: Double
+
+    abstract val absolute: RelativeAngle
 
     abstract val minor: AbsoluteAngle
 
