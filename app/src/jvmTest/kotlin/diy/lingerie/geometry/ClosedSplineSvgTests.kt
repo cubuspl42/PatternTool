@@ -2,6 +2,7 @@ package diy.lingerie.geometry
 
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
+import diy.lingerie.geometry.splines.SplineContinuity
 import diy.lingerie.simple_dom.pt
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
@@ -20,7 +21,7 @@ class ClosedSplineSvgTests {
         val closedSpline = svgPath.toClosedSpline()
 
         assertEqualsWithTolerance(
-            expected = ClosedSpline(
+            expected = ClosedSpline.positionallyContinuous(
                 links = listOf(
                     ClosedSpline.Link(
                         start = Point(32.551998138427734, 125.20800018310547),
@@ -62,7 +63,7 @@ class ClosedSplineSvgTests {
 
     @Test
     fun toSvgPathElementTest() {
-        val closedSpline = ClosedSpline(
+        val closedSpline = ClosedSpline.positionallyContinuous(
             links = listOf(
                 ClosedSpline.Link(
                     start = Point(32.551998138427734, 125.20800018310547),

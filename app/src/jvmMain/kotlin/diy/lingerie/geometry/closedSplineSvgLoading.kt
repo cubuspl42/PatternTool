@@ -2,12 +2,13 @@ package diy.lingerie.geometry
 
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve.Edge
 import diy.lingerie.geometry.splines.ClosedSpline
+import diy.lingerie.geometry.splines.SplineContinuity
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.untrail
 
-fun SvgPath.toClosedSpline(): ClosedSpline {
+fun SvgPath.toClosedSpline(): ClosedSpline<*> {
     val (firstSegment, trailingSegments) = segments.uncons()
         ?: throw IllegalArgumentException("Path must contain at least one segment")
 
@@ -52,7 +53,7 @@ fun SvgPath.toClosedSpline(): ClosedSpline {
         throw IllegalStateException("The path is not closed: $originPoint != $finalPoint")
     }
 
-    return ClosedSpline(
+    return ClosedSpline.positionallyContinuous(
         links = links,
     )
 }
