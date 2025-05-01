@@ -30,50 +30,70 @@ data class Outline(
         val seamAllowance: SeamAllowance,
     )
 
+    data class Arm(
+        val anchor: Anchor,
+        val handle: Handle?,
+    ) {
+        val effectiveHandlePosition: Point
+            get() = handle?.position ?: anchor.position
+    }
+
+    @JvmInline
+    value class Anchor(
+        val position: Point,
+    ) : NumericObject {
+        fun transformBy(
+            transformation: Transformation,
+        ): Anchor = Anchor(
+            position = position.transformBy(transformation = transformation),
+        )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance,
+        ): Boolean = when {
+            other !is Anchor -> false
+            !position.equalsWithTolerance(other.position, tolerance) -> false
+            else -> true
+        }
+    }
+
+    @JvmInline
+    value class Handle(
+        val position: Point,
+    ) : NumericObject {
+        fun transformBy(
+            transformation: Transformation,
+        ): Handle = Handle(
+            position = position.transformBy(transformation = transformation),
+        )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance,
+        ): Boolean = when {
+            other !is Handle -> false
+            !position.equalsWithTolerance(other.position, tolerance) -> false
+            else -> true
+        }
+    }
+
     sealed class Joint : NumericObject {
         abstract fun transformBy(
             transformation: Transformation,
         ): Joint
 
-        @JvmInline
-        value class Anchor(
-            val position: Point,
-        ) : NumericObject {
-            fun transformBy(
-                transformation: Transformation,
-            ): Anchor = Anchor(
-                position = position.transformBy(transformation = transformation),
+        val rearArm: Arm
+            get() = Arm(
+                anchor = anchor,
+                handle = rearHandle,
             )
 
-            override fun equalsWithTolerance(
-                other: NumericObject,
-                tolerance: NumericObject.Tolerance,
-            ): Boolean = when {
-                other !is Anchor -> false
-                !position.equalsWithTolerance(other.position, tolerance) -> false
-                else -> true
-            }
-        }
-
-        @JvmInline
-        value class Handle(
-            val position: Point,
-        ) : NumericObject {
-            fun transformBy(
-                transformation: Transformation,
-            ): Handle = Handle(
-                position = position.transformBy(transformation = transformation),
+        val frontArm: Arm
+            get() = Arm(
+                anchor = anchor,
+                handle = frontHandle,
             )
-
-            override fun equalsWithTolerance(
-                other: NumericObject,
-                tolerance: NumericObject.Tolerance,
-            ): Boolean = when {
-                other !is Handle -> false
-                !position.equalsWithTolerance(other.position, tolerance) -> false
-                else -> true
-            }
-        }
 
         /**
          * An unconstrained (typically sharp) joint
@@ -192,9 +212,9 @@ data class Outline(
     }
 
     data class Edge(
-        val startHandle: Joint.Handle?,
+        val startHandle: Handle?,
         val intermediateJoints: List<Joint.Smooth>,
-        val endHandle: Joint.Handle?,
+        val endHandle: Handle?,
         val metadata: EdgeMetadata,
     ) : NumericObject {
         companion object {
@@ -202,13 +222,13 @@ data class Outline(
                 curveEdge: BezierCurve.Edge,
                 metadata: EdgeMetadata,
             ): Edge = Edge(
-                startHandle = Joint.Handle(
+                startHandle = Handle(
                     position = curveEdge.firstControl,
                 ),
                 intermediateJoints = curveEdge.joints.map {
                     Joint.Smooth.reconstruct(bezierJoint = it)
                 },
-                endHandle = Joint.Handle(
+                endHandle = Handle(
                     position = curveEdge.lastControl,
                 ),
                 metadata = metadata,
@@ -232,7 +252,7 @@ data class Outline(
             )
         }
 
-        fun isLine() = when {
+        fun isStraight() = when {
             startHandle != null -> false
             endHandle != null -> false
             intermediateJoints.isNotEmpty() -> false
@@ -295,7 +315,7 @@ data class Outline(
      */
     data class Link(
         val edge: Edge,
-        val endAnchor: Joint.Anchor,
+        val endAnchor: Anchor,
     ) : NumericObject {
         companion object {
             fun reconstruct(
@@ -314,14 +334,14 @@ data class Outline(
 
                     else -> throw IllegalArgumentException("The edge is not a supported type")
                 },
-                endAnchor = Joint.Anchor(
+                endAnchor = Anchor(
                     position = splineLink.end,
                 ),
             )
         }
 
         fun bind(
-            startAnchor: Joint.Anchor,
+            startAnchor: Anchor,
         ): Verge = Verge(
             startAnchor = startAnchor,
             edge = edge,
@@ -340,15 +360,15 @@ data class Outline(
     }
 
     data class Verge(
-        val startAnchor: Joint.Anchor,
+        val startAnchor: Anchor,
         val edge: Edge,
-        val endAnchor: Joint.Anchor,
+        val endAnchor: Anchor,
     ) {
         companion object {
             fun line(
-                startAnchor: Joint.Anchor,
+                startAnchor: Anchor,
                 edgeMetadata: EdgeMetadata,
-                endAnchor: Joint.Anchor,
+                endAnchor: Anchor,
             ): Verge = Verge(
                 startAnchor = startAnchor,
                 edge = Edge.line(metadata = edgeMetadata),
@@ -359,18 +379,30 @@ data class Outline(
                 edgeCurve: BezierCurve,
                 edgeMetadata: EdgeMetadata,
             ): Verge = Verge(
-                startAnchor = Joint.Anchor(
+                startAnchor = Anchor(
                     position = edgeCurve.start,
                 ),
                 edge = Edge.reconstruct(
                     bezierCurve = edgeCurve,
                     metadata = edgeMetadata,
                 ),
-                endAnchor = Joint.Anchor(
+                endAnchor = Anchor(
                     position = edgeCurve.end,
                 ),
             )
         }
+
+        val startArm: Arm
+            get() = Arm(
+                anchor = startAnchor,
+                handle = edge.startHandle,
+            )
+
+        val endArm: Arm
+            get() = Arm(
+                anchor = endAnchor,
+                handle = edge.endHandle,
+            )
 
         val curveEdge: PolyBezierCurve.Edge
             get() = PolyBezierCurve.Edge(
@@ -481,17 +513,17 @@ data class Outline(
             },
         )
 
-        private fun closeSegments(
+        private fun closeVerges(
             verges: List<Verge>,
             closingEdgeMetadata: EdgeMetadata,
         ): Outline {
-            val firstSegment = verges.first()
-            val lastSegment = verges.last()
+            val firstVerge = verges.first()
+            val lastVerge = verges.last()
 
             val closingVerge = Verge.line(
-                startAnchor = lastSegment.endAnchor,
+                startAnchor = lastVerge.endAnchor,
                 edgeMetadata = closingEdgeMetadata,
-                endAnchor = firstSegment.startAnchor,
+                endAnchor = firstVerge.startAnchor,
             )
 
             return connect(
@@ -570,24 +602,24 @@ data class Outline(
         val (firstEdgeIndex, firstEdgeCoord) = firstSplitCoord
         val (secondEdgeIndex, secondEdgeCoord) = secondSplitCoord
 
-        val (frontSegments, centralSegments, backSegments) = verges.splitBefore(
+        val (frontVerges, centralVerges, backVerge) = verges.splitBefore(
             firstIndex = firstEdgeIndex,
             secondIndex = secondEdgeIndex,
         )
 
-        val (firstCentralSegment, trailingCentralSegments) = centralSegments.uncons()!!
-        val (firstBackSegment, trailingBackSegments) = backSegments.uncons()!!
+        val (firstCentralVerge, trailingCentralVerges) = centralVerges.uncons()!!
+        val (firstBackVerge, trailingBackVerges) = backVerge.uncons()!!
 
-        val (firstCentralSegment0, firstCentralSegment1) = firstCentralSegment.splitAt(edgeCoord = firstEdgeCoord)
-        val (firstBackSegment0, firstBackSegment1) = firstBackSegment.splitAt(edgeCoord = secondEdgeCoord)
+        val (firstCentralVerge0, firstCentralVerge1) = firstCentralVerge.splitAt(edgeCoord = firstEdgeCoord)
+        val (firstBackVerge0, firstBackVerge1) = firstBackVerge.splitAt(edgeCoord = secondEdgeCoord)
 
-        val firstSubOutline = closeSegments(
-            verges = listOf(firstCentralSegment1) + trailingCentralSegments + firstBackSegment0,
+        val firstSubOutline = closeVerges(
+            verges = listOf(firstCentralVerge1) + trailingCentralVerges + firstBackVerge0,
             closingEdgeMetadata = splitEdgeMetadata,
         )
 
-        val secondSubOutline = closeSegments(
-            verges = listOf(firstBackSegment1) + trailingBackSegments + frontSegments + firstCentralSegment0,
+        val secondSubOutline = closeVerges(
+            verges = listOf(firstBackVerge1) + trailingBackVerges + frontVerges + firstCentralVerge0,
             closingEdgeMetadata = splitEdgeMetadata,
         )
 
@@ -607,29 +639,25 @@ data class Outline(
 
         val (removedVerge, remainingVerges) = shiftedVerges.uncons()!!
 
-        if (!removedVerge.edge.isLine()) {
-            throw IllegalArgumentException("Cannot mirror over a non-line verge")
+        if (!removedVerge.edge.isStraight()) {
+            throw IllegalArgumentException("Cannot mirror over a non-straight verge")
         }
 
-        val mirrorLine = Line.throughPoints(
+        val reflectionLine = Line.throughPoints(
             removedVerge.startAnchorPosition,
             removedVerge.endAnchorPosition,
         ) ?: throw IllegalArgumentException("Cannot mirror over a zero-length line")
 
-        val reversedVerges = remainingVerges.map {
-            it.reversed()
-        }
-
-        val mirroredVerges = reversedVerges.map {
-            it.transformBy(
+        val mirroredVerges = remainingVerges.map {
+            it.reversed().transformBy(
                 transformation = Transformation.ReflectionOverLine(
-                    line = mirrorLine,
+                    line = reflectionLine,
                 ),
             )
         }
 
         return connect(
-            remainingVerges + mirroredVerges,
+            verges = remainingVerges + mirroredVerges,
         )
     }
 
