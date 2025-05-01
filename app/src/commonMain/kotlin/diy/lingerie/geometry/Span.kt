@@ -26,4 +26,6 @@ data class Span(
     override fun compareTo(
         other: Span,
     ): Int = valueSquared.compareTo(other.valueSquared)
+
+    operator fun div(other: Span): Double = sqrt(valueSquared / other.valueSquared)
 }
