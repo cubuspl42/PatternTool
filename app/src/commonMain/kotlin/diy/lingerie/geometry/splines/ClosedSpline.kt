@@ -33,7 +33,7 @@ data class ClosedSpline private constructor(
 
     val cyclicCurves: List<PrimitiveCurve>
         get() = cyclicLinks.withPreviousCyclic().map { (prevLink, link) ->
-            prevLink.bind(
+            link.bind(
                 start = prevLink.end,
             )
         }
