@@ -560,10 +560,10 @@ data class Outline(
     )
 
     fun cut(
-        lineSegment: LineSegment,
+        cutLineSegment: LineSegment,
         cutEdgeMetadata: EdgeMetadata,
     ): Pair<Outline, Outline> {
-        val intersectionCoords = findIntersectionCoords(lineSegment = lineSegment)
+        val intersectionCoords = findIntersectionCoords(lineSegment = cutLineSegment)
 
         if (intersectionCoords.size != 2) {
             throw IllegalArgumentException("The given line segment does not intersect the outline at exactly two points")
