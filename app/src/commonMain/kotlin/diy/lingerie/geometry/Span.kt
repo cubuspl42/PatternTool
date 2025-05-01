@@ -7,7 +7,7 @@ import kotlin.math.sqrt
  */
 data class Span(
     val valueSquared: Double,
-) : SpatialObject {
+) : SpatialObject, Comparable<Span> {
     companion object {
         val Zero = Span(valueSquared = 0.0)
     }
@@ -22,4 +22,8 @@ data class Span(
         other !is Span -> false
         else -> tolerance.equalsApproximately(this, other)
     }
+
+    override fun compareTo(
+        other: Span,
+    ): Int = valueSquared.compareTo(other.valueSquared)
 }
