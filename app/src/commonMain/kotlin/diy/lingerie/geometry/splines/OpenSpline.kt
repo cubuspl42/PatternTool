@@ -7,6 +7,7 @@ import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.mapCarrying
+import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.withNextCyclic
 import diy.lingerie.utils.iterable.withPrevious
 
@@ -17,6 +18,23 @@ data class OpenSpline private constructor(
     val firstCurve: PrimitiveCurve,
     val sequentialLinks: List<Spline.Link>,
 ) : OpenCurve(), Spline {
+    companion object {
+        fun of(
+            origin: Point,
+            sequentialLinks: List<Spline.Link>,
+        ): OpenSpline {
+            val (firstLink, trailingLinks) = sequentialLinks.uncons()
+                ?: throw IllegalArgumentException("The list of sequential links must not be empty")
+
+            val firstCurve = firstLink.bind(start = origin)
+
+            return OpenSpline(
+                firstCurve = firstCurve,
+                sequentialLinks = trailingLinks,
+            )
+        }
+    }
+
     init {
         require(sequentialLinks.isNotEmpty())
     }
@@ -40,7 +58,9 @@ data class OpenSpline private constructor(
     override fun transformBy(
         transformation: Transformation,
     ): OpenSpline = OpenSpline(
-        firstCurve = firstCurve.transformBy(transformation),
+        firstCurve = firstCurve.transformBy(
+            transformation = transformation,
+        ),
         sequentialLinks = sequentialLinks.map {
             it.transformBy(transformation = transformation)
         },
