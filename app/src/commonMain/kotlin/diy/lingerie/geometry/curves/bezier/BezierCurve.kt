@@ -49,6 +49,14 @@ abstract class BezierCurve : PrimitiveCurve() {
         ): BezierCurve
     }
 
+    final override fun toBezier(): BezierCurve = this
+
+    fun connectsSmoothly(
+        nextCurve: BezierCurve,
+    ): Boolean {
+        return false // TODO
+    }
+
     abstract override val edge: BezierCurve.Edge
 
     abstract val firstControl: Point

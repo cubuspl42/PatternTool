@@ -4,6 +4,8 @@ import diy.lingerie.algebra.Vector2
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
+import diy.lingerie.geometry.curves.PrimitiveCurve
+import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.geometry.splines.Spline
@@ -53,11 +55,15 @@ private fun buildOutline(
     internalSpline: ClosedSpline,
     edgMetadata: Outline.EdgeMetadata,
 ): Outline {
-    val links = internalSpline.cyclicLinks.clusterSimilar { prevLink, nextLink ->
-        false
-    }.map { smoothLinks ->
+    val links = internalSpline.cyclicCurves.map {
+        it.toBezier()
+    }.clusterSimilar { prevCurve, nextCurve ->
+        prevCurve.connectsSmoothly(
+            nextCurve = nextCurve,
+        )
+    }.map { smoothlyConnectedCurves ->
         buildOutlineLink(
-            smoothLinks = smoothLinks,
+            smoothlyConnectedCurves = smoothlyConnectedCurves,
             edgMetadata = edgMetadata,
         )
     }
@@ -68,22 +74,22 @@ private fun buildOutline(
 }
 
 private fun buildOutlineLink(
-    smoothLinks: List<Spline.Link>,
+    smoothlyConnectedCurves: List<BezierCurve>,
     edgMetadata: Outline.EdgeMetadata,
 ): Outline.Link {
-    val (firstSmoothLink, trailingSmoothLinks) = smoothLinks.uncons()
-        ?: throw AssertionError("List of smooth links must not be empty")
+    val (firstCurve, trailingCurves) = smoothlyConnectedCurves.uncons()
+        ?: throw AssertionError("List of smooth curves must not be empty")
 
-    val (innerSmoothLinks, lastSmoothLink) = trailingSmoothLinks.untrail() ?: run {
-        return firstSmoothLink.toOutlineLink(edgMetadata = edgMetadata)
+    val (innerCurves, lastCurve) = trailingCurves.untrail() ?: run {
+        return firstCurve.toOutlineLink(edgMetadata = edgMetadata)
     }
 
-    val (intermediateJoints, _) = innerSmoothLinks.mapCarrying(
-        initialCarry = firstSmoothLink,
-    ) { previousLink: Spline.Link, smoothLink ->
-        val rearHandlePosition = previousLink.effectiveSecondControlPoint
+    val (intermediateJoints, _) = innerCurves.mapCarrying(
+        initialCarry = firstCurve,
+    ) { previousLink: BezierCurve, smoothLink ->
+        val rearHandlePosition = previousLink.lastControl
         val anchorPosition = previousLink.end
-        val frontHandlePosition = smoothLink.effectiveSecondControlPoint
+        val frontHandlePosition = smoothLink.firstControl
 
         val anchorDistance = Point.distanceBetween(
             rearHandlePosition,
@@ -109,66 +115,41 @@ private fun buildOutlineLink(
 
     return Outline.Link(
         edge = Outline.Edge(
-            startHandle = firstSmoothLink.firstControlOrNull?.let {
-                Outline.Handle(position = it)
-            },
+            startHandle = Outline.Handle(position = firstCurve.firstControl),
             intermediateJoints = intermediateJoints,
-            endHandle = lastSmoothLink.secondControlOrNull?.let {
-                Outline.Handle(position = it)
-            },
+            endHandle = Outline.Handle(position = firstCurve.lastControl),
             metadata = edgMetadata,
         ),
         endAnchor = Outline.Anchor(
-            position = lastSmoothLink.end,
+            position = lastCurve.end,
         ),
     )
 }
 
-val Spline.Link.firstControlOrNull: Point?
-    get() = when (edge) {
-        is MonoBezierCurve.Edge -> edge.firstControl
-        is LineSegment.Edge -> null
-        else -> throw UnsupportedOperationException("Unsupported edge type: ${edge::class}")
-    }
-
-val Spline.Link.secondControlOrNull: Point?
-    get() = when (edge) {
-        is MonoBezierCurve.Edge -> edge.secondControl
-        is LineSegment.Edge -> null
-        else -> throw UnsupportedOperationException("Unsupported edge type: ${edge::class}")
-    }
-
-val Spline.Link.effectiveSecondControlPoint: Point
-    get() = when (edge) {
-        is MonoBezierCurve.Edge -> edge.secondControl
-        is LineSegment.Edge -> end
-        else -> throw UnsupportedOperationException("Unsupported edge type: ${edge::class}")
-    }
-
-fun Spline.Link.toOutlineLink(
+fun PrimitiveCurve.toOutlineLink(
     edgMetadata: Outline.EdgeMetadata,
 ): Outline.Link = Outline.Link(
-    edge = when (edge) {
-        is MonoBezierCurve.Edge -> Outline.Edge(
+    edge = when (this) {
+        is MonoBezierCurve -> Outline.Edge(
             startHandle = Outline.Handle(
-                position = edge.firstControl,
+                position = firstControl,
             ),
             intermediateJoints = emptyList(),
             endHandle = Outline.Handle(
-                position = edge.secondControl,
+                position = secondControl,
             ),
             metadata = edgMetadata,
         )
 
 
-        is LineSegment.Edge -> Outline.Edge(
+        is LineSegment -> Outline.Edge(
             startHandle = null,
             intermediateJoints = emptyList(),
             endHandle = null,
             metadata = edgMetadata,
         )
 
-        else -> throw UnsupportedOperationException("Unsupported edge type: ${edge::class}")
+        else -> throw UnsupportedOperationException("Unsupported curve type: ${this::class}")
     },
     endAnchor = Outline.Anchor(
         position = end,
