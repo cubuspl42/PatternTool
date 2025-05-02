@@ -54,4 +54,11 @@ abstract class PrimitiveCurve : OpenCurve() {
     ): PrimitiveCurve
 
     abstract fun toBezier(): BezierCurve
+
+    /**
+     * Find the offset curve (or its close approximation) of this curve
+     */
+    abstract fun findOffsetCurve(
+        offset: Double,
+    ): OpenCurve
 }

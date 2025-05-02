@@ -73,7 +73,7 @@ abstract class BezierCurve : PrimitiveCurve() {
         coord: Coord,
     ): Pair<BezierCurve, BezierCurve>
 
-    abstract fun findOffsetCurve(
+    abstract override fun findOffsetCurve(
         offset: Double,
     ): BezierCurve
 }
