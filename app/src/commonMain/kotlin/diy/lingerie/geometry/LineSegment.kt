@@ -78,4 +78,10 @@ data class LineSegment(
         secondControl = end,
         end = end,
     )
+
+    override fun findOffsetCurve(
+        offset: Double,
+    ): LineSegment {
+        TODO("Not yet implemented")
+    }
 }

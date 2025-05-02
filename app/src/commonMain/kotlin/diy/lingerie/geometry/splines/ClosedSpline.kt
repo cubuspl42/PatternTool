@@ -20,8 +20,8 @@ data class ClosedSpline private constructor(
             cyclicLinks = links,
         )
 
-        fun fuse(
-            edgeCurves: List<OpenCurve>,
+        fun interconnect(
+            separatedCurves: List<OpenCurve>,
         ): ClosedSpline {
             TODO()
         }

@@ -18,7 +18,6 @@ import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.shiftLeft
 import diy.lingerie.utils.iterable.splitBefore
 import diy.lingerie.utils.iterable.uncons
-import diy.lingerie.utils.iterable.withNext
 import diy.lingerie.utils.iterable.withNextBy
 import diy.lingerie.utils.iterable.withNextCyclic
 import diy.lingerie.utils.iterable.withPreviousCyclic
@@ -472,7 +471,7 @@ data class Outline(
         val endAnchorPosition: Point
             get() = endAnchor.position
 
-        val seamOffsetCurve: PrimitiveCurve
+        val seamOffsetCurve: OpenCurve
             get() = curve.findOffsetCurve(
                 offset = edge.seamAllowance.allowanceMm,
             )
@@ -594,8 +593,8 @@ data class Outline(
             },
         )
 
-    fun findSeamContour(): ClosedSpline = ClosedSpline.fuse(
-        edgeCurves = verges.map {
+    fun findSeamContour(): ClosedSpline = ClosedSpline.interconnect(
+        separatedCurves = verges.map {
             it.seamOffsetCurve
         },
     )
