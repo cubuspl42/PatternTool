@@ -19,9 +19,11 @@ data class PolyBezierCurve(
 ) : BezierCurve() {
     data class Edge(
         override val firstControl: Point,
-        override val joints: List<Joint>,
         override val lastControl: Point,
     ) : BezierCurve.Edge() {
+        override val joints: List<Joint>
+            get() = emptyList()
+
         override fun bind(
             start: Point,
             end: Point,
@@ -44,13 +46,7 @@ data class PolyBezierCurve(
 
         override fun transformBy(
             transformation: Transformation,
-        ): PolyBezierCurve.Edge = PolyBezierCurve.Edge(
-            firstControl = firstControl.transformBy(transformation = transformation),
-            joints = joints.map { joint ->
-                joint.transformBy(transformation = transformation)
-            },
-            lastControl = lastControl.transformBy(transformation = transformation),
-        )
+        ): PolyBezierCurve.Edge = TODO()
 
         override fun equalsWithTolerance(
             other: NumericObject,
@@ -77,11 +73,7 @@ data class PolyBezierCurve(
     }
 
     override val edge: PolyBezierCurve.Edge
-        get() = Edge(
-            firstControl = firstControl,
-            joints = joints,
-            lastControl = lastControl,
-        )
+        get() = TODO()
 
     override val subCurves: List<MonoBezierCurve>
         get() {
