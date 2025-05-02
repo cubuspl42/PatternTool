@@ -8,15 +8,13 @@ import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.uncons
-import diy.lingerie.utils.iterable.withNextCyclic
-import diy.lingerie.utils.iterable.withPrevious
 
 /**
  * A composite open curve assumed to be tangent-continuous (G1).
  */
-data class OpenSpline private constructor(
+data class OpenSpline(
     val firstCurve: PrimitiveCurve,
-    val sequentialLinks: List<Spline.Link>,
+    val trailingSequentialLinks: List<Spline.Link>,
 ) : OpenCurve(), Spline {
     companion object {
         fun of(
@@ -30,18 +28,18 @@ data class OpenSpline private constructor(
 
             return OpenSpline(
                 firstCurve = firstCurve,
-                sequentialLinks = trailingLinks,
+                trailingSequentialLinks = trailingLinks,
             )
         }
     }
 
     init {
-        require(sequentialLinks.isNotEmpty())
+        require(trailingSequentialLinks.isNotEmpty())
     }
 
     val sequentialCurves: List<PrimitiveCurve>
         get() {
-            val (trailingCurves, _) = sequentialLinks.mapCarrying(
+            val (trailingCurves, _) = trailingSequentialLinks.mapCarrying(
                 initialCarry = firstCurve.end,
             ) { start, link ->
                 Pair(
@@ -61,7 +59,7 @@ data class OpenSpline private constructor(
         firstCurve = firstCurve.transformBy(
             transformation = transformation,
         ),
-        sequentialLinks = sequentialLinks.map {
+        trailingSequentialLinks = trailingSequentialLinks.map {
             it.transformBy(transformation = transformation)
         },
     )
@@ -71,12 +69,12 @@ data class OpenSpline private constructor(
         tolerance: NumericObject.Tolerance,
     ): Boolean = when {
         other !is OpenSpline -> false
-        !sequentialLinks.equalsWithTolerance(other.links, tolerance) -> false
+        !trailingSequentialLinks.equalsWithTolerance(other.links, tolerance) -> false
         else -> true
     }
 
     override val links: List<Spline.Link>
-        get() = sequentialLinks
+        get() = trailingSequentialLinks
 
     override val start: Point
         get() = TODO("Not yet implemented")

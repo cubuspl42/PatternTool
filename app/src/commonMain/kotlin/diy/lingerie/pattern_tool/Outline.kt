@@ -9,13 +9,17 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
+import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.curves.bezier.PolyBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
+import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.shiftLeft
 import diy.lingerie.utils.iterable.splitBefore
 import diy.lingerie.utils.iterable.uncons
+import diy.lingerie.utils.iterable.withNext
+import diy.lingerie.utils.iterable.withNextBy
 import diy.lingerie.utils.iterable.withNextCyclic
 import diy.lingerie.utils.iterable.withPreviousCyclic
 import kotlin.jvm.JvmInline
@@ -404,14 +408,51 @@ data class Outline(
                 handle = edge.endHandle,
             )
 
+        val curveSpline: OpenSpline
+            get() {
+                val intermediateJoints = edge.intermediateJoints
+
+                val firstJoint = intermediateJoints.firstOrNull() ?: return OpenSpline(
+                    firstCurve = MonoBezierCurve(
+                        start = startArm.anchor.position,
+                        firstControl = startArm.effectiveHandlePosition,
+                        secondControl = endArm.effectiveHandlePosition,
+                        end = endArm.anchor.position,
+                    ),
+                    trailingSequentialLinks = emptyList(),
+                )
+
+                return OpenSpline(
+                    firstCurve = MonoBezierCurve(
+                        start = startArm.anchor.position,
+                        firstControl = startArm.effectiveHandlePosition,
+                        secondControl = firstJoint.rearHandle.position,
+                        end = firstJoint.anchor.position,
+                    ),
+                    trailingSequentialLinks = intermediateJoints.withNextBy(
+                        outerRight = endArm,
+                        selector = Joint.Smooth::rearArm,
+                    ).map { (joint, nextJoinRearArm) ->
+                        val frontArm = joint.frontArm
+
+                        Spline.Link(
+                            edge = MonoBezierCurve.Edge(
+                                firstControl = frontArm.effectiveHandlePosition,
+                                secondControl = nextJoinRearArm.effectiveHandlePosition,
+                            ),
+                            end = nextJoinRearArm.anchor.position,
+                        )
+                    },
+                )
+            }
+
         val curveEdge: PolyBezierCurve.Edge
-            get() = PolyBezierCurve.Edge(
-                firstControl = edge.startHandlePosition ?: startAnchorPosition,
-                joints = edge.intermediateJoints.map {
-                    it.toBezierJoint()
-                },
-                lastControl = edge.endHandlePosition ?: endAnchorPosition,
-            )
+            get() {
+                return PolyBezierCurve.Edge(
+                    firstControl = startArm.effectiveHandlePosition,
+                    lastControl = endArm.effectiveHandlePosition
+                )
+            }
 
         val curve: BezierCurve
             get() = curveEdge.bind(

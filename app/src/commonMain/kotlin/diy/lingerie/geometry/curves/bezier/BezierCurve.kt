@@ -54,6 +54,8 @@ abstract class BezierCurve : PrimitiveCurve() {
     fun connectsSmoothly(
         nextCurve: BezierCurve,
     ): Boolean {
+        require(end == nextCurve.start)
+
         return false // TODO
     }
 
