@@ -32,6 +32,15 @@ data class Outline(
         val seamAllowance: SeamAllowance,
     )
 
+    data class EdgeMetadataMap(
+        val edgeMetadataByEdgeIndex: Map<Int, EdgeMetadata>,
+        val defaultEdgeMetadata: EdgeMetadata,
+    ) {
+        fun getEdgeMetadata(
+            edgeIndex: Int,
+        ): EdgeMetadata = edgeMetadataByEdgeIndex[edgeIndex] ?: defaultEdgeMetadata
+    }
+
     data class Arm(
         val anchor: Anchor,
         val handle: Handle?,
@@ -491,8 +500,7 @@ data class Outline(
         )
 
         override fun equalsWithTolerance(
-            other: NumericObject,
-            tolerance: NumericObject.Tolerance
+            other: NumericObject, tolerance: NumericObject.Tolerance
         ): Boolean = when {
             other !is Verge -> false
             !startAnchor.equalsWithTolerance(other.startAnchor, tolerance) -> false
@@ -521,9 +529,11 @@ data class Outline(
          */
         fun reconstruct(
             cyclicSmoothCurves: List<OpenCurve>,
-            edgeMetadata: EdgeMetadata,
+            edgeMetadataMap: EdgeMetadataMap,
         ): Outline = connect(
-            cyclicSmoothCurves.map { smoothCurve ->
+            cyclicSmoothCurves.mapIndexed { edgeIndex, smoothCurve ->
+                val edgeMetadata = edgeMetadataMap.getEdgeMetadata(edgeIndex = edgeIndex)
+
                 Verge.reconstruct(
                     smoothCurve = smoothCurve,
                     edgeMetadata = edgeMetadata,

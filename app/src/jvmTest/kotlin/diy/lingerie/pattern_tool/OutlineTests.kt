@@ -194,7 +194,10 @@ class OutlineTests {
 
         val outline = Outline.reconstruct(
             cyclicSmoothCurves = cyclicEdgeCurves,
-            edgeMetadata = edgeMetadata,
+            edgeMetadataMap = Outline.EdgeMetadataMap(
+                edgeMetadataByEdgeIndex = emptyMap(),
+                defaultEdgeMetadata = edgeMetadata,
+            ),
         )
 
         assertEqualsWithTolerance(
@@ -401,10 +404,10 @@ class OutlineTests {
 
         val outline = Outline.loadSvg(
             svgRoot = svgRoot,
-        )
-
-        val expectedEdgeMetadata = Outline.EdgeMetadata(
-            seamAllowance = SeamAllowance(allowanceMm = 6.0),
+            Outline.EdgeMetadataMap(
+                edgeMetadataByEdgeIndex = mapOf(),
+                defaultEdgeMetadata = defaultEdgeMetadata,
+            ),
         )
 
         assertEqualsWithTolerance(
@@ -431,7 +434,7 @@ class OutlineTests {
                             endHandle = Outline.Handle(
                                 position = point5Control,
                             ),
-                            metadata = expectedEdgeMetadata,
+                            metadata = defaultEdgeMetadata,
                         ),
                         endAnchor = Outline.Anchor(
                             position = point6FreeJoint,
@@ -469,7 +472,7 @@ class OutlineTests {
                             endHandle = Outline.Handle(
                                 position = point14Control,
                             ),
-                            metadata = expectedEdgeMetadata,
+                            metadata = defaultEdgeMetadata,
                         ),
                         endAnchor = Outline.Anchor(
                             position = point15FreeJoint,
@@ -484,7 +487,7 @@ class OutlineTests {
                             endHandle = Outline.Handle(
                                 position = point17Control,
                             ),
-                            metadata = expectedEdgeMetadata,
+                            metadata = defaultEdgeMetadata,
                         ),
                         endAnchor = Outline.Anchor(
                             position = point18FreeJoint,
@@ -511,7 +514,7 @@ class OutlineTests {
                             endHandle = Outline.Handle(
                                 position = point23Control,
                             ),
-                            metadata = expectedEdgeMetadata,
+                            metadata = defaultEdgeMetadata,
                         ),
                         endAnchor = Outline.Anchor(
                             position = point0FreeJoint,
@@ -530,17 +533,29 @@ class OutlineTests {
             svgRoot = SvgRoot.parse(
                 reader = OutlineTests::class.java.getResourceAsReader("outlineCut_input.svg")!!,
             ),
+            edgeMetadataMap = Outline.EdgeMetadataMap(
+                edgeMetadataByEdgeIndex = emptyMap(),
+                defaultEdgeMetadata = defaultEdgeMetadata,
+            ),
         )
 
         val expectedFirstCutOutline = Outline.loadSvg(
             svgRoot = SvgRoot.parse(
                 reader = OutlineTests::class.java.getResourceAsReader("outlineCut_output1.svg")!!,
             ),
+            edgeMetadataMap = Outline.EdgeMetadataMap(
+                edgeMetadataByEdgeIndex = emptyMap(),
+                defaultEdgeMetadata = defaultEdgeMetadata,
+            ),
         )
 
         val expectedSecondCutOutline = Outline.loadSvg(
             svgRoot = SvgRoot.parse(
                 reader = OutlineTests::class.java.getResourceAsReader("outlineCut_output2.svg")!!,
+            ),
+            edgeMetadataMap = Outline.EdgeMetadataMap(
+                edgeMetadataByEdgeIndex = emptyMap(),
+                defaultEdgeMetadata = defaultEdgeMetadata,
             ),
         )
 
