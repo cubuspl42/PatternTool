@@ -9,7 +9,6 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
-import diy.lingerie.geometry.curves.bezier.PolyBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
@@ -269,7 +268,8 @@ data class Outline(
             get() = metadata.seamAllowance
 
         override fun equalsWithTolerance(
-            other: NumericObject, tolerance: NumericObject.Tolerance
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance,
         ): Boolean = when {
             other !is Edge -> false
 
@@ -462,25 +462,6 @@ data class Outline(
                     },
                 )
             }
-
-        val curveEdge: PolyBezierCurve.Edge
-            get() {
-                return PolyBezierCurve.Edge(
-                    firstControl = startArm.effectiveHandlePosition, lastControl = endArm.effectiveHandlePosition
-                )
-            }
-
-        val curve: BezierCurve
-            get() = curveEdge.bind(
-                start = startAnchorPosition,
-                end = endAnchorPosition,
-            )
-
-        val innerSplineLink: Spline.Link
-            get() = Spline.Link(
-                edge = curveEdge,
-                end = endAnchorPosition,
-            )
 
         val startAnchorPosition: Point
             get() = startAnchor.position
