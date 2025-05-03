@@ -3,7 +3,6 @@ package diy.lingerie.geometry.curves
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.Transformation
 
@@ -33,7 +32,7 @@ abstract class PrimitiveCurve : OpenCurve() {
         get() = listOf(this)
 
     fun connectsSmoothly(
-        nextCurve: BezierCurve,
+        nextCurve: PrimitiveCurve,
     ): Boolean {
         require(end == nextCurve.start)
 
@@ -57,8 +56,6 @@ abstract class PrimitiveCurve : OpenCurve() {
     abstract override fun transformBy(
         transformation: Transformation,
     ): PrimitiveCurve
-
-    abstract fun toBezier(): BezierCurve
 
     abstract val startTangent: Direction?
 

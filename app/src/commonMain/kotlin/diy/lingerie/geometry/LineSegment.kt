@@ -3,7 +3,6 @@ package diy.lingerie.geometry
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
 import diy.lingerie.geometry.curves.PrimitiveCurve
-import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.transformations.Transformation
 
 /**
@@ -71,13 +70,6 @@ data class LineSegment(
     ): LineSegment = LineSegment(
         start = start.transformBy(transformation = transformation),
         end = end.transformBy(transformation = transformation),
-    )
-
-    override fun toBezier(): BezierCurve = BezierCurve(
-        start = start,
-        firstControl = start,
-        secondControl = end,
-        end = end,
     )
 
     override val startTangent: Direction?

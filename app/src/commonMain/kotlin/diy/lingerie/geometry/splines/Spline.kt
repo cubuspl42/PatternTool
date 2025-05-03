@@ -14,6 +14,22 @@ interface Spline {
         val edge: PrimitiveCurve.Edge,
         val end: Point,
     ) : NumericObject {
+        companion object {
+            fun connect(
+                prevCurve: PrimitiveCurve,
+                curve: PrimitiveCurve,
+            ): Link {
+                if (prevCurve.end != curve.start) {
+                    throw IllegalArgumentException("The curves are not sequential: ${prevCurve.end} != ${curve.start}")
+                }
+
+                return Spline.Link(
+                    edge = curve.edge,
+                    end = curve.end,
+                )
+            }
+        }
+
         fun bind(
             start: Point,
         ): PrimitiveCurve = edge.bind(
