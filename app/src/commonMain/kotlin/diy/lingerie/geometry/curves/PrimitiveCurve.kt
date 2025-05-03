@@ -1,6 +1,7 @@
 package diy.lingerie.geometry.curves
 
 import diy.lingerie.algebra.NumericObject
+import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.splines.Spline
@@ -31,6 +32,20 @@ abstract class PrimitiveCurve : OpenCurve() {
     override val subCurves: List<PrimitiveCurve>
         get() = listOf(this)
 
+    fun connectsSmoothly(
+        nextCurve: BezierCurve,
+    ): Boolean {
+        require(end == nextCurve.start)
+
+        val endTangent =
+            this.endTangent ?: throw IllegalStateException("Cannot check smoothness of a curve with no end tangent")
+
+        val nextStartTangent = nextCurve.startTangent
+            ?: throw IllegalStateException("Cannot check smoothness of a curve with no start tangent")
+
+        return endTangent.equalsWithRadialTolerance(nextStartTangent)
+    }
+
     abstract val edge: Edge
 
     abstract override fun splitAt(
@@ -44,4 +59,8 @@ abstract class PrimitiveCurve : OpenCurve() {
     ): PrimitiveCurve
 
     abstract fun toBezier(): BezierCurve
+
+    abstract val startTangent: Direction?
+
+    abstract val endTangent: Direction?
 }

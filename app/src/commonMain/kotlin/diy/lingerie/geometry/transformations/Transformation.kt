@@ -2,6 +2,7 @@ package diy.lingerie.geometry.transformations
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.Vector2
+import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.RelativeAngle
@@ -99,6 +100,11 @@ sealed class PrimitiveTransformation : Transformation() {
                 y = ty,
             ),
         )
+
+        val direction: Direction?
+            get() = translationVector.normalizeOrNull()?.let {
+                Direction(normalizedDirectionVector = it)
+            }
 
         override fun toSvgTransformationString(): String = "translate(${translationVector.x}, ${translationVector.y})"
 

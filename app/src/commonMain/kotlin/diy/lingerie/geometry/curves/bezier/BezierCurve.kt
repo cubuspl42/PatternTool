@@ -2,6 +2,7 @@ package diy.lingerie.geometry.curves.bezier
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
+import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
@@ -68,15 +69,15 @@ data class BezierCurve(
         end = end.transformBy(transformation = transformation),
     )
 
-    fun connectsSmoothly(
-        nextCurve: BezierCurve,
-    ): Boolean {
-        require(end == nextCurve.start)
-
-        return false // TODO
-    }
-
     override fun toBezier(): BezierCurve = this
+
+    // TODO: This might not work for degenerate curves
+    override val startTangent: Direction?
+        get() = start.directionTo(firstControl)
+
+    // TODO: This might not work for degenerate curves
+    override val endTangent: Direction?
+        get() = secondControl.directionTo(end)
 
     override fun splitAt(
         coord: Coord,

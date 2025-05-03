@@ -11,7 +11,7 @@ import diy.lingerie.utils.iterable.withPreviousCyclic
 /**
  * A composite closed curve guaranteed only to be positionally-continuous (C0).
  */
-data class ClosedSpline private constructor(
+data class ClosedSpline(
     val cyclicLinks: List<Spline.Link>,
 ) : Spline, NumericObject {
     companion object {

@@ -15,7 +15,7 @@ data class Span(
     val value: Double
         get() = sqrt(valueSquared)
 
-    override fun equalsSpatially(
+    override fun equalsWithSpatialTolerance(
         other: SpatialObject,
         tolerance: SpatialObject.SpatialTolerance,
     ): Boolean = when {

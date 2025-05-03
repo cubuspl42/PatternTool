@@ -12,35 +12,64 @@ value class Direction(
     /**
      * Normalized direction vector
      */
-    val directionVector: Vector2,
-) {
+    val normalizedDirectionVector: Vector2,
+) : RadialObject {
+    override fun equalsWithRadialTolerance(
+        other: RadialObject,
+        tolerance: RelativeAngle.RadialTolerance,
+    ): Boolean = when {
+        other !is Direction -> false
+
+        else -> angle.equalsWithRadialTolerance(
+            other.angle,
+            tolerance = tolerance,
+        )
+    }
+
+    /**
+     * Angle from the positive X-axis to the direction vector
+     */
+    private val angle: RelativeAngle.Trigonometric
+        get() = RelativeAngle.Trigonometric.of(
+            normalizedVector = normalizedDirectionVector,
+        )
+
+    val opposite: Direction
+        get() = Direction(
+            normalizedDirectionVector = -normalizedDirectionVector,
+        )
+
     companion object {
         val XAxisPlus = Direction(
-            directionVector = Vector2(
+            normalizedDirectionVector = Vector2(
                 x = 1.0,
                 y = 0.0,
             ),
         )
 
         val XAxisMinus = Direction(
-            directionVector = Vector2(
+            normalizedDirectionVector = Vector2(
                 x = -1.0,
                 y = 0.0,
             ),
         )
 
         val YAxisPlus = Direction(
-            directionVector = Vector2(
+            normalizedDirectionVector = Vector2(
                 x = 0.0,
                 y = 1.0,
             ),
         )
 
         val YAxisMinus = Direction(
-            directionVector = Vector2(
+            normalizedDirectionVector = Vector2(
                 x = 0.0,
                 y = -1.0,
             ),
         )
+    }
+
+    init {
+        require(normalizedDirectionVector.isNormalized())
     }
 }
