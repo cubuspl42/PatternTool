@@ -7,7 +7,6 @@ import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
-import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.curves.bezier.PolyBezierCurve
@@ -15,9 +14,11 @@ import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.shiftLeft
 import diy.lingerie.utils.iterable.splitBefore
 import diy.lingerie.utils.iterable.uncons
+import diy.lingerie.utils.iterable.untrail
 import diy.lingerie.utils.iterable.withNextBy
 import diy.lingerie.utils.iterable.withNextCyclic
 import diy.lingerie.utils.iterable.withPreviousCyclic
@@ -27,7 +28,7 @@ import kotlin.jvm.JvmInline
  * Pattern piece outline. All coordinates are in millimeters.
  */
 data class Outline(
-    val links: List<Link>,
+    val cyclicLinks: List<Link>,
 ) : NumericObject {
     data class EdgeMetadata(
         val seamAllowance: SeamAllowance,
@@ -221,30 +222,6 @@ data class Outline(
         val metadata: EdgeMetadata,
     ) : NumericObject {
         companion object {
-            fun reconstruct(
-                curveEdge: BezierCurve.Edge,
-                metadata: EdgeMetadata,
-            ): Edge = Edge(
-                startHandle = Handle(
-                    position = curveEdge.firstControl,
-                ),
-                intermediateJoints = curveEdge.joints.map {
-                    Joint.Smooth.reconstruct(bezierJoint = it)
-                },
-                endHandle = Handle(
-                    position = curveEdge.lastControl,
-                ),
-                metadata = metadata,
-            )
-
-            fun reconstruct(
-                bezierCurve: BezierCurve,
-                metadata: EdgeMetadata,
-            ): Edge = reconstruct(
-                curveEdge = bezierCurve.edge,
-                metadata = metadata,
-            )
-
             fun line(
                 metadata: EdgeMetadata,
             ): Edge = Edge(
@@ -320,29 +297,6 @@ data class Outline(
         val edge: Edge,
         val endAnchor: Anchor,
     ) : NumericObject {
-        companion object {
-            fun reconstruct(
-                splineLink: Spline.Link,
-                edgeMetadata: EdgeMetadata,
-            ): Link = Link(
-                edge = when (val edge = splineLink.edge) {
-                    is BezierCurve.Edge -> Edge.reconstruct(
-                        curveEdge = edge,
-                        metadata = edgeMetadata,
-                    )
-
-                    is LineSegment.Edge -> Edge.line(
-                        metadata = edgeMetadata,
-                    )
-
-                    else -> throw IllegalArgumentException("The edge is not a supported type")
-                },
-                endAnchor = Anchor(
-                    position = splineLink.end,
-                ),
-            )
-        }
-
         fun bind(
             startAnchor: Anchor,
         ): Verge = Verge(
@@ -379,20 +333,84 @@ data class Outline(
             )
 
             fun reconstruct(
-                edgeCurve: BezierCurve,
+                monoBezierCurve: BezierCurve,
                 edgeMetadata: EdgeMetadata,
-            ): Verge = Verge(
-                startAnchor = Anchor(
-                    position = edgeCurve.start,
+            ): Verge = Outline.Verge(
+                startAnchor = Outline.Anchor(
+                    position = monoBezierCurve.start,
                 ),
-                edge = Edge.reconstruct(
-                    bezierCurve = edgeCurve,
+                edge = Outline.Edge(
+                    startHandle = Outline.Handle(
+                        position = monoBezierCurve.firstControl,
+                    ),
+                    intermediateJoints = emptyList(),
+                    endHandle = Outline.Handle(
+                        position = monoBezierCurve.lastControl,
+                    ),
                     metadata = edgeMetadata,
                 ),
-                endAnchor = Anchor(
-                    position = edgeCurve.end,
+                endAnchor = Outline.Anchor(
+                    position = monoBezierCurve.end,
                 ),
             )
+
+            fun reconstruct(
+                openCurve: OpenCurve,
+                edgeMetadata: EdgeMetadata,
+            ): Verge {
+                val bezierCurves = openCurve.subCurves.map { it.toBezier() }
+
+                val (firstCurve, trailingCurves) = bezierCurves.uncons()
+                    ?: throw AssertionError("List of smooth curves must not be empty")
+
+                val (innerCurves, lastCurve) = trailingCurves.untrail() ?: return reconstruct(
+                    monoBezierCurve = firstCurve,
+                    edgeMetadata = edgeMetadata,
+                )
+
+                val (intermediateJoints, endHandleControl) = innerCurves.mapCarrying(
+                    initialCarry = firstCurve.lastControl,
+                ) { rearHandlePosition: Point, curve ->
+                    val anchorPosition = curve.start
+                    val frontHandlePosition = curve.firstControl
+
+                    val anchorDistance = Point.distanceBetween(
+                        rearHandlePosition,
+                        anchorPosition,
+                    )
+
+                    val controlSegmentLength = Point.distanceBetween(
+                        rearHandlePosition,
+                        frontHandlePosition,
+                    )
+
+                    val t = anchorDistance / controlSegmentLength
+
+                    Pair(
+                        Outline.Joint.Smooth(
+                            rearHandle = Outline.Handle(position = rearHandlePosition),
+                            anchorCoord = OpenCurve.Coord(t = t),
+                            frontHandle = Outline.Handle(position = frontHandlePosition),
+                        ),
+                        curve.lastControl,
+                    )
+                }
+
+                return Outline.Verge(
+                    startAnchor = Outline.Anchor(
+                        position = firstCurve.start,
+                    ),
+                    edge = Outline.Edge(
+                        startHandle = Outline.Handle(position = firstCurve.firstControl),
+                        intermediateJoints = intermediateJoints,
+                        endHandle = Outline.Handle(position = endHandleControl),
+                        metadata = edgeMetadata,
+                    ),
+                    endAnchor = Outline.Anchor(
+                        position = lastCurve.end,
+                    ),
+                )
+            }
         }
 
         val startArm: Arm
@@ -448,8 +466,7 @@ data class Outline(
         val curveEdge: PolyBezierCurve.Edge
             get() {
                 return PolyBezierCurve.Edge(
-                    firstControl = startArm.effectiveHandlePosition,
-                    lastControl = endArm.effectiveHandlePosition
+                    firstControl = startArm.effectiveHandlePosition, lastControl = endArm.effectiveHandlePosition
                 )
             }
 
@@ -472,7 +489,7 @@ data class Outline(
             get() = endAnchor.position
 
         val seamOffsetCurve: OpenCurve
-            get() = curve.findOffsetCurve(
+            get() = curveSpline.findOffsetCurve(
                 offset = edge.seamAllowance.allowanceMm,
             )
 
@@ -485,15 +502,15 @@ data class Outline(
         fun splitAt(
             edgeCoord: OpenCurve.Coord,
         ): Pair<Verge, Verge> {
-            val (firstSubCurve, secondSubCurve) = curve.splitAt(coord = edgeCoord)
+            val (firstSubCurve, secondSubCurve) = curveSpline.splitAt(coord = edgeCoord)
 
             return Pair(
                 reconstruct(
-                    edgeCurve = firstSubCurve,
+                    openCurve = firstSubCurve,
                     edgeMetadata = edge.metadata,
                 ),
                 reconstruct(
-                    edgeCurve = secondSubCurve,
+                    openCurve = secondSubCurve,
                     edgeMetadata = edge.metadata,
                 ),
             )
@@ -522,11 +539,28 @@ data class Outline(
     )
 
     companion object {
+        /**
+         * @param cyclicEdgeCurves a list of cyclic smooth curves
+         * @return an outline with edges constructed from respective curves from
+         * [cyclicEdgeCurves]
+         */
+        fun reconstruct(
+            cyclicEdgeCurves: List<OpenCurve>,
+            edgeMetadata: EdgeMetadata,
+        ): Outline = connect(
+            cyclicEdgeCurves.map { curve ->
+                Verge.reconstruct(
+                    openCurve = curve,
+                    edgeMetadata = edgeMetadata,
+                )
+            },
+        )
+
         fun connect(
-            verges: List<Verge>,
+            cyclicVerges: List<Verge>,
         ): Outline = Outline(
-            links = verges.withNextCyclic().mapIndexed { index, (verge, nextSegment) ->
-                if (verge.endAnchorPosition != nextSegment.startAnchorPosition) {
+            cyclicLinks = cyclicVerges.withNextCyclic().mapIndexed { index, (verge, nextVerge) ->
+                if (verge.endAnchorPosition != nextVerge.startAnchorPosition) {
                     throw IllegalArgumentException("Verge #$index does not connect to the next verge")
                 }
 
@@ -537,28 +571,12 @@ data class Outline(
             },
         )
 
-        /**
-         * @param closedSpline - Closed spline to reconstruct the outline from.
-         * Must be expressed in millimeters.
-         */
-        fun reconstruct(
-            closedSpline: ClosedSpline,
-            edgeMetadata: EdgeMetadata,
-        ): Outline = Outline(
-            links = closedSpline.cyclicLinks.map { link ->
-                Link.reconstruct(
-                    splineLink = link,
-                    edgeMetadata = edgeMetadata,
-                )
-            },
-        )
-
-        private fun closeVerges(
-            verges: List<Verge>,
+        private fun closeOpenOutline(
+            sequentialVerges: List<Verge>,
             closingEdgeMetadata: EdgeMetadata,
         ): Outline {
-            val firstVerge = verges.first()
-            val lastVerge = verges.last()
+            val firstVerge = sequentialVerges.first()
+            val lastVerge = sequentialVerges.last()
 
             val closingVerge = Verge.line(
                 startAnchor = lastVerge.endAnchor,
@@ -567,29 +585,29 @@ data class Outline(
             )
 
             return connect(
-                verges = verges + closingVerge,
+                cyclicVerges = sequentialVerges + closingVerge,
             )
         }
     }
 
     init {
-        require(links.size >= 2)
+        require(cyclicLinks.size >= 2)
     }
 
     val verges: List<Verge>
-        get() = links.withPreviousCyclic().map { (prevLink, link) ->
+        get() = cyclicLinks.withPreviousCyclic().map { (prevLink, link) ->
             link.bind(
                 startAnchor = prevLink.endAnchor,
             )
         }
 
-    val edgeCurves: List<PrimitiveCurve>
-        get() = verges.map { it.curve }
+    val edgeCurves: List<OpenCurve>
+        get() = verges.map { it.curveSpline }
 
     val innerSpline: ClosedSpline
-        get() = ClosedSpline.positionallyContinuous(
-            links = verges.map { verge ->
-                verge.innerSplineLink
+        get() = ClosedSpline.connect(
+            cyclicCurves = verges.map { verge ->
+                verge.curveSpline
             },
         )
 
@@ -653,13 +671,13 @@ data class Outline(
         val (firstCentralVerge0, firstCentralVerge1) = firstCentralVerge.splitAt(edgeCoord = firstEdgeCoord)
         val (firstBackVerge0, firstBackVerge1) = firstBackVerge.splitAt(edgeCoord = secondEdgeCoord)
 
-        val firstSubOutline = closeVerges(
-            verges = listOf(firstCentralVerge1) + trailingCentralVerges + firstBackVerge0,
+        val firstSubOutline = closeOpenOutline(
+            sequentialVerges = listOf(firstCentralVerge1) + trailingCentralVerges + firstBackVerge0,
             closingEdgeMetadata = splitEdgeMetadata,
         )
 
-        val secondSubOutline = closeVerges(
-            verges = listOf(firstBackVerge1) + trailingBackVerges + frontVerges + firstCentralVerge0,
+        val secondSubOutline = closeOpenOutline(
+            sequentialVerges = listOf(firstBackVerge1) + trailingBackVerges + frontVerges + firstCentralVerge0,
             closingEdgeMetadata = splitEdgeMetadata,
         )
 
@@ -697,7 +715,7 @@ data class Outline(
         }
 
         return connect(
-            verges = remainingVerges + mirroredVerges,
+            cyclicVerges = remainingVerges + mirroredVerges,
         )
     }
 
@@ -706,7 +724,7 @@ data class Outline(
         tolerance: NumericObject.Tolerance,
     ): Boolean = when {
         other !is Outline -> false
-        !links.equalsWithTolerance(other.links, tolerance = tolerance) -> false
+        !cyclicLinks.equalsWithTolerance(other.cyclicLinks, tolerance = tolerance) -> false
         else -> true
     }
 }

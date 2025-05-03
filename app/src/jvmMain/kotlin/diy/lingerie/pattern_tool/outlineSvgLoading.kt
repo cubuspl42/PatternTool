@@ -1,31 +1,19 @@
 package diy.lingerie.pattern_tool
 
 import diy.lingerie.algebra.Vector2
-import diy.lingerie.geometry.LineSegment
-import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.OpenCurve
-import diy.lingerie.geometry.curves.PrimitiveCurve
-import diy.lingerie.geometry.curves.bezier.BezierCurve
-import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
-import diy.lingerie.geometry.splines.ClosedSpline
-import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.toClosedSpline
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.simple_dom.SimpleDimension
 import diy.lingerie.simple_dom.SimpleUnit
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
-import diy.lingerie.utils.iterable.clusterSimilar
-import diy.lingerie.utils.iterable.mapCarrying
-import diy.lingerie.utils.iterable.uncons
-import diy.lingerie.utils.iterable.untrail
 
 private const val mmPerInch = 25.4
 private const val defaultDpi = 300.0
 
 fun Outline.Companion.loadSvg(
     svgRoot: SvgRoot,
-    edgMetadata: Outline.EdgeMetadata = Outline.EdgeMetadata(
+    edgeMetadata: Outline.EdgeMetadata = Outline.EdgeMetadata(
         seamAllowance = SeamAllowance(allowanceMm = 6.0),
     ),
 ): Outline {
@@ -43,118 +31,13 @@ fun Outline.Companion.loadSvg(
     val svgPath =
         singleElement as? SvgPath ?: throw IllegalArgumentException("The single element must be a path element")
 
-    return buildOutline(
-        internalSpline = svgPath.toClosedSpline().transformBy(
+    return Outline.reconstruct(
+        cyclicEdgeCurves = svgPath.toClosedSpline().transformBy(
             transformation = transformationToMm,
-        ),
-        edgMetadata = edgMetadata,
+        ).smoothSubSplines,
+        edgeMetadata = edgeMetadata,
     )
 }
-
-private fun buildOutline(
-    internalSpline: ClosedSpline,
-    edgMetadata: Outline.EdgeMetadata,
-): Outline {
-    val links = internalSpline.cyclicCurves.map {
-        it.toBezier()
-    }.clusterSimilar { prevCurve, nextCurve ->
-        prevCurve.connectsSmoothly(
-            nextCurve = nextCurve,
-        )
-    }.map { smoothlyConnectedCurves ->
-        buildOutlineLink(
-            smoothlyConnectedCurves = smoothlyConnectedCurves,
-            edgMetadata = edgMetadata,
-        )
-    }
-
-    return Outline(
-        links = links,
-    )
-}
-
-private fun buildOutlineLink(
-    smoothlyConnectedCurves: List<BezierCurve>,
-    edgMetadata: Outline.EdgeMetadata,
-): Outline.Link {
-    val (firstCurve, trailingCurves) = smoothlyConnectedCurves.uncons()
-        ?: throw AssertionError("List of smooth curves must not be empty")
-
-    val (innerCurves, lastCurve) = trailingCurves.untrail() ?: run {
-        return firstCurve.toOutlineLink(edgMetadata = edgMetadata)
-    }
-
-    val (intermediateJoints, _) = innerCurves.mapCarrying(
-        initialCarry = firstCurve,
-    ) { previousLink: BezierCurve, smoothLink ->
-        val rearHandlePosition = previousLink.lastControl
-        val anchorPosition = previousLink.end
-        val frontHandlePosition = smoothLink.firstControl
-
-        val anchorDistance = Point.distanceBetween(
-            rearHandlePosition,
-            anchorPosition,
-        )
-
-        val controlSegmentLength = Point.distanceBetween(
-            rearHandlePosition,
-            frontHandlePosition,
-        )
-
-        val t = anchorDistance / controlSegmentLength
-
-        Pair(
-            Outline.Joint.Smooth(
-                rearHandle = Outline.Handle(position = rearHandlePosition),
-                anchorCoord = OpenCurve.Coord(t = t),
-                frontHandle = Outline.Handle(position = frontHandlePosition),
-            ),
-            smoothLink,
-        )
-    }
-
-    return Outline.Link(
-        edge = Outline.Edge(
-            startHandle = Outline.Handle(position = firstCurve.firstControl),
-            intermediateJoints = intermediateJoints,
-            endHandle = Outline.Handle(position = firstCurve.lastControl),
-            metadata = edgMetadata,
-        ),
-        endAnchor = Outline.Anchor(
-            position = lastCurve.end,
-        ),
-    )
-}
-
-fun PrimitiveCurve.toOutlineLink(
-    edgMetadata: Outline.EdgeMetadata,
-): Outline.Link = Outline.Link(
-    edge = when (this) {
-        is MonoBezierCurve -> Outline.Edge(
-            startHandle = Outline.Handle(
-                position = firstControl,
-            ),
-            intermediateJoints = emptyList(),
-            endHandle = Outline.Handle(
-                position = secondControl,
-            ),
-            metadata = edgMetadata,
-        )
-
-
-        is LineSegment -> Outline.Edge(
-            startHandle = null,
-            intermediateJoints = emptyList(),
-            endHandle = null,
-            metadata = edgMetadata,
-        )
-
-        else -> throw UnsupportedOperationException("Unsupported curve type: ${this::class}")
-    },
-    endAnchor = Outline.Anchor(
-        position = end,
-    ),
-)
 
 /**
  * Computes the scale factor that converts the internal SVG units to millimeters

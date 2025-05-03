@@ -8,16 +8,25 @@ import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.uncons
+import diy.lingerie.utils.iterable.withPrevious
 
 /**
  * A composite open curve assumed to be tangent-continuous (G1).
  */
 data class OpenSpline(
+    /**
+     * The curve that starts this spline
+     */
     val firstCurve: PrimitiveCurve,
+    /**
+     * A list of links, where each link starts at the end of the previous one,
+     * and ends at the start of the next one. The first link starts at the end of
+     * the first curve.
+     */
     val trailingSequentialLinks: List<Spline.Link>,
 ) : OpenCurve(), Spline {
     companion object {
-        fun of(
+        fun OpenSpline(
             origin: Point,
             sequentialLinks: List<Spline.Link>,
         ): OpenSpline {
@@ -31,26 +40,58 @@ data class OpenSpline(
                 trailingSequentialLinks = trailingLinks,
             )
         }
+
+        /**
+         * @param sequentialCurves a list of curves, where each curves starts at
+         * the end of the previous one, and ends at the start of the next one.
+         *
+         * @return an open spline in the shape of the given sequential curves
+         */
+        fun connect(
+            sequentialCurves: List<OpenCurve>,
+        ): OpenSpline {
+            val primitiveSequentialCurves = sequentialCurves.flatMap { it.subCurves }
+
+            val (firstCurve, trailingCurves) = primitiveSequentialCurves.uncons() ?: throw IllegalArgumentException(
+                "The list of sequential curves must not be empty"
+            )
+
+            return OpenSpline(
+                firstCurve = firstCurve,
+                trailingSequentialLinks = trailingCurves.withPrevious(
+                    outerLeft = firstCurve,
+                ).map { (prevCurve, curve) ->
+                    if (prevCurve.end != curve.start) {
+                        throw IllegalArgumentException("The curves are not sequential: ${prevCurve.end} != ${curve.start}")
+                    }
+
+                    Spline.Link(
+                        edge = curve.edge,
+                        end = curve.end,
+                    )
+                },
+            )
+        }
     }
 
-    init {
-        require(trailingSequentialLinks.isNotEmpty())
-    }
+    val origin: Point
+        get() = firstCurve.start
 
     val sequentialCurves: List<PrimitiveCurve>
+        get() = listOf(firstCurve) + trailingSequentialCurves
+
+    private val trailingSequentialCurves: List<PrimitiveCurve>
         get() {
             val (trailingCurves, _) = trailingSequentialLinks.mapCarrying(
                 initialCarry = firstCurve.end,
             ) { start, link ->
                 Pair(
-                    link.bind(
-                        start = start,
-                    ),
+                    link.bind(start = start),
                     link.end,
                 )
             }
 
-            return listOf(firstCurve) + trailingCurves
+            return trailingCurves
         }
 
     override fun transformBy(
@@ -61,6 +102,20 @@ data class OpenSpline(
         ),
         trailingSequentialLinks = trailingSequentialLinks.map {
             it.transformBy(transformation = transformation)
+        },
+    )
+
+    override fun splitAt(
+        coord: Coord,
+    ): Pair<OpenCurve, OpenCurve> {
+        TODO()
+    }
+
+    override fun findOffsetCurve(
+        offset: Double,
+    ): OpenCurve = connect(
+        sequentialCurves.map {
+            it.findOffsetCurve(offset = offset)
         },
     )
 
@@ -88,3 +143,4 @@ data class OpenSpline(
     override val segmentCurves: List<PrimitiveCurve>
         get() = sequentialCurves
 }
+

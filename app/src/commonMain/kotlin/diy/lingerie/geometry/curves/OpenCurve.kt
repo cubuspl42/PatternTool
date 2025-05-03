@@ -9,7 +9,7 @@ import kotlin.jvm.JvmInline
 
 /**
  * A curve defined in range t [0, 1] that is open (having a specified start and
- * end point).
+ * end point), assumed to be tangent-continuous (G1).
  */
 abstract class OpenCurve : NumericObject {
     @JvmInline
@@ -67,4 +67,25 @@ abstract class OpenCurve : NumericObject {
     abstract fun transformBy(
         transformation: Transformation,
     ): OpenCurve
+
+    abstract fun splitAt(
+        coord: Coord,
+    ): Pair<OpenCurve, OpenCurve>
+
+    /**
+     * Find the offset curve (or its close approximation) of this curve
+     */
+    abstract fun findOffsetCurve(
+        offset: Double,
+    ): OpenCurve
+
+    /**
+     * Find the intersections of this curve (also referred to as the "subject
+     * curve") with the [other] curve.
+     */
+    fun findIntersections(
+        other: OpenCurve,
+    ): Set<Intersection> {
+        TODO()
+    }
 }

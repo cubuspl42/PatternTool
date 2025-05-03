@@ -108,7 +108,7 @@ class OutlineTests {
 
         assertEqualsWithTolerance(
             expected = Outline(
-                links = listOf(
+                cyclicLinks = listOf(
                     Outline.Link(
                         edge = Outline.Edge(
                             startHandle = Outline.Handle(
@@ -332,7 +332,7 @@ class OutlineTests {
 
         assertEqualsWithTolerance(
             expected = Outline(
-                links = listOf(
+                cyclicLinks = listOf(
                     Outline.Link(
                         edge = Outline.Edge(
                             startHandle = Outline.Handle(
