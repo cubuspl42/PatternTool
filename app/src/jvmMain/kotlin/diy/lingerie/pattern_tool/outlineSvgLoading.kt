@@ -13,9 +13,7 @@ private const val defaultDpi = 300.0
 
 fun Outline.Companion.loadSvg(
     svgRoot: SvgRoot,
-    edgeMetadata: Outline.EdgeMetadata = Outline.EdgeMetadata(
-        seamAllowance = SeamAllowance(allowanceMm = 6.0),
-    ),
+    edgeMetadataMap: Outline.EdgeMetadataMap,
 ): Outline {
     val transformationToMm = PrimitiveTransformation.Scaling(
         scaleVector = determineToMmScale(
@@ -35,7 +33,7 @@ fun Outline.Companion.loadSvg(
         cyclicSmoothCurves = svgPath.toClosedSpline().transformBy(
             transformation = transformationToMm,
         ).smoothSubSplines,
-        edgeMetadata = edgeMetadata,
+        edgeMetadataMap = edgeMetadataMap,
     )
 }
 

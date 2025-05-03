@@ -16,6 +16,12 @@ enum class PatternPieceId {
     UpperCup, InnerLowerCup, OuterLowerCup,
 }
 
+val defaultEdgeMetadata = Outline.EdgeMetadata(
+    seamAllowance = SeamAllowance(
+        allowanceMm = 6.0,
+    ),
+)
+
 class MainCommand : CliktCommand() {
     val direction: PatternGenerationDirection by option("--direction").enum<PatternGenerationDirection>().required()
 
@@ -38,22 +44,40 @@ class MainCommand : CliktCommand() {
                     val upperCupSvgRoot =
                         svgRootByName["upperCup"] ?: throw IllegalArgumentException("upperCup not found")
 
+                    val upperCupEdgeMetadataMap = Outline.EdgeMetadataMap(
+                        edgeMetadataByEdgeIndex = mapOf(),
+                        defaultEdgeMetadata = defaultEdgeMetadata,
+                    )
+
                     val innerLowerCupSvgRoot =
                         svgRootByName["innerLowerCup"] ?: throw IllegalArgumentException("innerLowerCup not found")
 
+                    val innerLowerCupEdgeMetadataMap = Outline.EdgeMetadataMap(
+                        edgeMetadataByEdgeIndex = mapOf(),
+                        defaultEdgeMetadata = defaultEdgeMetadata,
+                    )
+
                     val outerLowerCupSvgRoot =
                         svgRootByName["outerLowerCup"] ?: throw IllegalArgumentException("outerLowerCup not found")
+
+                    val outerLowerCupEdgeMetadataMap = Outline.EdgeMetadataMap(
+                        edgeMetadataByEdgeIndex = mapOf(),
+                        defaultEdgeMetadata = defaultEdgeMetadata,
+                    )
 
                     return PatternPieceOutlineSet(
                         patternPieceOutlineById = mapOf(
                             PatternPieceId.UpperCup to Outline.loadSvg(
                                 svgRoot = upperCupSvgRoot,
+                                edgeMetadataMap = upperCupEdgeMetadataMap,
                             ),
                             PatternPieceId.InnerLowerCup to Outline.loadSvg(
                                 svgRoot = innerLowerCupSvgRoot,
+                                edgeMetadataMap = innerLowerCupEdgeMetadataMap,
                             ),
                             PatternPieceId.OuterLowerCup to Outline.loadSvg(
                                 svgRoot = outerLowerCupSvgRoot,
+                                edgeMetadataMap = outerLowerCupEdgeMetadataMap,
                             ),
                         ),
                     )
