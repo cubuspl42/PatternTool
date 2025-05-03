@@ -77,10 +77,4 @@ data class LineSegment(
 
     override val endTangent: Direction?
         get() = tangent
-
-    override fun findOffsetCurve(
-        offset: Double,
-    ): LineSegment {
-        TODO("Not yet implemented")
-    }
 }

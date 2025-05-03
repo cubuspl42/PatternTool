@@ -81,6 +81,12 @@ data class PatternPieceLayout(
                     width = 0.4,
                     dashArray = listOf(2.0, 1.0),
                 ),
+            ),
+            patternPiece.outline.findSeamContour().toSvgPath(
+                stroke = SvgPath.Stroke(
+                    color = SimpleColor.black,
+                    width = 0.8,
+                ),
             )
         ),
     )

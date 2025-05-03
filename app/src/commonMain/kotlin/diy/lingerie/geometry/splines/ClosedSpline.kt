@@ -2,11 +2,13 @@ package diy.lingerie.geometry.splines
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.equalsWithTolerance
+import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.clusterSimilar
 import diy.lingerie.utils.iterable.uncons
+import diy.lingerie.utils.iterable.withNextCyclic
 import diy.lingerie.utils.iterable.withPrevious
 import diy.lingerie.utils.iterable.withPreviousCyclic
 
@@ -49,9 +51,14 @@ data class ClosedSpline(
          */
         fun interconnect(
             separatedCurves: List<OpenCurve>,
-        ): ClosedSpline {
-            TODO()
-        }
+        ): ClosedSpline = ClosedSpline.connect(
+            cyclicCurves = separatedCurves.withNextCyclic().flatMap { (curve, nextCurve) ->
+                listOf(curve) + LineSegment(
+                    start = curve.end,
+                    end = nextCurve.start,
+                )
+            },
+        )
     }
 
     init {

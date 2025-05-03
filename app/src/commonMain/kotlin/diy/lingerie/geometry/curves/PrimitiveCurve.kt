@@ -2,8 +2,10 @@ package diy.lingerie.geometry.curves
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.geometry.Direction
+import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.splines.Spline
+import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 
 abstract class PrimitiveCurve : OpenCurve() {
@@ -30,6 +32,15 @@ abstract class PrimitiveCurve : OpenCurve() {
     // TODO: Make this final
     override val subCurves: List<PrimitiveCurve>
         get() = listOf(this)
+
+    final override fun findOffsetCurve(
+        offset: Double,
+    ): PrimitiveCurve = this.transformBy(
+        transformation = PrimitiveTransformation.Translation(
+            tx = offset,
+            ty = offset,
+        ),
+    )
 
     fun connectsSmoothly(
         nextCurve: PrimitiveCurve,
