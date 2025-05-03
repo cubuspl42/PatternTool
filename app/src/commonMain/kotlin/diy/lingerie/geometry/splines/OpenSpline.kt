@@ -127,10 +127,10 @@ data class OpenSpline(
         get() = trailingSequentialLinks
 
     override val start: Point
-        get() = TODO("Not yet implemented")
+        get() = firstCurve.start
 
     override val end: Point
-        get() = TODO("Not yet implemented")
+        get() = links.lastOrNull()?.end ?: firstCurve.end
 
     override val subCurves: List<PrimitiveCurve>
         get() = sequentialCurves
