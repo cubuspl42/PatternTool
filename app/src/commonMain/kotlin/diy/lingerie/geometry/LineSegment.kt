@@ -2,7 +2,9 @@ package diy.lingerie.geometry
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
+import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
+import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 
 /**
@@ -42,6 +44,20 @@ data class LineSegment(
         TODO("Not yet implemented")
     }
 
+    override fun findOffsetCurve(
+        offset: Double,
+    ): LineSegment {
+        val normal =
+            this.normal ?: throw IllegalStateException("Cannot find offset curve of a line segment with no normal")
+
+        return transformBy(
+            transformation = PrimitiveTransformation.Translation.inDirection(
+                direction = normal,
+                distance = Span.of(value = offset),
+            )
+        )
+    }
+
     override fun evaluate(coord: Coord): Point {
         TODO("Not yet implemented")
     }
@@ -64,6 +80,9 @@ data class LineSegment(
 
     val tangent: Direction?
         get() = start.directionTo(end)
+
+    val normal: Direction?
+        get() = tangent?.normal
 
     override fun transformBy(
         transformation: Transformation,
