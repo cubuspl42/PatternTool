@@ -147,20 +147,6 @@ data class Outline(
             val anchorCoord: OpenCurve.Coord,
             override val frontHandle: Handle,
         ) : Joint() {
-            companion object {
-                fun reconstruct(
-                    bezierJoint: BezierCurve.Joint,
-                ): Smooth = Smooth(
-                    rearHandle = Handle(
-                        position = bezierJoint.rearControl,
-                    ),
-                    anchorCoord = bezierJoint.coord,
-                    frontHandle = Handle(
-                        position = bezierJoint.frontControl,
-                    ),
-                )
-            }
-
             /**
              * The control line segment going from the rear to the front handle
              */
@@ -169,12 +155,6 @@ data class Outline(
                     start = rearHandle.position,
                     end = frontHandle.position,
                 )
-
-            fun toBezierJoint() = BezierCurve.Joint(
-                rearControl = rearHandle.position,
-                coord = anchorCoord,
-                frontControl = frontHandle.position,
-            )
 
             fun reversed(): Smooth = Smooth(
                 rearHandle = frontHandle,
