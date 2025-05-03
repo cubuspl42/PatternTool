@@ -32,7 +32,7 @@ fun Outline.Companion.loadSvg(
         singleElement as? SvgPath ?: throw IllegalArgumentException("The single element must be a path element")
 
     return Outline.reconstruct(
-        cyclicEdgeCurves = svgPath.toClosedSpline().transformBy(
+        cyclicSmoothCurves = svgPath.toClosedSpline().transformBy(
             transformation = transformationToMm,
         ).smoothSubSplines,
         edgeMetadata = edgeMetadata,

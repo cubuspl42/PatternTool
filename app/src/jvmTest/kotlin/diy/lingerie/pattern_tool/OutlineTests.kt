@@ -12,7 +12,6 @@ import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import diy.lingerie.utils.getResourceAsReader
-import kotlin.io.path.Path
 import kotlin.test.Ignore
 import kotlin.test.Test
 
@@ -50,7 +49,7 @@ class OutlineTests {
         )
 
         val verge = Verge.reconstruct(
-            openCurve = openSpline,
+            smoothCurve = openSpline,
             edgeMetadata = edgeMetadata,
         )
 
@@ -194,7 +193,7 @@ class OutlineTests {
         )
 
         val outline = Outline.reconstruct(
-            cyclicEdgeCurves = cyclicEdgeCurves,
+            cyclicSmoothCurves = cyclicEdgeCurves,
             edgeMetadata = edgeMetadata,
         )
 

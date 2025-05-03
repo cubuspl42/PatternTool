@@ -69,8 +69,6 @@ data class BezierCurve(
         end = end.transformBy(transformation = transformation),
     )
 
-    override fun toBezier(): BezierCurve = this
-
     // TODO: This might not work for degenerate curves
     override val startTangent: Direction?
         get() = start.directionTo(firstControl)

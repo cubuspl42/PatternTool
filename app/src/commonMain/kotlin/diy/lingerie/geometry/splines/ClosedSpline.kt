@@ -6,6 +6,8 @@ import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.utils.iterable.clusterSimilar
+import diy.lingerie.utils.iterable.uncons
+import diy.lingerie.utils.iterable.withPrevious
 import diy.lingerie.utils.iterable.withPreviousCyclic
 
 /**
@@ -29,7 +31,16 @@ data class ClosedSpline(
         fun connect(
             cyclicCurves: List<OpenCurve>,
         ): ClosedSpline {
-            TODO()
+            val primitiveCyclicCurves = cyclicCurves.flatMap { it.subCurves }
+
+            return ClosedSpline(
+                cyclicLinks = primitiveCyclicCurves.withPreviousCyclic().map { (prevCurve, curve) ->
+                    Spline.Link.connect(
+                        prevCurve = prevCurve,
+                        curve = curve,
+                    )
+                },
+            )
         }
 
         /**
@@ -55,9 +66,7 @@ data class ClosedSpline(
         }
 
     val smoothSubSplines: List<OpenSpline>
-        get() = cyclicCurves.map {
-            it.toBezier()
-        }.clusterSimilar { prevCurve, nextCurve ->
+        get() = cyclicCurves.clusterSimilar { prevCurve, nextCurve ->
             prevCurve.connectsSmoothly(
                 nextCurve = nextCurve,
             )

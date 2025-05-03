@@ -50,24 +50,19 @@ data class OpenSpline(
         fun connect(
             sequentialCurves: List<OpenCurve>,
         ): OpenSpline {
-            val primitiveSequentialCurves = sequentialCurves.flatMap { it.subCurves }
+            val sequentialPrimitiveCurves = sequentialCurves.flatMap { it.subCurves }
 
-            val (firstCurve, trailingCurves) = primitiveSequentialCurves.uncons() ?: throw IllegalArgumentException(
-                "The list of sequential curves must not be empty"
-            )
+            val (firstCurve, trailingCurves) = sequentialPrimitiveCurves.uncons()
+                ?: throw IllegalArgumentException("The list of sequential curves must not be empty")
 
             return OpenSpline(
                 firstCurve = firstCurve,
                 trailingSequentialLinks = trailingCurves.withPrevious(
                     outerLeft = firstCurve,
                 ).map { (prevCurve, curve) ->
-                    if (prevCurve.end != curve.start) {
-                        throw IllegalArgumentException("The curves are not sequential: ${prevCurve.end} != ${curve.start}")
-                    }
-
-                    Spline.Link(
-                        edge = curve.edge,
-                        end = curve.end,
+                    Spline.Link.connect(
+                        prevCurve = prevCurve,
+                        curve = curve,
                     )
                 },
             )
