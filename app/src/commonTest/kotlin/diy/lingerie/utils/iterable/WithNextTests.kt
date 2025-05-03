@@ -104,7 +104,6 @@ class WithNextTests {
         )
     }
 
-
     @Test
     fun testWithNextBy_standardCase() {
         val actual = listOf(

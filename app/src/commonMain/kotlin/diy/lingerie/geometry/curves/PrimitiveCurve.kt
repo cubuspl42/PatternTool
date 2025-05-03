@@ -7,16 +7,6 @@ import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.Transformation
 
 abstract class PrimitiveCurve : OpenCurve() {
-    /**
-     * Find the intersections of this curve (also referred to as the "subject
-     * curve") with the [other] curve.
-     */
-    fun findIntersections(
-        other: PrimitiveCurve,
-    ): Set<Intersection> {
-        TODO()
-    }
-
     abstract class Edge : NumericObject {
         abstract fun bind(
             start: Point,
@@ -43,7 +33,7 @@ abstract class PrimitiveCurve : OpenCurve() {
 
     abstract val edge: Edge
 
-    abstract fun splitAt(
+    abstract override fun splitAt(
         coord: Coord,
     ): Pair<PrimitiveCurve, PrimitiveCurve>
 
@@ -54,11 +44,4 @@ abstract class PrimitiveCurve : OpenCurve() {
     ): PrimitiveCurve
 
     abstract fun toBezier(): BezierCurve
-
-    /**
-     * Find the offset curve (or its close approximation) of this curve
-     */
-    abstract fun findOffsetCurve(
-        offset: Double,
-    ): OpenCurve
 }
