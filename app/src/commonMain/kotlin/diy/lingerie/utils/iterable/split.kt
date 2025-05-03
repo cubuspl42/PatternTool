@@ -1,12 +1,9 @@
 package diy.lingerie.utils.iterable
 
-typealias Crack<T> = (T) -> Pair<T, T>
-
 data class Split2<T>(
     val leadingElements: List<T>,
     val trailingElements: List<T>,
 )
-
 
 /**
  * Split the list before the [index].
@@ -15,17 +12,6 @@ fun <T> List<T>.splitBefore(index: Int): Split2<T> = Split2(
     leadingElements = take(index),
     trailingElements = drop(index),
 )
-
-fun <T> List<T>.crackAt(
-    index: Int,
-    crack: Crack<T>,
-) {
-    if (index !in indices) {
-        throw IndexOutOfBoundsException("index: $index, size: $size")
-    }
-
-    TODO()
-}
 
 data class Split3<T>(
     val leadingElements: List<T>,

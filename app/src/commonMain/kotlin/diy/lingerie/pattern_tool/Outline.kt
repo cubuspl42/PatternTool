@@ -14,9 +14,9 @@ import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.utils.iterable.crackAt
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.shiftLeft
-import diy.lingerie.utils.iterable.splitBefore
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.untrail
 import diy.lingerie.utils.iterable.withNextBy
@@ -657,27 +657,20 @@ data class Outline(
         secondSplitCoord: Coord,
         splitEdgeMetadata: EdgeMetadata,
     ): Pair<Outline, Outline> {
-        val (firstEdgeIndex, firstEdgeCoord) = firstSplitCoord
-        val (secondEdgeIndex, secondEdgeCoord) = secondSplitCoord
-
-        val (frontVerges, centralVerges, backVerge) = verges.splitBefore(
-            firstIndex = firstEdgeIndex,
-            secondIndex = secondEdgeIndex,
+        val (firstSequentialVerges, secondSequentialVerges) = verges.crackAt(
+            firstIndex = firstSplitCoord.edgeIndex,
+            crackFirst = { it.splitAt(edgeCoord = firstSplitCoord.edgeCoord) },
+            secondIndex = secondSplitCoord.edgeIndex,
+            crackSecond = { it.splitAt(edgeCoord = secondSplitCoord.edgeCoord) },
         )
 
-        val (firstCentralVerge, trailingCentralVerges) = centralVerges.uncons()!!
-        val (firstBackVerge, trailingBackVerges) = backVerge.uncons()!!
-
-        val (firstCentralVerge0, firstCentralVerge1) = firstCentralVerge.splitAt(edgeCoord = firstEdgeCoord)
-        val (firstBackVerge0, firstBackVerge1) = firstBackVerge.splitAt(edgeCoord = secondEdgeCoord)
-
         val firstSubOutline = closeOpenOutline(
-            sequentialVerges = listOf(firstCentralVerge1) + trailingCentralVerges + firstBackVerge0,
+            sequentialVerges = firstSequentialVerges,
             closingEdgeMetadata = splitEdgeMetadata,
         )
 
         val secondSubOutline = closeOpenOutline(
-            sequentialVerges = listOf(firstBackVerge1) + trailingBackVerges + frontVerges + firstCentralVerge0,
+            sequentialVerges = secondSequentialVerges,
             closingEdgeMetadata = splitEdgeMetadata,
         )
 
