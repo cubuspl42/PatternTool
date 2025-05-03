@@ -17,8 +17,6 @@ data class MonoBezierCurve(
         override val firstControl: Point,
         val secondControl: Point,
     ) : BezierCurve.Edge() {
-        override val joints: List<Joint> = emptyList()
-
         override val lastControl: Point
             get() = secondControl
 
@@ -58,8 +56,6 @@ data class MonoBezierCurve(
             firstControl = firstControl,
             secondControl = secondControl,
         )
-
-    override val joints: List<Joint> = emptyList()
 
     override val subCurves: List<MonoBezierCurve>
         get() = listOf(this)
