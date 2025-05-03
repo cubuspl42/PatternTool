@@ -13,7 +13,7 @@ value class Orientation(
      * One of two directions having this orientation
      */
     val representativeDirection: Direction,
-) {
+) : RadialObject {
     companion object {
         /**
          * A horizontal direction, i.e. the one determined by the X axis
@@ -31,5 +31,24 @@ value class Orientation(
     }
 
     val directionVector: Vector2
-        get() = representativeDirection.directionVector
+        get() = representativeDirection.normalizedDirectionVector
+
+    override fun equalsWithRadialTolerance(
+        other: RadialObject,
+        tolerance: RelativeAngle.RadialTolerance,
+    ): Boolean = when {
+        other !is Orientation -> false
+
+        representativeDirection.equalsWithRadialTolerance(
+            other.representativeDirection,
+            tolerance = tolerance,
+        ) -> true
+
+        representativeDirection.opposite.equalsWithRadialTolerance(
+            other.representativeDirection,
+            tolerance = tolerance,
+        ) -> true
+
+        else -> false
+    }
 }

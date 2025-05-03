@@ -11,10 +11,16 @@ import kotlin.math.sin
  * A relative angle between some reference arm and some other arm, in the range
  * -PI <= fi < PI.
  */
-sealed class RelativeAngle {
+sealed class RelativeAngle : RadialObject {
     data class RadialTolerance(
         val fiTolerance: Double,
     ) {
+        companion object {
+            val Default = RadialTolerance(
+                fiTolerance = 1e-3,
+            )
+        }
+
         init {
             require(fiTolerance < PI / 8)
         }
@@ -297,6 +303,22 @@ sealed class RelativeAngle {
         override val cosFi: Double,
         override val sinFi: Double,
     ) : RelativeAngle() {
+        companion object {
+            fun of(
+                normalizedVector: Vector2,
+            ): Trigonometric {
+                require(normalizedVector.isNormalized())
+
+                val cosFi = normalizedVector.x / normalizedVector.magnitude
+                val sinFi = normalizedVector.y / normalizedVector.magnitude
+
+                return Trigonometric(
+                    cosFi = cosFi,
+                    sinFi = sinFi,
+                )
+            }
+        }
+
         override fun isZeroWithRadialTolerance(
             tolerance: RadialTolerance,
         ): Boolean = when {
@@ -382,15 +404,18 @@ sealed class RelativeAngle {
         get() = fi * 180.0 / PI
 
     abstract fun isZeroWithRadialTolerance(
-        tolerance: RadialTolerance,
+        tolerance: RadialTolerance = RadialTolerance.Default,
     ): Boolean
 
-    fun equalsWithRadialTolerance(
-        other: RelativeAngle,
+    override fun equalsWithRadialTolerance(
+        other: RadialObject,
         tolerance: RadialTolerance,
-    ): Boolean {
-        val difference = this - other
-        return difference.isZeroWithRadialTolerance(tolerance = tolerance)
+    ): Boolean = when {
+        other !is RelativeAngle -> false
+        else -> {
+            val difference = this - other
+            difference.isZeroWithRadialTolerance(tolerance = tolerance)
+        }
     }
 
     /**

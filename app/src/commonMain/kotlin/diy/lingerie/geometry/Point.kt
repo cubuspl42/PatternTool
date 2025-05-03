@@ -3,7 +3,7 @@ package diy.lingerie.geometry
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
 import diy.lingerie.algebra.Vector2
-import diy.lingerie.geometry.transformations.PrimitiveTransformation
+import diy.lingerie.geometry.transformations.PrimitiveTransformation.Translation
 import diy.lingerie.geometry.transformations.Transformation
 
 data class Point(
@@ -61,13 +61,13 @@ data class Point(
         else -> true
     }
 
-    override fun equalsSpatially(
+    override fun equalsWithSpatialTolerance(
         other: SpatialObject,
         tolerance: SpatialObject.SpatialTolerance,
     ): Boolean = when {
         other !is Point -> false
 
-        else -> Point.distanceBetween(this, other).equalsSpatially(
+        else -> Point.distanceBetween(this, other).equalsWithSpatialTolerance(
             Span.Zero,
             tolerance = tolerance,
         )
@@ -77,16 +77,23 @@ data class Point(
         direction: Direction,
         distance: Span,
     ): Point {
-
         TODO()
     }
 
-    fun reflectedBy(mirror: Point): Point {
-        val translation = PrimitiveTransformation.Translation.between(
-            origin = this,
-            target = mirror,
-        )
+    fun translationTo(
+        target: Point,
+    ): Translation = Translation.between(
+        origin = this,
+        target = target,
+    )
 
-        return translation.transform(mirror)
-    }
+    fun reflectedBy(
+        mirror: Point,
+    ): Point = mirror.transformBy(
+        transformation = translationTo(mirror),
+    )
+
+    fun directionTo(
+        target: Point,
+    ): Direction? = translationTo(target = target).direction
 }

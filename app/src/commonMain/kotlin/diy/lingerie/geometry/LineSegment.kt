@@ -30,7 +30,7 @@ data class LineSegment(
         override fun equalsWithTolerance(
             other: NumericObject,
             tolerance: Tolerance,
-        ): Boolean = other == LineSegment.Edge
+        ): Boolean = other == Edge
 
         override fun toString(): String = "LineSegment.Edge"
     }
@@ -63,6 +63,9 @@ data class LineSegment(
             point1 = end,
         )
 
+    val tangent: Direction?
+        get() = start.directionTo(end)
+
     override fun transformBy(
         transformation: Transformation,
     ): LineSegment = LineSegment(
@@ -76,6 +79,12 @@ data class LineSegment(
         secondControl = end,
         end = end,
     )
+
+    override val startTangent: Direction?
+        get() = tangent
+
+    override val endTangent: Direction?
+        get() = tangent
 
     override fun findOffsetCurve(
         offset: Double,

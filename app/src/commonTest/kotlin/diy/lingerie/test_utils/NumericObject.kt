@@ -21,10 +21,11 @@ fun <T : NumericObject> assertEqualsWithTolerance(
     expected: T,
     actual: T,
     tolerance: NumericObject.Tolerance = TestTolerances.defaultTolerance,
+    message: String = "Expected $expected, but got $actual (tolerance: $tolerance)",
 ) {
     assertTrue(
         actual = expected.equalsWithTolerance(actual, tolerance = tolerance),
-        message = "Expected $expected, but got $actual (tolerance: $tolerance)",
+        message = message,
     )
 }
 
@@ -45,6 +46,7 @@ fun <T : NumericObject> assertEqualsWithTolerance(
             expected = expected[i],
             actual = actual[i],
             tolerance = tolerance,
+            message = "At index $i: expected ${expected[i]}, but got ${actual[i]} (tolerance: $tolerance)",
         )
     }
 }

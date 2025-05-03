@@ -16,7 +16,6 @@ import diy.lingerie.utils.iterable.crackAt
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.shiftLeft
 import diy.lingerie.utils.iterable.uncons
-import diy.lingerie.utils.iterable.untrail
 import diy.lingerie.utils.iterable.withNextBy
 import diy.lingerie.utils.iterable.withNextCyclic
 import diy.lingerie.utils.iterable.withPreviousCyclic
@@ -299,7 +298,7 @@ data class Outline(
         val startAnchor: Anchor,
         val edge: Edge,
         val endAnchor: Anchor,
-    ) {
+    ) : NumericObject {
         companion object {
             fun line(
                 startAnchor: Anchor,
@@ -342,14 +341,11 @@ data class Outline(
                 val (firstCurve, trailingCurves) = bezierCurves.uncons()
                     ?: throw AssertionError("List of smooth curves must not be empty")
 
-                val (innerCurves, lastCurve) = trailingCurves.untrail() ?: return reconstruct(
-                    bezierCurve = firstCurve,
-                    edgeMetadata = edgeMetadata,
-                )
+                val (intermediateJoints, lastCurve) = trailingCurves.mapCarrying(
+                    initialCarry = firstCurve,
+                ) { previousCurve: BezierCurve, curve ->
+                    val rearHandlePosition = previousCurve.secondControl
 
-                val (intermediateJoints, endHandleControl) = innerCurves.mapCarrying(
-                    initialCarry = firstCurve.lastControl,
-                ) { rearHandlePosition: Point, curve ->
                     val anchorPosition = curve.start
                     val frontHandlePosition = curve.firstControl
 
@@ -366,12 +362,12 @@ data class Outline(
                     val t = anchorDistance / controlSegmentLength
 
                     Pair(
-                        Outline.Joint.Smooth(
+                        Joint.Smooth(
                             rearHandle = Outline.Handle(position = rearHandlePosition),
                             anchorCoord = OpenCurve.Coord(t = t),
                             frontHandle = Outline.Handle(position = frontHandlePosition),
                         ),
-                        curve.lastControl,
+                        curve,
                     )
                 }
 
@@ -382,7 +378,7 @@ data class Outline(
                     edge = Outline.Edge(
                         startHandle = Outline.Handle(position = firstCurve.firstControl),
                         intermediateJoints = intermediateJoints,
-                        endHandle = Outline.Handle(position = endHandleControl),
+                        endHandle = Outline.Handle(position = lastCurve.secondControl),
                         metadata = edgeMetadata,
                     ),
                     endAnchor = Outline.Anchor(
@@ -485,6 +481,17 @@ data class Outline(
             ),
             endAnchor = endAnchor.transformBy(transformation = transformation),
         )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance
+        ): Boolean = when {
+            other !is Verge -> false
+            !startAnchor.equalsWithTolerance(other.startAnchor, tolerance) -> false
+            !edge.equalsWithTolerance(other.edge, tolerance) -> false
+            !endAnchor.equalsWithTolerance(other.endAnchor, tolerance) -> false
+            else -> true
+        }
     }
 
     data class Coord(

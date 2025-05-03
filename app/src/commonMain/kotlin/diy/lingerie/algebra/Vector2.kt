@@ -55,4 +55,27 @@ data class Vector2(
         x = a0 - other.a0,
         y = a1 - other.a1,
     )
+
+    operator fun div(
+        scalar: Double,
+    ): Vector2 = Vector2(
+        x = a0 / scalar,
+        y = a1 / scalar,
+    )
+
+    fun isNormalized(): Boolean = magnitudeSquared.equalsWithTolerance(1.0)
+
+    /**
+     * @return a normalized vector (potentially non-finite)
+     */
+    fun normalize(): Vector2 = this / magnitude
+
+    /**
+     * @return a normalized vector (or null if the normalization failed for
+     * numeric reasons, including the case of zero or close-to-zero vectors)
+     */
+    fun normalizeOrNull(): Vector2? {
+        val normalized = normalize()
+        return normalized.takeIf { it.isNormalized() }
+    }
 }
