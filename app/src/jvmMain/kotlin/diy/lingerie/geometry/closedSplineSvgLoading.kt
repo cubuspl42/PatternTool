@@ -1,6 +1,6 @@
 package diy.lingerie.geometry
 
-import diy.lingerie.geometry.curves.bezier.MonoBezierCurve.Edge
+import diy.lingerie.geometry.curves.bezier.BezierCurve.Edge
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.simple_dom.svg.SvgPath

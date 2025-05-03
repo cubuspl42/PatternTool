@@ -8,7 +8,6 @@ import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
-import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
@@ -313,24 +312,24 @@ data class Outline(
             )
 
             fun reconstruct(
-                monoBezierCurve: BezierCurve,
+                bezierCurve: BezierCurve,
                 edgeMetadata: EdgeMetadata,
             ): Verge = Outline.Verge(
                 startAnchor = Outline.Anchor(
-                    position = monoBezierCurve.start,
+                    position = bezierCurve.start,
                 ),
                 edge = Outline.Edge(
                     startHandle = Outline.Handle(
-                        position = monoBezierCurve.firstControl,
+                        position = bezierCurve.firstControl,
                     ),
                     intermediateJoints = emptyList(),
                     endHandle = Outline.Handle(
-                        position = monoBezierCurve.lastControl,
+                        position = bezierCurve.lastControl,
                     ),
                     metadata = edgeMetadata,
                 ),
                 endAnchor = Outline.Anchor(
-                    position = monoBezierCurve.end,
+                    position = bezierCurve.end,
                 ),
             )
 
@@ -344,7 +343,7 @@ data class Outline(
                     ?: throw AssertionError("List of smooth curves must not be empty")
 
                 val (innerCurves, lastCurve) = trailingCurves.untrail() ?: return reconstruct(
-                    monoBezierCurve = firstCurve,
+                    bezierCurve = firstCurve,
                     edgeMetadata = edgeMetadata,
                 )
 
@@ -410,7 +409,7 @@ data class Outline(
                 val intermediateJoints = edge.intermediateJoints
 
                 val firstJoint = intermediateJoints.firstOrNull() ?: return OpenSpline(
-                    firstCurve = MonoBezierCurve(
+                    firstCurve = BezierCurve(
                         start = startArm.anchor.position,
                         firstControl = startArm.effectiveHandlePosition,
                         secondControl = endArm.effectiveHandlePosition,
@@ -420,7 +419,7 @@ data class Outline(
                 )
 
                 return OpenSpline(
-                    firstCurve = MonoBezierCurve(
+                    firstCurve = BezierCurve(
                         start = startArm.anchor.position,
                         firstControl = startArm.effectiveHandlePosition,
                         secondControl = firstJoint.rearHandle.position,
@@ -433,7 +432,7 @@ data class Outline(
                         val frontArm = joint.frontArm
 
                         Spline.Link(
-                            edge = MonoBezierCurve.Edge(
+                            edge = BezierCurve.Edge(
                                 firstControl = frontArm.effectiveHandlePosition,
                                 secondControl = nextJoinRearArm.effectiveHandlePosition,
                             ),

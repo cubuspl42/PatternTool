@@ -1,6 +1,6 @@
 package diy.lingerie.geometry
 
-import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
+import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.simple_dom.pt
@@ -23,21 +23,21 @@ class ClosedSplineSvgTests {
         val expectedSpline = ClosedSpline.positionallyContinuous(
             links = listOf(
                 Spline.Link(
-                    edge = MonoBezierCurve.Edge(
+                    edge = BezierCurve.Edge(
                         firstControl = Point(43.84199905395508, 108.19000244140625),
                         secondControl = Point(50.24800109863281, 84.95600128173828),
                     ),
                     end = Point(65.63800048828125, 72.54399871826172),
                 ),
                 Spline.Link(
-                    edge = MonoBezierCurve.Edge(
+                    edge = BezierCurve.Edge(
                         firstControl = Point(82.27100372314453, 59.12900161743164),
                         secondControl = Point(108.29000091552734, 56.98699951171875),
                     ),
                     end = Point(131.3769989013672, 50.821998596191406),
                 ),
                 Spline.Link(
-                    edge = MonoBezierCurve.Edge(
+                    edge = BezierCurve.Edge(
                         firstControl = Point(126.60900115966797, 85.4229965209961),
                         secondControl = Point(146.66000366210938, 103.48999786376953),
                     ),
@@ -48,7 +48,7 @@ class ClosedSplineSvgTests {
                     end = Point(131.70599365234375, 177.86399841308594),
                 ),
                 Spline.Link(
-                    edge = MonoBezierCurve.Edge(
+                    edge = BezierCurve.Edge(
                         firstControl = Point(85.72000122070312, 174.21600341796875),
                         secondControl = Point(49.132999420166016, 160.46400451660156),
                     ),
@@ -68,35 +68,35 @@ class ClosedSplineSvgTests {
         val closedSpline = ClosedSpline.positionallyContinuous(
             links = listOf(
                 Spline.Link(
-                    edge = MonoBezierCurve.Edge(
+                    edge = BezierCurve.Edge(
                         firstControl = Point(43.84199905395508, 108.19000244140625),
                         secondControl = Point(50.24800109863281, 84.95600128173828),
                     ),
                     end = Point(65.63800048828125, 72.54399871826172),
                 ),
                 Spline.Link(
-                    edge = MonoBezierCurve.Edge(
+                    edge = BezierCurve.Edge(
                         firstControl = Point(82.27100372314453, 59.12900161743164),
                         secondControl = Point(108.29000091552734, 56.98699951171875),
                     ),
                     end = Point(131.3769989013672, 50.821998596191406),
                 ),
                 Spline.Link(
-                    edge = MonoBezierCurve.Edge(
+                    edge = BezierCurve.Edge(
                         firstControl = Point(126.60900115966797, 85.4229965209961),
                         secondControl = Point(146.66000366210938, 103.48999786376953),
                     ),
                     end = Point(181.7220001220703, 111.55500030517578),
                 ),
                 Spline.Link(
-                    edge = MonoBezierCurve.Edge(
+                    edge = BezierCurve.Edge(
                         firstControl = Point(85.72000122070312, 174.21600341796875),
                         secondControl = Point(49.132999420166016, 160.46400451660156),
                     ),
                     end = Point(131.70599365234375, 177.86399841308594),
                 ),
                 Spline.Link(
-                    edge = MonoBezierCurve.Edge(
+                    edge = BezierCurve.Edge(
                         firstControl = Point(43.84199905395508, 108.19000244140625),
                         secondControl = Point(50.24800109863281, 84.95600128173828),
                     ),

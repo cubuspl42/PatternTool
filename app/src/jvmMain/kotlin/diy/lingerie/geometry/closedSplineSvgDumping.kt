@@ -1,7 +1,7 @@
 package diy.lingerie.geometry
 
 import diy.lingerie.geometry.curves.PrimitiveCurve
-import diy.lingerie.geometry.curves.bezier.MonoBezierCurve
+import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.simple_dom.svg.SvgPath
 
@@ -30,7 +30,7 @@ private fun PrimitiveCurve.toSvgPathSeg(): SvgPath.Segment = when (this) {
         finalPoint = end,
     )
 
-    is MonoBezierCurve -> SvgPath.Segment.CubicBezierCurveTo(
+    is BezierCurve -> SvgPath.Segment.CubicBezierCurveTo(
         controlPoint1 = firstControl,
         controlPoint2 = secondControl,
         finalPoint = end,
