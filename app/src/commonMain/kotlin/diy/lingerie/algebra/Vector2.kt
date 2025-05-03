@@ -49,6 +49,13 @@ data class Vector2(
         y = -y,
     )
 
+    operator fun times(
+        scalar: Double,
+    ): Vector2 = Vector2(
+        x = a0 * scalar,
+        y = a1 * scalar,
+    )
+
     operator fun minus(
         other: Vector2,
     ): Vector2 = Vector2(
@@ -79,3 +86,7 @@ data class Vector2(
         return normalized.takeIf { it.isNormalized() }
     }
 }
+
+operator fun Double.times(
+    vector: Vector2,
+): Vector2 = vector * this

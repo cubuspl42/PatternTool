@@ -5,6 +5,7 @@ import diy.lingerie.algebra.NumericObject.Tolerance
 import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.PrimitiveCurve
+import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 
 data class BezierCurve(
@@ -98,4 +99,13 @@ data class BezierCurve(
         !end.equalsWithTolerance(other.end, tolerance = tolerance) -> false
         else -> true
     }
+
+    override fun findOffsetCurve(
+        offset: Double,
+    ): BezierCurve = this.transformBy(
+        transformation = PrimitiveTransformation.Translation(
+            tx = offset,
+            ty = offset,
+        ),
+    )
 }

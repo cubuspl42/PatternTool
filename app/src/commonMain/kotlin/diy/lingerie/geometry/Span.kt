@@ -9,6 +9,10 @@ data class Span(
     val valueSquared: Double,
 ) : SpatialObject, Comparable<Span> {
     companion object {
+        fun of(value: Double): Span = Span(
+            valueSquared = value * value,
+        )
+
         val Zero = Span(valueSquared = 0.0)
     }
 

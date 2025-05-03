@@ -26,6 +26,14 @@ value class Direction(
         )
     }
 
+    val normal: Direction
+        get() = Direction(
+            normalizedDirectionVector = Vector2(
+                x = -normalizedDirectionVector.y,
+                y = normalizedDirectionVector.x,
+            ),
+        )
+
     /**
      * Angle from the positive X-axis to the direction vector
      */

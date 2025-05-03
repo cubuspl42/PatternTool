@@ -6,6 +6,7 @@ import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.RelativeAngle
+import diy.lingerie.geometry.Span
 
 sealed class Transformation : NumericObject {
     data class ReflectionOverLine(
@@ -83,6 +84,13 @@ sealed class PrimitiveTransformation : Transformation() {
         val translationVector: Vector2,
     ) : PrimitiveTransformation() {
         companion object {
+            fun inDirection(
+                direction: Direction,
+                distance: Span,
+            ): Translation = Translation(
+                translationVector = direction.normalizedDirectionVector * distance.value,
+            )
+
             fun between(
                 origin: Point,
                 target: Point,

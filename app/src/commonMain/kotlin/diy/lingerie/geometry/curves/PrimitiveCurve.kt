@@ -33,15 +33,6 @@ abstract class PrimitiveCurve : OpenCurve() {
     override val subCurves: List<PrimitiveCurve>
         get() = listOf(this)
 
-    final override fun findOffsetCurve(
-        offset: Double,
-    ): PrimitiveCurve = this.transformBy(
-        transformation = PrimitiveTransformation.Translation(
-            tx = offset,
-            ty = offset,
-        ),
-    )
-
     fun connectsSmoothly(
         nextCurve: PrimitiveCurve,
     ): Boolean {
