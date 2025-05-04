@@ -2,7 +2,7 @@ package diy.lingerie.geometry
 
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
-import diy.lingerie.algebra.Vector2
+import diy.lingerie.algebra.linear.vectors.Vector2
 import diy.lingerie.geometry.transformations.PrimitiveTransformation.Translation
 import diy.lingerie.geometry.transformations.Transformation
 

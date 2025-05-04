@@ -1,12 +1,15 @@
 package diy.lingerie.geometry.transformations
 
 import diy.lingerie.algebra.NumericObject
-import diy.lingerie.algebra.Vector2
+import diy.lingerie.algebra.linear.vectors.Vector2
 import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.RelativeAngle
 import diy.lingerie.geometry.Span
+import diy.lingerie.geometry.Vector2
+import diy.lingerie.geometry.x
+import diy.lingerie.geometry.y
 
 sealed class Transformation : NumericObject {
     data class ReflectionOverLine(

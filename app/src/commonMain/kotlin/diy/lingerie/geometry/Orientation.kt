@@ -1,6 +1,6 @@
 package diy.lingerie.geometry
 
-import diy.lingerie.algebra.Vector2
+import diy.lingerie.algebra.linear.vectors.Vector2
 import kotlin.jvm.JvmInline
 
 /**
