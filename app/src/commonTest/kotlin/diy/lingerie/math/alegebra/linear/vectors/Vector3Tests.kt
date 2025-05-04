@@ -90,10 +90,10 @@ class Vector3Tests {
     }
 
     @Test
-    fun testAdditionWithScalar() {
+    fun testAddition() {
         val vector = Vector3(1.0, 2.0, 3.0)
 
-        val result = vector + 1.0
+        val result = vector + Vector3(1.0, 1.0, 1.0)
 
         assertEquals(
             expected = Vector3(2.0, 3.0, 4.0),

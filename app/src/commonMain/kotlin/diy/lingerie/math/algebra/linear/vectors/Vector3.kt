@@ -44,11 +44,11 @@ data class Vector3(
     )
 
     operator fun plus(
-        scalar: Double,
+        other: Vector3,
     ): Vector3 = Vector3(
-        a0 = a0 + scalar,
-        a1 = a1 + scalar,
-        a2 = a2 + scalar,
+        a0 = a0 + other.a0,
+        a1 = a1 + other.a1,
+        a2 = a2 + other.a2,
     )
 
     operator fun minus(

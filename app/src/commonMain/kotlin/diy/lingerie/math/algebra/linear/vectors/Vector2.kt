@@ -34,16 +34,24 @@ data class Vector2(
 
     fun normalize(): Vector2 = this / magnitude
 
+    fun toVector3(
+        a2: Double = 1.0,
+    ): Vector3 = Vector3(
+        a0 = a0,
+        a1 = a1,
+        a2 = a2,
+    )
+
     operator fun unaryMinus(): Vector2 = Vector2(
         a0 = -a0,
         a1 = -a1,
     )
 
     operator fun plus(
-        scalar: Double,
+        other: Vector2,
     ): Vector2 = Vector2(
-        a0 = a0 + scalar,
-        a1 = a1 + scalar,
+        a0 = a0 + other.a0,
+        a1 = a1 + other.a1,
     )
 
     operator fun minus(

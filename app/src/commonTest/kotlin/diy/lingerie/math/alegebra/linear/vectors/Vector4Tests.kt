@@ -80,10 +80,10 @@ class Vector4Tests {
     }
 
     @Test
-    fun testAdditionWithScalar() {
+    fun testAddition() {
         val vector = Vector4(1.0, 2.0, 3.0, 4.0)
 
-        val result = vector + 1.0
+        val result = vector + Vector4(1.0, 1.0, 1.0, 1.0)
 
         assertEquals(
             expected = Vector4(2.0, 3.0, 4.0, 5.0),
