@@ -1,7 +1,7 @@
 package diy.lingerie.test_utils
 
-import diy.lingerie.algebra.NumericObject
-import diy.lingerie.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.equalsWithTolerance
 import kotlin.jvm.JvmName
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

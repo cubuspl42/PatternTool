@@ -1,7 +1,7 @@
 package diy.lingerie.simple_dom.svg
 
-import diy.lingerie.algebra.NumericObject
-import diy.lingerie.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.simple_dom.SimpleDimension
 import diy.lingerie.utils.xml.childElements
 import diy.lingerie.utils.xml.svg.MinimalCssContext

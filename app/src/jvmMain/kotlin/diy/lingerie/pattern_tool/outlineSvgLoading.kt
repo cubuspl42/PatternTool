@@ -1,6 +1,6 @@
 package diy.lingerie.pattern_tool
 
-import diy.lingerie.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.geometry.Vector2
 import diy.lingerie.geometry.toClosedSpline
 import diy.lingerie.geometry.transformations.PrimitiveTransformation

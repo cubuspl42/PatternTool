@@ -1,7 +1,7 @@
 package diy.lingerie.simple_dom
 
-import diy.lingerie.algebra.NumericObject
-import diy.lingerie.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.equalsWithTolerance
 
 data class SimpleDimension(
     val value: Double,
