@@ -20,6 +20,13 @@ data class Vector3(
         )
     }
 
+    operator fun get(i: Int): Double = when (i) {
+        0 -> a0
+        1 -> a1
+        2 -> a2
+        else -> throw IndexOutOfBoundsException("Index out of bounds: $i")
+    }
+
     val magnitudeSquared: Double
         get() = a0 * a0 + a1 * a1 + a2 * a2
 

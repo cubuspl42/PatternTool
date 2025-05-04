@@ -86,11 +86,6 @@ sealed class Matrix4x4 : NumericObject {
         else -> throw IllegalArgumentException("Invalid column index: $j")
     }
 
-    abstract operator fun get(
-        i: Int,
-        j: Int,
-    ): Double
-
     operator fun get(
         i: Int,
     ): Vector4 = when (i) {
@@ -411,6 +406,11 @@ sealed class Matrix4x4 : NumericObject {
     abstract val column3: Vector4
 
     abstract val transposed: Matrix4x4
+
+    abstract operator fun get(
+        i: Int,
+        j: Int,
+    ): Double
 
     abstract fun apply(
         argumentVector: Vector4,
