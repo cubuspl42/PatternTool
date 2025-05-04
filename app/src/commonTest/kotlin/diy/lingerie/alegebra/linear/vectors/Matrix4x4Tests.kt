@@ -1,5 +1,6 @@
 package diy.lingerie.alegebra.linear.vectors
 
+import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.linear.matrices.matrix4.Matrix4x4
 import diy.lingerie.algebra.linear.vectors.Vector4
 import diy.lingerie.test_utils.assertEqualsWithTolerance
@@ -7,6 +8,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class Matrix4x4Tests {
@@ -139,6 +141,13 @@ class Matrix4x4Tests {
         assertEquals(
             expected = p * matrix,
             actual = l * u,
+        )
+    }
+
+    @Test
+    fun testInvertSingular() {
+        assertNull(
+            actual = Matrix4x4.zero.invert(),
         )
     }
 }
