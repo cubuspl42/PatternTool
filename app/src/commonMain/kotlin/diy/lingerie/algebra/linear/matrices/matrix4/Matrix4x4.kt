@@ -369,9 +369,13 @@ sealed class Matrix4x4 : NumericObject {
         )
     }
 
-    abstract fun apply(
-        argumentVector: Vector4,
-    ): Vector4
+    fun invert(): Matrix4x4? {
+        val lupDecomposition = lupDecompose() ?: return null
+
+        return InvertedMatrix4x4(
+            lupDecomposition = lupDecomposition,
+        )
+    }
 
     protected fun equalsWithToleranceRowWise(
         other: Matrix4x4,
@@ -407,6 +411,10 @@ sealed class Matrix4x4 : NumericObject {
     abstract val column3: Vector4
 
     abstract val transposed: Matrix4x4
+
+    abstract fun apply(
+        argumentVector: Vector4,
+    ): Vector4
 
     abstract operator fun times(
         other: Matrix4x4,
