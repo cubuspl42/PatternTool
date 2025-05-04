@@ -4,10 +4,17 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.sample
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
+import diy.lingerie.utils.iterable.LinSpace
 
 abstract class ParametricCurveFunction : RealFunction<Vector2> {
+    data class Sample(
+        val t: Double,
+        val point: Vector2,
+    )
+
     fun findCriticalPoints(): ParametricPolynomial.RootSet = findDerivative().findRoots()
 
     fun findRoots(): ParametricPolynomial.RootSet = toParametricPolynomial().findRoots()
@@ -32,6 +39,12 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
                 (p0 - p1).magnitude.equalsWithTolerance(0.0)
             },
         )
+    }
+
+    fun sample(n: Int): List<Sample> = this.sample(
+        linSpace = LinSpace(n = n)
+    ).map {
+        Sample(t = it.a, point = it.b)
     }
 
     abstract fun locatePoint(

@@ -4,11 +4,14 @@ import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
 import diy.lingerie.math.Ratio
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.linear.matrices.matrix2.MatrixNx2
 import diy.lingerie.math.algebra.linear.matrices.matrix3.Matrix3x3
 import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix4x4
+import diy.lingerie.math.algebra.linear.matrices.matrix4.MatrixNx4
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.linear.vectors.Vector4
 import diy.lingerie.math.algebra.linear.vectors.times
+import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.Polynomial
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.RationalImplicitPolynomial
@@ -33,8 +36,45 @@ data class CubicBezierBinomial(
             row3 = Vector4(1.0, 0.0, 0.0, 0.0),
         )
 
-        val characteristicInvertedMatrix =
+        val characteristicMatrixInverted =
             characteristicMatrix.invert() ?: throw AssertionError("The characteristic matrix is not invertible")
+
+        fun bestFit(
+            samples: List<Sample>,
+        ): CubicBezierBinomial {
+            val pMatrix = MatrixNx2(
+                rows = samples.map { it.point },
+            )
+
+            // T
+            val tMatrix = MatrixNx4(
+                rows = samples.map { it ->
+                    CubicPolynomial.monomialVector(it.t)
+                },
+            )
+
+            // T^t
+            val tMatrixTransposed = tMatrix.transposed
+
+            // T^t * T (a Gram matrix for T)
+            val tGramMatrix = tMatrixTransposed * tMatrix
+
+            // (T^t * T)^-1
+            val tGramMatrixInverted = tGramMatrix.invert() ?: throw AssertionError("Matrix is not invertible")
+
+            // (M^-1) * (T^t * T)^-1 * T^t
+            val dMatrix = characteristicMatrixInverted * (tGramMatrixInverted * tMatrixTransposed)
+
+            // P (weights)
+            val controlVector = dMatrix * pMatrix
+
+            return CubicBezierBinomial(
+                point0 = controlVector.row0,
+                point1 = controlVector.row1,
+                point2 = controlVector.row2,
+                point3 = controlVector.row3,
+            )
+        }
     }
 
     private val x0: Double

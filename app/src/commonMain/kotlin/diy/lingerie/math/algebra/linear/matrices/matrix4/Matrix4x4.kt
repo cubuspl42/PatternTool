@@ -3,6 +3,7 @@ package diy.lingerie.math.algebra.linear.matrices.matrix4
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector4
 import diy.lingerie.utils.iterable.indexOfMaxBy
+import kotlin.jvm.JvmName
 import kotlin.math.absoluteValue
 
 sealed class Matrix4x4 : NumericObject {
@@ -371,6 +372,13 @@ sealed class Matrix4x4 : NumericObject {
             lupDecomposition = lupDecomposition,
         )
     }
+
+    @JvmName("timesRect")
+    operator fun times(
+        other: Matrix4xN,
+    ): Matrix4xN = Matrix4xN(
+        columns = other.columns.map { column -> this.apply(column) },
+    )
 
     protected fun equalsWithToleranceRowWise(
         other: Matrix4x4,
