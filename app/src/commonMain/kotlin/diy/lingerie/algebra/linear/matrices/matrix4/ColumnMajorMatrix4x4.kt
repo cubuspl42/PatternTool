@@ -3,7 +3,7 @@ package diy.lingerie.algebra.linear.matrices.matrix4
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.linear.vectors.Vector4
 
-class ColumnMajorMatrix4x4(
+internal class ColumnMajorMatrix4x4(
     override val column0: Vector4,
     override val column1: Vector4,
     override val column2: Vector4,
