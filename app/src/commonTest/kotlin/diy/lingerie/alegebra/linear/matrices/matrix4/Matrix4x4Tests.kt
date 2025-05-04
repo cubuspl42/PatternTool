@@ -1,6 +1,5 @@
-package diy.lingerie.alegebra.linear.vectors
+package diy.lingerie.alegebra.linear.matrices.matrix4
 
-import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.linear.matrices.matrix4.Matrix4x4
 import diy.lingerie.algebra.linear.vectors.Vector4
 import diy.lingerie.test_utils.assertEqualsWithTolerance
