@@ -3,7 +3,7 @@ package diy.lingerie.algebra
 import diy.lingerie.algebra.RealFunction.SamplingStrategy
 import diy.lingerie.utils.iterable.linspace
 
-interface RealFunction<out V> {
+interface RealFunction<out B> : Function<Double, B> {
     data class SamplingStrategy(
         val x0: Double = 0.0,
         val x1: Double = 1.0,
@@ -14,17 +14,15 @@ interface RealFunction<out V> {
         }
     }
 
-    data class Sample<V>(
-        val x: Double,
-        val value: V,
+    data class Sample<B>(
+        val a: Double,
+        val b: B,
     )
-
-    fun apply(x: Double): V
 }
 
 fun <V : Any> RealFunction<V?>.sampleValues(
     strategy: SamplingStrategy,
-): List<V> = sample(strategy).map { it.value }
+): List<V> = sample(strategy).map { it.b }
 
 fun <V : Any> RealFunction<V?>.sample(
     strategy: SamplingStrategy,
@@ -37,10 +35,10 @@ fun <V : Any> SamplingStrategy.sample(
     x1 = x1,
     n = sampleCount,
 ).mapNotNull { x ->
-    formula.apply(x = x)?.let {
+    formula.apply(x)?.let {
         RealFunction.Sample(
-            x = x,
-            value = it,
+            a = x,
+            b = it,
         )
     }
 }.toList()
