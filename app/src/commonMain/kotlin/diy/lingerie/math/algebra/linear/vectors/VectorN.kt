@@ -3,6 +3,7 @@ package diy.lingerie.math.algebra.linear.vectors
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.NumericObject.Tolerance
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.linear.matrices.matrix2.MatrixNx2
 import kotlin.math.sqrt
 
 data class VectorN(
@@ -70,6 +71,10 @@ data class VectorN(
         }
         return a.zip(other.a).sumOf { (x, y) -> x * y }
     }
+
+    fun applyT(
+        other: MatrixNx2,
+    ): Vector2 = other.transposed.apply(this)
 
     fun toList(): List<Double> = a
 

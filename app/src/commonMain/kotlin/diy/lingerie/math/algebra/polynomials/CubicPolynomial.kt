@@ -2,6 +2,7 @@ package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.linear.vectors.Vector4
 import kotlin.math.acos
 import kotlin.math.cbrt
 import kotlin.math.cos
@@ -34,6 +35,15 @@ data class CubicPolynomial internal constructor(
                 a3 = a3,
             )
         }
+
+        fun monomialVector(
+            x: Double,
+        ) = Vector4(
+            x * x * x,
+            x * x,
+            x,
+            1.0,
+        )
     }
 
     operator fun plus(other: SubCubicPolynomial): CubicPolynomial = CubicPolynomial(

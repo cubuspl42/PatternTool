@@ -2,6 +2,8 @@ package diy.lingerie.math.algebra.linear.matrices.matrix4
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.linear.matrices.matrix2.Matrix4x2
+import diy.lingerie.math.algebra.linear.matrices.matrix2.MatrixNx2
 import diy.lingerie.math.algebra.linear.vectors.Vector4
 import diy.lingerie.math.algebra.linear.vectors.VectorN
 
@@ -44,6 +46,21 @@ data class Matrix4xN(
         row2.dot(argumentVector),
         row3.dot(argumentVector),
     )
+
+    operator fun times(
+        other: MatrixNx2,
+    ): Matrix4x2 {
+        require(width == other.height) {
+            "Incompatible matrix sizes: 4x${width} and ${other.height}x2"
+        }
+
+        return Matrix4x2(
+            row0 = row0.applyT(other),
+            row1 = row1.applyT(other),
+            row2 = row2.applyT(other),
+            row3 = row3.applyT(other),
+        )
+    }
 
     operator fun times(
         other: MatrixNx4,

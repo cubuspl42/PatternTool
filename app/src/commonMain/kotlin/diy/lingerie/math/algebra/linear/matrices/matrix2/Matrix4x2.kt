@@ -1,0 +1,24 @@
+package diy.lingerie.math.algebra.linear.matrices.matrix2
+
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.linear.vectors.Vector2
+
+data class Matrix4x2(
+    val row0: Vector2,
+    val row1: Vector2,
+    val row2: Vector2,
+    val row3: Vector2,
+) : NumericObject {
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance,
+    ): Boolean = when {
+        other !is Matrix4x2 -> false
+
+        !row0.equalsWithTolerance(other.row0, tolerance = tolerance) -> false
+        !row1.equalsWithTolerance(other.row1, tolerance = tolerance) -> false
+        !row2.equalsWithTolerance(other.row2, tolerance = tolerance) -> false
+        !row3.equalsWithTolerance(other.row3, tolerance = tolerance) -> false
+        else -> true
+    }
+}
