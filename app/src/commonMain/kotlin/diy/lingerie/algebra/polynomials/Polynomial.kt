@@ -277,4 +277,3 @@ sealed interface SuperLinearPolynomial : SuperConstantPolynomial {
 sealed interface SuperQuadraticPolynomial : SuperLinearPolynomial {
     override val a3: Double
 }
-
