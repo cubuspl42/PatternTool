@@ -1,24 +1,20 @@
-package diy.lingerie.algebra
+package diy.lingerie.algebra.linear.vectors
 
+import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.NumericObject.Tolerance
+import diy.lingerie.algebra.equalsWithTolerance
 import kotlin.math.sqrt
 
 data class Vector2(
-    val x: Double,
-    val y: Double,
+    val a0: Double,
+    val a1: Double,
 ) : NumericObject {
     companion object {
         fun each(a: Double): Vector2 = Vector2(
-            x = a,
-            y = a,
+            a0 = a,
+            a1 = a,
         )
     }
-
-    val a0: Double
-        get() = x
-
-    val a1: Double
-        get() = y
 
     fun dot(
         other: Vector2,
@@ -29,7 +25,7 @@ data class Vector2(
     ): Double = a0 * other.a1 - a1 * other.a0
 
     val magnitudeSquared: Double
-        get() = x * x + y * y
+        get() = a0 * a0 + a1 * a1
 
     val magnitude: Double
         get() = sqrt(magnitudeSquared)
@@ -45,29 +41,29 @@ data class Vector2(
     }
 
     operator fun unaryMinus(): Vector2 = Vector2(
-        x = -x,
-        y = -y,
+        a0 = -a0,
+        a1 = -a1,
     )
 
     operator fun times(
         scalar: Double,
     ): Vector2 = Vector2(
-        x = a0 * scalar,
-        y = a1 * scalar,
+        a0 = a0 * scalar,
+        a1 = a1 * scalar,
     )
 
     operator fun minus(
         other: Vector2,
     ): Vector2 = Vector2(
-        x = a0 - other.a0,
-        y = a1 - other.a1,
+        a0 = a0 - other.a0,
+        a1 = a1 - other.a1,
     )
 
     operator fun div(
         scalar: Double,
     ): Vector2 = Vector2(
-        x = a0 / scalar,
-        y = a1 / scalar,
+        a0 = a0 / scalar,
+        a1 = a1 / scalar,
     )
 
     fun isNormalized(): Boolean = magnitudeSquared.equalsWithTolerance(1.0)
