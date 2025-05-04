@@ -67,7 +67,7 @@ private fun determineToMmScale(
 
             // If width = 100% and height = 100%, we assume that the internal units are points with DPI = 300
 
-            Vector2.each(mmPerInch / defaultDpi)
+            Vector2.full(mmPerInch / defaultDpi)
         }
 
         SimpleUnit.Mm -> {
