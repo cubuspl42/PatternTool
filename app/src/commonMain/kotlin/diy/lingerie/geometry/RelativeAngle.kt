@@ -1,6 +1,6 @@
 package diy.lingerie.geometry
 
-import diy.lingerie.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.linear.vectors.Vector2
 import kotlin.math.PI
 import kotlin.math.absoluteValue
 import kotlin.math.atan2

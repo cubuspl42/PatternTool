@@ -1,7 +1,7 @@
 package diy.lingerie.geometry.splines
 
-import diy.lingerie.algebra.NumericObject
-import diy.lingerie.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve

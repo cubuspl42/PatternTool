@@ -1,6 +1,6 @@
 package diy.lingerie.simple_dom
 
-import diy.lingerie.algebra.NumericObject
+import diy.lingerie.math.algebra.NumericObject
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 

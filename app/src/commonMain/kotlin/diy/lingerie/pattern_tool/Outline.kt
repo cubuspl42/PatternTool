@@ -1,8 +1,8 @@
 package diy.lingerie.pattern_tool
 
-import diy.lingerie.algebra.NumericObject
-import diy.lingerie.algebra.equalsWithTolerance
-import diy.lingerie.algebra.equalsWithToleranceOrNull
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.equalsWithToleranceOrNull
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point

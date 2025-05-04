@@ -1,7 +1,7 @@
 package diy.lingerie.geometry.transformations
 
-import diy.lingerie.algebra.NumericObject
-import diy.lingerie.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.Point

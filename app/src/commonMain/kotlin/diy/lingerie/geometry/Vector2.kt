@@ -5,7 +5,7 @@
  */
 package diy.lingerie.geometry
 
-import diy.lingerie.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.linear.vectors.Vector2
 
 fun Vector2(
     x: Double,
