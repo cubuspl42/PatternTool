@@ -26,8 +26,7 @@ sealed class Matrix4x4 : NumericObject {
             row1: Vector4,
             row2: Vector4,
             row3: Vector4,
-        ): RowMajorMatrix4x4 = RowMajorMatrix4x4(
-
+        ): Matrix4x4 = RowMajorMatrix4x4(
             row0 = row0,
             row1 = row1,
             row2 = row2,
@@ -39,7 +38,7 @@ sealed class Matrix4x4 : NumericObject {
             column1: Vector4,
             column2: Vector4,
             column3: Vector4,
-        ): ColumnMajorMatrix4x4 = ColumnMajorMatrix4x4(
+        ): Matrix4x4 = ColumnMajorMatrix4x4(
             column0 = column0,
             column1 = column1,
             column2 = column2,
@@ -48,14 +47,14 @@ sealed class Matrix4x4 : NumericObject {
     }
 
     internal data class LuDecomposition(
-        val l: RowMajorMatrix4x4,
-        val u: RowMajorMatrix4x4,
+        val l: Matrix4x4,
+        val u: Matrix4x4,
     )
 
     data class LupDecomposition(
-        val l: RowMajorMatrix4x4,
-        val u: RowMajorMatrix4x4,
-        val p: RowMajorMatrix4x4,
+        val l: Matrix4x4,
+        val u: Matrix4x4,
+        val p: Matrix4x4,
     )
 
     final override fun equals(
@@ -66,7 +65,6 @@ sealed class Matrix4x4 : NumericObject {
             tolerance = NumericObject.Tolerance.Zero,
         )
     }
-
 
     fun getRow(
         i: Int,
@@ -128,7 +126,7 @@ sealed class Matrix4x4 : NumericObject {
     fun swapRows(
         i0: Int,
         i1: Int,
-    ): RowMajorMatrix4x4 {
+    ): Matrix4x4 {
         require(i0 in 0 until 4) { "i0 must be between 0 and 3" }
         require(i1 in 0 until 4) { "i1 must be between 0 and 3" }
 
@@ -194,8 +192,12 @@ sealed class Matrix4x4 : NumericObject {
         )
     }
 
-    /** Solves the equation AX = Y using backward substitution column-wise. */
-    fun solveByBackSubstitution(yMatrix: Matrix4x4): ColumnMajorMatrix4x4 {
+    /**
+     * Solves the equation AX = Y using backward substitution column-wise.
+     */
+    fun solveByBackSubstitution(
+        yMatrix: Matrix4x4,
+    ): Matrix4x4 {
         require(isUpperTriangular()) { "Matrix is not upper triangular" }
 
         val xColumn0 = solveByBackSubstitution(yVector = yMatrix.column0)
@@ -211,8 +213,13 @@ sealed class Matrix4x4 : NumericObject {
         )
     }
 
-    /** Solves the system of equations Ax = y using forward substitution, where A is a lower triangular matrix. */
-    fun solveByForwardSubstitution(yVector: Vector4): Vector4 {
+    /**
+     * Solves the system of equations Ax = y using forward substitution, where A
+     * is a lower triangular matrix.
+     */
+    fun solveByForwardSubstitution(
+        yVector: Vector4,
+    ): Vector4 {
         require(isLowerTriangular()) { "Matrix is not lower triangular" }
 
         val y4 = yVector[3]
@@ -244,8 +251,12 @@ sealed class Matrix4x4 : NumericObject {
         )
     }
 
-    /** Solves the equation AX = Y using forward substitution column-wise. */
-    fun solveByForwardSubstitution(yMatrix: Matrix4x4): ColumnMajorMatrix4x4 {
+    /**
+     * Solves the equation AX = Y using forward substitution column-wise.
+     */
+    fun solveByForwardSubstitution(
+        yMatrix: Matrix4x4,
+    ): Matrix4x4 {
         require(isLowerTriangular()) { "Matrix is not lower triangular" }
 
         val xColumn0 = solveByForwardSubstitution(yVector = yMatrix.column0)
@@ -261,8 +272,10 @@ sealed class Matrix4x4 : NumericObject {
         )
     }
 
-    /** Creates a pivot matrix for the current matrix. */
-    fun pivotize(): RowMajorMatrix4x4 {
+    /**
+     * Computes a pivot matrix for this matrix.
+     */
+    internal fun pivotize(): Matrix4x4 {
         val p0 = identity
 
         // The index of max row for column 0
@@ -282,7 +295,9 @@ sealed class Matrix4x4 : NumericObject {
         return p3
     }
 
-    /** Performs LUP decomposition on the current matrix. */
+    /**
+     * Performs LU(P) decomposition on this matrix.
+     */
     fun lupDecompose(): LupDecomposition? {
         val pMatrix = pivotize()
         val paMatrix = pMatrix * this
@@ -295,7 +310,9 @@ sealed class Matrix4x4 : NumericObject {
         )
     }
 
-    /** Performs LU decomposition on the current matrix. */
+    /**
+     * Performs LU decomposition on this matrix.
+     */
     internal fun luDecompose(): LuDecomposition? {
         val u11 = this[0, 0]
         val u12 = this[0, 1]
@@ -352,20 +369,9 @@ sealed class Matrix4x4 : NumericObject {
         )
     }
 
-    abstract val transposed: Matrix4x4
-
-    fun apply(
+    abstract fun apply(
         argumentVector: Vector4,
-    ): Vector4 = Vector4(
-        a0 = row0.dot(argumentVector),
-        a1 = row1.dot(argumentVector),
-        a2 = row2.dot(argumentVector),
-        a3 = row3.dot(argumentVector),
-    )
-
-    abstract operator fun times(
-        other: Matrix4x4,
-    ): Matrix4x4
+    ): Vector4
 
     protected fun equalsWithToleranceRowWise(
         other: Matrix4x4,
@@ -377,6 +383,14 @@ sealed class Matrix4x4 : NumericObject {
         !row3.equalsWithTolerance(other.row3, tolerance = tolerance) -> false
         else -> true
     }
+
+    override fun toString(): String = """[
+        |  $row0,
+        |  $row1,
+        |  $row2,
+        |  $row3,
+        |]
+    """.trimMargin()
 
     final override fun hashCode(): Int {
         throw UnsupportedOperationException()
@@ -391,4 +405,10 @@ sealed class Matrix4x4 : NumericObject {
     abstract val column1: Vector4
     abstract val column2: Vector4
     abstract val column3: Vector4
+
+    abstract val transposed: Matrix4x4
+
+    abstract operator fun times(
+        other: Matrix4x4,
+    ): Matrix4x4
 }

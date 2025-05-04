@@ -3,7 +3,7 @@ package diy.lingerie.algebra.linear.matrices.matrix4
 import diy.lingerie.algebra.NumericObject
 import diy.lingerie.algebra.linear.vectors.Vector4
 
-class RowMajorMatrix4x4(
+internal class RowMajorMatrix4x4(
     override val row0: Vector4,
     override val row1: Vector4,
     override val row2: Vector4,
@@ -29,7 +29,6 @@ class RowMajorMatrix4x4(
             a2 = row2.a0,
             a3 = row3.a0,
         )
-
 
     override val column1: Vector4
         get() = Vector4(

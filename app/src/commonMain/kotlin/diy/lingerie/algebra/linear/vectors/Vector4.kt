@@ -99,6 +99,8 @@ data class Vector4(
         a3,
     )
 
+    override fun toString(): String = "[$a0, $a1, $a2, $a3]"
+
     override fun equalsWithTolerance(
         other: NumericObject,
         tolerance: Tolerance,

@@ -1,6 +1,17 @@
 package diy.lingerie.algebra.linear.matrices.matrix4
 
-sealed class EagerMatrix4x4 : Matrix4x4() {
+import diy.lingerie.algebra.linear.vectors.Vector4
+
+internal sealed class EagerMatrix4x4 : Matrix4x4() {
+    final override fun apply(
+        argumentVector: Vector4,
+    ): Vector4 = Vector4(
+        a0 = row0.dot(argumentVector),
+        a1 = row1.dot(argumentVector),
+        a2 = row2.dot(argumentVector),
+        a3 = row3.dot(argumentVector),
+    )
+
     final override operator fun times(
         other: Matrix4x4,
     ): Matrix4x4 = columnMajor(
