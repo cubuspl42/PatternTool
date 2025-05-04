@@ -48,12 +48,12 @@ data class Vector4(
     )
 
     operator fun plus(
-        scalar: Double,
+        other: Vector4,
     ): Vector4 = Vector4(
-        a0 = a0 + scalar,
-        a1 = a1 + scalar,
-        a2 = a2 + scalar,
-        a3 = a3 + scalar,
+        a0 = a0 + other.a0,
+        a1 = a1 + other.a1,
+        a2 = a2 + other.a2,
+        a3 = a3 + other.a3,
     )
 
     operator fun minus(

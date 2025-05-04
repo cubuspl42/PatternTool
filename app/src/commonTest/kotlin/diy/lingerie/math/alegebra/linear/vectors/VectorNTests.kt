@@ -79,7 +79,7 @@ class VectorNTests {
     }
 
     @Test
-    fun testAdditionWithScalar() {
+    fun testAddition() {
         val vector = VectorN(listOf(1.0, 2.0, 3.0))
 
         val result = vector + 1.0
