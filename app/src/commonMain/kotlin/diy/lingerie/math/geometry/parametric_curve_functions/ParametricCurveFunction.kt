@@ -46,18 +46,22 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     ).map {
         Sample(t = it.a, point = it.b)
     }
-    
+
     /**
-     * Locate [point] lying on the curve.
+     * Locate a [point] lying on the curve.
      *
-     * @return parameter t for the point on the curve, or null if the point
-     * could not be found (typically because the point is not on the curve)
+     * @return parameter t for the point on the curve, or null if the parameter
+     * could not be found (because the point is not on the curve, or the curve
+     * self-intersects at this point).
      */
     abstract fun locatePoint(
         point: Vector2,
         tolerance: NumericObject.Tolerance,
     ): Double?
 
+    /**
+     * Convert this parametric curve function to an implicit curve function.
+     */
     abstract fun implicitize(): ImplicitCurveFunction
 
     fun findDerivative(): ParametricPolynomial = toParametricPolynomial().findDerivative()
