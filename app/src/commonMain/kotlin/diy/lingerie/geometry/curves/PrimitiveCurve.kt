@@ -7,6 +7,7 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 
 abstract class PrimitiveCurve : OpenCurve() {
     abstract class Edge : NumericObject {
@@ -46,6 +47,8 @@ abstract class PrimitiveCurve : OpenCurve() {
 
         return endTangent.equalsWithRadialTolerance(nextStartTangent)
     }
+
+    abstract val basisFunction: ParametricCurveFunction
 
     abstract val edge: Edge
 

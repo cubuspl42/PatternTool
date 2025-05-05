@@ -7,6 +7,8 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
+import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 
 data class BezierCurve(
     override val start: Point,
@@ -48,6 +50,13 @@ data class BezierCurve(
             else -> true
         }
     }
+
+    override val basisFunction: ParametricCurveFunction = CubicBezierBinomial(
+        point0 = start.pointVector,
+        point1 = firstControl.pointVector,
+        point2 = secondControl.pointVector,
+        point3 = end.pointVector,
+    )
 
     val lastControl: Point
         get() = secondControl

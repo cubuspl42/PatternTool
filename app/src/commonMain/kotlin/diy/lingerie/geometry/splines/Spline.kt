@@ -9,7 +9,7 @@ import diy.lingerie.geometry.transformations.Transformation
  * A composite curve, at least positionally-continuous (C0), either open or
  * closed.
  */
-interface Spline {
+interface Spline : NumericObject {
     data class Link(
         val edge: PrimitiveCurve.Edge,
         val end: Point,

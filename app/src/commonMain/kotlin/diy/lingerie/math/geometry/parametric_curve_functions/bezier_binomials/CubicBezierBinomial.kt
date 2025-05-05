@@ -290,6 +290,17 @@ data class CubicBezierBinomial(
             i = l10,
         )
     }
+
+    override fun toReprString(): String {
+        return """
+            |CubicBezierBinomial(
+            |  point0 = ${point0.toReprString()},
+            |  point1 = ${point1.toReprString()},
+            |  point2 = ${point2.toReprString()},
+            |  point3 = ${point3.toReprString()},
+            |)
+        """.trimMargin()
+    }
 }
 
 /**
