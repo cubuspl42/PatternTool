@@ -1,19 +1,21 @@
 package diy.lingerie.geometry.splines
 
+import diy.lingerie.ReprObject
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.indentLater
 
 /**
  * A composite curve, at least positionally-continuous (C0), either open or
  * closed.
  */
-interface Spline : NumericObject {
+interface Spline : NumericObject, ReprObject {
     data class Link(
         val edge: PrimitiveCurve.Edge,
         val end: Point,
-    ) : NumericObject {
+    ) : NumericObject, ReprObject {
         companion object {
             fun connect(
                 prevCurve: PrimitiveCurve,
@@ -53,6 +55,15 @@ interface Spline : NumericObject {
             edge = edge.transformBy(transformation = transformation),
             end = end.transformBy(transformation = transformation),
         )
+
+        override fun toReprString(): String {
+            return """
+                |Spline.Link(
+                |  edge = ${edge.toReprString().indentLater()},
+                |  end = ${end.toReprString()},
+                |)
+             """.trimMargin()
+        }
     }
 
     val links: List<Link>

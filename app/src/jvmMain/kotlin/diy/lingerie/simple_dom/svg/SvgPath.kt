@@ -266,6 +266,19 @@ fun SVGPathSeg.toSimpleSegment(
         )
     }
 
+    SVGPathSeg.PATHSEG_MOVETO_REL -> {
+        this as SVGPathSegMovetoAbs
+
+        SvgPath.Segment.MoveTo(
+            targetPoint = PrimitiveTransformation.Translation(
+                tx = x.toDouble(),
+                ty = y.toDouble(),
+            ).transform(
+                point = currentPoint,
+            ),
+        )
+    }
+
     SVGPathSeg.PATHSEG_LINETO_ABS -> {
         this as SVGPathSegMovetoAbs
 
@@ -273,6 +286,19 @@ fun SVGPathSeg.toSimpleSegment(
             finalPoint = Point(
                 x = x.toDouble(),
                 y = y.toDouble(),
+            ),
+        )
+    }
+
+    SVGPathSeg.PATHSEG_LINETO_REL -> {
+        this as SVGPathSegMovetoAbs
+
+        SvgPath.Segment.LineTo(
+            finalPoint = PrimitiveTransformation.Translation(
+                tx = x.toDouble(),
+                ty = y.toDouble(),
+            ).transform(
+                point = currentPoint,
             ),
         )
     }

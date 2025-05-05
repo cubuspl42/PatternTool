@@ -8,6 +8,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
+import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.toSpline
 import diy.lingerie.geometry.transformations.Transformation
@@ -15,13 +16,53 @@ import diy.lingerie.simple_dom.svg.SvgRoot
 import java.nio.file.Path
 import kotlin.io.path.reader
 
-enum class DumpVariant {
-    BasisFunctions,
-    Curves,
+enum class DumpStrategyId(val strategy: DumpStrategy) {
+    BasisFunctions(DumpBasisFunctionsStrategy),
+    Curves(DumpPrimitiveCurvesStrategy),
+    Spline(DumpSplineStrategy),
+}
+
+sealed class DumpStrategy {
+    abstract fun dumpSpline(
+        spline: Spline,
+    )
+}
+
+data object DumpSplineStrategy : DumpStrategy() {
+    override fun dumpSpline(spline: Spline) {
+        println(spline.toReprString())
+    }
+}
+
+sealed class DumpSegmentCurvesStrategy : DumpStrategy() {
+    final override fun dumpSpline(spline: Spline) {
+        spline.segmentCurves.forEachIndexed { index, segmentCurve ->
+            println("Curve #${index}:")
+            println()
+            dumpSegmentCurve(segmentCurve)
+            println()
+        }
+    }
+
+    abstract fun dumpSegmentCurve(
+        curve: PrimitiveCurve,
+    )
+}
+
+data object DumpPrimitiveCurvesStrategy : DumpSegmentCurvesStrategy() {
+    override fun dumpSegmentCurve(curve: PrimitiveCurve) {
+        println(curve.basisFunction.toReprString())
+    }
+}
+
+data object DumpBasisFunctionsStrategy : DumpSegmentCurvesStrategy() {
+    override fun dumpSegmentCurve(curve: PrimitiveCurve) {
+        println(curve.toReprString())
+    }
 }
 
 class Tool : CliktCommand() {
-    val dumpVariant: DumpVariant by option("--dump").enum<DumpVariant>().required()
+    val dumpStrategyId: DumpStrategyId by option("--dump").enum<DumpStrategyId>().required()
 
     val svgFilePath: Path by argument().path(
         mustExist = true,
@@ -44,20 +85,7 @@ class Tool : CliktCommand() {
 
             val spline = svgPath.toSpline()
 
-            dumpSpline(spline = spline)
-        }
-    }
-
-    private fun dumpSpline(spline: Spline) {
-        when(dumpVariant) {
-            DumpVariant.BasisFunctions -> spline.segmentCurves.forEachIndexed { index, curve ->
-                println("Curve #${index}:")
-                println()
-                println(curve.basisFunction.toReprString())
-                println()
-            }
-
-            DumpVariant.Curves -> TODO()
+            dumpStrategyId.strategy.dumpSpline(spline)
         }
     }
 }

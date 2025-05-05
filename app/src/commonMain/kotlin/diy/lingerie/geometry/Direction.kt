@@ -75,6 +75,12 @@ value class Direction(
                 y = -1.0,
             ),
         )
+
+        fun normalize(
+            directionVector: Vector2,
+        ): Direction? = directionVector.normalizeOrNull()?.let {
+            Direction(normalizedDirectionVector = it)
+        }
     }
 
     init {
