@@ -204,6 +204,12 @@ data class CubicBezierBinomial(
         }
     }
 
+    /**
+     * Find the inverse of the cubic Bézier curve, i.e. the function that maps
+     * the point on the curve to the t-value.
+     *
+     * @return The inverted polynomial, or null if the curve is degenerate
+     */
     private fun invert(): RationalImplicitPolynomial? {
         val denominator = 3.0 * Matrix3x3.rowMajor(
             row0 = point1.toVector3(),
@@ -244,7 +250,6 @@ data class CubicBezierBinomial(
             denominatorFunction = lb - la,
         )
     }
-
 
     override fun implicitize(): ImplicitCubicCurveFunction {
         val l32 = this.l32
