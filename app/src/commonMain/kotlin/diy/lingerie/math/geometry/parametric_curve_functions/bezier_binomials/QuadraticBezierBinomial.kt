@@ -24,6 +24,13 @@ class QuadraticBezierBinomial(
         TODO("Not yet implemented")
     }
 
+    override fun projectPoint(
+        point: Vector2,
+        tolerance: NumericObject.Tolerance
+    ): Double? {
+        TODO("Not yet implemented")
+    }
+
     override fun implicitize(): ImplicitCurveFunction {
         TODO("Not yet implemented")
     }

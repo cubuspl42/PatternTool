@@ -4,7 +4,6 @@ import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.divideWithTolerance
-import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitLineFunction
@@ -71,5 +70,12 @@ data class ParametricLineFunction(
 
             else -> tx ?: ty
         }
+    }
+
+    override fun projectPoint(
+        point: Vector2,
+        tolerance: NumericObject.Tolerance
+    ): Double? {
+        TODO("Not yet implemented")
     }
 }
