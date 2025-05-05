@@ -1,5 +1,6 @@
 package diy.lingerie.math.geometry.parametric_curve_functions
 
+import diy.lingerie.geometry.findProjectionScale
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
 import diy.lingerie.math.algebra.NumericObject
@@ -76,6 +77,7 @@ data class ParametricLineFunction(
         point: Vector2,
         tolerance: NumericObject.Tolerance
     ): Double? {
-        TODO("Not yet implemented")
+        val sp = point - s
+        return sp.findProjectionScale(d, tolerance = tolerance)
     }
 }

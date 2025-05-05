@@ -4,6 +4,7 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.polynomials.Polynomial
 import diy.lingerie.math.algebra.sample
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
@@ -31,13 +32,9 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         val thisParametric = this.toParametricPolynomial()
         val intersectionPolynomial = otherImplicit.substitute(thisParametric)
 
-        return intersectionPolynomial.findRoots(
-            areClose = { t0, t1 ->
-                val p0 = thisParametric.apply(t0)
-                val p1 = thisParametric.apply(t1)
-
-                (p0 - p1).magnitude.equalsWithTolerance(0.0)
-            },
+        return intersectionPolynomial.findTValueRoots(
+            guessedTValue = 0.5,
+            tolerance = NumericObject.Tolerance.Default,
         )
     }
 
@@ -46,6 +43,20 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     ).map {
         Sample(t = it.a, point = it.b)
     }
+
+    protected fun Polynomial.findTValueRoots(
+        guessedTValue: Double,
+        tolerance: NumericObject.Tolerance,
+    ): List<Double> = this.findRoots(
+        guessedRoot = guessedTValue,
+        tolerance = tolerance,
+        areClose = { t0, t1 ->
+            val p0 = this@ParametricCurveFunction.apply(t0)
+            val p1 = this@ParametricCurveFunction.apply(t1)
+
+            (p0 - p1).magnitude.equalsWithTolerance(0.0)
+        },
+    )
 
     /**
      * Locate a [point] lying on the curve.
@@ -63,7 +74,8 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     /**
      * Project a [point] onto the curve.
      *
-     * @return The t-value of the point on the curve closest to [point].
+     * @return The t-value of the point on the curve closest to [point]. If the
+     * t-value could not be found, null.
      */
     abstract fun projectPoint(
         point: Vector2,
