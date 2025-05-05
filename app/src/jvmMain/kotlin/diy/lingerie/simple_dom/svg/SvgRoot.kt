@@ -1,5 +1,6 @@
 package diy.lingerie.simple_dom.svg
 
+import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.simple_dom.SimpleDimension
@@ -38,8 +39,7 @@ data class SvgRoot(
         fun toViewBoxString(): String = "$x $y $width $height"
 
         override fun equalsWithTolerance(
-            other: NumericObject,
-            tolerance: NumericObject.Tolerance
+            other: NumericObject, tolerance: NumericObject.Tolerance
         ): Boolean = when {
             other !is ViewBox -> false
             !x.equalsWithTolerance(other.x, tolerance) -> false
@@ -117,6 +117,7 @@ data class SvgRoot(
         }
     }
 
+
     override fun toRawElement(
         document: Document,
     ): Element = document.createSvgElement("svg").apply {
@@ -128,7 +129,7 @@ data class SvgRoot(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance
+        tolerance: NumericObject.Tolerance,
     ): Boolean {
         return when {
             other !is SvgRoot -> false
@@ -137,6 +138,12 @@ data class SvgRoot(
             !viewBox.equalsWithTolerance(other.viewBox, tolerance) -> false
             else -> true
         }
+    }
+
+    override fun flatten(
+        baseTransformation: Transformation,
+    ): List<SvgPath> = children.flatMap {
+        it.flatten(baseTransformation = baseTransformation)
     }
 }
 

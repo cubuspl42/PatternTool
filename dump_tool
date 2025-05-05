@@ -1,0 +1,2 @@
+#/bin/sh
+java -cp ./app/build/libs/app.jar diy.lingerie.dump_tool.MainKt "$@"

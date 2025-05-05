@@ -10,16 +10,18 @@ import diy.lingerie.geometry.Span
 import diy.lingerie.geometry.Vector2
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
+import diy.lingerie.math.algebra.linear.vectors.VectorN
 
 sealed class Transformation : NumericObject {
     data class ReflectionOverLine(
         val line: Line,
-    ) : Transformation() {
+    ) : SimpleTransformation() {
+
         override fun toSvgTransformationString(): String {
             TODO("Not yet implemented")
         }
 
-        override val components: List<PrimitiveTransformation>
+        override val primitiveTransformations: List<PrimitiveTransformation>
             get() = TODO("Not yet implemented")
 
         override fun transform(point: Point): Point {
@@ -32,12 +34,22 @@ sealed class Transformation : NumericObject {
         ): Boolean {
             TODO("Not yet implemented")
         }
+
+        override fun invert(): ReflectionOverLine = this
     }
 
     object Identity : Transformation() {
+        override fun combineWith(laterTransformations: List<SimpleTransformation>): CombinedTransformation {
+            return CombinedTransformation(
+                simpleTransformations = laterTransformations,
+            )
+        }
+
         override fun toSvgTransformationString(): String = ""
 
-        override val components: List<PrimitiveTransformation> = emptyList()
+        override val simpleTransformations: List<PrimitiveTransformation> = emptyList()
+
+        override val primitiveTransformations: List<PrimitiveTransformation> = emptyList()
 
         override fun transform(point: Point): Point = point
 
@@ -53,27 +65,58 @@ sealed class Transformation : NumericObject {
         fun combine(
             transformations: List<Transformation>,
         ): CombinedTransformation = CombinedTransformation(
-            components = transformations.flatMap {
-                it.components
+            simpleTransformations = transformations.flatMap {
+                it.simpleTransformations
             },
         )
     }
 
+    fun combineWith(
+        laterTransformation: Transformation,
+    ): CombinedTransformation = combineWith(
+        laterTransformations = laterTransformation.simpleTransformations,
+    )
+
+    abstract fun combineWith(
+        laterTransformations: List<SimpleTransformation>,
+    ): CombinedTransformation
+
     abstract fun toSvgTransformationString(): String
 
-    abstract val components: List<PrimitiveTransformation>
+    /**
+     * Simple components of the transformation in the order of application.
+     */
+    abstract val simpleTransformations: List<SimpleTransformation>
+
+    /**
+     * Primitive components of the transformation in the order of application.
+     */
+    abstract val primitiveTransformations: List<PrimitiveTransformation>
 
     abstract fun transform(
         point: Point,
     ): Point
 }
 
-sealed class PrimitiveTransformation : Transformation() {
+sealed class SimpleTransformation : Transformation() {
+    final override val simpleTransformations: List<SimpleTransformation>
+        get() = listOf(this)
+
+    final override fun combineWith(
+        laterTransformations: List<SimpleTransformation>,
+    ): CombinedTransformation = CombinedTransformation(
+        simpleTransformations = listOf(this) + laterTransformations,
+    )
+
+    abstract fun invert(): SimpleTransformation
+}
+
+sealed class PrimitiveTransformation : SimpleTransformation() {
     companion object {
         fun combine(
             transformations: List<PrimitiveTransformation>,
         ): CombinedTransformation = CombinedTransformation(
-            components = transformations,
+            simpleTransformations = transformations,
         )
 
         fun combine(
@@ -130,11 +173,19 @@ sealed class PrimitiveTransformation : Transformation() {
         ): Boolean {
             TODO("Not yet implemented")
         }
+
+        override fun invert(): Translation = Translation(
+            translationVector = -translationVector,
+        )
     }
 
     data class Scaling(
         val scaleVector: Vector2,
     ) : PrimitiveTransformation() {
+        init {
+            require(scaleVector != Vector2.Zero)
+        }
+
         override fun toSvgTransformationString(): String = "scale(${scaleVector.x}, ${scaleVector.y})"
 
         override fun transform(point: Point): Point = Point(
@@ -148,6 +199,13 @@ sealed class PrimitiveTransformation : Transformation() {
         ): Boolean {
             TODO("Not yet implemented")
         }
+
+        override fun invert(): Scaling = Scaling(
+            scaleVector = Vector2(
+                x = 1.0 / scaleVector.x,
+                y = 1.0 / scaleVector.y,
+            ),
+        )
     }
 
     data class Rotation private constructor(
@@ -218,29 +276,44 @@ sealed class PrimitiveTransformation : Transformation() {
         ): Boolean {
             TODO("Not yet implemented")
         }
+
+        override fun invert(): Rotation = Rotation(
+            angle = -angle,
+        )
     }
 
-    final override val components: List<PrimitiveTransformation>
+    abstract override fun invert(): PrimitiveTransformation
+
+    final override val primitiveTransformations: List<PrimitiveTransformation>
         get() = listOf(this)
 }
 
 sealed class ComplexTransformation : Transformation() {
     final override fun transform(
         point: Point,
-    ): Point = components.fold(point) { acc, transformation ->
+    ): Point = simpleTransformations.fold(point) { acc, transformation ->
         transformation.transform(acc)
     }
 }
 
 data class CombinedTransformation(
-    override val components: List<PrimitiveTransformation>,
+    override val simpleTransformations: List<SimpleTransformation>,
 ) : ComplexTransformation() {
+    override fun combineWith(
+        laterTransformations: List<SimpleTransformation>,
+    ): CombinedTransformation = CombinedTransformation(
+        simpleTransformations = simpleTransformations + laterTransformations,
+    )
+
     companion object;
 
     override fun toSvgTransformationString(): String =
-        components.reversed().joinToString(separator = " ") { transformation ->
+        simpleTransformations.reversed().joinToString(separator = " ") { transformation ->
             transformation.toSvgTransformationString()
         }
+
+    override val primitiveTransformations: List<PrimitiveTransformation>
+        get() = simpleTransformations.flatMap { it.primitiveTransformations }
 
     override fun equalsWithTolerance(
         other: NumericObject,
@@ -248,17 +321,4 @@ data class CombinedTransformation(
     ): Boolean {
         TODO("Not yet implemented")
     }
-}
-
-sealed class ShiftedTransformation : ComplexTransformation() {
-    final override val components: List<PrimitiveTransformation>
-        get() = listOf(
-            PrimitiveTransformation.Translation(-origin.pointVector)
-        ) + innerComponents + listOf(
-            PrimitiveTransformation.Translation(origin.pointVector)
-        )
-
-    abstract val origin: Point
-
-    abstract val innerComponents: List<PrimitiveTransformation>
 }

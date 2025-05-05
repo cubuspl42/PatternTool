@@ -1,5 +1,6 @@
 package diy.lingerie.simple_dom.svg
 
+import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.simple_dom.SimpleElement
 import org.apache.batik.anim.dom.SVGDOMImplementation
 import org.w3c.dom.Document
@@ -15,6 +16,10 @@ abstract class SvgElement : SimpleElement() {
     protected fun Document.createSvgElement(
         name: String,
     ): Element = createElementNS(SVG_NS, "svg:$name")
+
+    abstract fun flatten(
+        baseTransformation: Transformation,
+    ): List<SvgPath>
 }
 
 fun Element.toSimpleElement(): SvgElement? = when (this) {

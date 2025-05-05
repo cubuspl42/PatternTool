@@ -19,14 +19,14 @@ class QuadraticBezierBinomial(
 
     override fun locatePoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance
+        tolerance: NumericObject.Tolerance,
     ): Double? {
         TODO("Not yet implemented")
     }
 
     override fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance
+        tolerance: NumericObject.Tolerance,
     ): Double? {
         TODO("Not yet implemented")
     }
@@ -43,5 +43,15 @@ class QuadraticBezierBinomial(
         val c2 = 2.0 * u * t * point1
         val c3 = t * t * point2
         return c1 + c2 + c3
+    }
+
+    override fun toReprString(): String {
+        return """
+            |QuadraticBezierBinomial(
+            |  point0 = ${point0.toReprString()},
+            |  point1 = ${point1.toReprString()},
+            |  point2 = ${point2.toReprString()},
+            |)
+        """.trimMargin()
     }
 }

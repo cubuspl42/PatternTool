@@ -80,4 +80,13 @@ data class ParametricLineFunction(
         val sp = point - s
         return sp.findProjectionScale(d, tolerance = tolerance)
     }
+
+    override fun toReprString(): String {
+        return """
+            |ParametricLineFunction(
+            |  d = ${d.toReprString()},
+            |  s = ${s.toReprString()},
+            |)
+        """.trimMargin()
+    }
 }

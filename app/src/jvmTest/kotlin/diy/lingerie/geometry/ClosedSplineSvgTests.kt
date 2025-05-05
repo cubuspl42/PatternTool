@@ -18,7 +18,7 @@ class ClosedSplineSvgTests {
         val svgRoot = SvgRoot.parse(reader = reader)
         val svgPath = svgRoot.children.single() as SvgPath
 
-        val closedSpline = svgPath.toClosedSpline()
+        val closedSpline = svgPath.toSpline()
 
         val expectedSpline = ClosedSpline.positionallyContinuous(
             links = listOf(

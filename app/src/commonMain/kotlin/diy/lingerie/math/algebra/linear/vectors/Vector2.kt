@@ -10,6 +10,11 @@ data class Vector2(
     val a1: Double,
 ) : NumericObject {
     companion object {
+        val Zero = Vector2(
+            a0 = 0.0,
+            a1 = 0.0,
+        )
+
         fun full(
             a: Double,
         ): Vector2 = Vector2(
@@ -110,6 +115,8 @@ data class Vector2(
 
         else -> true
     }
+
+    fun toReprString(): String = "Vector2($a0, $a1)"
 }
 
 operator fun Double.times(

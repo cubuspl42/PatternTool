@@ -6,6 +6,8 @@ import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
+import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
 
 /**
  * A line segment in the Euclidean plane. Typically, it can be considered a
@@ -17,6 +19,11 @@ data class LineSegment(
     override val start: Point,
     override val end: Point,
 ) : PrimitiveCurve() {
+    override val basisFunction = ParametricLineFunction(
+        s = start.pointVector,
+        d = end.pointVector - start.pointVector,
+    )
+
     data object Edge : PrimitiveCurve.Edge() {
         override fun bind(
             start: Point,

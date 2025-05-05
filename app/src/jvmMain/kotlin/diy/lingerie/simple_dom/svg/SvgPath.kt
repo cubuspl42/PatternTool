@@ -5,6 +5,7 @@ import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.equalsWithToleranceOrNull
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
+import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.toList
 import diy.lingerie.simple_dom.toSimpleColor
@@ -30,6 +31,10 @@ data class SvgPath(
                 get() = null
 
             override fun toPathSegString(): String = "Z"
+
+            override fun transformVia(
+                transformation: Transformation,
+            ): Segment = this
 
             override fun equalsWithTolerance(
                 other: NumericObject, tolerance: NumericObject.Tolerance
@@ -65,6 +70,12 @@ data class SvgPath(
                 is MoveTo -> targetPoint.equalsWithTolerance(other.targetPoint, tolerance)
                 else -> false
             }
+
+            override fun transformVia(
+                transformation: Transformation,
+            ): MoveTo = MoveTo(
+                targetPoint = transformation.transform(point = targetPoint),
+            )
         }
 
         data class LineTo(
@@ -78,6 +89,12 @@ data class SvgPath(
                 is LineTo -> finalPoint.equalsWithTolerance(other.finalPoint, tolerance)
                 else -> false
             }
+
+            override fun transformVia(
+                transformation: Transformation,
+            ): LineTo = LineTo(
+                finalPoint = transformation.transform(point = finalPoint),
+            )
         }
 
         sealed class CubicBezierSegment : CurveSegment() {
@@ -101,6 +118,14 @@ data class SvgPath(
                 !finalPoint.equalsWithTolerance(other.finalPoint, tolerance) -> false
                 else -> true
             }
+
+            override fun transformVia(
+                transformation: Transformation,
+            ): CubicBezierCurveTo = CubicBezierCurveTo(
+                controlPoint1 = transformation.transform(point = controlPoint1),
+                controlPoint2 = transformation.transform(point = controlPoint2),
+                finalPoint = transformation.transform(point = finalPoint),
+            )
         }
 
         data class SmoothCubicBezierCurveTo(
@@ -117,11 +142,22 @@ data class SvgPath(
                 !finalPoint.equalsWithTolerance(other.finalPoint, tolerance) -> false
                 else -> true
             }
+
+            override fun transformVia(
+                transformation: Transformation,
+            ): SmoothCubicBezierCurveTo = SmoothCubicBezierCurveTo(
+                controlPoint2 = transformation.transform(point = controlPoint2),
+                finalPoint = transformation.transform(point = finalPoint),
+            )
         }
 
         abstract val finalPointOrNull: Point?
 
         abstract fun toPathSegString(): String
+
+        abstract fun transformVia(
+            transformation: Transformation,
+        ): Segment
 
         protected fun Point.toSvgString(): String = "${x},${y}"
     }
@@ -173,6 +209,21 @@ data class SvgPath(
         !segments.equalsWithTolerance(other.segments, tolerance) -> false
         else -> true
     }
+
+    override fun flatten(
+        baseTransformation: Transformation,
+    ): List<SvgPath> = listOf(
+        transformVia(transformation = baseTransformation),
+    )
+
+    fun transformVia(
+        transformation: Transformation,
+    ): SvgPath = SvgPath(
+        stroke = stroke,
+        segments = segments.map { segment ->
+            segment.transformVia(transformation = transformation)
+        },
+    )
 }
 
 fun SVGPathElement.toSimplePath(): SvgPath {

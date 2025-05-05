@@ -44,6 +44,8 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         Sample(t = it.a, point = it.b)
     }
 
+    fun findDerivative(): ParametricPolynomial = toParametricPolynomial().findDerivative()
+
     protected fun Polynomial.findTValueRoots(
         guessedTValue: Double,
         tolerance: NumericObject.Tolerance,
@@ -87,7 +89,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
      */
     abstract fun implicitize(): ImplicitCurveFunction
 
-    fun findDerivative(): ParametricPolynomial = toParametricPolynomial().findDerivative()
-
     abstract fun toParametricPolynomial(): ParametricPolynomial
+
+    abstract fun toReprString(): String
 }

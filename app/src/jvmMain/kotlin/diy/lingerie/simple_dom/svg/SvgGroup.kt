@@ -2,7 +2,6 @@ package diy.lingerie.simple_dom.svg
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
-import diy.lingerie.geometry.RelativeAngle
 import diy.lingerie.geometry.transformations.CombinedTransformation
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
@@ -44,6 +43,18 @@ data class SvgGroup(
         !children.equalsWithTolerance(other.children, tolerance) -> false
         else -> true
     }
+
+    override fun flatten(
+        baseTransformation: Transformation,
+    ): List<SvgPath> {
+        val newTransformation = baseTransformation.combineWith(
+            this.transformation ?: Transformation.Identity,
+        )
+
+        return children.flatMap {
+            it.flatten(baseTransformation = newTransformation)
+        }
+    }
 }
 
 fun SVGGElement.toSimpleGroup(): SvgGroup = SvgGroup(
@@ -75,7 +86,7 @@ fun CombinedTransformation.Companion.fromSvgTransformList(
     val sinFi = r21
 
     return CombinedTransformation(
-        components = listOf(
+        simpleTransformations = listOf(
             PrimitiveTransformation.Rotation.trigonometric(
                 cosFi = cosFi,
                 sinFi = sinFi,
