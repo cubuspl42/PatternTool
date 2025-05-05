@@ -92,14 +92,6 @@ data class BezierCurve(
         end = end.transformBy(transformation = transformation),
     )
 
-    // TODO: This might not work for degenerate curves
-    override val startTangent: Direction?
-        get() = start.directionTo(firstControl)
-
-    // TODO: This might not work for degenerate curves
-    override val endTangent: Direction?
-        get() = secondControl.directionTo(end)
-
     override fun splitAt(
         coord: Coord,
     ): Pair<BezierCurve, BezierCurve> {

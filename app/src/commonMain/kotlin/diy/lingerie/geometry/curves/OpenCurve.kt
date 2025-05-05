@@ -150,6 +150,12 @@ abstract class OpenCurve : NumericObject, ReprObject {
         abstract val otherCoord: Coord
     }
 
+    val startTangent: Direction?
+        get() = tangentDirection.start
+
+    val endTangent: Direction?
+        get() = tangentDirection.end
+
     abstract val start: Point
 
     abstract val end: Point

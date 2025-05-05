@@ -115,10 +115,4 @@ data class LineSegment(
             |)
         """.trimMargin()
     }
-
-    override val startTangent: Direction?
-        get() = tangent
-
-    override val endTangent: Direction?
-        get() = tangent
 }
