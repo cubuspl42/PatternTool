@@ -12,6 +12,7 @@ import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.toSpline
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
 import java.nio.file.Path
 import kotlin.io.path.reader
@@ -79,11 +80,18 @@ class Tool : CliktCommand() {
             baseTransformation = Transformation.Identity,
         )
 
-        svgPaths.forEachIndexed { index, svgPath ->
-            val hexColor = svgPath.stroke.color.toHexString()
-            println("SVG path #${index} [$hexColor]:")
+        svgPaths.forEachIndexed { index, svgShape ->
+            val svgPath = svgShape as? SvgPath ?: return@forEachIndexed
 
-            val spline = svgPath.toSpline()
+            val hexColorString = svgPath.stroke.color.toHexString()?.let {
+                "[$it]"
+            }
+
+            println(
+                listOfNotNull("SVG path #${index}", hexColorString).joinToString(" "),
+            )
+
+            val spline = svgShape.toSpline()
 
             dumpStrategyId.strategy.dumpSpline(spline)
         }

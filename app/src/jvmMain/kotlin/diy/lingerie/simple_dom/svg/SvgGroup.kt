@@ -46,7 +46,7 @@ data class SvgGroup(
 
     override fun flatten(
         baseTransformation: Transformation,
-    ): List<SvgPath> {
+    ): List<SvgShape> {
         val newTransformation = baseTransformation.combineWith(
             this.transformation ?: Transformation.Identity,
         )

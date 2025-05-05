@@ -1,7 +1,5 @@
 package diy.lingerie.simple_dom
 
-import org.apache.batik.css.engine.value.RGBColorValue
-
 data class SimpleColor(
     val red: Int,
     val green: Int,
@@ -12,6 +10,8 @@ data class SimpleColor(
         val red = SimpleColor(255, 0, 0)
         val green = SimpleColor(0, 255, 0)
         val blue = SimpleColor(0, 0, 255)
+
+        val lightGray = SimpleColor(211, 211, 211)
     }
 
     init {

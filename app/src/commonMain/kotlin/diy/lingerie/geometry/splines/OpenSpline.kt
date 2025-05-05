@@ -1,5 +1,6 @@
 package diy.lingerie.geometry.splines
 
+import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Direction
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
@@ -115,6 +116,10 @@ data class OpenSpline(
         sequentialCurves.map {
             it.findOffsetCurve(offset = offset)
         },
+    )
+
+    override fun findBoundingBox(): BoundingBox = BoundingBox.unionAll(
+        boundingBoxes = segmentCurves.map { it.findBoundingBox() },
     )
 
     override fun equalsWithTolerance(

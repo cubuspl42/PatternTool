@@ -20,15 +20,15 @@ import java.io.Reader
 import java.nio.file.Path
 
 data class SvgRoot(
-    val children: List<SvgElement>,
-    val width: SimpleDimension,
-    val height: SimpleDimension,
     val viewBox: ViewBox = ViewBox(
         x = 0.0,
         y = 0.0,
         width = width.value,
         height = height.value,
     ),
+    val width: SimpleDimension,
+    val height: SimpleDimension,
+    val children: List<SvgElement>,
 ) : SvgElement() {
     data class ViewBox(
         val x: Double,
@@ -142,7 +142,7 @@ data class SvgRoot(
 
     override fun flatten(
         baseTransformation: Transformation,
-    ): List<SvgPath> = children.flatMap {
+    ): List<SvgShape> = children.flatMap {
         it.flatten(baseTransformation = baseTransformation)
     }
 }

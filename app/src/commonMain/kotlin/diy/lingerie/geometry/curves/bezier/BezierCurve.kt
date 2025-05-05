@@ -1,5 +1,6 @@
 package diy.lingerie.geometry.curves.bezier
 
+import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.NumericObject.Tolerance
 import diy.lingerie.geometry.Direction
@@ -7,6 +8,8 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.geometry.x
+import diy.lingerie.geometry.y
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
@@ -127,6 +130,30 @@ data class BezierCurve(
             ty = offset,
         ),
     )
+
+    override fun findBoundingBox(): BoundingBox {
+        val startPoint = path.start
+        val endPoint = path.end
+
+        val criticalPointSet = basisFunction.findCriticalPoints()
+
+        val criticalXValues = criticalPointSet.xRoots.map { t -> basisFunction.apply(t).x }
+        val potentialXExtrema = criticalXValues + startPoint.x + endPoint.x
+        val xMin = potentialXExtrema.min()
+        val xMax = potentialXExtrema.max()
+
+        val criticalYValues = criticalPointSet.yRoots.map { t -> basisFunction.apply(t).y }
+        val potentialYExtrema = criticalYValues + startPoint.y + endPoint.y
+        val yMin = potentialYExtrema.min()
+        val yMax = potentialYExtrema.max()
+
+        return BoundingBox.of(
+            xMin = xMin,
+            xMax = xMax,
+            yMin = yMin,
+            yMax = yMax,
+        )
+    }
 
     override fun toReprString(): String {
         return """
