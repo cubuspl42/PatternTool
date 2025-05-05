@@ -206,9 +206,21 @@ data class CubicBezierBinomial(
 
     override fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance
+        tolerance: NumericObject.Tolerance,
     ): Double? {
-        TODO("Not yet implemented")
+        val projectionPolynomial = findPointProjectionPolynomial(point)
+
+        val locatedTValue = locatePoint(
+            point = point,
+            tolerance = tolerance,
+        ) ?: return null
+
+        val roots = projectionPolynomial.findTValueRoots(
+            guessedTValue = locatedTValue,
+            tolerance = tolerance,
+        )
+
+        return roots.singleOrNull()
     }
 
     /**
