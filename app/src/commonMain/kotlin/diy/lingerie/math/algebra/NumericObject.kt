@@ -1,5 +1,6 @@
 package diy.lingerie.math.algebra
 
+import diy.lingerie.geometry.x
 import diy.lingerie.math.algebra.NumericObject.Tolerance
 import kotlin.jvm.JvmName
 import kotlin.math.abs
@@ -70,6 +71,18 @@ fun Double.equalsWithTolerance(
     other: Double,
     tolerance: Tolerance = Tolerance.Default,
 ): Boolean = tolerance.equalsApproximately(this, other)
+
+fun Double.divideWithTolerance(
+    divisor: Double,
+    tolerance: Tolerance = Tolerance.Default,
+): Double? = when {
+    divisor.equalsWithTolerance(
+        0.0,
+        tolerance = tolerance
+    ) -> null
+
+    else -> this / divisor
+}
 
 @JvmName("equalsWithToleranceListDouble")
 fun List<Double>.equalsWithTolerance(

@@ -50,9 +50,10 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     /**
      * Locate a [point] lying on the curve.
      *
-     * @return parameter t for the point on the curve, or null if the parameter
-     * could not be found (because the point is not on the curve, or the curve
-     * self-intersects at this point).
+     * @return If the [point] is on the curve, the t-value for that point. If the
+     * point is not on the curve, a reasonable approximation of the t-value of the
+     * point on the curve closest to [point]. If the t-value could not be found
+     * (because the curve self-intersects at [point] or is strongly degenerate), null.
      */
     abstract fun locatePoint(
         point: Vector2,
