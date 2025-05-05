@@ -188,11 +188,11 @@ data class CubicBezierBinomial(
     }
 
     override fun locatePoint(
-        p: Vector2,
+        point: Vector2,
         tolerance: NumericObject.Tolerance,
     ): Double? {
         val invertedPolynomial = invert() ?: return null
-        val invertedRatio = invertedPolynomial.apply(p)
+        val invertedRatio = invertedPolynomial.apply(point)
 
         return when {
             invertedRatio.equalsWithTolerance(Ratio.ZeroByZero, tolerance = tolerance) -> {

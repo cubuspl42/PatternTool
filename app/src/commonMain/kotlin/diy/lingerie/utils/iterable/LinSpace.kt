@@ -4,6 +4,10 @@ data class LinSpace(
     val range: ClosedFloatingPointRange<Double> = 0.0..1.0,
     val n: Int,
 ) {
+    init {
+        require(n >= 2) { "n must be at least 2 to include both boundaries" }
+    }
+
     val x0: Double
         get() = range.start
 
@@ -11,7 +15,6 @@ data class LinSpace(
         get() = range.endInclusive
 
     fun generate(): Sequence<Double> {
-        if (n < 2) throw IllegalArgumentException("n must be at least 2 to include both boundaries")
         val step = (x1 - x0) / (n - 1)
         return generateSequence(0) { it + 1 }.take(n).map { i -> x0 + i * step }
     }
