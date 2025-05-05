@@ -46,9 +46,15 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     ).map {
         Sample(t = it.a, point = it.b)
     }
-
+    
+    /**
+     * Locate [point] lying on the curve.
+     *
+     * @return parameter t for the point on the curve, or null if the point
+     * could not be found (typically because the point is not on the curve)
+     */
     abstract fun locatePoint(
-        p: Vector2,
+        point: Vector2,
         tolerance: NumericObject.Tolerance,
     ): Double?
 

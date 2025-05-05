@@ -18,7 +18,7 @@ class QuadraticBezierBinomial(
     )
 
     override fun locatePoint(
-        p: Vector2,
+        point: Vector2,
         tolerance: NumericObject.Tolerance
     ): Double? {
         TODO("Not yet implemented")

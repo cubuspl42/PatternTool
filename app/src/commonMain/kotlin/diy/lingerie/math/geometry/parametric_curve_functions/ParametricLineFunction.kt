@@ -45,11 +45,11 @@ data class ParametricLineFunction(
      * Solve the equation s + d * t = p for t
      */
     override fun locatePoint(
-        p: Vector2,
+        point: Vector2,
         tolerance: NumericObject.Tolerance,
     ): Double? = when {
-        d.x != 0.0 -> (p.x - s.x) / d.x
-        d.y != 0.0 -> (p.y - s.y) / d.y
+        d.x != 0.0 -> (point.x - s.x) / d.x
+        d.y != 0.0 -> (point.y - s.y) / d.y
         else -> null
     }
 }
