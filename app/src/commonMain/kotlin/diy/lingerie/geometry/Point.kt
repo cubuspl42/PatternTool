@@ -96,4 +96,8 @@ data class Point(
     fun directionTo(
         target: Point,
     ): Direction? = translationTo(target = target).direction
+
+    override fun toString(): String = toReprString()
+
+    fun toReprString(): String = "Point($x, $y)"
 }

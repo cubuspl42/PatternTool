@@ -1,16 +1,16 @@
 package diy.lingerie.geometry.curves
 
-import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.ReprObject
 import diy.lingerie.geometry.Direction
-import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.splines.Spline
-import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 
 abstract class PrimitiveCurve : OpenCurve() {
-    abstract class Edge : NumericObject {
+    abstract class Edge : NumericObject, ReprObject {
         abstract fun bind(
             start: Point,
             end: Point,
@@ -33,6 +33,22 @@ abstract class PrimitiveCurve : OpenCurve() {
     // TODO: Make this final
     override val subCurves: List<PrimitiveCurve>
         get() = listOf(this)
+
+    final override val path: FeatureFunction<Point> by lazy {
+        FeatureFunction.wrap(basisFunction).map { vector ->
+            Point(pointVector = vector)
+        }
+    }
+
+    private val basisFunctionDerivative: ParametricPolynomial by lazy {
+        basisFunction.findDerivative()
+    }
+
+    override val tangentDirection: FeatureFunction<Direction?> by lazy {
+        FeatureFunction.wrap(basisFunctionDerivative).map { vector ->
+            Direction.normalize(vector)
+        }
+    }
 
     fun connectsSmoothly(
         nextCurve: PrimitiveCurve,

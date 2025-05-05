@@ -6,10 +6,10 @@ import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.indentLater
+import diy.lingerie.toReprString
 import diy.lingerie.utils.iterable.clusterSimilar
-import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.withNextCyclic
-import diy.lingerie.utils.iterable.withPrevious
 import diy.lingerie.utils.iterable.withPreviousCyclic
 
 /**
@@ -105,4 +105,12 @@ data class ClosedSpline(
 
     override val segmentCurves: List<PrimitiveCurve>
         get() = cyclicCurves
+
+    override fun toReprString(): String {
+        return """
+            |ClosedSpline(
+            |  cyclicLinks = ${cyclicLinks.toReprString().indentLater()},
+            |)
+        """.trimMargin()
+    }
 }

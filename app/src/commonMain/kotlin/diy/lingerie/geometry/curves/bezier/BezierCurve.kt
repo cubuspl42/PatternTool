@@ -7,6 +7,7 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 
@@ -35,7 +36,7 @@ data class BezierCurve(
 
         override fun transformBy(
             transformation: Transformation,
-        ): PrimitiveCurve.Edge = BezierCurve.Edge(
+        ): PrimitiveCurve.Edge = Edge(
             firstControl = firstControl.transformBy(transformation = transformation),
             secondControl = secondControl.transformBy(transformation = transformation),
         )
@@ -44,10 +45,19 @@ data class BezierCurve(
             other: NumericObject,
             tolerance: Tolerance,
         ): Boolean = when {
-            other !is BezierCurve.Edge -> false
+            other !is Edge -> false
             !firstControl.equalsWithTolerance(other.firstControl, tolerance) -> false
             !secondControl.equalsWithTolerance(other.secondControl, tolerance) -> false
             else -> true
+        }
+
+        override fun toReprString(): String {
+            return """
+                |BezierCurve.Edge(
+                |  firstControl = ${firstControl.toReprString()},
+                |  secondControl = ${secondControl.toReprString()},
+                |)
+            """.trimMargin()
         }
     }
 
@@ -62,7 +72,7 @@ data class BezierCurve(
         get() = secondControl
 
     override val edge: Edge
-        get() = BezierCurve.Edge(
+        get() = Edge(
             firstControl = firstControl,
             secondControl = secondControl,
         )
@@ -117,4 +127,15 @@ data class BezierCurve(
             ty = offset,
         ),
     )
+
+    override fun toReprString(): String {
+        return """
+            |BezierCurve(
+            |  start = ${start.toReprString()},
+            |  firstControl = ${firstControl.toReprString()},
+            |  secondControl = ${secondControl.toReprString()},
+            |  end = ${end.toReprString()},
+            |)
+        """.trimMargin()
+    }
 }

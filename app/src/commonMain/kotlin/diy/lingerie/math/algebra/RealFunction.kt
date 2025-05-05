@@ -19,3 +19,17 @@ fun <B> RealFunction<B>.sample(
         b = b,
     )
 }.toList()
+
+fun <B, C> RealFunction<B>.map(
+    transform: (B) -> C,
+): RealFunction<C> = MappedRealFunction(
+    function = this,
+    transform = transform,
+)
+
+private class MappedRealFunction<B, out C>(
+    private val function: RealFunction<B>,
+    private val transform: (B) -> C,
+) : RealFunction<C> {
+    override fun apply(a: Double): C = transform(function.apply(a))
+}

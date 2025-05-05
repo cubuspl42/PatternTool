@@ -41,6 +41,8 @@ data class LineSegment(
         ): Boolean = other == Edge
 
         override fun toString(): String = "LineSegment.Edge"
+
+        override fun toReprString(): String = "LineSegment.Edge"
     }
 
     override val edge = Edge
@@ -91,12 +93,23 @@ data class LineSegment(
     val normal: Direction?
         get() = tangent?.normal
 
+    override val tangentDirection = FeatureFunction.constant(tangent)
+
     override fun transformBy(
         transformation: Transformation,
     ): LineSegment = LineSegment(
         start = start.transformBy(transformation = transformation),
         end = end.transformBy(transformation = transformation),
     )
+
+    override fun toReprString(): String {
+        return """
+            |LineSegment(
+            |  start = ${start.toReprString()},
+            |  end = ${end.toReprString()},
+            |)
+        """.trimMargin()
+    }
 
     override val startTangent: Direction?
         get() = tangent

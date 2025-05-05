@@ -1,11 +1,14 @@
 package diy.lingerie.geometry.splines
 
+import diy.lingerie.geometry.Direction
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.indentLater
+import diy.lingerie.toReprString
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.withPrevious
@@ -135,7 +138,26 @@ data class OpenSpline(
     override val subCurves: List<PrimitiveCurve>
         get() = sequentialCurves
 
+    override val path: FeatureFunction<Point> = piecewiseFeatureFunction(PrimitiveCurve::path)
+
+    override val tangentDirection: FeatureFunction<Direction?> =
+        piecewiseFeatureFunction(PrimitiveCurve::tangentDirection)
+
+    private fun <A> piecewiseFeatureFunction(
+        extract: (PrimitiveCurve) -> FeatureFunction<A>,
+    ): FeatureFunction<A> = FeatureFunction.piecewise(
+        pieces = subCurves.map(extract),
+    )
+
     override val segmentCurves: List<PrimitiveCurve>
         get() = sequentialCurves
-}
 
+    override fun toReprString(): String {
+        return """
+            |OpenSpline(
+            |  firstCurve = ${firstCurve.toReprString().indentLater()},
+            |  trailingSequentialLinks = ${trailingSequentialLinks.toReprString().indentLater()},
+            |)
+        """.trimMargin()
+    }
+}
