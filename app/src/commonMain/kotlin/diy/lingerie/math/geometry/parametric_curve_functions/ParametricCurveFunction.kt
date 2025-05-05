@@ -61,6 +61,16 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     ): Double?
 
     /**
+     * Project a [point] onto the curve.
+     *
+     * @return The t-value of the point on the curve closest to [point].
+     */
+    abstract fun projectPoint(
+        point: Vector2,
+        tolerance: NumericObject.Tolerance,
+    ): Double?
+
+    /**
      * Convert this parametric curve function to an implicit curve function.
      */
     abstract fun implicitize(): ImplicitCurveFunction

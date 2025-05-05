@@ -204,6 +204,13 @@ data class CubicBezierBinomial(
         }
     }
 
+    override fun projectPoint(
+        point: Vector2,
+        tolerance: NumericObject.Tolerance
+    ): Double? {
+        TODO("Not yet implemented")
+    }
+
     /**
      * Find the inverse of the cubic Bézier curve, i.e. the function that maps
      * the point on the curve to the t-value.
