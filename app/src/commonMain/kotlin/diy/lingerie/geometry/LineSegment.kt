@@ -67,6 +67,11 @@ data class LineSegment(
         )
     }
 
+    override fun findBoundingBox(): BoundingBox = BoundingBox.of(
+        pointA = start,
+        pointB = end,
+    )
+
     override fun evaluate(coord: Coord): Point {
         TODO("Not yet implemented")
     }

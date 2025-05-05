@@ -12,6 +12,7 @@ import diy.lingerie.pattern_tool.PatternPieceId
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.svg.SvgGroup
 import diy.lingerie.simple_dom.svg.SvgPath
+import diy.lingerie.simple_dom.svg.SvgShape
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -76,14 +77,14 @@ data class PatternPieceLayout(
         transformation = transformation,
         children = listOf(
             patternPiece.outline.innerSpline.toSvgPath(
-                stroke = SvgPath.Stroke(
+                stroke = SvgShape.Stroke(
                     color = SimpleColor.black,
                     width = 0.4,
                     dashArray = listOf(2.0, 1.0),
                 ),
             ),
             patternPiece.outline.findSeamContour().toSvgPath(
-                stroke = SvgPath.Stroke(
+                stroke = SvgShape.Stroke(
                     color = SimpleColor.black,
                     width = 0.8,
                 ),

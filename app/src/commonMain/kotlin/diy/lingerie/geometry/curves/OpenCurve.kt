@@ -1,6 +1,7 @@
 package diy.lingerie.geometry.curves
 
 import diy.lingerie.ReprObject
+import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Direction
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
@@ -173,6 +174,8 @@ abstract class OpenCurve : NumericObject, ReprObject {
     abstract fun findOffsetCurve(
         offset: Double,
     ): OpenCurve
+
+    abstract fun findBoundingBox(): BoundingBox
 
     /**
      * Find the intersections of this curve (also referred to as the "subject

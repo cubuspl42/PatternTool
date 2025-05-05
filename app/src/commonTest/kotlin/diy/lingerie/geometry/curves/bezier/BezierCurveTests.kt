@@ -23,25 +23,28 @@ class BezierCurveTests {
             actual = bezierCurve.path.start,
         )
 
-        assertEqualsWithTolerance(
-            expected = Point(309.3747166748048, 317.28693518066416),
-            actual = bezierCurve.path.evaluate(
-                coord = OpenCurve.Coord(t = 0.2),
-            ),
-        )
+        val t0 = OpenCurve.Coord(t = 0.2)
+        val p0 = Point(309.3747166748048, 317.28693518066416)
 
         assertEqualsWithTolerance(
-            expected = Point(341.0086751708984, 383.43413623046877),
-            actual = bezierCurve.path.evaluate(
-                coord = OpenCurve.Coord(t = 0.4),
-            ),
+            expected = p0,
+            actual = bezierCurve.path.evaluate(coord = t0),
         )
 
+        val t1 = OpenCurve.Coord(t = 0.4)
+        val p1 = Point(341.0086751708984, 383.43413623046877)
+
         assertEqualsWithTolerance(
-            expected = Point(369.5635104980469, 385.17942395019537),
-            actual = bezierCurve.path.evaluate(
-                coord = OpenCurve.Coord(t = 0.6),
-            ),
+            expected = p1,
+            actual = bezierCurve.path.evaluate(coord = t1),
+        )
+
+        val t2 = OpenCurve.Coord(t = 0.6)
+        val p2 = Point(369.5635104980469, 385.17942395019537)
+
+        assertEqualsWithTolerance(
+            expected = p2,
+            actual = bezierCurve.path.evaluate(coord = t2),
         )
 
         assertEqualsWithTolerance(

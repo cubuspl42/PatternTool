@@ -19,7 +19,7 @@ abstract class SvgElement : SimpleElement() {
 
     abstract fun flatten(
         baseTransformation: Transformation,
-    ): List<SvgPath>
+    ): List<SvgShape>
 }
 
 fun Element.toSimpleElement(): SvgElement? = when (this) {

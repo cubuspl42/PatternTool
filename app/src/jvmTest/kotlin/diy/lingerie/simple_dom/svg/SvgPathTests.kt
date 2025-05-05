@@ -55,7 +55,7 @@ class SvgPathTests {
         val path = pathElement.toSimplePath()
 
         val expectedPath = SvgPath(
-            stroke = SvgPath.Stroke(
+            stroke = SvgShape.Stroke(
                 color = SimpleColor.red,
                 width = 2.0,
                 dashArray = listOf(5.0, 2.0),
