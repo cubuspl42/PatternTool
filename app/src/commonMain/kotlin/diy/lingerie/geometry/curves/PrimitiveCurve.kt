@@ -77,8 +77,4 @@ abstract class PrimitiveCurve : OpenCurve() {
     abstract override fun transformBy(
         transformation: Transformation,
     ): PrimitiveCurve
-
-    abstract val startTangent: Direction?
-
-    abstract val endTangent: Direction?
 }
