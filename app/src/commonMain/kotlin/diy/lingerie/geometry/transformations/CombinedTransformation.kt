@@ -4,29 +4,29 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.math.algebra.NumericObject
 
 data class CombinedTransformation(
-    override val simpleTransformations: List<SimpleTransformation>,
+    override val standaloneTransformations: List<StandaloneTransformation>,
 ) : Transformation() {
     override fun transform(
         point: Point,
-    ): Point = simpleTransformations.fold(point) { acc, transformation ->
+    ): Point = standaloneTransformations.fold(point) { acc, transformation ->
         transformation.transform(acc)
     }
 
     override fun combineWith(
-        laterTransformations: List<SimpleTransformation>,
+        laterTransformations: List<StandaloneTransformation>,
     ): CombinedTransformation = CombinedTransformation(
-        simpleTransformations = simpleTransformations + laterTransformations,
+        standaloneTransformations = standaloneTransformations + laterTransformations,
     )
 
     companion object;
 
     override fun toSvgTransformationString(): String =
-        simpleTransformations.reversed().joinToString(separator = " ") { transformation ->
+        standaloneTransformations.reversed().joinToString(separator = " ") { transformation ->
             transformation.toSvgTransformationString()
         }
 
     override val primitiveTransformations: List<PrimitiveTransformation>
-        get() = simpleTransformations.flatMap { it.primitiveTransformations }
+        get() = standaloneTransformations.flatMap { it.primitiveTransformations }
 
     override fun equalsWithTolerance(
         other: NumericObject,

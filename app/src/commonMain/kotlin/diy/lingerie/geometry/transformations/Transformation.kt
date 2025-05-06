@@ -6,15 +6,15 @@ import diy.lingerie.geometry.Point
 sealed class Transformation : NumericObject {
 
     object Identity : Transformation() {
-        override fun combineWith(laterTransformations: List<SimpleTransformation>): CombinedTransformation {
+        override fun combineWith(laterTransformations: List<StandaloneTransformation>): CombinedTransformation {
             return CombinedTransformation(
-                simpleTransformations = laterTransformations,
+                standaloneTransformations = laterTransformations,
             )
         }
 
         override fun toSvgTransformationString(): String = ""
 
-        override val simpleTransformations: List<PrimitiveTransformation> = emptyList()
+        override val standaloneTransformations: List<PrimitiveTransformation> = emptyList()
 
         override val primitiveTransformations: List<PrimitiveTransformation> = emptyList()
 
@@ -32,8 +32,8 @@ sealed class Transformation : NumericObject {
         fun combine(
             transformations: List<Transformation>,
         ): CombinedTransformation = CombinedTransformation(
-            simpleTransformations = transformations.flatMap {
-                it.simpleTransformations
+            standaloneTransformations = transformations.flatMap {
+                it.standaloneTransformations
             },
         )
     }
@@ -41,11 +41,11 @@ sealed class Transformation : NumericObject {
     fun combineWith(
         laterTransformation: Transformation,
     ): CombinedTransformation = combineWith(
-        laterTransformations = laterTransformation.simpleTransformations,
+        laterTransformations = laterTransformation.standaloneTransformations,
     )
 
     abstract fun combineWith(
-        laterTransformations: List<SimpleTransformation>,
+        laterTransformations: List<StandaloneTransformation>,
     ): CombinedTransformation
 
     abstract fun toSvgTransformationString(): String
@@ -53,7 +53,7 @@ sealed class Transformation : NumericObject {
     /**
      * Simple components of the transformation in the order of application.
      */
-    abstract val simpleTransformations: List<SimpleTransformation>
+    abstract val standaloneTransformations: List<StandaloneTransformation>
 
     /**
      * Primitive components of the transformation in the order of application.

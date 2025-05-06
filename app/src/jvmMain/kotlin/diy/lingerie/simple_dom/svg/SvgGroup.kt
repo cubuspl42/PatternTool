@@ -86,7 +86,7 @@ fun CombinedTransformation.Companion.fromSvgTransformList(
     val sinFi = r21
 
     return CombinedTransformation(
-        simpleTransformations = listOf(
+        standaloneTransformations = listOf(
             PrimitiveTransformation.Rotation.trigonometric(
                 cosFi = cosFi,
                 sinFi = sinFi,

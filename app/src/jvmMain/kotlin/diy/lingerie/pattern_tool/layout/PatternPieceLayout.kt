@@ -40,11 +40,11 @@ data class PatternPieceLayout(
             val combinedTransformation = transformation as? CombinedTransformation
                 ?: throw IllegalArgumentException("Pattern piece must have a combined transformation")
 
-            if (combinedTransformation.simpleTransformations.size != 2) {
+            if (combinedTransformation.standaloneTransformations.size != 2) {
                 throw IllegalArgumentException("Pattern piece must have exactly two sub-transformations")
             }
 
-            val (firstTransformation, secondTransformation) = combinedTransformation.simpleTransformations
+            val (firstTransformation, secondTransformation) = combinedTransformation.standaloneTransformations
 
             val rotation = firstTransformation as? PrimitiveTransformation.Rotation ?: throw IllegalArgumentException(
                 "Pattern piece layout must have a rotation transformation as the second component"

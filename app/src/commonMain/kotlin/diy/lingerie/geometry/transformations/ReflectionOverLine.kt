@@ -6,7 +6,7 @@ import diy.lingerie.math.algebra.NumericObject
 
 data class ReflectionOverLine(
     val line: Line,
-) : SimpleTransformation() {
+) : StandaloneTransformation() {
     override fun toSvgTransformationString(): String {
         TODO("Not yet implemented")
     }
