@@ -2,6 +2,7 @@ package diy.lingerie.geometry.transformations
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.transformations.PrimitiveTransformation.Universal
 
 sealed class Transformation : NumericObject {
     object Identity : Transformation() {
@@ -12,6 +13,9 @@ sealed class Transformation : NumericObject {
         }
 
         override fun toSvgTransformationString(): String = ""
+
+        override val toUniversal: Universal
+            get() = Universal()
 
         override val standaloneTransformations: List<PrimitiveTransformation> = emptyList()
 
@@ -48,6 +52,8 @@ sealed class Transformation : NumericObject {
     ): CombinedTransformation
 
     abstract fun toSvgTransformationString(): String
+
+    abstract val toUniversal: Universal
 
     /**
      * Simple components of the transformation in the order of application.

@@ -15,6 +15,12 @@ data class Projection(
         )
     }
 
+    override val toUniversal: PrimitiveTransformation.Universal
+        get() = scaling.toUniversal.copy(
+            tx = translation.tx,
+            ty = translation.ty,
+        )
+
     override val primitiveTransformations: List<PrimitiveTransformation> = listOf(
         scaling,
         translation,

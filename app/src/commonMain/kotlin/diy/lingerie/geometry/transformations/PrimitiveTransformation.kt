@@ -78,6 +78,17 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
                 ty = invertedTy,
             )
         }
+
+        fun mixWith(
+            laterTranslation: Universal,
+        ): Universal = Universal(
+            a = a * laterTranslation.a + c * laterTranslation.b,
+            b = b * laterTranslation.a + d * laterTranslation.b,
+            c = a * laterTranslation.c + c * laterTranslation.d,
+            d = b * laterTranslation.c + d * laterTranslation.d,
+            tx = a * laterTranslation.tx + c * laterTranslation.ty + tx,
+            ty = b * laterTranslation.tx + d * laterTranslation.ty + ty,
+        )
     }
 
     sealed class Specific : PrimitiveTransformation()
@@ -110,6 +121,12 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
                 y = ty,
             ),
         )
+
+        val tx: Double
+            get() = translationVector.x
+
+        val ty: Double
+            get() = translationVector.y
 
         val direction: Direction?
             get() = translationVector.normalizeOrNull()?.let {
@@ -274,8 +291,6 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
             angle = -angle,
         )
     }
-
-    abstract val toUniversal: Universal
 
     abstract override fun invert(): PrimitiveTransformation
 

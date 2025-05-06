@@ -25,6 +25,15 @@ data class CombinedTransformation(
             transformation.toSvgTransformationString()
         }
 
+    override val toUniversal: PrimitiveTransformation.Universal
+        get() = standaloneTransformations.fold(
+            initial = Identity.toUniversal,
+        ) { acc, transformation ->
+            acc.mixWith(
+                laterTranslation = transformation.toUniversal,
+            )
+        }
+
     override val primitiveTransformations: List<PrimitiveTransformation>
         get() = standaloneTransformations.flatMap { it.primitiveTransformations }
 
