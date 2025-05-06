@@ -27,7 +27,7 @@ data class Point(
         fun distanceBetween(
             one: Point,
             another: Point,
-        ): Span = Span(
+        ): Span = Span.Squared(
             valueSquared = (one.pointVector - another.pointVector).magnitudeSquared,
         )
     }
