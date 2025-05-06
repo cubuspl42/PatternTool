@@ -1,10 +1,17 @@
 package diy.lingerie.geometry.transformations
 
+import diy.lingerie.geometry.Point
 import diy.lingerie.math.algebra.NumericObject
 
 data class CombinedTransformation(
     override val simpleTransformations: List<SimpleTransformation>,
-) : ComplexTransformation() {
+) : Transformation() {
+    override fun transform(
+        point: Point,
+    ): Point = simpleTransformations.fold(point) { acc, transformation ->
+        transformation.transform(acc)
+    }
+
     override fun combineWith(
         laterTransformations: List<SimpleTransformation>,
     ): CombinedTransformation = CombinedTransformation(
