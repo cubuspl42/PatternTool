@@ -63,61 +63,61 @@ class OpenSplineTests {
 
         assertEquals(
             expected = start,
-            actual = openSpline.path.start,
+            actual = openSpline.pathFunction.start,
         )
 
         assertEqualsWithTolerance(
             expected = Point(309.3747166748048, 317.28693518066416),
-            actual = openSpline.path.evaluate(
+            actual = openSpline.pathFunction.evaluate(
                 coord = OpenCurve.Coord(t = 0.2 / 4.0),
             ),
         )
 
         assertEquals(
             expected = joint0,
-            actual = openSpline.path.evaluate(
+            actual = openSpline.pathFunction.evaluate(
                 coord = OpenCurve.Coord(t = 0.25),
             ),
         )
 
         assertEqualsWithTolerance(
             expected = Point(459.6020209140777, 266.53840482711786),
-            actual = openSpline.path.evaluate(
+            actual = openSpline.pathFunction.evaluate(
                 coord = OpenCurve.Coord(t = 1.3 / 4.0),
             ),
         )
 
         assertEquals(
             expected = joint1,
-            actual = openSpline.path.evaluate(
+            actual = openSpline.pathFunction.evaluate(
                 coord = OpenCurve.Coord(t = 0.5),
             ),
         )
 
         assertEqualsWithTolerance(
             expected = Point(614.3989881591797, 296.3029407348632),
-            actual = openSpline.path.evaluate(
+            actual = openSpline.pathFunction.evaluate(
                 coord = OpenCurve.Coord(t = 2.4 / 4.0),
             ),
         )
 
         assertEquals(
             expected = joint2,
-            actual = openSpline.path.evaluate(
+            actual = openSpline.pathFunction.evaluate(
                 coord = OpenCurve.Coord(t = 0.75),
             ),
         )
 
         assertEqualsWithTolerance(
             expected = Point(793.7310705184937, 307.3061761856079),
-            actual = openSpline.path.evaluate(
+            actual = openSpline.pathFunction.evaluate(
                 coord = OpenCurve.Coord(t = 3.5 / 4.0),
             ),
         )
 
         assertEquals(
             expected = end,
-            actual = openSpline.path.end,
+            actual = openSpline.pathFunction.end,
         )
     }
 }
