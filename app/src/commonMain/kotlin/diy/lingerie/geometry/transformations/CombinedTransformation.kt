@@ -30,7 +30,7 @@ data class CombinedTransformation(
             initial = Identity.toUniversal,
         ) { acc, transformation ->
             acc.mixWith(
-                laterTranslation = transformation.toUniversal,
+                laterTransform = transformation.toUniversal,
             )
         }
 

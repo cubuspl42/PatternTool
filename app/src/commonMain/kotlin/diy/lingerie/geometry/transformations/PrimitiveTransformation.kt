@@ -27,6 +27,16 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
         )
     }
 
+    /**
+     * A universal transformation that can represent any linear transformation in 2D space.
+     *
+     * Represented by the matrix in the form:
+     * ```
+     * | a  c  tx |
+     * | b  d  ty |
+     * | 0  0  1  |
+     * ```
+     */
     data class Universal(
         val a: Double = 1.0,
         val b: Double = 0.0,
@@ -81,14 +91,16 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
         }
 
         fun mixWith(
-            laterTranslation: Universal,
-        ): Universal = Universal(
-            a = a * laterTranslation.a + c * laterTranslation.b,
-            b = b * laterTranslation.a + d * laterTranslation.b,
-            c = a * laterTranslation.c + c * laterTranslation.d,
-            d = b * laterTranslation.c + d * laterTranslation.d,
-            tx = a * laterTranslation.tx + c * laterTranslation.ty + tx,
-            ty = b * laterTranslation.tx + d * laterTranslation.ty + ty,
+            laterTransform: Universal,
+        ): Universal = laterTransform.multiply(this)
+
+        private fun multiply(other: Universal): Universal = Universal(
+            a = this.a * other.a + this.c * other.b,
+            b = this.b * other.a + this.d * other.b,
+            c = this.a * other.c + this.c * other.d,
+            d = this.b * other.c + this.d * other.d,
+            tx = this.a * other.tx + this.c * other.ty + this.tx,
+            ty = this.b * other.tx + this.d * other.ty + this.ty,
         )
     }
 
@@ -293,8 +305,8 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
         override val toUniversal: Universal
             get() = Universal(
                 a = cosFi,
-                b = -sinFi,
-                c = sinFi,
+                b = sinFi,
+                c = -sinFi,
                 d = cosFi,
             )
 

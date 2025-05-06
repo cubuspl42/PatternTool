@@ -14,7 +14,7 @@ sealed class ComplexTransformation : StandaloneTransformation() {
             initial = Identity.toUniversal,
         ) { acc, transformation ->
             acc.mixWith(
-                laterTranslation = transformation.toUniversal,
+                laterTransform = transformation.toUniversal,
             )
         }
 
@@ -23,4 +23,3 @@ sealed class ComplexTransformation : StandaloneTransformation() {
             transformation.toSvgTransformationString()
         }
 }
-
