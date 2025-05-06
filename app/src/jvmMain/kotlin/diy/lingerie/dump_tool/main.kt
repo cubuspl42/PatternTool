@@ -10,7 +10,7 @@ import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.splines.Spline
-import diy.lingerie.geometry.svg.toSpline
+import diy.lingerie.geometry.svg.importSvgPath
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
@@ -18,9 +18,7 @@ import java.nio.file.Path
 import kotlin.io.path.reader
 
 enum class DumpStrategyId(val strategy: DumpStrategy) {
-    BasisFunctions(DumpBasisFunctionsStrategy),
-    Curves(DumpPrimitiveCurvesStrategy),
-    Spline(DumpSplineStrategy),
+    BasisFunctions(DumpBasisFunctionsStrategy), Curves(DumpPrimitiveCurvesStrategy), Spline(DumpSplineStrategy),
 }
 
 sealed class DumpStrategy {
@@ -91,7 +89,7 @@ class Tool : CliktCommand() {
                 listOfNotNull("SVG path #${index}", hexColorString).joinToString(" "),
             )
 
-            val spline = svgShape.toSpline()
+            val spline = Spline.importSvgPath(svgPath = svgPath)
 
             dumpStrategyId.strategy.dumpSpline(spline)
         }

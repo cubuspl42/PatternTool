@@ -36,21 +36,25 @@ fun BezierCurve.toSvgBezierSegment(): SvgPath.Segment.CubicBezierCurveTo = SvgPa
     finalPoint = end,
 )
 
-fun Segment.CurveSegment.toEdge(): PrimitiveCurve.Edge = when (this) {
+fun PrimitiveCurve.Edge.Companion.importSvgSegment(
+    segment: SvgPath.Segment.CurveSegment,
+): PrimitiveCurve.Edge = when (segment) {
     is Segment.LineTo -> LineSegment.Edge
 
     is Segment.CubicBezierCurveTo -> Edge(
-        firstControl = controlPoint1,
-        secondControl = controlPoint2,
+        firstControl = segment.controlPoint1,
+        secondControl = segment.controlPoint2,
     )
 
     is Segment.SmoothCubicBezierCurveTo -> TODO()
 }
 
-fun Segment.CurveSegment.toLink(): Spline.Link {
-    val edge = toEdge()
+fun Spline.Link.Companion.importSvgSegment(
+    segment: SvgPath.Segment.CurveSegment,
+): Spline.Link {
+    val edge = PrimitiveCurve.Edge.importSvgSegment(segment)
 
     return edge.semiBind(
-        end = finalPoint,
+        end = segment.finalPoint,
     )
 }

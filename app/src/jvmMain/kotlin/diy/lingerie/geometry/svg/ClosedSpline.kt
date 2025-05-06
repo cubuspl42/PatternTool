@@ -30,15 +30,20 @@ fun ClosedSpline.toSvgPath(
     )
 }
 
-fun SvgPath.toSpline(): Spline {
-    val (firstSegment, trailingSegments) = segments.uncons()
+fun Spline.Companion.importSvgPath(
+    svgPath: SvgPath,
+): Spline {
+    val (firstSegment, trailingSegments) = svgPath.segments.uncons()
         ?: throw IllegalArgumentException("Path must contain at least one segment")
 
     firstSegment as? Segment.MoveTo ?: throw IllegalArgumentException("Path must start with a MoveTo segment")
 
     val originPoint = firstSegment.finalPoint
 
-    val (curveSegments, closingSegments) = trailingSegments.takeWhileIsInstanceWithReminder<Segment, Segment.CurveSegment>()
+    val (
+        curveSegments,
+        closingSegments,
+    ) = trailingSegments.takeWhileIsInstanceWithReminder<Segment, Segment.CurveSegment>()
 
     val closingSegment = closingSegments.firstOrNull()
 
@@ -52,7 +57,7 @@ fun SvgPath.toSpline(): Spline {
         initialCarry = originPoint,
     ) { currentPoint, segment ->
         Pair(
-            segment.toLink(),
+            Spline.Link.importSvgSegment(segment = segment),
             segment.finalPoint,
         )
     }
