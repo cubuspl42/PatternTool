@@ -143,10 +143,10 @@ data class OpenSpline(
     override val subCurves: List<PrimitiveCurve>
         get() = sequentialCurves
 
-    override val path: FeatureFunction<Point> = piecewiseFeatureFunction(PrimitiveCurve::path)
+    override val pathFunction: FeatureFunction<Point> = piecewiseFeatureFunction(PrimitiveCurve::pathFunction)
 
-    override val tangentDirection: FeatureFunction<Direction?> =
-        piecewiseFeatureFunction(PrimitiveCurve::tangentDirection)
+    override val tangentDirectionFunction: FeatureFunction<Direction?> =
+        piecewiseFeatureFunction(PrimitiveCurve::tangentDirectionFunction)
 
     private fun <A> piecewiseFeatureFunction(
         extract: (PrimitiveCurve) -> FeatureFunction<A>,

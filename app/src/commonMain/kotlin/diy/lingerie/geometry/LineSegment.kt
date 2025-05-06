@@ -2,11 +2,9 @@ package diy.lingerie.geometry
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.NumericObject.Tolerance
-import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
 
 /**
@@ -19,11 +17,6 @@ data class LineSegment(
     override val start: Point,
     override val end: Point,
 ) : PrimitiveCurve() {
-    override val basisFunction = ParametricLineFunction(
-        s = start.pointVector,
-        d = end.pointVector - start.pointVector,
-    )
-
     data object Edge : PrimitiveCurve.Edge() {
         override fun bind(
             start: Point,
@@ -45,6 +38,16 @@ data class LineSegment(
         override fun toReprString(): String = "LineSegment.Edge"
     }
 
+    companion object;
+
+    val length: Span
+        get() = Point.distanceBetween(start, end)
+
+    override val basisFunction = ParametricLineFunction(
+        s = start.pointVector,
+        d = end.pointVector - start.pointVector,
+    )
+
     override val edge = Edge
 
     override fun splitAt(
@@ -57,7 +60,7 @@ data class LineSegment(
         offset: Double,
     ): LineSegment {
         val normal =
-            this.normal ?: throw IllegalStateException("Cannot find offset curve of a line segment with no normal")
+            this.normalDirection ?: throw IllegalStateException("Cannot find offset curve of a line segment with no normal")
 
         return transformBy(
             transformation = PrimitiveTransformation.Translation.inDirection(
@@ -92,13 +95,13 @@ data class LineSegment(
             point1 = end,
         )
 
-    val tangent: Direction?
+    val tangentDirection: Direction?
         get() = start.directionTo(end)
 
-    val normal: Direction?
-        get() = tangent?.normal
+    val normalDirection: Direction?
+        get() = tangentDirection?.normal
 
-    override val tangentDirection = FeatureFunction.constant(tangent)
+    override val tangentDirectionFunction = FeatureFunction.constant(tangentDirection)
 
     override fun transformBy(
         transformation: Transformation,

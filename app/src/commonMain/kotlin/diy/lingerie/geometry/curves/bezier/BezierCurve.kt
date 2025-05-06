@@ -3,14 +3,12 @@ package diy.lingerie.geometry.curves.bezier
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.NumericObject.Tolerance
-import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
-import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 
@@ -124,8 +122,8 @@ data class BezierCurve(
     )
 
     override fun findBoundingBox(): BoundingBox {
-        val startPoint = path.start
-        val endPoint = path.end
+        val startPoint = pathFunction.start
+        val endPoint = pathFunction.end
 
         val criticalPointSet = basisFunction.findCriticalPoints()
 

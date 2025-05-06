@@ -152,15 +152,15 @@ abstract class OpenCurve : NumericObject, ReprObject {
     }
 
     val startTangent: Direction?
-        get() = tangentDirection.start
+        get() = tangentDirectionFunction.start
 
     val endTangent: Direction?
-        get() = tangentDirection.end
+        get() = tangentDirectionFunction.end
 
     val tangentRay: FeatureFunction<Ray?> by lazy {
         FeatureFunction.map2(
-            functionA = path,
-            functionB = tangentDirection,
+            functionA = pathFunction,
+            functionB = tangentDirectionFunction,
         ) { point, direction ->
             direction?.let { point.castRay(it) }
         }
@@ -172,9 +172,9 @@ abstract class OpenCurve : NumericObject, ReprObject {
 
     abstract val subCurves: List<PrimitiveCurve>
 
-    abstract val path: FeatureFunction<Point>
+    abstract val pathFunction: FeatureFunction<Point>
 
-    abstract val tangentDirection: FeatureFunction<Direction?>
+    abstract val tangentDirectionFunction: FeatureFunction<Direction?>
 
     abstract fun transformBy(
         transformation: Transformation,

@@ -36,7 +36,7 @@ abstract class PrimitiveCurve : OpenCurve() {
     override val subCurves: List<PrimitiveCurve>
         get() = listOf(this)
 
-    final override val path: FeatureFunction<Point> by lazy {
+    final override val pathFunction: FeatureFunction<Point> by lazy {
         FeatureFunction.wrap(basisFunction).map { vector ->
             Point(pointVector = vector)
         }
@@ -46,7 +46,7 @@ abstract class PrimitiveCurve : OpenCurve() {
         basisFunction.findDerivative()
     }
 
-    override val tangentDirection: FeatureFunction<Direction?> by lazy {
+    override val tangentDirectionFunction: FeatureFunction<Direction?> by lazy {
         FeatureFunction.wrap(basisFunctionDerivative).map { vector ->
             Direction.normalize(vector)
         }
