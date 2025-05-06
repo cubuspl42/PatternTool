@@ -4,6 +4,7 @@ import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.RelativeAngle
 import diy.lingerie.geometry.Span
+import diy.lingerie.geometry.Vector2
 import diy.lingerie.geometry.rotate
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
@@ -175,6 +176,16 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
     data class Scaling(
         val scaleVector: Vector2,
     ) : Specific() {
+        constructor(
+            sx: Double,
+            sy: Double,
+        ) : this(
+            scaleVector = Vector2(
+                x = sx,
+                y = sy,
+            ),
+        )
+
         init {
             require(!scaleVector.equalsWithTolerance(Vector2.Companion.Zero))
         }

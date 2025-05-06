@@ -1,8 +1,9 @@
 package diy.lingerie.geometry.transformations
 
-import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.transformations.PrimitiveTransformation.Universal
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.equalsWithTolerance
 
 sealed class Transformation : NumericObject {
     object Identity : Transformation() {
@@ -54,6 +55,57 @@ sealed class Transformation : NumericObject {
     abstract fun toSvgTransformationString(): String
 
     abstract val toUniversal: Universal
+
+    val toProjection: Projection?
+        get() {
+            val universal = toUniversal
+
+            val b = universal.b
+            val c = universal.c
+
+            if (b != 0.0 || c != 0.0) {
+                return null
+            }
+
+            val sx = universal.a
+            val sy = universal.d
+
+            return Projection(
+                scaling = PrimitiveTransformation.Scaling(
+                    sx = sx,
+                    sy = sy,
+                ),
+                translation = PrimitiveTransformation.Translation(
+                    tx = universal.tx,
+                    ty = universal.ty,
+                ),
+            )
+        }
+
+    val toMovement: Movement?
+        get() {
+            val universal = toUniversal
+
+            val a = universal.a
+            val b = universal.b
+            val c = universal.c
+            val d = universal.d
+
+            if (!a.equalsWithTolerance(d) || !b.equalsWithTolerance(-c)) {
+                return null
+            }
+
+            return Movement(
+                rotation = PrimitiveTransformation.Rotation.trigonometric(
+                    cosFi = a,
+                    sinFi = b,
+                ),
+                translation = PrimitiveTransformation.Translation(
+                    tx = universal.tx,
+                    ty = universal.ty,
+                ),
+            )
+        }
 
     /**
      * Simple components of the transformation in the order of application.
