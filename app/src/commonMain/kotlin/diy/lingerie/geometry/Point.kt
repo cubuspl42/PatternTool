@@ -97,6 +97,13 @@ data class Point(
         target: Point,
     ): Direction? = translationTo(target = target).direction
 
+    fun castRay(
+        direction: Direction,
+    ): Ray = Ray.inDirection(
+        point = this,
+        direction = direction,
+    )
+
     override fun toString(): String = toReprString()
 
     fun toReprString(): String = "Point($x, $y)"
