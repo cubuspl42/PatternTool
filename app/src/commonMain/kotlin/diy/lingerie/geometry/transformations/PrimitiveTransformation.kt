@@ -7,6 +7,7 @@ import diy.lingerie.geometry.Span
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 
 sealed class PrimitiveTransformation : SimpleTransformation() {
@@ -24,9 +25,65 @@ sealed class PrimitiveTransformation : SimpleTransformation() {
         )
     }
 
+    data class Universal(
+        val a: Double = 1.0,
+        val b: Double = 0.0,
+        val c: Double = 0.0,
+        val d: Double = 1.0,
+        val tx: Double = 0.0,
+        val ty: Double = 0.0,
+    ) : PrimitiveTransformation() {
+        override fun toSvgTransformationString(): String = "matrix($a, $b, $c, $d, $tx, $ty)"
+
+        override fun transform(point: Point): Point {
+            val x = point.x
+            val y = point.y
+            return Point(
+                x = a * x + c * y + tx,
+                y = b * x + d * y + ty,
+            )
+        }
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance,
+        ): Boolean {
+            TODO("Not yet implemented")
+        }
+
+        override val toUniversal: Universal
+            get() = this
+
+        override fun invert(): Universal {
+            val determinant = a * d - b * c
+
+            if (determinant.equalsWithTolerance(0.0)) {
+                throw IllegalStateException("Cannot invert transformation with zero determinant")
+            }
+
+            val invertedA = d / determinant
+            val invertedB = -b / determinant
+            val invertedC = -c / determinant
+            val invertedD = a / determinant
+            val invertedTx = (c * ty - d * tx) / determinant
+            val invertedTy = (b * tx - a * ty) / determinant
+
+            return Universal(
+                a = invertedA,
+                b = invertedB,
+                c = invertedC,
+                d = invertedD,
+                tx = invertedTx,
+                ty = invertedTy,
+            )
+        }
+    }
+
+    sealed class Specific : PrimitiveTransformation()
+
     data class Translation(
         val translationVector: Vector2,
-    ) : PrimitiveTransformation() {
+    ) : Specific() {
         companion object {
             fun inDirection(
                 direction: Direction,
@@ -72,6 +129,12 @@ sealed class PrimitiveTransformation : SimpleTransformation() {
             TODO("Not yet implemented")
         }
 
+        override val toUniversal: Universal
+            get() = Universal(
+                tx = translationVector.x,
+                ty = translationVector.y,
+            )
+
         override fun invert(): Translation = Translation(
             translationVector = -translationVector,
         )
@@ -79,7 +142,7 @@ sealed class PrimitiveTransformation : SimpleTransformation() {
 
     data class Scaling(
         val scaleVector: Vector2,
-    ) : PrimitiveTransformation() {
+    ) : Specific() {
         init {
             require(scaleVector != Vector2.Companion.Zero)
         }
@@ -98,6 +161,12 @@ sealed class PrimitiveTransformation : SimpleTransformation() {
             TODO("Not yet implemented")
         }
 
+        override val toUniversal: Universal
+            get() = Universal(
+                a = scaleVector.x,
+                d = scaleVector.y,
+            )
+
         override fun invert(): Scaling = Scaling(
             scaleVector = diy.lingerie.geometry.Vector2(
                 x = 1.0 / scaleVector.x,
@@ -108,7 +177,7 @@ sealed class PrimitiveTransformation : SimpleTransformation() {
 
     data class Rotation private constructor(
         val angle: RelativeAngle,
-    ) : PrimitiveTransformation() {
+    ) : Specific() {
         companion object {
             /**
              * The identity rotation (±0 degrees)
@@ -175,10 +244,20 @@ sealed class PrimitiveTransformation : SimpleTransformation() {
             TODO("Not yet implemented")
         }
 
+        override val toUniversal: Universal
+            get() = Universal(
+                a = cosFi,
+                b = -sinFi,
+                c = sinFi,
+                d = cosFi,
+            )
+
         override fun invert(): Rotation = Rotation(
             angle = -angle,
         )
     }
+
+    abstract val toUniversal: Universal
 
     abstract override fun invert(): PrimitiveTransformation
 
