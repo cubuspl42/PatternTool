@@ -1,10 +1,10 @@
 package diy.lingerie.pattern_tool
 
-import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.geometry.Vector2
 import diy.lingerie.geometry.splines.ClosedSpline
-import diy.lingerie.geometry.toSpline
+import diy.lingerie.geometry.svg.toSpline
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
+import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.simple_dom.SimpleDimension
 import diy.lingerie.simple_dom.SimpleUnit
 import diy.lingerie.simple_dom.svg.SvgPath

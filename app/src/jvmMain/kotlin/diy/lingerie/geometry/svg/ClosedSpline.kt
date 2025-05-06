@@ -1,14 +1,34 @@
-package diy.lingerie.geometry
+package diy.lingerie.geometry.svg
 
-import diy.lingerie.geometry.curves.bezier.BezierCurve.Edge
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgPath.Segment
+import diy.lingerie.simple_dom.svg.SvgShape
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.takeWhileIsInstanceWithReminder
 import diy.lingerie.utils.iterable.uncons
+
+fun ClosedSpline.toSvgPath(
+    stroke: SvgShape.Stroke = SvgShape.Stroke.default,
+): SvgPath {
+    val edgeCurves = this.cyclicCurves
+    val start = edgeCurves.first().start
+
+    return SvgPath(
+        stroke = stroke,
+        segments = listOf(
+            SvgPath.Segment.MoveTo(
+                targetPoint = start,
+            ),
+        ) + edgeCurves.map { edgeCurve ->
+            edgeCurve.toSvgSegment()
+        } + listOf(
+            SvgPath.Segment.ClosePath,
+        ),
+    )
+}
 
 fun SvgPath.toSpline(): Spline {
     val (firstSegment, trailingSegments) = segments.uncons()
@@ -53,23 +73,4 @@ fun SvgPath.toSpline(): Spline {
             )
         }
     }
-}
-
-fun Segment.CurveSegment.toLink(): Spline.Link {
-    val edge = toEdge()
-
-    return edge.semiBind(
-        end = finalPoint,
-    )
-}
-
-fun Segment.CurveSegment.toEdge() = when (this) {
-    is Segment.LineTo -> LineSegment.Edge
-
-    is Segment.CubicBezierCurveTo -> Edge(
-        firstControl = controlPoint1,
-        secondControl = controlPoint2,
-    )
-
-    is Segment.SmoothCubicBezierCurveTo -> TODO()
 }

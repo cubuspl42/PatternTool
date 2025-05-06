@@ -4,7 +4,7 @@ import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
-import diy.lingerie.geometry.toSvgPath
+import diy.lingerie.geometry.svg.toSvgPath
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.mm
 import diy.lingerie.simple_dom.svg.SvgCircle
