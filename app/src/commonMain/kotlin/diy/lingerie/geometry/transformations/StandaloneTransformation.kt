@@ -1,6 +1,6 @@
 package diy.lingerie.geometry.transformations
 
-sealed class StandaloneTransformation : Transformation() {
+sealed class StandaloneTransformation : EffectiveTransformation() {
     final override val standaloneTransformations: List<StandaloneTransformation>
         get() = listOf(this)
 

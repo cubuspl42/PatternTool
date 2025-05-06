@@ -4,7 +4,6 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.geometry.Point
 
 sealed class Transformation : NumericObject {
-
     object Identity : Transformation() {
         override fun combineWith(laterTransformations: List<StandaloneTransformation>): CombinedTransformation {
             return CombinedTransformation(

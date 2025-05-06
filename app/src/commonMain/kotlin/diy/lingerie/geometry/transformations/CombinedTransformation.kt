@@ -5,7 +5,7 @@ import diy.lingerie.math.algebra.NumericObject
 
 data class CombinedTransformation(
     override val standaloneTransformations: List<StandaloneTransformation>,
-) : Transformation() {
+) : EffectiveTransformation() {
     override fun transform(
         point: Point,
     ): Point = standaloneTransformations.fold(point) { acc, transformation ->
