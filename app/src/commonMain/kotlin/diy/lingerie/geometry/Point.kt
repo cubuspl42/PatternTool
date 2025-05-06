@@ -104,6 +104,12 @@ data class Point(
         direction = direction,
     )
 
+    fun castRayTo(
+        target: Point,
+    ): Ray? = directionTo(target = target)?.let {
+        castRay(direction = it)
+    }
+
     override fun toString(): String = toReprString()
 
     fun toReprString(): String = "Point($x, $y)"

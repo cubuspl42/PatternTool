@@ -3,6 +3,7 @@ package diy.lingerie.simple_dom.svg
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.Size
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.simple_dom.SimpleColor
@@ -11,14 +12,17 @@ import diy.lingerie.simple_dom.toSimpleColor
 import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.xml.svg.asList
 import diy.lingerie.utils.xml.svg.getComputedStyle
+import diy.lingerie.utils.xml.svg.stroke
 import org.apache.batik.css.engine.SVGCSSEngine
 import org.w3c.dom.Document
 import org.w3c.dom.Element
+import org.w3c.dom.svg.SVGElement
 import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGPathSeg
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicAbs
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicRel
 import org.w3c.dom.svg.SVGPathSegMovetoAbs
+import org.w3c.dom.svg.SVGRectElement
 
 data class SvgPath(
     override val stroke: Stroke = Stroke.default,
@@ -202,17 +206,21 @@ fun SVGPathElement.toSimplePath(): SvgPath {
         )
     }
 
+    return SvgPath(
+        stroke = toSimpleStroke(),
+        segments = segments,
+    )
+}
+
+fun SVGElement.toSimpleStroke(): SvgShape.Stroke {
     val strokeColor = getComputedStyle(SVGCSSEngine.STROKE_INDEX).toSimpleColor()
     val strokeWidth = getComputedStyle(SVGCSSEngine.STROKE_WIDTH_INDEX).floatValue.toDouble()
     val strokeDashArray = getComputedStyle(SVGCSSEngine.STROKE_DASHARRAY_INDEX).toList()
 
-    return SvgPath(
-        stroke = SvgShape.Stroke(
-            color = strokeColor ?: SimpleColor.black,
-            width = strokeWidth,
-            dashArray = strokeDashArray?.map { it.floatValue.toDouble() },
-        ),
-        segments = segments,
+    return SvgShape.Stroke(
+        color = strokeColor ?: SimpleColor.black,
+        width = strokeWidth,
+        dashArray = strokeDashArray?.map { it.floatValue.toDouble() },
     )
 }
 

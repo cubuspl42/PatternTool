@@ -7,6 +7,7 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGGElement
 import org.w3c.dom.svg.SVGPathElement
+import org.w3c.dom.svg.SVGRectElement
 
 abstract class SvgElement : SimpleElement() {
     companion object {
@@ -25,5 +26,6 @@ abstract class SvgElement : SimpleElement() {
 fun Element.toSimpleElement(): SvgElement? = when (this) {
     is SVGPathElement -> toSimplePath()
     is SVGGElement -> toSimpleGroup()
+    is SVGRectElement -> toSimpleRect()
     else -> null
 }

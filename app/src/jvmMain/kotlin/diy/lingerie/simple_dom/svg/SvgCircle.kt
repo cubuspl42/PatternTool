@@ -25,7 +25,8 @@ data class SvgCircle(
     }
 
     override fun equalsWithTolerance(
-        other: NumericObject, tolerance: NumericObject.Tolerance
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance,
     ): Boolean = when {
         other !is SvgCircle -> false
         !center.equalsWithTolerance(other.center, tolerance) -> false

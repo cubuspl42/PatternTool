@@ -1,5 +1,6 @@
 package diy.lingerie.geometry
 
+import diy.lingerie.ReprObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import kotlin.jvm.JvmInline
 
@@ -8,12 +9,12 @@ import kotlin.jvm.JvmInline
  * family of parallel likewise-oriented vectors with a specific meaning.
  */
 @JvmInline
-value class Direction(
+value class Direction internal constructor(
     /**
      * Normalized direction vector
      */
     val normalizedDirectionVector: Vector2,
-) : RadialObject {
+) : RadialObject, ReprObject {
     override fun equalsWithRadialTolerance(
         other: RadialObject,
         tolerance: RelativeAngle.RadialTolerance,
@@ -46,6 +47,14 @@ value class Direction(
         get() = Direction(
             normalizedDirectionVector = -normalizedDirectionVector,
         )
+
+    override fun toReprString(): String {
+        return """
+            |Direction(
+            |  normalizedDirectionVector = ${normalizedDirectionVector.toReprString()},
+            |)
+        """.trimMargin()
+    }
 
     companion object {
         val XAxisPlus = Direction(

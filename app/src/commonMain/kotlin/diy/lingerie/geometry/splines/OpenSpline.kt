@@ -2,6 +2,7 @@ package diy.lingerie.geometry.splines
 
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Direction
+import diy.lingerie.geometry.LineSegment
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
@@ -153,6 +154,8 @@ data class OpenSpline(
     ): FeatureFunction<A> = FeatureFunction.piecewise(
         pieces = subCurves.map(extract),
     )
+
+    fun toLineSegment(): LineSegment? = sequentialCurves.singleOrNull() as? LineSegment
 
     override val segmentCurves: List<PrimitiveCurve>
         get() = sequentialCurves
