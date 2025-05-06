@@ -1,17 +1,16 @@
 package diy.lingerie.pattern_tool.layout
 
-import diy.lingerie.geometry.RelativeAngle
 import diy.lingerie.geometry.AngleSerializer
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.PointSerializer
-import diy.lingerie.geometry.toSvgPath
+import diy.lingerie.geometry.RelativeAngle
+import diy.lingerie.geometry.svg.toSvgPath
 import diy.lingerie.geometry.transformations.CombinedTransformation
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.svg.SvgGroup
-import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgShape
 import kotlinx.serialization.Serializable
 

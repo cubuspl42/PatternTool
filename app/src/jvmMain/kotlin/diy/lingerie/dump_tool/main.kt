@@ -10,7 +10,7 @@ import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.splines.Spline
-import diy.lingerie.geometry.toSpline
+import diy.lingerie.geometry.svg.toSpline
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
