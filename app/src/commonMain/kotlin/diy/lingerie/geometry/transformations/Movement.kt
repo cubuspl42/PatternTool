@@ -15,6 +15,12 @@ data class Movement(
         )
     }
 
+    override val toUniversal: PrimitiveTransformation.Universal
+        get() = rotation.toUniversal.copy(
+            tx = translation.tx,
+            ty = translation.ty,
+        )
+
     override val primitiveTransformations: List<PrimitiveTransformation> = listOf(
         rotation,
         translation,
