@@ -1,0 +1,14 @@
+package diy.lingerie.geometry.transformations
+
+sealed class StandaloneTransformation : Transformation() {
+    final override val standaloneTransformations: List<StandaloneTransformation>
+        get() = listOf(this)
+
+    final override fun combineWith(
+        laterTransformations: List<StandaloneTransformation>,
+    ): CombinedTransformation = CombinedTransformation(
+        standaloneTransformations = listOf(this) + laterTransformations,
+    )
+
+    abstract fun invert(): StandaloneTransformation
+}

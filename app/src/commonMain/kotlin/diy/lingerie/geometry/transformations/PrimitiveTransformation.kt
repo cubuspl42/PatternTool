@@ -10,12 +10,12 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 
-sealed class PrimitiveTransformation : SimpleTransformation() {
+sealed class PrimitiveTransformation : StandaloneTransformation() {
     companion object {
         fun combine(
             transformations: List<PrimitiveTransformation>,
         ): CombinedTransformation = CombinedTransformation(
-            simpleTransformations = transformations,
+            standaloneTransformations = transformations,
         )
 
         fun combine(
