@@ -4,6 +4,7 @@ import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.RelativeAngle
 import diy.lingerie.geometry.Span
+import diy.lingerie.geometry.rotate
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
 import diy.lingerie.math.algebra.NumericObject
@@ -115,6 +116,20 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
                 Direction(normalizedDirectionVector = it)
             }
 
+        fun scale(
+            scaling: Scaling,
+        ): Translation = Translation(
+            translationVector = translationVector * scaling.scaleVector,
+        )
+
+        fun rotate(
+            rotation: Rotation,
+        ): Translation = Translation(
+            translationVector = translationVector.rotate(
+                angle = rotation.angle,
+            ),
+        )
+
         override fun toSvgTransformationString(): String = "translate(${translationVector.x}, ${translationVector.y})"
 
         override fun transform(point: Point): Point = Point(
@@ -144,7 +159,7 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
         val scaleVector: Vector2,
     ) : Specific() {
         init {
-            require(scaleVector != Vector2.Companion.Zero)
+            require(!scaleVector.equalsWithTolerance(Vector2.Companion.Zero))
         }
 
         override fun toSvgTransformationString(): String = "scale(${scaleVector.x}, ${scaleVector.y})"
@@ -232,9 +247,12 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
 
         override fun toSvgTransformationString(): String = "rotate(${angle.fiInDegrees})"
 
-        override fun transform(point: Point): Point = Point(
-            x = point.x * cosFi - point.y * sinFi,
-            y = point.x * sinFi + point.y * cosFi,
+        override fun transform(
+            point: Point,
+        ): Point = Point(
+            pointVector = point.pointVector.rotate(
+                angle = angle,
+            ),
         )
 
         override fun equalsWithTolerance(
