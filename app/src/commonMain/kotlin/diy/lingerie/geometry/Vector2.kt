@@ -35,3 +35,10 @@ fun Vector2.findProjectionScale(
     other.magnitudeSquared,
     tolerance = tolerance,
 )
+
+fun Vector2.rotate(
+    angle: RelativeAngle,
+): Vector2 = Vector2(
+    x = x * angle.cosFi - y * angle.sinFi,
+    y = x * angle.sinFi + y * angle.cosFi,
+)

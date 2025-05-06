@@ -73,6 +73,13 @@ data class Vector2(
         a1 = a1 * scalar,
     )
 
+    operator fun times(
+        other: Vector2,
+    ): Vector2 = Vector2(
+        a0 = a0 * other.a0,
+        a1 = a1 * other.a1,
+    )
+
     operator fun div(
         scalar: Double,
     ): Vector2 = Vector2(
