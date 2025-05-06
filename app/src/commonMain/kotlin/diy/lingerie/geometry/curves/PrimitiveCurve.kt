@@ -11,6 +11,8 @@ import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunc
 
 abstract class PrimitiveCurve : OpenCurve() {
     abstract class Edge : NumericObject, ReprObject {
+        companion object;
+
         abstract fun bind(
             start: Point,
             end: Point,

@@ -2,7 +2,8 @@ package diy.lingerie.pattern_tool
 
 import diy.lingerie.geometry.Vector2
 import diy.lingerie.geometry.splines.ClosedSpline
-import diy.lingerie.geometry.svg.toSpline
+import diy.lingerie.geometry.splines.Spline
+import diy.lingerie.geometry.svg.importSvgPath
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.simple_dom.SimpleDimension
@@ -31,7 +32,9 @@ fun Outline.Companion.loadSvg(
     val svgPath =
         singleElement as? SvgPath ?: throw IllegalArgumentException("The single element must be a path element")
 
-    val closedSpline = svgPath.toSpline() as? ClosedSpline ?: throw IllegalArgumentException("The path must be closed")
+    val closedSpline = Spline.importSvgPath(
+        svgPath = svgPath,
+    ) as? ClosedSpline ?: throw IllegalArgumentException("The path must be closed")
 
     return Outline.reconstruct(
         cyclicSmoothCurves = closedSpline.transformBy(

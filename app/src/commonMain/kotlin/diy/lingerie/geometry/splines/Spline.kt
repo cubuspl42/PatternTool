@@ -66,6 +66,8 @@ interface Spline : NumericObject, ReprObject {
         }
     }
 
+    companion object;
+
     val links: List<Link>
 
     val segmentCurves: List<PrimitiveCurve>
