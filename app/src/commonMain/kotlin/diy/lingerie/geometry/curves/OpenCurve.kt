@@ -6,6 +6,7 @@ import diy.lingerie.geometry.Direction
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.Ray
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.utils.split
@@ -51,14 +52,14 @@ abstract class OpenCurve : NumericObject, ReprObject {
                 }
             }
 
-            fun <A, B> map2(
+            fun <A, B, C> map2(
                 functionA: FeatureFunction<A>,
                 functionB: FeatureFunction<B>,
-                transform: (A, B) -> A,
-            ): FeatureFunction<A> = object : FeatureFunction<A>() {
+                transform: (A, B) -> C,
+            ): FeatureFunction<C> = object : FeatureFunction<C>() {
                 override fun evaluate(
                     coord: Coord,
-                ): A = transform(
+                ): C = transform(
                     functionA.evaluate(coord),
                     functionB.evaluate(coord),
                 )
@@ -155,6 +156,15 @@ abstract class OpenCurve : NumericObject, ReprObject {
 
     val endTangent: Direction?
         get() = tangentDirection.end
+
+    val tangentRay: FeatureFunction<Ray?> by lazy {
+        FeatureFunction.map2(
+            functionA = path,
+            functionB = tangentDirection,
+        ) { point, direction ->
+            direction?.let { point.castRay(it) }
+        }
+    }
 
     abstract val start: Point
 
