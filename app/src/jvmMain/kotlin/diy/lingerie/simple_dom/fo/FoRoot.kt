@@ -19,8 +19,8 @@ import javax.xml.transform.sax.SAXResult
 import kotlin.io.path.outputStream
 
 data class FoRoot(
-    val pageWidth: SimpleDimension,
-    val pageHeight: SimpleDimension,
+    val pageWidth: SimpleDimension<*>,
+    val pageHeight: SimpleDimension<*>,
     val blocks: List<FoSvgBlock>,
 ) : FoElement() {
     companion object {

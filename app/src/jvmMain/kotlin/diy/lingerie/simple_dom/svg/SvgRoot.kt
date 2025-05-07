@@ -4,6 +4,7 @@ import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.simple_dom.SimpleDimension
+import diy.lingerie.simple_dom.SimpleUnit
 import diy.lingerie.utils.xml.childElements
 import diy.lingerie.utils.xml.svg.MinimalCssContext
 import diy.lingerie.utils.xml.svg.SVGDOMImplementationUtils
@@ -26,8 +27,8 @@ data class SvgRoot(
         width = width.value,
         height = height.value,
     ),
-    val width: SimpleDimension,
-    val height: SimpleDimension,
+    val width: SimpleDimension<*>,
+    val height: SimpleDimension<*>,
     val children: List<SvgElement>,
 ) : SvgElement() {
     data class ViewBox(
