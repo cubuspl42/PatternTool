@@ -51,8 +51,8 @@ fun Outline.Companion.loadSvg(
  * @return The scale factor [s_x, s_y]
  */
 private fun determineToMmScale(
-    width: SimpleDimension,
-    height: SimpleDimension,
+    width: SimpleDimension<*>,
+    height: SimpleDimension<*>,
     viewBox: SvgRoot.ViewBox,
 ): Vector2 {
     if (viewBox.x != 0.0 || viewBox.y != 0.0) {

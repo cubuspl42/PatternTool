@@ -3,16 +3,16 @@ package diy.lingerie.simple_dom
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 
-data class SimpleDimension(
+data class SimpleDimension<out U: SimpleUnit>(
     val value: Double,
-    val unit: SimpleUnit,
+    val unit: U,
 ) : NumericObject {
     companion object {
         private val regex = Regex("([0-9.]+)([a-zA-Z%]+)")
 
         fun parse(
             string: String,
-        ): SimpleDimension {
+        ): SimpleDimension<*> {
             val matchResult =
                 regex.matchEntire(string) ?: throw IllegalArgumentException("Invalid dimension format: $string")
 
@@ -34,36 +34,36 @@ data class SimpleDimension(
         other: NumericObject,
         tolerance: NumericObject.Tolerance
     ): Boolean = when {
-        other !is SimpleDimension -> false
+        other !is SimpleDimension<*> -> false
         !value.equalsWithTolerance(other.value, tolerance = tolerance) -> false
         unit != other.unit -> false
         else -> true
     }
 }
 
-val Double.mm: SimpleDimension
+val Double.mm: SimpleDimension<SimpleUnit.Mm>
     get() = SimpleDimension(
         value = this,
         unit = SimpleUnit.Mm,
     )
 
-val Int.mm: SimpleDimension
+val Int.mm: SimpleDimension<SimpleUnit.Mm>
     get() = this.toDouble().mm
 
-val Double.pt: SimpleDimension
+val Double.pt: SimpleDimension<SimpleUnit.Pt>
     get() = SimpleDimension(
         value = this,
         unit = SimpleUnit.Pt,
     )
 
-val Int.pt: SimpleDimension
+val Int.pt: SimpleDimension<SimpleUnit.Pt>
     get() = this.toDouble().pt
 
-val Double.percent: SimpleDimension
+val Double.percent: SimpleDimension<SimpleUnit.Percent>
     get() = SimpleDimension(
         value = this,
         unit = SimpleUnit.Percent,
     )
 
-val Int.percent: SimpleDimension
+val Int.percent: SimpleDimension<SimpleUnit.Percent>
     get() = this.toDouble().percent
