@@ -79,9 +79,6 @@ data class BezierCurve(
             secondControl = secondControl,
         )
 
-    override val subCurves: List<BezierCurve>
-        get() = listOf(this)
-
     override fun transformBy(
         transformation: Transformation,
     ): BezierCurve = BezierCurve(

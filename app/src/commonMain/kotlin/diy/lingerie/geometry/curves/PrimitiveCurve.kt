@@ -73,7 +73,7 @@ abstract class PrimitiveCurve : OpenCurve() {
     }
 
     // TODO: Make this final
-    override val subCurves: List<PrimitiveCurve>
+    final override val subCurves: List<PrimitiveCurve>
         get() = listOf(this)
 
     final override val pathFunction: FeatureFunction<Point> by lazy {
