@@ -22,6 +22,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
 
     /**
      * Solve the intersection of this parametric curve with another parametric curve.
+     * It's preferred that this curve is the simpler of two curves.
      *
      * @return A set of intersection parameter values t for this curve.
      */

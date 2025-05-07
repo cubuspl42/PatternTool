@@ -45,7 +45,7 @@ data class SvgRectangle(
             ?: throw UnsupportedOperationException("SvgRectangle does not support this transformation: $transformation")
 
         return SvgRectangle(
-            position = position.transformBy(projection.translation),
+            position = position.transformBy(projection),
             size = size.scaleBy(projection.scaling),
         )
     }

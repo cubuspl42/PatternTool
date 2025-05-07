@@ -3,9 +3,11 @@ package diy.lingerie.simple_dom.svg
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.equalsWithToleranceOrNull
 import diy.lingerie.simple_dom.SimpleDimension
 import diy.lingerie.simple_dom.SimpleUnit
 import diy.lingerie.utils.xml.childElements
+import diy.lingerie.utils.xml.getAttributeOrNull
 import diy.lingerie.utils.xml.svg.MinimalCssContext
 import diy.lingerie.utils.xml.svg.SVGDOMImplementationUtils
 import diy.lingerie.utils.xml.svg.createSvgDocument
@@ -21,12 +23,7 @@ import java.io.Reader
 import java.nio.file.Path
 
 data class SvgRoot(
-    val viewBox: ViewBox = ViewBox(
-        x = 0.0,
-        y = 0.0,
-        width = width.value,
-        height = height.value,
-    ),
+    val viewBox: ViewBox? = null,
     val width: SimpleDimension<*>,
     val height: SimpleDimension<*>,
     val children: List<SvgElement>,
@@ -88,6 +85,14 @@ data class SvgRoot(
         }
     }
 
+    val effectiveViewBox: ViewBox
+        get() = viewBox ?: ViewBox(
+            x = 0.0,
+            y = 0.0,
+            width = width.value,
+            height = height.value,
+        )
+
     fun writeToFile(
         filePath: Path,
     ) {
@@ -107,10 +112,15 @@ data class SvgRoot(
         document: Document,
         root: Element,
     ) {
+        val viewBox = this.viewBox
+
         root.run {
             setAttribute("width", width.toDimensionString())
             setAttribute("height", height.toDimensionString())
-            setAttribute("viewBox", viewBox.toViewBoxString())
+
+            if (viewBox != null) {
+                setAttribute("viewBox", viewBox.toViewBoxString())
+            }
 
             children.forEach { child ->
                 appendChild(child.toRawElement(document = document))
@@ -136,7 +146,7 @@ data class SvgRoot(
             other !is SvgRoot -> false
             !width.equalsWithTolerance(other.width, tolerance) -> false
             !height.equalsWithTolerance(other.height, tolerance) -> false
-            !viewBox.equalsWithTolerance(other.viewBox, tolerance) -> false
+            !viewBox.equalsWithToleranceOrNull(other.viewBox, tolerance) -> false
             else -> true
         }
     }
@@ -149,9 +159,17 @@ data class SvgRoot(
 }
 
 fun SVGDocument.toSimple(): SvgRoot {
-    val width = SimpleDimension.parse(documentSvgElement.getAttribute("width"))
-    val height = SimpleDimension.parse(documentSvgElement.getAttribute("height"))
-    val viewBox = SvgRoot.ViewBox.parse(documentSvgElement.getAttribute("viewBox"))
+    val widthString =
+        documentSvgElement.getAttributeOrNull("width") ?: throw IllegalArgumentException("Width is not set")
+    val heightString =
+        documentSvgElement.getAttributeOrNull("height") ?: throw IllegalArgumentException("Height is not set")
+
+    val width = SimpleDimension.parse(widthString)
+    val height = SimpleDimension.parse(heightString)
+
+    val viewBox = documentSvgElement.getAttributeOrNull("viewBox")?.let { viewBoxString ->
+        SvgRoot.ViewBox.parse(viewBoxString)
+    }
 
     return SvgRoot(
         width = width,

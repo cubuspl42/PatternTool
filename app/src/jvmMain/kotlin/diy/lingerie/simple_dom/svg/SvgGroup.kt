@@ -59,42 +59,23 @@ data class SvgGroup(
 
 fun SVGGElement.toSimpleGroup(): SvgGroup = SvgGroup(
     id = id,
-    transformation = CombinedTransformation.fromSvgTransformList(
+    transformation = Transformation.fromSvgTransformList(
         transformList = transform.baseVal,
     ),
     children = childElements.mapNotNull { it.toSimpleElement() },
 )
 
-fun CombinedTransformation.Companion.fromSvgTransformList(
+fun Transformation.Companion.fromSvgTransformList(
     transformList: SVGTransformList,
-): CombinedTransformation {
+): Transformation {
     val consolidatedMatrix = transformList.consolidate().matrix
 
-    val r11 = consolidatedMatrix.a.toDouble()
-    val r21 = consolidatedMatrix.b.toDouble()
-    val r12 = consolidatedMatrix.c.toDouble()
-    val r22 = consolidatedMatrix.d.toDouble()
-
-    val tx = consolidatedMatrix.e.toDouble()
-    val ty = consolidatedMatrix.f.toDouble()
-
-    if (r11 != r22 || r12 != -r21) {
-        throw IllegalArgumentException("Unsupported transformation matrix: $r11, $r12, $r21, $r22, $tx, $ty")
-    }
-
-    val cosFi = r11
-    val sinFi = r21
-
-    return CombinedTransformation(
-        standaloneTransformations = listOf(
-            PrimitiveTransformation.Rotation.trigonometric(
-                cosFi = cosFi,
-                sinFi = sinFi,
-            ),
-            PrimitiveTransformation.Translation(
-                tx = tx,
-                ty = ty,
-            ),
-        ),
+    return PrimitiveTransformation.Universal(
+        a = consolidatedMatrix.a.toDouble(),
+        b = consolidatedMatrix.b.toDouble(),
+        c = consolidatedMatrix.c.toDouble(),
+        d = consolidatedMatrix.d.toDouble(),
+        tx = consolidatedMatrix.e.toDouble(),
+        ty = consolidatedMatrix.f.toDouble(),
     )
 }

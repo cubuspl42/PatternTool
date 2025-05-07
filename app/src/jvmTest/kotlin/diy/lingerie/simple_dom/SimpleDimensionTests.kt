@@ -26,6 +26,11 @@ class SimpleDimensionTests {
         )
 
         assertEquals(
+            expected = 123.2.px,
+            actual = SimpleDimension.parse("123.2px"),
+        )
+
+        assertEquals(
             expected = SimpleDimension(
                 value = 123.0,
                 unit = SimpleUnit.Percent,
