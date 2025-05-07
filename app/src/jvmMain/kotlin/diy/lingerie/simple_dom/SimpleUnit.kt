@@ -8,7 +8,7 @@ sealed class SimpleUnit {
             ): SimpleUnit = when (unitString) {
                 Mm.string -> Mm
                 Pt.string -> Pt
-                Percent.string -> Percent
+                Px.string -> Px
                 else -> throw UnsupportedOperationException("Unsupported unit: $unitString")
             }
         }

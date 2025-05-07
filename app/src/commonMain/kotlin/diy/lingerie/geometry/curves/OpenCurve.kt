@@ -3,10 +3,13 @@ package diy.lingerie.geometry.curves
 import diy.lingerie.ReprObject
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Direction
+import diy.lingerie.geometry.LineSegment
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.Ray
+import diy.lingerie.geometry.curves.bezier.BezierCurve
+import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.utils.split
@@ -101,8 +104,19 @@ abstract class OpenCurve : NumericObject, ReprObject {
          * The t-value for the basis function
          */
         val t: Double,
-    ) : NumericObject {
+    ) : NumericObject, ReprObject {
         companion object {
+            val range = 0.0..1.0
+
+            /**
+             * @param t t-value, unconstrained
+             * @return coord if t is in [0, 1], null otherwise
+             */
+            fun of(t: Double): Coord? = when (t) {
+                in range -> Coord(t = t)
+                else -> null
+            }
+
             val start = Coord(
                 t = 0.0,
             )
@@ -118,7 +132,7 @@ abstract class OpenCurve : NumericObject, ReprObject {
             )
 
         init {
-            require(t in 0.0..1.0)
+            require(t in range)
         }
 
         override fun equalsWithTolerance(
@@ -129,12 +143,56 @@ abstract class OpenCurve : NumericObject, ReprObject {
             !t.equalsWithTolerance(other.t, tolerance) -> false
             else -> true
         }
+
+        override fun toReprString(): String = "Coord(t = $t)"
     }
 
     /**
      * The intersection of two curves
      */
-    abstract class Intersection {
+    abstract class Intersection : NumericObject {
+        companion object {
+            fun swap(
+                intersections: Set<Intersection>,
+            ): Set<Intersection> = intersections.map {
+                it.swap()
+            }.toSet()
+        }
+
+        fun swap(): Intersection {
+            return object : Intersection() {
+                override val point: Point
+                    get() = this@Intersection.point
+
+                override val subjectCoord: Coord
+                    get() = this@Intersection.objectCoord
+
+                override val objectCoord: Coord
+                    get() = this@Intersection.subjectCoord
+            }
+        }
+
+        final override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance,
+        ): Boolean = when {
+            other !is Intersection -> false
+            !point.equalsWithTolerance(other.point, tolerance) -> false
+            !subjectCoord.equalsWithTolerance(other.subjectCoord, tolerance) -> false
+            !objectCoord.equalsWithTolerance(other.objectCoord, tolerance) -> false
+            else -> true
+        }
+
+        override fun toString(): String {
+            return """
+                |Intersection(
+                |  point = ${point.toReprString()},
+                |  subjectCoord = ${subjectCoord.toReprString()},
+                |  objectCoord = ${objectCoord.toReprString()},
+                |)
+            """.trimMargin()
+        }
+
         /**
          * The point of intersection
          */
@@ -143,12 +201,12 @@ abstract class OpenCurve : NumericObject, ReprObject {
         /**
          * The coordinate of the intersection point on the subject curve
          */
-        abstract val coord: Coord
+        abstract val subjectCoord: Coord
 
         /**
-         * The coordinate of the intersection point on the other curve
+         * The coordinate of the intersection point on the object curve
          */
-        abstract val otherCoord: Coord
+        abstract val objectCoord: Coord
     }
 
     val startTangent: Direction?
@@ -195,11 +253,21 @@ abstract class OpenCurve : NumericObject, ReprObject {
 
     /**
      * Find the intersections of this curve (also referred to as the "subject
-     * curve") with the [other] curve.
+     * curve") with the [objectCurve] curve.
      */
-    fun findIntersections(
-        other: OpenCurve,
-    ): Set<Intersection> {
-        TODO()
-    }
+    abstract fun findIntersections(
+        objectCurve: OpenCurve,
+    ): Set<Intersection>
+
+    abstract fun findIntersectionsLineSegment(
+        subjectLineSegment: LineSegment,
+    ): Set<Intersection>
+
+    abstract fun findIntersectionsBezierCurve(
+        subjectBezierCurve: BezierCurve,
+    ): Set<Intersection>
+
+    abstract fun findIntersectionsOpenSpline(
+        subjectSpline: OpenSpline,
+    ): Set<Intersection>
 }

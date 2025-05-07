@@ -22,7 +22,7 @@ fun Outline.Companion.loadSvg(
         scaleVector = determineToMmScale(
             width = svgRoot.width,
             height = svgRoot.height,
-            viewBox = svgRoot.viewBox,
+            viewBox = svgRoot.effectiveViewBox,
         ),
     )
 

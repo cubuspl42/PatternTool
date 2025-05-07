@@ -1,10 +1,13 @@
 package diy.lingerie.geometry
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.NumericObject.Tolerance
+import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
+import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.NumericObject.Tolerance
+import diy.lingerie.math.algebra.linear.vectors.times
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
 
 /**
@@ -59,8 +62,8 @@ data class LineSegment(
     override fun findOffsetCurve(
         offset: Double,
     ): LineSegment {
-        val normal =
-            this.normalDirection ?: throw IllegalStateException("Cannot find offset curve of a line segment with no normal")
+        val normal = this.normalDirection
+            ?: throw IllegalStateException("Cannot find offset curve of a line segment with no normal")
 
         return transformBy(
             transformation = PrimitiveTransformation.Translation.inDirection(
@@ -75,9 +78,11 @@ data class LineSegment(
         pointB = end,
     )
 
-    override fun evaluate(coord: Coord): Point {
-        TODO("Not yet implemented")
-    }
+    override fun evaluate(
+        coord: Coord,
+    ): Point = Point(
+        pointVector = start.pointVector + coord.t * (end.pointVector - start.pointVector),
+    )
 
     override fun equalsWithTolerance(
         other: NumericObject,
@@ -108,6 +113,22 @@ data class LineSegment(
     ): LineSegment = LineSegment(
         start = start.transformBy(transformation = transformation),
         end = end.transformBy(transformation = transformation),
+    )
+
+    override fun findIntersections(
+        objectCurve: OpenCurve,
+    ): Set<Intersection> = objectCurve.findIntersectionsLineSegment(
+        subjectLineSegment = this,
+    )
+
+    override fun findIntersectionsBezierCurve(
+        subjectBezierCurve: BezierCurve,
+    ): Set<Intersection> = Intersection.swap(
+        intersections = PrimitiveCurve.findIntersectionsPrimitiveWithPrimitive(
+            simpleSubjectCurve = this,
+            complexObjectCurve = subjectBezierCurve,
+            tolerance = Tolerance.Default,
+        ),
     )
 
     override fun toReprString(): String {

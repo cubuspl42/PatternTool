@@ -4,6 +4,7 @@ import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.NumericObject.Tolerance
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
@@ -96,9 +97,11 @@ data class BezierCurve(
         TODO("Not yet implemented")
     }
 
-    override fun evaluate(coord: Coord): Point {
-        TODO("Not yet implemented")
-    }
+    override fun evaluate(
+        coord: Coord,
+    ): Point = Point(
+        pointVector = basisFunction.apply(coord.t),
+    )
 
     override fun equalsWithTolerance(
         other: NumericObject,
@@ -144,6 +147,20 @@ data class BezierCurve(
             yMax = yMax,
         )
     }
+
+    override fun findIntersections(objectCurve: OpenCurve): Set<Intersection> {
+        return objectCurve.findIntersectionsBezierCurve(
+            subjectBezierCurve = this,
+        )
+    }
+
+    override fun findIntersectionsBezierCurve(
+        subjectBezierCurve: BezierCurve,
+    ): Set<Intersection> = PrimitiveCurve.findIntersectionsPrimitiveWithPrimitive(
+        simpleSubjectCurve = subjectBezierCurve,
+        complexObjectCurve = this,
+        tolerance = Tolerance.Default,
+    )
 
     override fun toReprString(): String {
         return """

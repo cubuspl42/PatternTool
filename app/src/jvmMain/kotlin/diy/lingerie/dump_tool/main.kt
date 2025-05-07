@@ -58,13 +58,13 @@ sealed class DumpSegmentCurvesStrategy : DumpPathStrategy() {
 
 data object DumpPrimitiveCurvesStrategy : DumpSegmentCurvesStrategy() {
     override fun dumpSegmentCurve(curve: PrimitiveCurve) {
-        println(curve.basisFunction.toReprString())
+        println(curve.toReprString())
     }
 }
 
 data object DumpBasisFunctionsStrategy : DumpSegmentCurvesStrategy() {
     override fun dumpSegmentCurve(curve: PrimitiveCurve) {
-        println(curve.toReprString())
+        println(curve.basisFunction.toReprString())
     }
 }
 

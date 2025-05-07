@@ -2,10 +2,13 @@ package diy.lingerie.geometry.curves
 
 import diy.lingerie.ReprObject
 import diy.lingerie.geometry.Direction
+import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.NumericObject.Tolerance
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 
@@ -30,6 +33,43 @@ abstract class PrimitiveCurve : OpenCurve() {
         abstract fun transformBy(
             transformation: Transformation,
         ): Edge
+    }
+
+    companion object {
+        /**
+         * @param simpleSubjectCurve a curve that's not more complex than [complexObjectCurve]
+         * @param complexObjectCurve a curve that's not simpler than [simpleSubjectCurve]
+         */
+        fun findIntersectionsPrimitiveWithPrimitive(
+            simpleSubjectCurve: PrimitiveCurve,
+            complexObjectCurve: PrimitiveCurve,
+            tolerance: NumericObject.Tolerance,
+        ): Set<Intersection> {
+            val tValues = simpleSubjectCurve.basisFunction.solveIntersections(
+                other = complexObjectCurve.basisFunction,
+            )
+
+            return tValues.mapNotNull { tSimple ->
+                val coordSimple = Coord.of(t = tSimple) ?: return@mapNotNull null
+
+                val potentialIntersectionPoint = simpleSubjectCurve.evaluate(coord = coordSimple)
+
+                val tComplex = complexObjectCurve.basisFunction.locatePoint(
+                    point = potentialIntersectionPoint.pointVector,
+                    tolerance = tolerance,
+                ) ?: throw UnsupportedOperationException("Cannot find t for the complex curve")
+
+                val coordComplex = Coord.of(t = tComplex) ?: return@mapNotNull null
+
+                object : Intersection() {
+                    override val point = potentialIntersectionPoint
+
+                    override val subjectCoord: Coord = coordSimple
+
+                    override val objectCoord: Coord = coordComplex
+                }
+            }.toSet()
+        }
     }
 
     // TODO: Make this final
@@ -79,4 +119,19 @@ abstract class PrimitiveCurve : OpenCurve() {
     abstract override fun transformBy(
         transformation: Transformation,
     ): PrimitiveCurve
+
+    final override fun findIntersectionsOpenSpline(
+        subjectSpline: OpenSpline,
+    ): Set<Intersection> {
+        TODO("Not yet implemented")
+    }
+
+    final override fun findIntersectionsLineSegment(
+        subjectLineSegment: LineSegment,
+    ): Set<Intersection> = PrimitiveCurve.findIntersectionsPrimitiveWithPrimitive(
+        // Line segment is never more complex than other primitive curves
+        simpleSubjectCurve = subjectLineSegment,
+        complexObjectCurve = this,
+        tolerance = Tolerance.Default,
+    )
 }
