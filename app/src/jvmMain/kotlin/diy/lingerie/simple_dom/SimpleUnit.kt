@@ -56,7 +56,6 @@ sealed class SimpleUnit {
 
         override val perPx = 1.0 / Px.perInch
 
-
         override val string: String = "in"
     }
 
@@ -65,6 +64,7 @@ sealed class SimpleUnit {
 
         override val perPt = 1.0
 
+        // 1 inch equals 72 pt per Web standards
         override val perInch = 72.0
 
         override val perPx = Pt.perInch / Px.perInch
@@ -79,6 +79,7 @@ sealed class SimpleUnit {
 
         override val perPx: Double = 1.0
 
+        // 1 inch _typically_ equals 96 px, but this is much less obvious
         override val perInch = 96.0
 
         override val perMm = Px.perInch / Mm.perInch
