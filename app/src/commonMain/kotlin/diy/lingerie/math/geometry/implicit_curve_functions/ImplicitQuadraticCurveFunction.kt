@@ -122,7 +122,7 @@ data class ImplicitQuadraticCurveFunction(
     }
 
     override fun substitute(
-        parametricPolynomial: ParametricPolynomial,
+        parametricPolynomial: ParametricPolynomial<*>,
     ): Polynomial {
         val x = parametricPolynomial.xFunction
         val y = parametricPolynomial.yFunction

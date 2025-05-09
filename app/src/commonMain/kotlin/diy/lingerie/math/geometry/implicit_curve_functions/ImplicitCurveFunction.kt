@@ -20,6 +20,6 @@ sealed class ImplicitCurveFunction : Function<Vector2, Double>, NumericObject {
     ) = this + ConstantPolynomial(constant)
 
     abstract fun substitute(
-        parametricPolynomial: ParametricPolynomial,
+        parametricPolynomial: ParametricPolynomial<*>,
     ): Polynomial
 }

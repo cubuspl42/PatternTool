@@ -78,7 +78,7 @@ data class ImplicitLineFunction(
     ): Polynomial = a * x + b * y + c
 
     override fun substitute(
-        p: ParametricPolynomial,
+        p: ParametricPolynomial<*>,
     ): Polynomial = substitute(
         x = p.xFunction,
         y = p.yFunction,
