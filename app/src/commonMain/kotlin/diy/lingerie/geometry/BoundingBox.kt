@@ -2,6 +2,8 @@ package diy.lingerie.geometry
 
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.equalsWithTolerance
 
 /**
  * A bounding box described by its diagonal from a to b
@@ -10,7 +12,7 @@ data class BoundingBox(
     val topLeft: Point,
     val width: Double,
     val height: Double,
-) {
+) : NumericObject {
     companion object {
         fun of(
             pointA: Point,
@@ -76,7 +78,7 @@ data class BoundingBox(
     val area: Double
         get() = width * height
 
-    val bottomLeft: Point
+    val bottomRight: Point
         get() = topLeft.transformBy(
             transformation = PrimitiveTransformation.Translation(
                 tx = width,
@@ -88,13 +90,13 @@ data class BoundingBox(
         get() = topLeft.x
 
     val xMax: Double
-        get() = bottomLeft.x
+        get() = bottomRight.x
 
     val yMin: Double
         get() = topLeft.y
 
     val yMax: Double
-        get() = bottomLeft.y
+        get() = bottomRight.y
 
     fun unionWith(
         other: BoundingBox,
@@ -116,7 +118,7 @@ data class BoundingBox(
         transformation: Transformation,
     ): BoundingBox = BoundingBox.of(
         pointA = transformation.transform(topLeft),
-        pointB = transformation.transform(bottomLeft),
+        pointB = transformation.transform(bottomRight),
     )
 
     fun overlaps(
@@ -135,6 +137,17 @@ data class BoundingBox(
         yMin = yMin - bleed,
         yMax = yMax + bleed,
     )
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance
+    ): Boolean = when {
+        other !is BoundingBox -> false
+        !topLeft.equalsWithTolerance(other.topLeft, tolerance = tolerance) -> false
+        !width.equalsWithTolerance(other.width, tolerance = tolerance) -> false
+        !height.equalsWithTolerance(other.height, tolerance = tolerance) -> false
+        else -> true
+    }
 
     init {
         require(width >= 0)

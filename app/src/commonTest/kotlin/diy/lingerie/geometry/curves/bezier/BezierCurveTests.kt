@@ -1,9 +1,11 @@
 package diy.lingerie.geometry.curves.bezier
 
+import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.test_utils.assertEqualsWithTolerance
+import kotlin.test.Ignore
 import kotlin.test.Test
 
 class BezierCurveTests {
@@ -93,6 +95,32 @@ class BezierCurveTests {
         assertEqualsWithTolerance(
             expected = splitCurve1,
             actual = curve1, tolerance,
+        )
+    }
+
+    @Test
+    @Ignore
+    fun testFindBoundingBox() {
+        val bezierCurve = BezierCurve(
+            start = Point(273.80049324035645, 489.08709716796875),
+            firstControl = Point(1068.5394763946533, 253.16610717773438),
+            secondControl = Point(-125.00849723815918, 252.71710205078125),
+            end = Point(671.4185047149658, 490.2051086425781),
+        )
+
+        // FIXME: Filter out t-values
+        val boundingBox = bezierCurve.findBoundingBox()
+
+        assertEqualsWithTolerance(
+            actual = boundingBox,
+            expected = BoundingBox(
+                topLeft = Point(
+                    273.80049324035645,
+                    197.3452272415161,
+                ),
+                width = 397.617011,
+                height = 291.741872,
+            ),
         )
     }
 }
