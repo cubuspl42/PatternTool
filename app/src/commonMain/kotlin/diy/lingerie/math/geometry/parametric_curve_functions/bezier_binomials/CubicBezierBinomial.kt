@@ -243,6 +243,7 @@ data class CubicBezierBinomial(
             tolerance = tolerance,
         )
 
+        // FIXME: Why single?
         return roots.singleOrNull()
     }
 
