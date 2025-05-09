@@ -121,6 +121,10 @@ abstract class OpenCurve : NumericObject, ReprObject {
                 t = 0.0,
             )
 
+            val half = Coord(
+                t = 0.5,
+            )
+
             val end = Coord(
                 t = 1.0,
             )

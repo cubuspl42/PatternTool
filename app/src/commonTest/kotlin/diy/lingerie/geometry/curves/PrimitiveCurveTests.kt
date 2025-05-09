@@ -4,6 +4,7 @@ import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.test_utils.assertEqualsWithTolerance
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -488,5 +489,67 @@ class PrimitiveCurveTests {
             actual = singleIntersection2,
         )
     }
+
+    @Test
+    @Ignore
+    fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_splitLoop() {
+        // A loop split at its top
+
+        val firstCurve = BezierCurve(
+            start = Point(273.80049324035645, 489.08709716796875),
+            firstControl = Point(684.4749774932861, 329.1851005554199),
+            secondControl = Point(591.8677291870117, 214.5483512878418),
+            end = Point(492.59773540496826, 197.3452272415161),
+        )
+
+        val secondCurve = BezierCurve(
+            start = Point(492.59773540496826, 197.3452272415161),
+            firstControl = Point(393.3277416229248, 180.14210319519043),
+            secondControl = Point(287.3950023651123, 260.3726043701172),
+            end = Point(671.4185047149658, 490.2051086425781),
+        )
+
+        val intersectionPoint = Point(501.579334, 374.596689)
+        val firstIntersectionCoord = OpenCurve.Coord(t = 0.0) // TBD
+        val secondIntersectionCoord = OpenCurve.Coord(t = 0.0) // TBD
+
+        // There are two problems:
+        // The found point doesn't seem to be close to the actual (self-)intersection
+        // The found point couldn't be located, because of the apparent 0/0 division?
+        val singleIntersection1 = assertNotNull(
+            firstCurve.findIntersections(
+                objectCurve = secondCurve,
+            ).singleOrNull(),
+        )
+
+        assertEqualsWithTolerance(
+            expected = object : OpenCurve.Intersection() {
+                override val point: Point = intersectionPoint
+
+                override val subjectCoord: OpenCurve.Coord = firstIntersectionCoord
+
+                override val objectCoord: OpenCurve.Coord = secondIntersectionCoord
+            },
+            actual = singleIntersection1,
+        )
+
+        val singleIntersection2 = assertNotNull(
+            secondCurve.findIntersections(
+                objectCurve = firstCurve,
+            ).singleOrNull(),
+        )
+
+        assertEqualsWithTolerance(
+            expected = object : OpenCurve.Intersection() {
+                override val point: Point = intersectionPoint
+
+                override val subjectCoord: OpenCurve.Coord = secondIntersectionCoord
+
+                override val objectCoord: OpenCurve.Coord = firstIntersectionCoord
+            },
+            actual = singleIntersection2,
+        )
+    }
+
 }
 
