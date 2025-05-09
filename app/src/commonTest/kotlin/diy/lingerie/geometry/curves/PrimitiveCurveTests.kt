@@ -429,5 +429,64 @@ class PrimitiveCurveTests {
             actual = intersections2,
         )
     }
+
+    @Test
+    fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_overlapping() {
+        // Although these curves look like two nearly-line-shaped innocent
+        // curves crossing in the "X" shape, it's actually a single loop
+        // curve cut to pieces
+
+        val firstCurve = BezierCurve(
+            start = Point(383.0995044708252, 275.80810546875),
+            firstControl = Point(435.23948860168457, 325.49310302734375),
+            secondControl = Point(510.3655261993408, 384.4371032714844),
+            end = Point(614.6575183868408, 453.4740905761719),
+        )
+
+        val secondCurve = BezierCurve(
+            start = Point(372.14351081848145, 439.6011047363281),
+            firstControl = Point(496.5914783477783, 370.8171081542969),
+            secondControl = Point(559.4554920196533, 307.91810607910156),
+            end = Point(582.3854846954346, 253.8291015625),
+        )
+
+        val intersectionPoint = Point(488.177482, 364.171107)
+        val firstIntersectionCoord = OpenCurve.Coord(t = 0.538009)
+        val secondIntersectionCoord = OpenCurve.Coord(t = 0.378574)
+
+        val singleIntersection1 = assertNotNull(
+            firstCurve.findIntersections(
+                objectCurve = secondCurve,
+            ).singleOrNull(),
+        )
+
+        assertEqualsWithTolerance(
+            expected = object : OpenCurve.Intersection() {
+                override val point: Point = intersectionPoint
+
+                override val subjectCoord: OpenCurve.Coord = firstIntersectionCoord
+
+                override val objectCoord: OpenCurve.Coord = secondIntersectionCoord
+            },
+            actual = singleIntersection1,
+        )
+
+        val singleIntersection2 = assertNotNull(
+            secondCurve.findIntersections(
+                objectCurve = firstCurve,
+            ).singleOrNull(),
+        )
+
+        assertEqualsWithTolerance(
+            expected = object : OpenCurve.Intersection() {
+                override val point: Point = intersectionPoint
+
+                override val subjectCoord: OpenCurve.Coord = secondIntersectionCoord
+
+                override val objectCoord: OpenCurve.Coord = firstIntersectionCoord
+            },
+            actual = singleIntersection2,
+        )
+    }
 }
 
