@@ -2,6 +2,7 @@ package diy.lingerie.geometry.curves.bezier
 
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
+import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Test
 
@@ -50,6 +51,48 @@ class BezierCurveTests {
         assertEqualsWithTolerance(
             expected = end,
             actual = bezierCurve.pathFunction.end,
+        )
+    }
+
+    @Test
+    fun testSplitAt() {
+        val originalCurve = BezierCurve(
+            start = Point(677.1705641585395, 615.752499524604),
+            firstControl = Point(655.0464850886674, 157.66163210658488),
+            secondControl = Point(406.05454162416845, 128.84363265872344),
+            end = Point(321.3376393038343, 341.3936380645191),
+        )
+
+        val splitCurve0 = BezierCurve(
+            start = Point(677.1705641585395, 615.752499524604),
+            firstControl = Point(667.5507169938228, 416.5577304081198),
+            secondControl = Point(615.0344199646079, 298.5320748564445),
+            end = Point(551.779651601908, 246.22334843757017),
+        )
+
+        val splitCurve1 = BezierCurve(
+            start = Point(551.779651601908, 246.22334843757017),
+            firstControl = Point(469.56664612041277, 178.2382728472403),
+            secondControl = Point(369.2163240151058, 221.2681598941017),
+            end = Point(321.3376393038343, 341.3936380645191),
+        )
+
+        val (curve0, curve1) = originalCurve.splitAt(
+            coord = OpenCurve.Coord(t = 0.43483),
+        )
+
+        val tolerance = NumericObject.Tolerance.Absolute(
+            absoluteTolerance = 1e-2,
+        )
+
+        assertEqualsWithTolerance(
+            expected = splitCurve0,
+            actual = curve0, tolerance,
+        )
+
+        assertEqualsWithTolerance(
+            expected = splitCurve1,
+            actual = curve1, tolerance,
         )
     }
 }
