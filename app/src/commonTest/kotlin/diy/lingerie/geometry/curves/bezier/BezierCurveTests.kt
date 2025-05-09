@@ -99,7 +99,6 @@ class BezierCurveTests {
     }
 
     @Test
-    @Ignore
     fun testFindBoundingBox() {
         val bezierCurve = BezierCurve(
             start = Point(273.80049324035645, 489.08709716796875),
@@ -108,18 +107,14 @@ class BezierCurveTests {
             end = Point(671.4185047149658, 490.2051086425781),
         )
 
-        // FIXME: Filter out t-values
         val boundingBox = bezierCurve.findBoundingBox()
 
         assertEqualsWithTolerance(
             actual = boundingBox,
             expected = BoundingBox(
-                topLeft = Point(
-                    273.80049324035645,
-                    197.3452272415161,
-                ),
-                width = 397.617011,
-                height = 291.741872,
+                topLeft = Point(273.80049324035645, 312.1176405539444),
+                width = 397.6180114746094,
+                height = 178.08746808863373,
             ),
         )
     }

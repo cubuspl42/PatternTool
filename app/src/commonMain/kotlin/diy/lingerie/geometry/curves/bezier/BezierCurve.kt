@@ -154,12 +154,18 @@ data class BezierCurve(
 
         val criticalPointSet = basisFunction.findCriticalPoints()
 
-        val criticalXValues = criticalPointSet.xRoots.map { t -> basisFunction.apply(t).x }
+        val criticalXValues = criticalPointSet.xRoots.mapNotNull { t ->
+            Coord.of(t = t)?.let { evaluate(it).x }
+        }
+
         val potentialXExtrema = criticalXValues + startPoint.x + endPoint.x
         val xMin = potentialXExtrema.min()
         val xMax = potentialXExtrema.max()
 
-        val criticalYValues = criticalPointSet.yRoots.map { t -> basisFunction.apply(t).y }
+        val criticalYValues = criticalPointSet.yRoots.mapNotNull { t ->
+            Coord.of(t = t)?.let { evaluate(it).y }
+        }
+
         val potentialYExtrema = criticalYValues + startPoint.y + endPoint.y
         val yMin = potentialYExtrema.min()
         val yMax = potentialYExtrema.max()
