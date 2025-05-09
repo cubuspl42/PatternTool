@@ -7,13 +7,12 @@ import diy.lingerie.geometry.curves.bezier.BezierCurve
 import diy.lingerie.geometry.svg.toSvgPath
 import diy.lingerie.math.algebra.sample
 import diy.lingerie.simple_dom.SimpleColor
-import diy.lingerie.simple_dom.mm
+import diy.lingerie.simple_dom.px
 import diy.lingerie.simple_dom.svg.SvgCircle
 import diy.lingerie.simple_dom.svg.SvgElement
 import diy.lingerie.simple_dom.svg.SvgGroup
 import diy.lingerie.simple_dom.svg.SvgLine
 import diy.lingerie.simple_dom.svg.SvgPath
-import diy.lingerie.simple_dom.svg.SvgRectangle
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.simple_dom.svg.SvgShape
 import diy.lingerie.utils.iterable.LinSpace
@@ -143,43 +142,27 @@ data class Playground(
         )
     }
 
-    data class BoundingBoxItem(
-        val boundingBox: BoundingBox,
-    ) : Item() {
-        override fun toSvgElement(): SvgElement = SvgRectangle(
-            position = boundingBox.topLeft,
-            size = boundingBox.size,
-            stroke = SvgShape.Stroke(
-                color = SimpleColor.red,
-                width = 0.5,
-            ),
-            fill = null,
-        )
-
-        override fun findBoundingBox(): BoundingBox = boundingBox
-    }
-
     fun toSvgRoot(): SvgRoot {
-        val boundingBox = BoundingBox.unionAll(
-            items.map { it.findBoundingBox() },
-        ).expand(
-            bleed = 128.0,
+        val viewBox = SvgRoot.ViewBox(
+            x = 0.0,
+            y = 0.0,
+            width = 1024.0,
+            height = 768.0,
         )
 
-        val viewBox = SvgRoot.ViewBox(
-            x = boundingBox.xMin,
-            y = boundingBox.yMin,
-            width = boundingBox.width,
-            height = boundingBox.height,
-        )
+        val elements = items.map { it.toSvgElement() }
 
         return SvgRoot(
             viewBox = viewBox,
-            width = boundingBox.width.mm,
-            height = boundingBox.height.mm,
-            children = items.map { it.toSvgElement() },
+            width = viewBox.width.px,
+            height = viewBox.height.px,
+            children = elements,
         )
     }
+
+    private fun findTrueBoundingBox(): BoundingBox = BoundingBox.unionAll(
+        items.map { it.findBoundingBox() },
+    )
 
     fun writeToFile(
         filePath: Path,

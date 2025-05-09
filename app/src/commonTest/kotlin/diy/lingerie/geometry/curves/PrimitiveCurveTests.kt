@@ -8,6 +8,7 @@ import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 private data class ExpectedIntersection(
     val point: Point,
@@ -455,6 +456,8 @@ class PrimitiveCurveTests {
         val firstIntersectionCoord = OpenCurve.Coord(t = 0.538009)
         val secondIntersectionCoord = OpenCurve.Coord(t = 0.378574)
 
+        // It's not clear why this test cases succeeds and the next one (similar) fails
+
         val singleIntersection1 = assertNotNull(
             firstCurve.findIntersections(
                 objectCurve = secondCurve,
@@ -491,7 +494,6 @@ class PrimitiveCurveTests {
     }
 
     @Test
-    @Ignore
     fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_splitLoop() {
         // A loop split at its top
 
@@ -514,8 +516,19 @@ class PrimitiveCurveTests {
         val secondIntersectionCoord = OpenCurve.Coord(t = 0.0) // TBD
 
         // There are two problems:
-        // The found point doesn't seem to be close to the actual (self-)intersection
-        // The found point couldn't be located, because of the apparent 0/0 division?
+        // 1. The found point doesn't seem to be close to the actual (self-)intersection, for numeric reasons (?)
+        // 2. In consequence, it's located outside the [0, 1] range on one of the curves
+
+        // FIXME: This is incorrect behavior (no intersection is found)
+        assertNull(
+            firstCurve.findIntersections(
+                objectCurve = secondCurve,
+            ).singleOrNull(),
+        )
+
+        // TODO: Restore the correct behavior (the (self-)intersection is found)
+        /*
+
         val singleIntersection1 = assertNotNull(
             firstCurve.findIntersections(
                 objectCurve = secondCurve,
@@ -549,7 +562,7 @@ class PrimitiveCurveTests {
             },
             actual = singleIntersection2,
         )
+
+        */
     }
-
 }
-

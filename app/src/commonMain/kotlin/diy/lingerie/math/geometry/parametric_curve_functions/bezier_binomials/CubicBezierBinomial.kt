@@ -13,7 +13,6 @@ import diy.lingerie.math.algebra.linear.vectors.Vector4
 import diy.lingerie.math.algebra.linear.vectors.times
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.Polynomial
-import diy.lingerie.math.algebra.polynomials.QuadraticPolynomial
 import diy.lingerie.math.geometry.LowParametricPolynomial
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.RationalImplicitPolynomial
@@ -208,6 +207,12 @@ data class CubicBezierBinomial(
         val c3 = 3.0 * u * t * t * point2
         val c4 = t * t * t * point3
         return c1 + c2 + c3 + c4
+    }
+
+    fun applyFast(t: Double): Vector2 {
+        val quadraticBezierBinomial = evaluatePartially(t = t)
+        val lineFunction = quadraticBezierBinomial.evaluatePartially(t = t)
+        return lineFunction.apply(t)
     }
 
     override fun locatePoint(
