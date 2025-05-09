@@ -6,12 +6,19 @@ import diy.lingerie.math.algebra.linear.vectors.times
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.SubCubicParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
+import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
 
 class QuadraticBezierBinomial(
     val point0: Vector2,
     val point1: Vector2,
     val point2: Vector2,
 ) : BezierBinomial() {
+    private val delta0: Vector2
+        get() = point1 - point0
+
+    private val delta1: Vector2
+        get() = point2 - point1
+
     override fun toParametricPolynomial(): SubCubicParametricPolynomial = ParametricPolynomial.quadratic(
         a = point0 - 2.0 * point1 + point2,
         b = 2.0 * (point1 - point0),
@@ -54,5 +61,15 @@ class QuadraticBezierBinomial(
             |  point2 = ${point2.toReprString()},
             |)
         """.trimMargin()
+    }
+
+    fun evaluatePartially(t: Double): ParametricLineFunction {
+        val subPoint0 = point0 + delta0 * t
+        val subPoint1 = point1 + delta1 * t
+
+        return ParametricLineFunction.of(
+            point0 = subPoint0,
+            point1 = subPoint1,
+        )
     }
 }

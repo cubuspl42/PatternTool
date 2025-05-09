@@ -10,7 +10,6 @@ import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
-import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 
 data class BezierCurve(
@@ -63,7 +62,7 @@ data class BezierCurve(
         }
     }
 
-    override val basisFunction: ParametricCurveFunction = CubicBezierBinomial(
+    override val basisFunction = CubicBezierBinomial(
         point0 = start.pointVector,
         point1 = firstControl.pointVector,
         point2 = secondControl.pointVector,
@@ -91,7 +90,35 @@ data class BezierCurve(
     override fun splitAt(
         coord: Coord,
     ): Pair<BezierCurve, BezierCurve> {
-        TODO("Not yet implemented")
+        val quadraticBezierBinomial = basisFunction.evaluatePartially(t = coord.t)
+        val lineFunction = quadraticBezierBinomial.evaluatePartially(t = coord.t)
+
+        val midPoint = Point(
+            pointVector = lineFunction.apply(coord.t),
+        )
+
+        return Pair(
+            BezierCurve(
+                start = start,
+                firstControl = Point(
+                    pointVector = quadraticBezierBinomial.point0,
+                ),
+                secondControl = Point(
+                    pointVector = lineFunction.point0,
+                ),
+                end = midPoint,
+            ),
+            BezierCurve(
+                start = midPoint,
+                firstControl = Point(
+                    pointVector = lineFunction.point1,
+                ),
+                secondControl = Point(
+                    pointVector = quadraticBezierBinomial.point2,
+                ),
+                end = end,
+            ),
+        )
     }
 
     override fun evaluate(

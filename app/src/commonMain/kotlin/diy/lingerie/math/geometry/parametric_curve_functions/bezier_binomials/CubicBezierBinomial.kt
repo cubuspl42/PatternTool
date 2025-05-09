@@ -13,6 +13,7 @@ import diy.lingerie.math.algebra.linear.vectors.Vector4
 import diy.lingerie.math.algebra.linear.vectors.times
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.Polynomial
+import diy.lingerie.math.algebra.polynomials.QuadraticPolynomial
 import diy.lingerie.math.geometry.LowParametricPolynomial
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.RationalImplicitPolynomial
@@ -77,6 +78,15 @@ data class CubicBezierBinomial(
             )
         }
     }
+
+    private val delta0: Vector2
+        get() = point1 - point0
+
+    private val delta1: Vector2
+        get() = point2 - point1
+
+    private val delta2: Vector2
+        get() = point3 - point2
 
     private val x0: Double
         get() = point0.x
@@ -167,6 +177,18 @@ data class CubicBezierBinomial(
             4.0 * a.dot(c) + 2.0 * b.dot(b),
             5.0 * a.dot(b),
             3.0 * a.dot(a),
+        )
+    }
+
+    fun evaluatePartially(t: Double): QuadraticBezierBinomial {
+        val subPoint0 = point0 + delta0 * t
+        val subPoint1 = point1 + delta1 * t
+        val subPoint2 = point2 + delta2 * t
+
+        return QuadraticBezierBinomial(
+            point0 = subPoint0,
+            point1 = subPoint1,
+            point2 = subPoint2,
         )
     }
 

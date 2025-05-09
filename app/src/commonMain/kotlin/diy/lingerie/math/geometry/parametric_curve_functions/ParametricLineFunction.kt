@@ -19,6 +19,20 @@ data class ParametricLineFunction(
     val d: Vector2,
     val s: Vector2,
 ) : ParametricCurveFunction() {
+    companion object {
+        fun of(
+            point0: Vector2,
+            point1: Vector2,
+        ): ParametricLineFunction {
+            val d = point1 - point0
+
+            return ParametricLineFunction(
+                d = d,
+                s = point0,
+            )
+        }
+    }
+
     override fun apply(a: Double): Vector2 {
         val t = a
         return s + d * t
@@ -89,4 +103,10 @@ data class ParametricLineFunction(
             |)
         """.trimMargin()
     }
+
+    val point0: Vector2
+        get() = s
+
+    val point1: Vector2
+        get() = s + d
 }
