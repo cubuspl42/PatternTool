@@ -5,7 +5,6 @@ import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.types.path
-import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.bezier.BezierCurve
@@ -20,26 +19,32 @@ class MainCommand : CliktCommand() {
     ).help("Path to the output file")
 
     override fun run() {
-        val bezierCurve = BezierCurve(
-            start = Point(273.80049324035645, 489.08709716796875),
-            firstControl = Point(1068.5394763946533, 253.16610717773438),
-            secondControl = Point(-125.00849723815918, 252.71710205078125),
-            end = Point(671.4185047149658, 490.2051086425781),
+        val firstCurve = BezierCurve(
+            start = Point(383.0995044708252, 275.80810546875),
+            firstControl = Point(435.23948860168457, 325.49310302734375),
+            secondControl = Point(510.3655261993408, 384.4371032714844),
+            end = Point(614.6575183868408, 453.4740905761719),
         )
 
-        val boundingBox = BoundingBox(
-            topLeft = Point(273.80049324035645, 312.1176405539444),
-            width = 397.6180114746094,
-            height = 178.08746808863373,
+        val secondCurve = BezierCurve(
+            start = Point(372.14351081848145, 439.6011047363281),
+            firstControl = Point(496.5914783477783, 370.8171081542969),
+            secondControl = Point(559.4554920196533, 307.91810607910156),
+            end = Point(582.3854846954346, 253.8291015625),
         )
+
+        val intersectionPoint = Point(488.177482, 364.171107)
 
         val playground = Playground(
             items = listOf(
                 Playground.BezierCurveItem(
-                    bezierCurve = bezierCurve,
+                    bezierCurve = firstCurve,
                 ),
-                Playground.BoundingBoxItem(
-                    boundingBox = boundingBox,
+                Playground.BezierCurveItem(
+                    bezierCurve = secondCurve,
+                ),
+                Playground.PointItem(
+                    point = intersectionPoint,
                 ),
             ),
         )
