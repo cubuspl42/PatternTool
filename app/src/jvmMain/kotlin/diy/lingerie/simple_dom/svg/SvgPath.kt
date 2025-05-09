@@ -10,6 +10,7 @@ import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.toList
 import diy.lingerie.simple_dom.toSimpleColor
 import diy.lingerie.utils.iterable.mapCarrying
+import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.xml.svg.asList
 import diy.lingerie.utils.xml.svg.getComputedStyle
 import diy.lingerie.utils.xml.svg.stroke
@@ -163,6 +164,28 @@ data class SvgPath(
         ): Segment
 
         protected fun Point.toSvgString(): String = "${x},${y}"
+    }
+
+    companion object {
+        fun polyline(
+            stroke: Stroke,
+            points: List<Point>,
+        ): SvgPath? {
+            val (firstPoint, trailingPoints) = points.uncons() ?: return null
+
+            return SvgPath(
+                stroke = stroke,
+                segments = listOf(
+                    Segment.MoveTo(
+                        targetPoint = firstPoint,
+                    ),
+                ) + trailingPoints.map { point ->
+                    Segment.LineTo(
+                        finalPoint = point,
+                    )
+                },
+            )
+        }
     }
 
     override val fill: Fill? = null
