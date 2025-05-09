@@ -69,6 +69,12 @@ data class BoundingBox(
         }
     }
 
+    val size: Size
+        get() = Size(
+            width = width,
+            height = height,
+        )
+
     val center: Point
         get() = Point(
             x = xMin + width / 2,
@@ -106,7 +112,7 @@ data class BoundingBox(
         val yMin = minOf(yMin, other.yMin)
         val yMax = maxOf(yMax, other.yMax)
 
-        return BoundingBox.of(
+        return of(
             xMin = xMin,
             xMax = xMax,
             yMin = yMin,
@@ -116,7 +122,7 @@ data class BoundingBox(
 
     fun transformVia(
         transformation: Transformation,
-    ): BoundingBox = BoundingBox.of(
+    ): BoundingBox = of(
         pointA = transformation.transform(topLeft),
         pointB = transformation.transform(bottomRight),
     )
@@ -131,7 +137,7 @@ data class BoundingBox(
 
     fun expand(
         bleed: Double,
-    ): BoundingBox = BoundingBox.of(
+    ): BoundingBox = of(
         xMin = xMin - bleed,
         xMax = xMax + bleed,
         yMin = yMin - bleed,

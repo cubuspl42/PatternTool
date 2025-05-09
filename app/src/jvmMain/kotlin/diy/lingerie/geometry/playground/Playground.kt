@@ -13,6 +13,7 @@ import diy.lingerie.simple_dom.svg.SvgElement
 import diy.lingerie.simple_dom.svg.SvgGroup
 import diy.lingerie.simple_dom.svg.SvgLine
 import diy.lingerie.simple_dom.svg.SvgPath
+import diy.lingerie.simple_dom.svg.SvgRectangle
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.simple_dom.svg.SvgShape
 import diy.lingerie.utils.iterable.LinSpace
@@ -140,6 +141,22 @@ data class Playground(
             pointA = point,
             pointB = point,
         )
+    }
+
+    data class BoundingBoxItem(
+        val boundingBox: BoundingBox,
+    ) : Item() {
+        override fun toSvgElement(): SvgElement = SvgRectangle(
+            position = boundingBox.topLeft,
+            size = boundingBox.size,
+            stroke = SvgShape.Stroke(
+                color = SimpleColor.red,
+                width = 0.5,
+            ),
+            fill = null,
+        )
+
+        override fun findBoundingBox(): BoundingBox = boundingBox
     }
 
     fun toSvgRoot(): SvgRoot {
