@@ -13,6 +13,7 @@ import diy.lingerie.math.algebra.linear.vectors.Vector4
 import diy.lingerie.math.algebra.linear.vectors.times
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.Polynomial
+import diy.lingerie.math.geometry.LowParametricPolynomial
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.RationalImplicitPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCubicCurveFunction
@@ -169,7 +170,7 @@ data class CubicBezierBinomial(
         )
     }
 
-    override fun toParametricPolynomial() = ParametricPolynomial.cubic(
+    override fun toParametricPolynomial(): LowParametricPolynomial = ParametricPolynomial.cubic(
         a3 = -point0 + 3.0 * point1 - 3.0 * point2 + point3,
         a2 = 3.0 * point0 - 6.0 * point1 + 3.0 * point2,
         a1 = -3.0 * point0 + 3.0 * point1,

@@ -82,7 +82,7 @@ abstract class PrimitiveCurve : OpenCurve() {
         }
     }
 
-    private val basisFunctionDerivative: ParametricPolynomial by lazy {
+    private val basisFunctionDerivative: ParametricPolynomial<*> by lazy {
         basisFunction.findDerivative()
     }
 

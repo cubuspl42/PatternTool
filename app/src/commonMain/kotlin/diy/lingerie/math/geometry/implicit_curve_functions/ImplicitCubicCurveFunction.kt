@@ -110,7 +110,7 @@ data class ImplicitCubicCurveFunction(
     ): ImplicitCubicCurveFunction = this + (-other)
 
     override fun substitute(
-        parametricPolynomial: ParametricPolynomial,
+        parametricPolynomial: ParametricPolynomial<*>,
     ): Polynomial {
         val x = parametricPolynomial.xFunction
         val y = parametricPolynomial.yFunction

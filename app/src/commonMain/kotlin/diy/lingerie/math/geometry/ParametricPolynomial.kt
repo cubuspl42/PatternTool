@@ -6,11 +6,15 @@ import diy.lingerie.geometry.y
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.polynomials.ConstantPolynomial
+import diy.lingerie.math.algebra.polynomials.LowPolynomial
 import diy.lingerie.math.algebra.polynomials.Polynomial
+import diy.lingerie.math.algebra.polynomials.SubCubicPolynomial
+import diy.lingerie.math.algebra.polynomials.SubQuadraticPolynomial
 
-data class ParametricPolynomial(
-    val xFunction: Polynomial,
-    val yFunction: Polynomial,
+data class ParametricPolynomial<P: Polynomial>(
+    val xFunction: P,
+    val yFunction: P,
 ) : RealFunction<Vector2>, NumericObject {
     data class RootSet(
         val xRoots: Set<Double>,
@@ -33,7 +37,7 @@ data class ParametricPolynomial(
             a2: Vector2,
             a1: Vector2,
             a0: Vector2,
-        ): ParametricPolynomial = ParametricPolynomial(
+        ): ParametricPolynomial<LowPolynomial> = ParametricPolynomial(
             xFunction = Polynomial.cubic(
                 a3 = a3.x,
                 a2 = a2.x,
@@ -52,7 +56,7 @@ data class ParametricPolynomial(
             a: Vector2,
             b: Vector2,
             c: Vector2,
-        ): ParametricPolynomial = ParametricPolynomial(
+        ): ParametricPolynomial<SubCubicPolynomial> = ParametricPolynomial(
             xFunction = Polynomial.quadratic(
                 a2 = a.x,
                 a1 = b.x,
@@ -68,7 +72,7 @@ data class ParametricPolynomial(
         fun linear(
             a1: Vector2,
             a0: Vector2,
-        ): ParametricPolynomial = ParametricPolynomial(
+        ): ParametricPolynomial<SubQuadraticPolynomial> = ParametricPolynomial(
             xFunction = Polynomial.linear(
                 a1 = a1.x,
                 a0 = a0.x,
@@ -81,7 +85,7 @@ data class ParametricPolynomial(
 
         fun constant(
             a: Vector2,
-        ): ParametricPolynomial = ParametricPolynomial(
+        ): ParametricPolynomial<ConstantPolynomial> = ParametricPolynomial(
             xFunction = Polynomial.constant(
                 a0 = a.x,
             ),
@@ -105,14 +109,18 @@ data class ParametricPolynomial(
         other: NumericObject,
         tolerance: NumericObject.Tolerance,
     ): Boolean = when {
-        other !is ParametricPolynomial -> false
+        other !is ParametricPolynomial<*> -> false
         xFunction != other.xFunction -> false
         yFunction != other.yFunction -> false
         else -> true
     }
 
-    fun findDerivative(): ParametricPolynomial = ParametricPolynomial(
+    fun findDerivative(): ParametricPolynomial<*> = ParametricPolynomial(
         xFunction = xFunction.derivative,
         yFunction = yFunction.derivative,
     )
 }
+
+typealias LowParametricPolynomial = ParametricPolynomial<LowPolynomial>
+
+typealias SubCubicParametricPolynomial = ParametricPolynomial<SubCubicPolynomial>
