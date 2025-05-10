@@ -8,7 +8,7 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.Ray
-import diy.lingerie.geometry.curves.bezier.BezierCurve
+import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.RealFunction

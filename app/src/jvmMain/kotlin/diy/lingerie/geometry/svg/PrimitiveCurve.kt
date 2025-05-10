@@ -2,8 +2,8 @@ package diy.lingerie.geometry.svg
 
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.curves.PrimitiveCurve
-import diy.lingerie.geometry.curves.bezier.BezierCurve
-import diy.lingerie.geometry.curves.bezier.BezierCurve.Edge
+import diy.lingerie.geometry.curves.BezierCurve
+import diy.lingerie.geometry.curves.BezierCurve.Edge
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgPath.Segment

@@ -2,7 +2,7 @@ package diy.lingerie.geometry
 
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
-import diy.lingerie.geometry.curves.bezier.BezierCurve
+import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject

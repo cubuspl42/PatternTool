@@ -1,15 +1,12 @@
-package diy.lingerie.geometry.curves.bezier
+package diy.lingerie.geometry.curves
 
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.SpatialObject
-import diy.lingerie.geometry.curves.OpenCurve
-import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.NumericObject.Tolerance
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 
 data class BezierCurve(
@@ -44,7 +41,7 @@ data class BezierCurve(
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: Tolerance,
+            tolerance: NumericObject.Tolerance,
         ): Boolean = when {
             other !is Edge -> false
             !firstControl.equalsWithTolerance(other.firstControl, tolerance) -> false
@@ -88,7 +85,7 @@ data class BezierCurve(
             subjectBezierCurve: BezierCurve,
             objectBezierCurve: BezierCurve,
             tolerance: NumericObject.Tolerance,
-        ): Set<Intersection> = PrimitiveCurve.findIntersectionsByEquationSolving(
+        ): Set<Intersection> = findIntersectionsByEquationSolving(
             simpleSubjectCurve = subjectBezierCurve,
             complexObjectCurve = objectBezierCurve,
             tolerance = tolerance,
@@ -115,7 +112,7 @@ data class BezierCurve(
 
             if (isFirstBoundingBoxSmallEnough && isSecondBoundingBoxSmallEnough) {
                 return setOf(
-                    Point.midPoint(
+                    Point.Companion.midPoint(
                         firstBoundingBox.center,
                         secondBoundingBox.center,
                     ),
@@ -150,7 +147,7 @@ data class BezierCurve(
         fun findIntersections(
             subjectLineSegment: LineSegment,
             objectBezierCurve: BezierCurve,
-        ): Set<Intersection> = LineSegment.findIntersections(
+        ): Set<Intersection> = LineSegment.Companion.findIntersections(
             subjectLineSegment = subjectLineSegment,
             objectPrimitiveCurve = objectBezierCurve,
         )
@@ -223,7 +220,7 @@ data class BezierCurve(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: Tolerance,
+        tolerance: NumericObject.Tolerance,
     ): Boolean = when {
         other !is BezierCurve -> false
         !start.equalsWithTolerance(other.start, tolerance = tolerance) -> false
@@ -264,7 +261,7 @@ data class BezierCurve(
         val yMin = potentialYExtrema.min()
         val yMax = potentialYExtrema.max()
 
-        return BoundingBox.of(
+        return BoundingBox.Companion.of(
             xMin = xMin,
             xMax = xMax,
             yMin = yMin,

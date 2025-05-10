@@ -7,7 +7,7 @@ import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
-import diy.lingerie.geometry.curves.bezier.BezierCurve
+import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.splines.ClosedSpline
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline

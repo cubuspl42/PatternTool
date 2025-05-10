@@ -7,7 +7,7 @@ import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.types.path
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
-import diy.lingerie.geometry.curves.bezier.BezierCurve
+import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.playground.Playground
 import java.nio.file.Path
 
