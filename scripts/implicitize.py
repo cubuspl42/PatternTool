@@ -1,4 +1,5 @@
-from sympy import symbols, binomial, Matrix, expand, solve
+from sympy import symbols, binomial, Matrix, expand, solve, Expr
+from typing import Tuple, List
 
 # N = 3 for cubic Bézier curves
 n = 3
@@ -20,29 +21,28 @@ a_a3_x, a_a3_y, a_a2_x, a_a2_y, a_a1_x, a_a1_y, a_a0_x, a_a0_y = symbols(
 b_a3_x, b_a3_y, b_a2_x, b_a2_y, b_a1_x, b_a1_y, b_a0_x, b_a0_y = symbols(
     'b_a3_x b_a3_y b_a2_x b_a2_y b_a1_x b_a1_y b_a0_x b_a0_y', real=True)
 
-class BezierCurve:
-    def __init__(self, p0, p1, p2, p3):
-        self.p0 = p0
-        self.p1 = p1
-        self.p2 = p2
-        self.p3 = p3
 
-        self.p = [
+class BezierCurve:
+    def __init__(
+            self,
+            p0: Tuple[float, float],
+            p1: Tuple[float, float],
+            p2: Tuple[float, float],
+            p3: Tuple[float, float],
+    ) -> None:
+        self.p0: Tuple[float, float] = p0
+        self.p1: Tuple[float, float] = p1
+        self.p2: Tuple[float, float] = p2
+        self.p3: Tuple[float, float] = p3
+
+        self.p: List[Tuple[float, float]] = [
             p0,
             p1,
             p2,
             p3,
         ]
 
-    def __call__(self, t):
-        return (
-                (1 - t) ** 3 * self.p0 +
-                3 * (1 - t) ** 2 * t * self.p1 +
-                3 * (1 - t) * t ** 2 * self.p2 +
-                t ** 3 * self.p3
-        )
-
-    def to_polynomial(self):
+    def to_polynomial(self) -> Tuple[Expr, Expr]:
         p0 = Matrix(self.p0)
         p1 = Matrix(self.p1)
         p2 = Matrix(self.p2)
@@ -55,7 +55,7 @@ class BezierCurve:
                 t_sym ** 3 * p3
         )
 
-    def l_ij(self, i, j):
+    def l_ij(self, i: int, j: int) -> Expr:
         """
         l_ij(x,y) = C(n,i)C(n,j) w_i w_j * det( [ [ x, y, 1 ],
                                                    [ x_i, y_i, 1 ],
@@ -74,30 +74,30 @@ class BezierCurve:
         ]).det()
 
     @property
-    def l32(self):
+    def l32(self) -> Expr:
         return self.l_ij(3, 2)
 
     @property
-    def l31(self):
+    def l31(self) -> Expr:
         return self.l_ij(3, 1)
 
     @property
-    def l30(self):
+    def l30(self) -> Expr:
         return self.l_ij(3, 0)
 
     @property
-    def l21(self):
+    def l21(self) -> Expr:
         return self.l_ij(2, 1)
 
     @property
-    def l20(self):
+    def l20(self) -> Expr:
         return self.l_ij(2, 0)
 
     @property
-    def l10(self):
+    def l10(self) -> Expr:
         return self.l_ij(1, 0)
 
-    def implicitize(self):
+    def implicitize(self) -> Expr:
         a_impl_mat = Matrix([
             [self.l32, self.l31, self.l30],
             [self.l31, self.l30 + self.l21, self.l20],
@@ -107,7 +107,7 @@ class BezierCurve:
         # Get the determinant, which is your implicit polynomial f(x,y)
         return a_impl_mat.det()
 
-    def invert(self):
+    def invert(self) -> Expr:
         c1_n_mat = Matrix([
             [a_p0_x, a_p0_y, 1.0],
             [a_p1_x, a_p1_y, 1.0],
@@ -134,7 +134,7 @@ class BezierCurve:
 
         return lb / (lb - la)
 
-    def intersect(self, other):
+    def intersect(self, other: "BezierCurve") -> Expr:
         implicit = self.implicitize()
 
         print("implicit:")
@@ -152,6 +152,7 @@ class BezierCurve:
         })
 
         return expand(intersection_polynomial)
+
 
 bezier_nine_a = BezierCurve(
     p0=(273.80049324035645, 489.08709716796875),
