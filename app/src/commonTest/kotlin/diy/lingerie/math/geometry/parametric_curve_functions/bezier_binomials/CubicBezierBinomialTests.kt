@@ -1,7 +1,7 @@
 package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.bezier.BezierCurve
+import diy.lingerie.geometry.curves.BezierCurve
 import kotlin.test.Test
 
 class CubicBezierBinomialTests {

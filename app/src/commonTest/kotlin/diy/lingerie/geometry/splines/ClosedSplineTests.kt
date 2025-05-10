@@ -1,7 +1,7 @@
 package diy.lingerie.geometry.splines
 
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.bezier.BezierCurve
+import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Test
 

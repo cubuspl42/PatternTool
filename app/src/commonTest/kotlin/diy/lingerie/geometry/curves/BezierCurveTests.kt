@@ -1,12 +1,9 @@
-package diy.lingerie.geometry.curves.bezier
+package diy.lingerie.geometry.curves
 
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.ExpectedIntersection
-import diy.lingerie.geometry.curves.OpenCurve
-import diy.lingerie.geometry.curves.assertIntersectionsEqual
-import diy.lingerie.geometry.curves.testIntersectionsSymmetric
+import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Test
@@ -138,7 +135,7 @@ class BezierCurveTests {
 
         assertIntersectionsEqual(
             expectedIntersections = emptyList(),
-            actualIntersections = BezierCurve.findIntersections(
+            actualIntersections = BezierCurve.Companion.findIntersections(
                 subjectLineSegment = lineSegment,
                 objectBezierCurve = bezierCurve,
             ),
@@ -166,7 +163,7 @@ class BezierCurveTests {
                     firstCoord = OpenCurve.Coord(t = 0.565791), secondCoord = OpenCurve.Coord(t = 0.814485),
                 ),
             ),
-            actualIntersections = BezierCurve.findIntersections(
+            actualIntersections = BezierCurve.Companion.findIntersections(
                 subjectLineSegment = lineSegment,
                 objectBezierCurve = bezierCurve,
             ),
@@ -202,7 +199,7 @@ class BezierCurveTests {
                     firstCoord = OpenCurve.Coord(t = 0.771593), secondCoord = OpenCurve.Coord(t = 0.881570),
                 ),
             ),
-            actualIntersections = BezierCurve.findIntersections(
+            actualIntersections = BezierCurve.Companion.findIntersections(
                 subjectLineSegment = firstCurve,
                 objectBezierCurve = secondCurve,
             ),
@@ -229,7 +226,7 @@ class BezierCurveTests {
             firstCurve = firstCurve,
             secondCurve = secondCurve,
             findIntersections = { firstBezierCurve, secondBezierCurve ->
-                BezierCurve.findIntersections(
+                BezierCurve.Companion.findIntersections(
                     subjectBezierCurve = firstBezierCurve,
                     objectBezierCurve = secondBezierCurve,
                 )
@@ -309,7 +306,7 @@ class BezierCurveTests {
             firstCurve = firstBezierCurve,
             secondCurve = secondBezierCurve,
             findIntersections = { firstBezierCurve, secondBezierCurve ->
-                BezierCurve.findIntersections(
+                BezierCurve.Companion.findIntersections(
                     subjectBezierCurve = firstBezierCurve,
                     objectBezierCurve = secondBezierCurve,
                 )
@@ -350,7 +347,7 @@ class BezierCurveTests {
             firstCurve = firstBezierCurve,
             secondCurve = secondBezierCurve,
             findIntersections = { firstBezierCurve, secondBezierCurve ->
-                BezierCurve.findIntersections(
+                BezierCurve.Companion.findIntersections(
                     subjectBezierCurve = firstBezierCurve,
                     objectBezierCurve = secondBezierCurve,
                 )

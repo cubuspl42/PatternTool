@@ -3,7 +3,7 @@ package diy.lingerie.geometry.playground
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
-import diy.lingerie.geometry.curves.bezier.BezierCurve
+import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.svg.toSvgPath
 import diy.lingerie.math.algebra.sample
 import diy.lingerie.simple_dom.SimpleColor
