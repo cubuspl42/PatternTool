@@ -26,7 +26,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
      *
      * @return A set of intersection parameter values t for this curve.
      */
-    fun solveIntersections(
+    fun solveIntersectionEquation(
         other: ParametricCurveFunction,
     ): List<Double> {
         val otherImplicit = other.implicitize()

@@ -624,7 +624,10 @@ data class Outline(
     private fun findIntersectionCoords(
         lineSegment: LineSegment,
     ): List<Coord> = edgeCurves.withIndex().mapNotNull { (edgeIndex, edgeCurve) ->
-        val intersections = edgeCurve.findIntersections(objectCurve = lineSegment)
+        val intersections = OpenCurve.findIntersections(
+            subjectOpenCurve = lineSegment,
+            objectOpenCurve = edgeCurve,
+        )
 
         if (intersections.isEmpty()) return@mapNotNull null
 

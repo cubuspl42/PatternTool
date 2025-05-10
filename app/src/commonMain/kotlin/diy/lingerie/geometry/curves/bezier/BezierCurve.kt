@@ -1,15 +1,15 @@
 package diy.lingerie.geometry.curves.bezier
 
 import diy.lingerie.geometry.BoundingBox
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.NumericObject.Tolerance
+import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.geometry.x
-import diy.lingerie.geometry.y
+import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.NumericObject.Tolerance
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 
 data class BezierCurve(
@@ -60,6 +60,100 @@ data class BezierCurve(
                 |)
             """.trimMargin()
         }
+    }
+
+    companion object {
+        /**
+         * Finds intersections between two Bézier curves using the default
+         * strategy
+         */
+        fun findIntersections(
+            subjectBezierCurve: BezierCurve,
+            objectBezierCurve: BezierCurve,
+        ): Set<Intersection> {
+            // For two Bézier curves, let's use the intersection equation solving
+            // strategy
+            return BezierCurve.findIntersectionsByEquationSolving(
+                subjectBezierCurve = subjectBezierCurve,
+                objectBezierCurve = objectBezierCurve,
+                tolerance = NumericObject.Tolerance.Default,
+            )
+        }
+
+        /**
+         * Finds intersections between two Bézier curves by solving their
+         * intersection equation
+         */
+        fun findIntersectionsByEquationSolving(
+            subjectBezierCurve: BezierCurve,
+            objectBezierCurve: BezierCurve,
+            tolerance: NumericObject.Tolerance,
+        ): Set<Intersection> = PrimitiveCurve.findIntersectionsByEquationSolving(
+            simpleSubjectCurve = subjectBezierCurve,
+            complexObjectCurve = objectBezierCurve,
+            tolerance = tolerance,
+        )
+
+        /**
+         * Finds intersections between two Bézier curves by subdividing them
+         * recursively and checking for overlaps
+         */
+        fun findIntersectionsBySubdivision(
+            firstCurve: BezierCurve,
+            secondCurve: BezierCurve,
+            tolerance: SpatialObject.SpatialTolerance,
+        ): Set<Point> {
+            val firstBoundingBox = firstCurve.findBoundingBox()
+            val secondBoundingBox = secondCurve.findBoundingBox()
+
+            if (!firstBoundingBox.overlaps(secondBoundingBox)) {
+                return emptySet()
+            }
+
+            val isFirstBoundingBoxSmallEnough = firstBoundingBox.area < tolerance.spanTolerance.valueSquared
+            val isSecondBoundingBoxSmallEnough = secondBoundingBox.area < tolerance.spanTolerance.valueSquared
+
+            if (isFirstBoundingBoxSmallEnough && isSecondBoundingBoxSmallEnough) {
+                return setOf(
+                    Point.midPoint(
+                        firstBoundingBox.center,
+                        secondBoundingBox.center,
+                    ),
+                )
+            }
+
+            val (firstCurveLeft, firstCurveRight) = firstCurve.splitAt(coord = Coord.half)
+            val (secondCurveLeft, secondCurveRight) = secondCurve.splitAt(coord = Coord.half)
+
+            return findIntersectionsBySubdivision(
+                firstCurve = firstCurveLeft,
+                secondCurve = secondCurveLeft,
+                tolerance = tolerance,
+            ) + findIntersectionsBySubdivision(
+                firstCurve = firstCurveLeft,
+                secondCurve = secondCurveRight,
+                tolerance = tolerance,
+            ) + findIntersectionsBySubdivision(
+                firstCurve = firstCurveRight,
+                secondCurve = secondCurveLeft,
+                tolerance = tolerance,
+            ) + findIntersectionsBySubdivision(
+                firstCurve = firstCurveRight,
+                secondCurve = secondCurveRight,
+                tolerance = tolerance,
+            )
+        }
+
+        /**
+         * Finds intersections between a Bézier curve and a line segment
+         */
+        fun findIntersections(
+            subjectLineSegment: LineSegment,
+            objectBezierCurve: BezierCurve,
+        ): Set<Intersection> = LineSegment.findIntersections(
+            subjectLineSegment = subjectLineSegment,
+            objectPrimitiveCurve = objectBezierCurve,
+        )
     }
 
     override val basisFunction = CubicBezierBinomial(
@@ -186,10 +280,9 @@ data class BezierCurve(
 
     override fun findIntersectionsBezierCurve(
         subjectBezierCurve: BezierCurve,
-    ): Set<Intersection> = PrimitiveCurve.findIntersectionsPrimitiveWithPrimitive(
-        simpleSubjectCurve = subjectBezierCurve,
-        complexObjectCurve = this,
-        tolerance = Tolerance.Default,
+    ): Set<Intersection> = BezierCurve.findIntersections(
+        subjectBezierCurve = subjectBezierCurve,
+        objectBezierCurve = this,
     )
 
     override fun toReprString(): String {

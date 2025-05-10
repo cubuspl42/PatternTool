@@ -74,19 +74,19 @@ data class OpenSpline(
             )
         }
 
-        fun findIntersectionsOpenSplineWithOpenSpline(
-            subjectSpline: OpenSpline,
-            objectSpline: OpenSpline,
-            tolerance: NumericObject.Tolerance,
+        fun findIntersections(
+            subjectOpenSpline: OpenSpline,
+            objectOpenSpline: OpenSpline,
+            tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
         ): Set<Intersection> {
 
             TODO()
         }
 
-        fun findIntersectionsPrimitiveWithOpenSpline(
-            subjectCurve: PrimitiveCurve,
-            objectSpline: OpenSpline,
-            tolerance: NumericObject.Tolerance,
+        fun findIntersections(
+            subjectPrimitiveCurve: PrimitiveCurve,
+            objectOpenSpline: OpenSpline,
+            tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
         ): Set<Intersection> {
 
             TODO()
@@ -152,31 +152,25 @@ data class OpenSpline(
 
     override fun findIntersectionsLineSegment(
         subjectLineSegment: LineSegment,
-    ): Set<Intersection> = findIntersectionsPrimitive(
+    ): Set<Intersection> = OpenSpline.findIntersections(
         subjectPrimitiveCurve = subjectLineSegment,
+        objectOpenSpline = this,
+        tolerance = NumericObject.Tolerance.Default,
     )
 
     override fun findIntersectionsBezierCurve(
         subjectBezierCurve: BezierCurve,
-    ): Set<Intersection> = findIntersectionsPrimitive(
+    ): Set<Intersection> = OpenSpline.findIntersections(
         subjectPrimitiveCurve = subjectBezierCurve,
-    )
-
-    fun findIntersectionsPrimitive(
-        subjectPrimitiveCurve: PrimitiveCurve,
-    ): Set<Intersection> = Intersection.swap(
-        intersections = OpenSpline.findIntersectionsPrimitiveWithOpenSpline(
-            subjectCurve = subjectPrimitiveCurve,
-            objectSpline = this,
-            tolerance = NumericObject.Tolerance.Default,
-        ),
+        objectOpenSpline = this,
+        tolerance = NumericObject.Tolerance.Default,
     )
 
     override fun findIntersectionsOpenSpline(
         subjectSpline: OpenSpline,
-    ): Set<Intersection> = OpenSpline.findIntersectionsOpenSplineWithOpenSpline(
-        subjectSpline = subjectSpline,
-        objectSpline = this,
+    ): Set<Intersection> = OpenSpline.findIntersections(
+        subjectOpenSpline = subjectSpline,
+        objectOpenSpline = this,
         tolerance = NumericObject.Tolerance.Default,
     )
 
