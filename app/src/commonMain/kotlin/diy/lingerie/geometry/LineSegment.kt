@@ -41,7 +41,35 @@ data class LineSegment(
         override fun toReprString(): String = "LineSegment.Edge"
     }
 
-    companion object;
+    companion object {
+        fun findIntersections(
+            subjectLineSegment: LineSegment,
+            objectLineSegment: LineSegment,
+        ): Set<Intersection> {
+            // The two line segments is not different from other primitive curves
+            return LineSegment.findIntersections(
+                subjectLineSegment = subjectLineSegment,
+                objectPrimitiveCurve = objectLineSegment,
+            )
+        }
+
+        /**
+         * Finds intersections between a line segment and any primitive curve
+         */
+        internal fun findIntersections(
+            subjectLineSegment: LineSegment,
+            objectPrimitiveCurve: PrimitiveCurve,
+        ): Set<Intersection> {
+            // The line segment is always the simple curve (at least not more
+            // complex than the other one) and equation solving is the only
+            // reasonable strategy in this case
+            return PrimitiveCurve.findIntersectionsByEquationSolving(
+                simpleSubjectCurve = subjectLineSegment,
+                complexObjectCurve = objectPrimitiveCurve,
+                tolerance = Tolerance.Default,
+            )
+        }
+    }
 
     val length: Span
         get() = Point.distanceBetween(start, end)
@@ -124,7 +152,7 @@ data class LineSegment(
     override fun findIntersectionsBezierCurve(
         subjectBezierCurve: BezierCurve,
     ): Set<Intersection> = Intersection.swap(
-        intersections = PrimitiveCurve.findIntersectionsPrimitiveWithPrimitive(
+        intersections = PrimitiveCurve.findIntersectionsByEquationSolving(
             simpleSubjectCurve = this,
             complexObjectCurve = subjectBezierCurve,
             tolerance = Tolerance.Default,

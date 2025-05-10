@@ -19,6 +19,13 @@ data class Point(
             TODO()
         }
 
+        fun midPoint(
+            a: Point,
+            b: Point,
+        ): Point = Point(
+            pointVector = a.pointVector + (b.pointVector - a.pointVector) / 2.0,
+        )
+
         val origin: Point = Point(
             x = 0.0,
             y = 0.0,

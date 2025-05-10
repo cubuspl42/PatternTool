@@ -213,6 +213,18 @@ abstract class OpenCurve : NumericObject, ReprObject {
         abstract val objectCoord: Coord
     }
 
+    companion object {
+        /**
+         * Finds intersections between two open curves
+         */
+        fun findIntersections(
+            subjectOpenCurve: OpenCurve,
+            objectOpenCurve: OpenCurve,
+        ): Set<Intersection> = subjectOpenCurve.findIntersections(
+            objectCurve = objectOpenCurve,
+        )
+    }
+
     val startTangent: Direction?
         get() = tangentDirectionFunction.start
 
@@ -259,19 +271,19 @@ abstract class OpenCurve : NumericObject, ReprObject {
      * Find the intersections of this curve (also referred to as the "subject
      * curve") with the [objectCurve] curve.
      */
-    abstract fun findIntersections(
+    protected abstract fun findIntersections(
         objectCurve: OpenCurve,
     ): Set<Intersection>
 
-    abstract fun findIntersectionsLineSegment(
+    internal abstract fun findIntersectionsLineSegment(
         subjectLineSegment: LineSegment,
     ): Set<Intersection>
 
-    abstract fun findIntersectionsBezierCurve(
+    internal abstract fun findIntersectionsBezierCurve(
         subjectBezierCurve: BezierCurve,
     ): Set<Intersection>
 
-    abstract fun findIntersectionsOpenSpline(
+    internal abstract fun findIntersectionsOpenSpline(
         subjectSpline: OpenSpline,
     ): Set<Intersection>
 }

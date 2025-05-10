@@ -37,18 +37,23 @@ abstract class PrimitiveCurve : OpenCurve() {
 
     companion object {
         /**
+         * Finds intersections between two curves by solving the intersection
+         * equation
+         *
          * @param simpleSubjectCurve a curve that's not more complex than [complexObjectCurve]
          * @param complexObjectCurve a curve that's not simpler than [simpleSubjectCurve]
          */
-        fun findIntersectionsPrimitiveWithPrimitive(
+        fun findIntersectionsByEquationSolving(
             simpleSubjectCurve: PrimitiveCurve,
             complexObjectCurve: PrimitiveCurve,
             tolerance: NumericObject.Tolerance,
         ): Set<Intersection> {
-            val tValues = simpleSubjectCurve.basisFunction.solveIntersections(
+            // Solve the intersection equation for the curves (for t ∈ ℝ)
+            val tValues = simpleSubjectCurve.basisFunction.solveIntersectionEquation(
                 other = complexObjectCurve.basisFunction,
             )
 
+            // Filter out intersections outside either curve
             return tValues.mapNotNull { tSimple ->
                 val coordSimple = Coord.of(t = tSimple) ?: return@mapNotNull null
 
@@ -128,7 +133,7 @@ abstract class PrimitiveCurve : OpenCurve() {
 
     final override fun findIntersectionsLineSegment(
         subjectLineSegment: LineSegment,
-    ): Set<Intersection> = PrimitiveCurve.findIntersectionsPrimitiveWithPrimitive(
+    ): Set<Intersection> = PrimitiveCurve.findIntersectionsByEquationSolving(
         // Line segment is never more complex than other primitive curves
         simpleSubjectCurve = subjectLineSegment,
         complexObjectCurve = this,
