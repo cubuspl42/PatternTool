@@ -1,7 +1,13 @@
 package diy.lingerie.utils.iterable
 
+fun <T> Iterable<T>.clusterSimilarConsecutive(
+    areSimilar: (prev: T, next: T) -> Boolean,
+): List<List<T>> = this.clusterSimilar { group, element ->
+    areSimilar(group.last(), element)
+}
+
 fun <T> Iterable<T>.clusterSimilar(
-    predicate: (prev: T, next: T) -> Boolean,
+    fitsGroup: (group: List<T>, element: T) -> Boolean,
 ): List<List<T>> {
     val groups = mutableListOf<MutableList<T>>()
     val iterator = this.iterator()
@@ -12,7 +18,7 @@ fun <T> Iterable<T>.clusterSimilar(
 
     while (iterator.hasNext()) {
         val next = iterator.next()
-        if (predicate(currentGroup.last(), next)) {
+        if (fitsGroup(currentGroup, next)) {
             currentGroup.add(next)
         } else {
             currentGroup = mutableListOf(next)

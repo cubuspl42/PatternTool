@@ -1,12 +1,14 @@
 package diy.lingerie.utils.iterable
 
+import diy.lingerie.test_utils.assertEqualsWithTolerance
+import kotlin.math.abs
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ClusterSimilarTests {
     @Test
-    fun testClusterSimilar_empty() {
-        val actual = emptyList<Char>().clusterSimilar { a, b -> a == b }
+    fun testClusterSimilarConsecutive_empty() {
+        val actual = emptyList<Char>().clusterSimilarConsecutive { a, b -> a == b }
 
         assertEquals(
             expected = emptyList(),
@@ -15,10 +17,10 @@ class ClusterSimilarTests {
     }
 
     @Test
-    fun testClusterSimilar_simple() {
+    fun testClusterSimilarConsecutive_simple() {
         val actual = listOf(
             'a', 'x', 'y', 'B', '!', '_', 'C', 'P', 'T', '=', '1', '2', '3',
-        ).clusterSimilar { a, b ->
+        ).clusterSimilarConsecutive { a, b ->
             when {
                 a.isDigit() && b.isDigit() -> true
                 a.isLowerCase() && b.isLowerCase() -> true
@@ -42,8 +44,8 @@ class ClusterSimilarTests {
     }
 
     @Test
-    fun testClusterSimilar_singleElement() {
-        val actual = listOf('a').clusterSimilar { a, b -> a == b }
+    fun testClusterSimilarConsecutive_singleElement() {
+        val actual = listOf('a').clusterSimilarConsecutive { a, b -> a == b }
 
         assertEquals(
             expected = listOf(listOf('a')),
@@ -52,8 +54,8 @@ class ClusterSimilarTests {
     }
 
     @Test
-    fun testClusterSimilar_allSimilar() {
-        val actual = listOf(1, 1, 1, 1).clusterSimilar { a, b -> a == b }
+    fun testClusterSimilarConsecutive_allSimilar() {
+        val actual = listOf(1, 1, 1, 1).clusterSimilarConsecutive { a, b -> a == b }
 
         assertEquals(
             expected = listOf(listOf(1, 1, 1, 1)),
@@ -62,8 +64,8 @@ class ClusterSimilarTests {
     }
 
     @Test
-    fun testClusterSimilar_noSimilar() {
-        val actual = listOf(1, 2, 3, 4).clusterSimilar { a, b -> false }
+    fun testClusterSimilarConsecutive_noSimilar() {
+        val actual = listOf(1, 2, 3, 4).clusterSimilarConsecutive { a, b -> false }
 
         assertEquals(
             expected = listOf(
@@ -77,8 +79,8 @@ class ClusterSimilarTests {
     }
 
     @Test
-    fun testClusterSimilar_complexCondition() {
-        val actual = listOf(1, 2, 2, 3, 5, 8, 13, 21).clusterSimilar { a, b ->
+    fun testClusterSimilarConsecutive_complexCondition() {
+        val actual = listOf(1, 2, 2, 3, 5, 8, 13, 21).clusterSimilarConsecutive { a, b ->
             (a + b) % 2 == 0
         }
 
@@ -89,6 +91,56 @@ class ClusterSimilarTests {
                 listOf(3, 5),
                 listOf(8),
                 listOf(13, 21),
+            ),
+            actual = actual,
+        )
+    }
+
+    @Test
+    fun testClusterSimilar_empty() {
+
+    }
+
+    @Test
+    fun testClusterSimilar_simple() {
+        val group1 = listOf(
+            0.55,
+            0.54,
+            0.56,
+            0.57,
+        )
+
+        val group2 = listOf(
+            1.06,
+            1.07,
+            1.08,
+            1.09,
+        )
+
+        val group3 = listOf(
+            2.01,
+            2.02,
+            2.1,
+        )
+
+        val group4 = listOf(
+            3.0,
+            3.1,
+            3.12,
+        )
+
+        val numbers = group1 + group2 + group3 + group4
+
+        val actual = numbers.clusterSimilar { group, x ->
+            abs(x - group.average()) < 0.2
+        }
+
+        assertEquals(
+            expected = listOf(
+                group1,
+                group2,
+                group3,
+                group4,
             ),
             actual = actual,
         )

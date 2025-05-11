@@ -1,5 +1,9 @@
 package diy.lingerie.geometry
 
+import diy.lingerie.geometry.RelativeAngle.Companion.fiFull
+import diy.lingerie.test_utils.assertEqualsWithGeometricTolerance
+import diy.lingerie.test_utils.assertEqualsWithTolerance
+import kotlin.math.PI
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,6 +18,18 @@ class RelativeAngleTests {
         assertEquals(
             expected = RelativeAngle.NegativeStraight,
             actual = RelativeAngle.Zero - RelativeAngle.Straight,
+        )
+    }
+
+    @Test
+    fun testSpectrum() {
+        assertEqualsWithGeometricTolerance(
+            expected = listOf(
+                RelativeAngle.Zero,
+                RelativeAngle.Radial.normalize(fi = 1 * fiFull / 3),
+                RelativeAngle.Radial.normalize(fi = 2 * fiFull / 3),
+            ),
+            actual = RelativeAngle.spectrum(n = 3),
         )
     }
 }

@@ -2,6 +2,7 @@ package diy.lingerie.geometry
 
 import diy.lingerie.ReprObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.utils.iterable.LinSpace
 import kotlin.jvm.JvmInline
 
 /**
@@ -15,6 +16,55 @@ value class Direction internal constructor(
      */
     val normalizedDirectionVector: Vector2,
 ) : RadialObject, ReprObject {
+    companion object {
+        fun fromAngle(
+            angle: RelativeAngle,
+        ): Direction = Direction(
+            normalizedDirectionVector = Vector2(
+                x = angle.cosFi,
+                y = angle.sinFi,
+            ),
+        )
+
+        val XAxisPlus = Direction(
+            normalizedDirectionVector = Vector2(
+                x = 1.0,
+                y = 0.0,
+            ),
+        )
+
+        val XAxisMinus = Direction(
+            normalizedDirectionVector = Vector2(
+                x = -1.0,
+                y = 0.0,
+            ),
+        )
+
+        val YAxisPlus = Direction(
+            normalizedDirectionVector = Vector2(
+                x = 0.0,
+                y = 1.0,
+            ),
+        )
+
+        val YAxisMinus = Direction(
+            normalizedDirectionVector = Vector2(
+                x = 0.0,
+                y = -1.0,
+            ),
+        )
+
+        fun normalize(
+            directionVector: Vector2,
+        ): Direction? = directionVector.normalizeOrNull()?.let {
+            Direction(normalizedDirectionVector = it)
+        }
+    }
+
+    init {
+        require(normalizedDirectionVector.isNormalized())
+    }
+
     override fun equalsWithRadialTolerance(
         other: RadialObject,
         tolerance: RelativeAngle.RadialTolerance,
@@ -54,45 +104,5 @@ value class Direction internal constructor(
             |  normalizedDirectionVector = ${normalizedDirectionVector.toReprString()},
             |)
         """.trimMargin()
-    }
-
-    companion object {
-        val XAxisPlus = Direction(
-            normalizedDirectionVector = Vector2(
-                x = 1.0,
-                y = 0.0,
-            ),
-        )
-
-        val XAxisMinus = Direction(
-            normalizedDirectionVector = Vector2(
-                x = -1.0,
-                y = 0.0,
-            ),
-        )
-
-        val YAxisPlus = Direction(
-            normalizedDirectionVector = Vector2(
-                x = 0.0,
-                y = 1.0,
-            ),
-        )
-
-        val YAxisMinus = Direction(
-            normalizedDirectionVector = Vector2(
-                x = 0.0,
-                y = -1.0,
-            ),
-        )
-
-        fun normalize(
-            directionVector: Vector2,
-        ): Direction? = directionVector.normalizeOrNull()?.let {
-            Direction(normalizedDirectionVector = it)
-        }
-    }
-
-    init {
-        require(normalizedDirectionVector.isNormalized())
     }
 }

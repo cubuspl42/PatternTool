@@ -19,6 +19,6 @@ interface RadialObject : GeometricObject {
 
     fun equalsWithRadialTolerance(
         other: RadialObject,
-        tolerance: RelativeAngle.RadialTolerance = RelativeAngle.RadialTolerance.Default,
+        tolerance: RelativeAngle.RadialTolerance = RelativeAngle.RadialTolerance.default,
     ): Boolean
 }
