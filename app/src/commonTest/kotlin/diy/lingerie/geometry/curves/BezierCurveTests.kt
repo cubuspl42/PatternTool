@@ -3,7 +3,8 @@ package diy.lingerie.geometry.curves
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.BezierCurve
+import diy.lingerie.geometry.Span
+import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Test
@@ -160,7 +161,8 @@ class BezierCurveTests {
             expectedIntersections = listOf(
                 ExpectedIntersection(
                     point = Point(401.375136, 394.846031),
-                    firstCoord = OpenCurve.Coord(t = 0.565791), secondCoord = OpenCurve.Coord(t = 0.814485),
+                    firstCoord = OpenCurve.Coord(t = 0.565791),
+                    secondCoord = OpenCurve.Coord(t = 0.814485),
                 ),
             ),
             actualIntersections = BezierCurve.Companion.findIntersections(
@@ -222,15 +224,9 @@ class BezierCurveTests {
             end = Point(569.3854846954346, 487.569091796875),
         )
 
-        testIntersectionsSymmetric(
+        testBezierIntersectionsSymmetric(
             firstCurve = firstCurve,
             secondCurve = secondCurve,
-            findIntersections = { firstBezierCurve, secondBezierCurve ->
-                BezierCurve.Companion.findIntersections(
-                    subjectBezierCurve = firstBezierCurve,
-                    objectBezierCurve = secondBezierCurve,
-                )
-            },
             expectedIntersection = listOf(
                 ExpectedIntersection(
                     point = Point(400.0364120882783, 325.7513850441302),
@@ -302,15 +298,9 @@ class BezierCurveTests {
         )
 
         // It's not clear why this test cases succeeds and the next one (similar) fails
-        testIntersectionsSymmetric(
+        testBezierIntersectionsSymmetric(
             firstCurve = firstBezierCurve,
             secondCurve = secondBezierCurve,
-            findIntersections = { firstBezierCurve, secondBezierCurve ->
-                BezierCurve.Companion.findIntersections(
-                    subjectBezierCurve = firstBezierCurve,
-                    objectBezierCurve = secondBezierCurve,
-                )
-            },
             expectedIntersection = listOf(
                 ExpectedIntersection(
                     point = Point(488.177482, 364.171107),
@@ -339,15 +329,31 @@ class BezierCurveTests {
             end = Point(671.4185047149658, 490.2051086425781),
         )
 
-        // There are two problems:
-        // 1. The found point doesn't seem to be close to the actual (self-)intersection, for numeric reasons (?)
-        // 2. In consequence, it's located outside the [0, 1] range on one of the curves
+        // TODO: De-duplicate the point set
+//        testIntersectionsSymmetric(
+//            firstCurve = firstBezierCurve,
+//            secondCurve = secondBezierCurve,
+//            findIntersections = { firstBezierCurve, secondBezierCurve ->
+//                BezierCurve.findIntersectionsBySubdivision(
+//                    subjectBezierCurve = firstBezierCurve,
+//                    objectBezierCurve = secondBezierCurve,
+//                    tolerance = SpatialObject.SpatialTolerance.default,
+//                )
+//            },
+//            expectedIntersection = listOf(
+//                ExpectedIntersection(
+//                    firstCoord = OpenCurve.Coord(t = 0.0),
+//                    point = Point(501.579334, 374.596689),
+//                    secondCoord = OpenCurve.Coord(t = 0.0),
+//                ),
+//            ),
+//        )
 
         testIntersectionsSymmetric(
             firstCurve = firstBezierCurve,
             secondCurve = secondBezierCurve,
             findIntersections = { firstBezierCurve, secondBezierCurve ->
-                BezierCurve.Companion.findIntersections(
+                BezierCurve.findIntersectionsByEquationSolving(
                     subjectBezierCurve = firstBezierCurve,
                     objectBezierCurve = secondBezierCurve,
                 )
@@ -362,4 +368,38 @@ class BezierCurveTests {
             ),
         )
     }
+}
+
+internal fun testBezierIntersectionsSymmetric(
+    firstCurve: BezierCurve,
+    secondCurve: BezierCurve,
+    expectedIntersection: List<ExpectedIntersection>,
+) {
+    testIntersectionsSymmetric(
+        firstCurve = firstCurve,
+        secondCurve = secondCurve,
+        findIntersections = { firstBezierCurve, secondBezierCurve ->
+            BezierCurve.findIntersectionsByEquationSolving(
+                subjectBezierCurve = firstBezierCurve,
+                objectBezierCurve = secondBezierCurve,
+            )
+        },
+        expectedIntersection = expectedIntersection,
+    )
+
+    // FIXME: De-duplicate the point set
+//    testIntersectionsSymmetric(
+//        firstCurve = firstCurve,
+//        secondCurve = secondCurve,
+//        findIntersections = { firstBezierCurve, secondBezierCurve ->
+//            BezierCurve.findIntersectionsBySubdivision(
+//                subjectBezierCurve = firstBezierCurve,
+//                objectBezierCurve = secondBezierCurve,
+//                tolerance = SpatialObject.SpatialTolerance(
+//                    spanTolerance = Span.of(value = 1e-4),
+//                ),
+//            )
+//        },
+//        expectedIntersection = expectedIntersection,
+//    )
 }
