@@ -81,8 +81,8 @@ data class BoundingBox(
             y = yMin + height / 2,
         )
 
-    val area: Double
-        get() = width * height
+    val smallerSide: Double
+        get() = minOf(width, height)
 
     val bottomRight: Point
         get() = topLeft.transformBy(
