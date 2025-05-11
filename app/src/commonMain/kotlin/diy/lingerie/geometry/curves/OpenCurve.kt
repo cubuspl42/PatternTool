@@ -7,11 +7,14 @@ import diy.lingerie.geometry.LineSegment
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.Point.Companion.distanceBetween
 import diy.lingerie.geometry.Ray
+import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.utils.avgOf
+import diy.lingerie.utils.iterable.clusterSimilar
 import diy.lingerie.utils.split
 import kotlin.jvm.JvmInline
 
@@ -108,6 +111,16 @@ abstract class OpenCurve : NumericObject, ReprObject {
         companion object {
             private val tRange = 0.0..1.0
 
+            fun average(
+                coords: Iterable<Coord>,
+            ): Coord {
+                val tAverage = coords.map { it.t }.average()
+
+                return Coord(
+                    t = tAverage,
+                )
+            }
+
             /**
              * @param t t-value, unconstrained
              * @return coord if t is in [0, 1], null otherwise
@@ -165,6 +178,41 @@ abstract class OpenCurve : NumericObject, ReprObject {
             ): Set<Intersection> = intersections.map {
                 it.swap()
             }.toSet()
+
+            fun average(
+                intersections: Iterable<Intersection>,
+            ): Intersection = object : Intersection() {
+                override val point: Point = Point.average(
+                    points = intersections.map { it.point },
+                )
+
+                override val subjectCoord: Coord = Coord.average(
+                    coords = intersections.map { it.subjectCoord },
+                )
+
+                override val objectCoord: Coord = Coord.average(
+                    coords = intersections.map { it.objectCoord },
+                )
+            }
+
+            fun consolidate(
+                intersections: Set<Intersection>,
+                tolerance: SpatialObject.SpatialTolerance,
+            ): Set<Intersection> {
+                val intersectionsSorted = intersections.sortedBy { it.subjectCoord }
+
+                val intersectionClusters = intersectionsSorted.clusterSimilar { intersectionCloud, intersection ->
+                    val intersectionCloudAveragePoint = Point.average(
+                        points = intersectionCloud.map { it.point }
+                    )
+
+                    distanceBetween(intersectionCloudAveragePoint, intersection.point) < tolerance.spanTolerance
+                }
+
+                return intersectionClusters.map { intersectionCluster ->
+                    Intersection.average(intersections = intersectionCluster)
+                }.toSet()
+            }
         }
 
         fun swap(): Intersection {
