@@ -7,7 +7,7 @@ import diy.lingerie.geometry.Span
 import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.test_utils.assertEqualsWithTolerance
-import kotlin.math.abs
+import kotlin.test.Ignore
 import kotlin.test.Test
 
 class BezierCurveTests {
@@ -208,6 +208,37 @@ class BezierCurveTests {
             actualIntersections = BezierCurve.Companion.findIntersections(
                 subjectLineSegment = firstCurve,
                 objectBezierCurve = secondCurve,
+            ),
+        )
+    }
+
+    @Test
+    @Ignore // FIXME: Figure out the issues with locatePoint
+    fun testFindIntersections_LineSegment_BezierCurve_oneIntersection_splitLoop() {
+        val lineSegment = LineSegment(
+            start = Point(401.14355433959827, 374.2024184921395),
+            end = Point(601.1435543395982, 374.2024184921395),
+        )
+
+        // Part of a loop
+        val bezierCurve = BezierCurve(
+            start = Point(492.59773540496826, 197.3452272415161),
+            firstControl = Point(393.3277416229248, 180.14210319519043),
+            secondControl = Point(287.3950023651123, 260.3726043701172),
+            end = Point(671.4185047149658, 490.2051086425781),
+        )
+
+        assertIntersectionsEqual(
+            expectedIntersections = listOf(
+                ExpectedIntersection(
+                    point = Point(501.14355433959827, 374.2024184921395),
+                    firstCoord = OpenCurve.Coord(t = 0.2606471534818411),
+                    secondCoord = OpenCurve.Coord(t = 0.8083924553357065),
+                ),
+            ),
+            actualIntersections = BezierCurve.Companion.findIntersections(
+                subjectLineSegment = lineSegment,
+                objectBezierCurve = bezierCurve,
             ),
         )
     }
