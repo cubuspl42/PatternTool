@@ -1,6 +1,5 @@
 package diy.lingerie.math.algebra
 
-import diy.lingerie.geometry.x
 import diy.lingerie.math.algebra.NumericObject.Tolerance
 import kotlin.jvm.JvmName
 import kotlin.math.abs
