@@ -3,9 +3,9 @@ package diy.lingerie.simple_dom.svg
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.Size
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.math.algebra.equalsWithToleranceOrNull
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.toList
 import diy.lingerie.simple_dom.toSimpleColor
@@ -13,7 +13,6 @@ import diy.lingerie.utils.iterable.mapCarrying
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.xml.svg.asList
 import diy.lingerie.utils.xml.svg.getComputedStyle
-import diy.lingerie.utils.xml.svg.stroke
 import org.apache.batik.css.engine.SVGCSSEngine
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -23,10 +22,11 @@ import org.w3c.dom.svg.SVGPathSeg
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicAbs
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicRel
 import org.w3c.dom.svg.SVGPathSegMovetoAbs
-import org.w3c.dom.svg.SVGRectElement
 
 data class SvgPath(
-    override val stroke: Stroke = Stroke.default,
+    override val stroke: Stroke? = Stroke.default,
+    override val fill: Fill? = Fill.None,
+    val markerEndId: String? = null,
     val segments: List<Segment>,
 ) : SvgShape() {
     sealed class Segment : NumericObject {
@@ -188,21 +188,27 @@ data class SvgPath(
         }
     }
 
-    override val fill: Fill? = null
-
     override fun toRawElement(
         document: Document,
-    ): Element = document.createSvgElement("path").apply {
-        setAttribute("d", segments.joinToString(" ") { it.toPathSegString() })
+    ): Element {
+        val markerEnd = this.markerEndId
 
-        setupRawShape(element = this)
+        return document.createSvgElement("path").apply {
+            setAttribute("d", segments.joinToString(" ") { it.toPathSegString() })
+
+            if (markerEnd != null) {
+                setAttribute("marker-end", "url(#$markerEnd)")
+            }
+
+            setupRawShape(element = this)
+        }
     }
 
     override fun equalsWithTolerance(
         other: NumericObject, tolerance: NumericObject.Tolerance
     ): Boolean = when {
         other !is SvgPath -> false
-        !stroke.equalsWithTolerance(other.stroke, tolerance) -> false
+        !stroke.equalsWithToleranceOrNull(other.stroke, tolerance) -> false
         !segments.equalsWithTolerance(other.segments, tolerance) -> false
         else -> true
     }

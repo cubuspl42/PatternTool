@@ -27,7 +27,7 @@ fun Outline.Companion.loadSvg(
     )
 
     val singleElement =
-        svgRoot.children.singleOrNull() ?: throw IllegalArgumentException("SVG document must contain a single element")
+        svgRoot.graphicsElements.singleOrNull() ?: throw IllegalArgumentException("SVG document must contain a single element")
 
     val svgPath =
         singleElement as? SvgPath ?: throw IllegalArgumentException("The single element must be a path element")

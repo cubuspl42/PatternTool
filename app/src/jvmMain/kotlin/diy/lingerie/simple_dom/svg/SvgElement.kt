@@ -17,13 +17,15 @@ abstract class SvgElement : SimpleElement() {
     protected fun Document.createSvgElement(
         name: String,
     ): Element = createElementNS(SVG_NS, "svg:$name")
+}
 
+abstract class SvgGraphicsElements : SvgElement() {
     abstract fun flatten(
         baseTransformation: Transformation,
     ): List<SvgShape>
 }
 
-fun Element.toSimpleElement(): SvgElement? = when (this) {
+fun Element.toSvgGraphicsElements(): SvgGraphicsElements? = when (this) {
     is SVGPathElement -> toSimplePath()
     is SVGGElement -> toSimpleGroup()
     is SVGRectElement -> toSimpleRect()

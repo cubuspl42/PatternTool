@@ -2,6 +2,7 @@ package diy.lingerie.geometry.playground
 
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.Size
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.svg.toSvgPath
@@ -9,9 +10,10 @@ import diy.lingerie.math.algebra.sample
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.px
 import diy.lingerie.simple_dom.svg.SvgCircle
-import diy.lingerie.simple_dom.svg.SvgElement
+import diy.lingerie.simple_dom.svg.SvgGraphicsElements
 import diy.lingerie.simple_dom.svg.SvgGroup
 import diy.lingerie.simple_dom.svg.SvgLine
+import diy.lingerie.simple_dom.svg.SvgMarker
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.simple_dom.svg.SvgShape
@@ -23,7 +25,7 @@ data class Playground(
     val items: List<Item>,
 ) {
     sealed class Item {
-        abstract fun toSvgElement(): SvgElement
+        abstract fun toSvgElement(): SvgGraphicsElements
 
         abstract fun findBoundingBox(): BoundingBox
     }
@@ -45,7 +47,7 @@ data class Playground(
         override val openCurve: OpenCurve
             get() = bezierCurve
 
-        override fun toSvgElement(): SvgElement = SvgGroup(
+        override fun toSvgElement(): SvgGraphicsElements = SvgGroup(
             children = listOfNotNull(
                 toSvgControlRubber(
                     anchor = bezierCurve.start,
@@ -65,6 +67,8 @@ data class Playground(
                 color = SimpleColor.red,
                 width = 0.5,
             ),
+        ).copy(
+            markerEndId = Playground.triangleMarkerId,
         )
 
         private fun toExtendedSvgPath(): SvgPath? {
@@ -106,7 +110,7 @@ data class Playground(
             center = point,
             radius = 1.0,
             stroke = null,
-            fill = SvgShape.Fill(
+            fill = SvgShape.Fill.Specified(
                 color = SimpleColor.lightGray,
             ),
         )
@@ -127,11 +131,11 @@ data class Playground(
     data class PointItem(
         val point: Point,
     ) : Item() {
-        override fun toSvgElement(): SvgElement = SvgCircle(
+        override fun toSvgElement(): SvgCircle = SvgCircle(
             center = point,
             radius = 1.0,
             stroke = null,
-            fill = SvgShape.Fill(
+            fill = SvgShape.Fill.Specified(
                 color = SimpleColor.black,
             ),
         )
@@ -139,6 +143,46 @@ data class Playground(
         override fun findBoundingBox(): BoundingBox = BoundingBox.of(
             pointA = point,
             pointB = point,
+        )
+    }
+
+    companion object {
+        internal const val triangleMarkerId = "triangle"
+
+        private val triangleMarkerSize = 6.0
+
+        private val triangleMarker = SvgMarker(
+            id = triangleMarkerId,
+            size = Size(
+                width = triangleMarkerSize,
+                height = triangleMarkerSize,
+            ),
+            ref = Point(
+                x = triangleMarkerSize / 2,
+                y = triangleMarkerSize / 2,
+            ),
+            path = SvgPath(
+                stroke = null,
+                fill = null,
+                segments = listOf(
+                    SvgPath.Segment.MoveTo(
+                        targetPoint = Point.origin,
+                    ),
+                    SvgPath.Segment.LineTo(
+                        finalPoint = Point(
+                            x = triangleMarkerSize,
+                            y = triangleMarkerSize / 2,
+                        ),
+                    ),
+                    SvgPath.Segment.LineTo(
+                        finalPoint = Point(
+                            x = 0.0,
+                            y = triangleMarkerSize,
+                        ),
+                    ),
+                    SvgPath.Segment.ClosePath,
+                ),
+            ),
         )
     }
 
@@ -154,9 +198,12 @@ data class Playground(
 
         return SvgRoot(
             viewBox = viewBox,
+            defs = listOf(
+                triangleMarker,
+            ),
             width = viewBox.width.px,
             height = viewBox.height.px,
-            children = elements,
+            graphicsElements = elements,
         )
     }
 
