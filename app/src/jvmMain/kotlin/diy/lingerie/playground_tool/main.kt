@@ -21,14 +21,13 @@ class MainCommand : CliktCommand() {
     ).help("Path to the output file")
 
     override fun run() {
-        val firstBezierCurve = BezierCurve(
-            start = Point(273.80049324035645, 489.08709716796875),
-            firstControl = Point(684.4749774932861, 329.1851005554199),
-            secondControl = Point(591.8677291870117, 214.5483512878418),
-            end = Point(492.59773540496826, 197.3452272415161),
+        val lineSegment = LineSegment(
+            start = Point(401.14355433959827, 374.2024184921395),
+            end = Point(601.1435543395982, 374.2024184921395),
         )
 
-        val secondBezierCurve = BezierCurve(
+        // A loop split at its top
+        val bezierCurve = BezierCurve(
             start = Point(492.59773540496826, 197.3452272415161),
             firstControl = Point(393.3277416229248, 180.14210319519043),
             secondControl = Point(287.3950023651123, 260.3726043701172),
@@ -36,19 +35,19 @@ class MainCommand : CliktCommand() {
         )
 
         val intersectionPoints = listOf(
-            Point(492.59773540496826, 197.3452272415161),
+
             Point(501.14355433959827, 374.2024184921395),
         )
 
         val playground = Playground(
             items = listOf(
-                Playground.BezierCurveItem(
+                Playground.LineSegmentItem(
                     color = SimpleColor.green,
-                    bezierCurve = firstBezierCurve,
+                    lineSegment = lineSegment,
                 ),
                 Playground.BezierCurveItem(
                     color = SimpleColor.red,
-                    bezierCurve = secondBezierCurve,
+                    bezierCurve = bezierCurve,
                 ),
             ) + intersectionPoints.map { intersectionPoint ->
                 Playground.PointItem(
