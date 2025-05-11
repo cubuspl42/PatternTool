@@ -3,7 +3,6 @@ package diy.lingerie.geometry.curves
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.Span
 import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.test_utils.assertEqualsWithTolerance
@@ -190,15 +189,18 @@ class BezierCurveTests {
             expectedIntersections = listOf(
                 ExpectedIntersection(
                     point = Point(348.833366, 450.206637),
-                    firstCoord = OpenCurve.Coord(t = 0.169011), secondCoord = OpenCurve.Coord(t = 0.140208),
+                    firstCoord = OpenCurve.Coord(t = 0.169011),
+                    secondCoord = OpenCurve.Coord(t = 0.140208),
                 ),
                 ExpectedIntersection(
                     point = Point(374.210966, 423.467544),
-                    firstCoord = OpenCurve.Coord(t = 0.360656), secondCoord = OpenCurve.Coord(t = 0.542099),
+                    firstCoord = OpenCurve.Coord(t = 0.360656),
+                    secondCoord = OpenCurve.Coord(t = 0.542099),
                 ),
                 ExpectedIntersection(
                     point = Point(428.627571, 366.131519),
-                    firstCoord = OpenCurve.Coord(t = 0.771593), secondCoord = OpenCurve.Coord(t = 0.881570),
+                    firstCoord = OpenCurve.Coord(t = 0.771593),
+                    secondCoord = OpenCurve.Coord(t = 0.881570),
                 ),
             ),
             actualIntersections = BezierCurve.Companion.findIntersections(
@@ -230,48 +232,48 @@ class BezierCurveTests {
             expectedIntersection = listOf(
                 ExpectedIntersection(
                     point = Point(400.0364120882783, 325.7513850441302),
-                    firstCoord = OpenCurve.Coord(t = 0.08321298331026583),
-                    secondCoord = OpenCurve.Coord(t = 0.638175514633884),
+                    firstCoord = OpenCurve.Coord(t = 0.638175514633884),
+                    secondCoord = OpenCurve.Coord(t = 0.08321298331026583),
                 ),
                 ExpectedIntersection(
                     point = Point(415.9864000101944, 388.18876477651054),
-                    firstCoord = OpenCurve.Coord(t = 0.1435234395147944),
-                    secondCoord = OpenCurve.Coord(t = 0.8267616607759749),
+                    firstCoord = OpenCurve.Coord(t = 0.8267616607759749),
+                    secondCoord = OpenCurve.Coord(t = 0.1435234395147944),
                 ),
                 ExpectedIntersection(
                     point = Point(433.78055261270123, 434.84732656764527),
-                    firstCoord = OpenCurve.Coord(t = 0.22787694792239874),
-                    secondCoord = OpenCurve.Coord(t = 0.08361584060373373),
+                    firstCoord = OpenCurve.Coord(t = 0.08361584060373373),
+                    secondCoord = OpenCurve.Coord(t = 0.22787694792239874),
                 ),
                 ExpectedIntersection(
                     point = Point(459.06587349145525, 424.28587808679634),
-                    firstCoord = OpenCurve.Coord(t = 0.4025176966209491),
-                    secondCoord = OpenCurve.Coord(t = 0.10193180513525768),
+                    firstCoord = OpenCurve.Coord(t = 0.10193180513525768),
+                    secondCoord = OpenCurve.Coord(t = 0.4025176966209491),
                 ),
                 ExpectedIntersection(
                     point = Point(462.2096738267076, 414.2195778544469),
-                    firstCoord = OpenCurve.Coord(t = 0.43011874468531425),
-                    secondCoord = OpenCurve.Coord(t = 0.8785849663620957),
+                    firstCoord = OpenCurve.Coord(t = 0.8785849663620957),
+                    secondCoord = OpenCurve.Coord(t = 0.43011874468531425),
                 ),
                 ExpectedIntersection(
                     point = Point(491.64500747999983, 312.8831093313188),
-                    firstCoord = OpenCurve.Coord(t = 0.6822325289818921),
-                    secondCoord = OpenCurve.Coord(t = 0.46681258537835646),
+                    firstCoord = OpenCurve.Coord(t = 0.46681258537835646),
+                    secondCoord = OpenCurve.Coord(t = 0.6822325289818921),
                 ),
                 ExpectedIntersection(
                     point = Point(515.05453270079, 316.0676656534099),
-                    firstCoord = OpenCurve.Coord(t = 0.8142156753154873),
-                    secondCoord = OpenCurve.Coord(t = 0.42505456557773347),
+                    firstCoord = OpenCurve.Coord(t = 0.42505456557773347),
+                    secondCoord = OpenCurve.Coord(t = 0.8142156753154873),
                 ),
                 ExpectedIntersection(
                     point = Point(540.6332704779081, 378.60112801527333),
-                    firstCoord = OpenCurve.Coord(t = 0.9147383049342437),
-                    secondCoord = OpenCurve.Coord(t = 0.19350344745951725),
+                    firstCoord = OpenCurve.Coord(t = 0.19350344745951725),
+                    secondCoord = OpenCurve.Coord(t = 0.9147383049342437),
                 ),
                 ExpectedIntersection(
                     point = Point(561.4569242282377, 454.624570407085),
-                    firstCoord = OpenCurve.Coord(t = 0.9785368635085525),
-                    secondCoord = OpenCurve.Coord(t = 0.9472752305695555),
+                    firstCoord = OpenCurve.Coord(t = 0.9472752305695555),
+                    secondCoord = OpenCurve.Coord(t = 0.9785368635085525),
                 ),
             ),
         )
@@ -304,8 +306,8 @@ class BezierCurveTests {
             expectedIntersection = listOf(
                 ExpectedIntersection(
                     point = Point(488.177482, 364.171107),
-                    firstCoord = OpenCurve.Coord(t = 0.378574),
-                    secondCoord = OpenCurve.Coord(t = 0.538009),
+                    secondCoord = OpenCurve.Coord(t = 0.378574),
+                    firstCoord = OpenCurve.Coord(t = 0.538009),
                 ),
             ),
         )
@@ -329,30 +331,29 @@ class BezierCurveTests {
             end = Point(671.4185047149658, 490.2051086425781),
         )
 
-        // TODO: De-duplicate the point set
-//        testIntersectionsSymmetric(
-//            firstCurve = firstBezierCurve,
-//            secondCurve = secondBezierCurve,
-//            findIntersections = { firstBezierCurve, secondBezierCurve ->
-//                BezierCurve.findIntersectionsBySubdivision(
-//                    subjectBezierCurve = firstBezierCurve,
-//                    objectBezierCurve = secondBezierCurve,
-//                    tolerance = SpatialObject.SpatialTolerance.default,
-//                )
-//            },
-//            expectedIntersection = listOf(
-//                ExpectedIntersection(
-//                    point = Point(492.59773540496826, 197.3452272415161),
-//                    firstCoord = OpenCurve.Coord(t = 0.9999999925494194),
-//                    secondCoord = OpenCurve.Coord(t = 0.0),
-//                ),
-//                ExpectedIntersection(
-//                    point = Point(501.579334, 374.596689),
-//                    firstCoord = OpenCurve.Coord(t = 0.0),
-//                    secondCoord = OpenCurve.Coord(t = 0.0),
-//                ),
-//            ),
-//        )
+        testIntersectionsSymmetric(
+            firstCurve = firstBezierCurve,
+            secondCurve = secondBezierCurve,
+            findIntersections = { firstBezierCurve, secondBezierCurve ->
+                BezierCurve.findIntersectionsBySubdivision(
+                    subjectBezierCurve = firstBezierCurve,
+                    objectBezierCurve = secondBezierCurve,
+                    tolerance = SpatialObject.SpatialTolerance.default,
+                )
+            },
+            expectedIntersection = listOf(
+                ExpectedIntersection(
+                    point = Point(492.59773540496826, 197.3452272415161),
+                    firstCoord = OpenCurve.Coord(t = 0.9999999925494194),
+                    secondCoord = OpenCurve.Coord(t = 0.0),
+                ),
+                ExpectedIntersection(
+                    point = Point(501.14355433959827, 374.2024184921395),
+                    firstCoord = OpenCurve.Coord(t = 0.2606471534818411),
+                    secondCoord = OpenCurve.Coord(t = 0.8083924553357065),
+                ),
+            ),
+        )
 
         testIntersectionsSymmetric(
             firstCurve = firstBezierCurve,

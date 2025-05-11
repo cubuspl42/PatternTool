@@ -26,7 +26,7 @@ import org.w3c.dom.svg.SVGPathSegMovetoAbs
 data class SvgPath(
     override val stroke: Stroke? = Stroke.default,
     override val fill: Fill? = Fill.None,
-    val markerEndId: String? = null,
+    override val markerEndId: String? = null,
     val segments: List<Segment>,
 ) : SvgShape() {
     sealed class Segment : NumericObject {
@@ -190,18 +190,10 @@ data class SvgPath(
 
     override fun toRawElement(
         document: Document,
-    ): Element {
-        val markerEnd = this.markerEndId
+    ): Element = document.createSvgElement("path").apply {
+        setAttribute("d", segments.joinToString(" ") { it.toPathSegString() })
 
-        return document.createSvgElement("path").apply {
-            setAttribute("d", segments.joinToString(" ") { it.toPathSegString() })
-
-            if (markerEnd != null) {
-                setAttribute("marker-end", "url(#$markerEnd)")
-            }
-
-            setupRawShape(element = this)
-        }
+        setupRawShape(element = this)
     }
 
     override fun equalsWithTolerance(
