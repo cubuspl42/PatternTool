@@ -222,6 +222,9 @@ data class CubicBezierBinomial(
     ): Double? = locatePointByInversionWithControlCheck(
         point = point,
         tolerance = tolerance,
+    ) ?: locatePointByProjection(
+        point = point,
+        tolerance = tolerance,
     )
 
     private fun locatePointByInversionWithControlCheck(
@@ -272,25 +275,66 @@ data class CubicBezierBinomial(
         }
     }
 
-    override fun projectPoint(
+    private fun locatePointByProjection(
         point: Vector2,
         tolerance: NumericObject.Tolerance,
     ): Double? {
-        val projectionPolynomial = findPointProjectionPolynomial(point)
-
-        val locatedTValue = locatePoint(
+        // Find the t-values of all points on curve orthogonal to the given point
+        // TODO: Some valid points aren't found because the polynomial root
+        //       finding doesn't enter the complex domain
+        val projectedTValues = projectPointAll(
             point = point,
-            tolerance = tolerance,
-        ) ?: return null
-
-        val roots = projectionPolynomial.findTValueRoots(
-            guessedTValue = locatedTValue,
             tolerance = tolerance,
         )
 
-        // FIXME: Why single?
-        return roots.singleOrNull()
+        // Sample those t-values, so we know both the t-values and their respective
+        // points
+        val projectedPointSamples = projectedTValues.map { t ->
+            Sample(
+                t = t,
+                point = apply(t),
+            )
+        }
+
+        // We pick only the points which are the same point we're looking for,
+        // typically it should be one point if the given point lies on the
+        // curve at all
+        val acceptableSamples = projectedPointSamples.filter { sample ->
+            sample.point.equalsWithTolerance(
+                other = point,
+                tolerance = tolerance,
+            )
+        }
+
+        // We take the representative t-value, the smallest one
+        return acceptableSamples.minOfOrNull { it.t }
     }
+
+    private fun projectPointAll(
+        point: Vector2,
+        tolerance: NumericObject.Tolerance,
+    ): List<Double> {
+        val projectionPolynomial = findPointProjectionPolynomial(point)
+
+        val guessedTValue = locatePointByInversionWithControlCheck(
+            point = point,
+            tolerance = tolerance,
+        ) ?: 0.5
+
+        val roots = projectionPolynomial.findTValueRoots(
+            guessedTValue = guessedTValue,
+            tolerance = tolerance,
+        )
+
+        return roots
+    }
+
+    override fun projectPoint(
+        point: Vector2,
+        tolerance: NumericObject.Tolerance,
+    ): Double? = projectPointAll(
+        point, tolerance,
+    ).singleOrNull()
 
     /**
      * Find the inverse of the cubic Bézier curve, i.e. the function that maps
