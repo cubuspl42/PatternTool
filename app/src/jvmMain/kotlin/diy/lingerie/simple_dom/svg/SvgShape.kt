@@ -81,6 +81,7 @@ abstract class SvgShape : SvgGraphicsElements() {
     ): Element {
         val fill = this.fill
         val stroke = this.stroke
+        val markerEndId = this.markerEndId
 
         return element.apply {
             if (fill != null) {
@@ -95,8 +96,15 @@ abstract class SvgShape : SvgGraphicsElements() {
                     setAttribute("stroke-dasharray", it)
                 }
             }
+
+            if (markerEndId != null) {
+                setAttribute("marker-end", "url(#$markerEndId)")
+            }
         }
     }
+
+    open val markerEndId: String?
+        get() = null
 
     abstract val stroke: Stroke?
 

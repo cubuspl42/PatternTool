@@ -104,8 +104,8 @@ class LineSegmentTests {
             expectedIntersection = listOf(
                 ExpectedIntersection(
                     point = Point(419.650273, 335.835867),
-                    secondCoord = OpenCurve.Coord(t = 0.332281),
-                    firstCoord = OpenCurve.Coord(t = 0.682180),
+                    firstCoord = OpenCurve.Coord(t = 0.332281),
+                    secondCoord = OpenCurve.Coord(t = 0.682180),
                 ),
             ),
         )

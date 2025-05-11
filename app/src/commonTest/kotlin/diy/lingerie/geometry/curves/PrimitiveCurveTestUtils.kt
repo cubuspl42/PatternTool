@@ -10,8 +10,8 @@ internal data class ExpectedIntersection(
 ) {
     fun swap(): ExpectedIntersection = ExpectedIntersection(
         point = point,
-        secondCoord = firstCoord,
         firstCoord = secondCoord,
+        secondCoord = firstCoord,
     )
 }
 
@@ -27,9 +27,7 @@ internal fun <CurveT : OpenCurve> testIntersectionsSymmetric(
     )
 
     assertIntersectionsEqual(
-        expectedIntersections = expectedIntersection.map {
-            it.swap()
-        },
+        expectedIntersections = expectedIntersection,
         actualIntersections = intersectionsOneWay,
     )
 
@@ -39,7 +37,9 @@ internal fun <CurveT : OpenCurve> testIntersectionsSymmetric(
     )
 
     assertIntersectionsEqual(
-        expectedIntersections = expectedIntersection,
+        expectedIntersections = expectedIntersection.map {
+            it.swap()
+        },
         actualIntersections = intersectionsOtherWay,
     )
 }

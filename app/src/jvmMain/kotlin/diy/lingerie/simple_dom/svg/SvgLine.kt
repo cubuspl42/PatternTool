@@ -10,6 +10,7 @@ data class SvgLine(
     val start: Point,
     val end: Point,
     override val stroke: Stroke = Stroke.default,
+    override val markerEndId: String? = null,
 ) : SvgShape() {
     override val fill: Fill.Specified? = null
 

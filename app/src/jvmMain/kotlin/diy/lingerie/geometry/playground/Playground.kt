@@ -1,6 +1,7 @@
 package diy.lingerie.geometry.playground
 
 import diy.lingerie.geometry.BoundingBox
+import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.Size
 import diy.lingerie.geometry.curves.OpenCurve
@@ -131,6 +132,30 @@ data class Playground(
         )
     }
 
+    data class LineSegmentItem(
+        override val color: SimpleColor = SimpleColor.red,
+        val lineSegment: LineSegment,
+    ) : OpenCurveItem() {
+        companion object {
+            private const val extendedCurveSampleCount = 1024
+            private val extendedCurveSampleRange = (-2.0)..(2.0)
+        }
+
+        override val openCurve: OpenCurve
+            get() = lineSegment
+
+        override fun toSvgElement(): SvgGraphicsElements = SvgLine(
+            start = lineSegment.start,
+            end = lineSegment.end,
+            stroke = SvgShape.Stroke(
+                color = color,
+                width = 0.5,
+            ),
+        ).copy(
+            markerEndId = Playground.triangleMarkerId,
+        )
+    }
+
     data class PointItem(
         override val color: SimpleColor = SimpleColor.black,
         val point: Point,
@@ -153,7 +178,7 @@ data class Playground(
     companion object {
         internal const val triangleMarkerId = "triangle"
 
-        private val triangleMarkerSize = 6.0
+        private const val triangleMarkerSize = 6.0
 
         private val triangleMarker = SvgMarker(
             id = triangleMarkerId,
