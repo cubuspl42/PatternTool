@@ -342,8 +342,13 @@ class BezierCurveTests {
 //            },
 //            expectedIntersection = listOf(
 //                ExpectedIntersection(
-//                    firstCoord = OpenCurve.Coord(t = 0.0),
+//                    point = Point(492.59773540496826, 197.3452272415161),
+//                    firstCoord = OpenCurve.Coord(t = 0.9999999925494194),
+//                    secondCoord = OpenCurve.Coord(t = 0.0),
+//                ),
+//                ExpectedIntersection(
 //                    point = Point(501.579334, 374.596689),
+//                    firstCoord = OpenCurve.Coord(t = 0.0),
 //                    secondCoord = OpenCurve.Coord(t = 0.0),
 //                ),
 //            ),

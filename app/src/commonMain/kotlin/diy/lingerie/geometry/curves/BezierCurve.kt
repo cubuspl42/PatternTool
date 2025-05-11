@@ -97,13 +97,22 @@ data class BezierCurve(
             subjectBezierCurve: BezierCurve,
             objectBezierCurve: BezierCurve,
             tolerance: SpatialObject.SpatialTolerance,
-        ): Set<Intersection> = findIntersectionsBySubdivisionRecursively(
-            subjectBezierCurve = subjectBezierCurve,
-            subjectCoordRange = Coord.fullRange,
-            objectBezierCurve = objectBezierCurve,
-            objectCoordRange = Coord.fullRange,
-            tolerance = tolerance,
-        )
+        ): Set<Intersection> {
+            val clusteredIntersections = findIntersectionsBySubdivisionRecursively(
+                subjectBezierCurve = subjectBezierCurve,
+                subjectCoordRange = Coord.fullRange,
+                objectBezierCurve = objectBezierCurve,
+                objectCoordRange = Coord.fullRange,
+                tolerance = tolerance,
+            )
+
+            val consolidatedIntersections = Intersection.consolidate(
+                intersections = clusteredIntersections,
+                tolerance = tolerance,
+            )
+
+            return consolidatedIntersections
+        }
 
         fun findIntersectionsBySubdivisionRecursively(
             subjectBezierCurve: BezierCurve,
