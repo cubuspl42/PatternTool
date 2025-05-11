@@ -4,6 +4,7 @@ import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
 import diy.lingerie.math.Ratio
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.matrices.matrix2.MatrixNx2
 import diy.lingerie.math.algebra.linear.matrices.matrix3.Matrix3x3
 import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix4x4
@@ -216,6 +217,45 @@ data class CubicBezierBinomial(
     }
 
     override fun locatePoint(
+        point: Vector2,
+        tolerance: NumericObject.Tolerance,
+    ): Double? = locatePointByInversionWithControlCheck(
+        point = point,
+        tolerance = tolerance,
+    )
+
+    private fun locatePointByInversionWithControlCheck(
+        point: Vector2,
+        tolerance: NumericObject.Tolerance,
+    ): Double? {
+        val eps = 10e-8
+
+        val locatedTValue = locatePointByInversion(
+            point = point,
+            tolerance = tolerance,
+        )
+
+        // A control check with an extremely close point
+        val locatedControlTValue = locatePointByInversion(
+            point = point + Vector2(eps, eps),
+            tolerance = tolerance,
+        )
+
+        return when {
+            locatedTValue == null || locatedControlTValue == null -> null
+
+            locatedTValue.equalsWithTolerance(
+                locatedControlTValue,
+                tolerance = tolerance,
+            ) -> locatedTValue
+
+            // If the t-value for the control point is not remotely close to the located t-value, we're near the
+            // self-intersection and the results cannot be trusted
+            else -> null
+        }
+    }
+
+    private fun locatePointByInversion(
         point: Vector2,
         tolerance: NumericObject.Tolerance,
     ): Double? {

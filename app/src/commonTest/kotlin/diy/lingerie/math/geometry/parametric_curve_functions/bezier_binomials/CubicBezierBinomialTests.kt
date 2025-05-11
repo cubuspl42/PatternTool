@@ -38,25 +38,23 @@ class CubicBezierBinomialTests {
             },
         )
 
-        // A good approximation of the self intersection t-value
-        val selfIntersectionT = 0.8083924553357065
-
         // An acceptable approximation of the self intersection point
+        // Internally, it gives an acceptable approximation of the t-value, but it
+        // doesn't pass the control check
         val selfIntersectionPoint0 = Vector2(501.14313780321595, 374.2020798247014)
 
-        // For an acceptable (but not good) approximation of the self-intersection point, the located t-value is very good
-        assertEqualsWithTolerance(
-            expected = selfIntersectionT,
+        assertNull(
             actual = cubicBezierBinomial.locatePoint(
                 point = selfIntersectionPoint0,
                 tolerance = NumericObject.Tolerance.Default,
-            ) ?: throw AssertionError("Cannot find t for the self-intersection point #0: $selfIntersectionPoint0"),
+            ),
         )
 
         // A good approximation of the self intersection point
+        // Of the provided approximations, only this one internally results in a
+        // ratio close to 0/0 and doesn't need to rely on the control check
         val selfIntersectionPoint1 = Vector2(501.14355433959827, 374.2024184921395)
 
-        // For some good approximations of the self-intersection point, the t-value can't be located
         assertNull(
             actual = cubicBezierBinomial.locatePoint(
                 point = selfIntersectionPoint1,
@@ -65,16 +63,15 @@ class CubicBezierBinomialTests {
         )
 
         // Another good approximation of the self intersection point
+        // Internally, it gives a very bad approximation of t-value and in
+        // consequence doesn't pass the control check
         val selfIntersectionPoint2 = Vector2(501.1438111319996, 374.2024184921395)
 
-        // For some other good approximations of the self-intersection point, the t-value is extremely off
-        assertEqualsWithTolerance(
-            expected = -5.68379446238774,
+        assertNull(
             actual = cubicBezierBinomial.locatePoint(
                 point = selfIntersectionPoint2,
                 tolerance = NumericObject.Tolerance.Default,
-            )
-                ?: throw AssertionError("Cannot find t for the self-intersection point point #2: $selfIntersectionPoint2"),
+            ),
         )
     }
 
