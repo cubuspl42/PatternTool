@@ -1,6 +1,7 @@
 package diy.lingerie.geometry
 
 import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.utils.iterable.LinSpace
 import kotlin.math.PI
 import kotlin.math.absoluteValue
 import kotlin.math.atan2
@@ -16,7 +17,11 @@ sealed class RelativeAngle : RadialObject {
         val fiTolerance: Double,
     ) {
         companion object {
-            val Default = RadialTolerance(
+            val zero = RadialTolerance(
+                fiTolerance = 0.0,
+            )
+
+            val default = RadialTolerance(
                 fiTolerance = 1e-3,
             )
         }
@@ -383,6 +388,11 @@ sealed class RelativeAngle : RadialObject {
     }
 
     companion object {
+        /**
+         * The full angle in radians, i.e. 2*PI.
+         */
+        val fiFull = 2 * PI
+
         fun betweenVectors(
             first: Vector2,
             second: Vector2,
@@ -395,6 +405,34 @@ sealed class RelativeAngle : RadialObject {
             )
         }
 
+        /**
+         * Generates a list of [n] evenly spaced angles in the range [0, 2*PI).
+         */
+        fun spectrum(
+            n: Int,
+        ): List<RelativeAngle> {
+            require(n >= 3)
+
+            val firstFi = 0.0
+            val lastFi = fiFull - (fiFull / n)
+
+            return LinSpace(
+                firstFi..lastFi,
+                n = n,
+            ).generate().map { fi ->
+                Radial.normalize(fi = fi)
+            }.toList()
+        }
+
+        /**
+         * @param f a fractional value in the range [0, 1)
+         */
+        fun fractional(
+            f: Double,
+        ): RelativeAngle = Radial.normalize(
+            fi = f * fiFull,
+        )
+
         fun ofDegrees(value: Double): RelativeAngle = Radial.normalize(
             fi = value * PI / 180.0,
         )
@@ -404,7 +442,7 @@ sealed class RelativeAngle : RadialObject {
         get() = fi * 180.0 / PI
 
     abstract fun isZeroWithRadialTolerance(
-        tolerance: RadialTolerance = RadialTolerance.Default,
+        tolerance: RadialTolerance = RadialTolerance.default,
     ): Boolean
 
     override fun equalsWithRadialTolerance(

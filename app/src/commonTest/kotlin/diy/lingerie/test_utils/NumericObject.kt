@@ -29,7 +29,7 @@ fun <T : NumericObject> assertEqualsWithTolerance(
     )
 }
 
-@JvmName("assertEqualsWithToleranceNumericObject")
+@JvmName("assertEqualsWithToleranceListNumericObject")
 fun <T : NumericObject> assertEqualsWithTolerance(
     expected: List<T>,
     actual: List<T>,
@@ -51,7 +51,7 @@ fun <T : NumericObject> assertEqualsWithTolerance(
     }
 }
 
-@JvmName("assertEqualsWithToleranceDouble")
+@JvmName("assertEqualsWithToleranceListDouble")
 fun assertEqualsWithTolerance(
     expected: List<Double>,
     actual: List<Double>,

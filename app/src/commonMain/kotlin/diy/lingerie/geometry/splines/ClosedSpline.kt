@@ -8,7 +8,7 @@ import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.indentLater
 import diy.lingerie.toReprString
-import diy.lingerie.utils.iterable.clusterSimilar
+import diy.lingerie.utils.iterable.clusterSimilarConsecutive
 import diy.lingerie.utils.iterable.withNextCyclic
 import diy.lingerie.utils.iterable.withPreviousCyclic
 
@@ -73,7 +73,7 @@ data class ClosedSpline(
         }
 
     val smoothSubSplines: List<OpenSpline>
-        get() = cyclicCurves.clusterSimilar { prevCurve, nextCurve ->
+        get() = cyclicCurves.clusterSimilarConsecutive { prevCurve, nextCurve ->
             prevCurve.connectsSmoothly(
                 nextCurve = nextCurve,
             )

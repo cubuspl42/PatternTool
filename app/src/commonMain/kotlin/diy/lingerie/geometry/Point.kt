@@ -5,6 +5,7 @@ import diy.lingerie.math.algebra.NumericObject.Tolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.geometry.transformations.PrimitiveTransformation.Translation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.utils.iterable.clusterSimilar
 
 data class Point(
     val pointVector: Vector2,
@@ -17,6 +18,38 @@ data class Point(
             tolerance: Tolerance,
         ): Boolean {
             TODO()
+        }
+
+        fun average(
+            points: Iterable<Point>,
+        ): Point {
+            val ax = points.map { it.x }.average()
+            val ay = points.map { it.y }.average()
+
+            return Point(
+                x = ax,
+                y = ay,
+            )
+        }
+
+        fun consolidate(
+            points: Set<Point>,
+            tolerance: SpatialObject.SpatialTolerance,
+        ): Set<Point> {
+            // Sorting points by the distance from origin helps, but it
+            // will fail for multiple clouds that have the same distance from
+            // origin with the given tolerance
+            val pointsSorted = points.sortedBy { it.pointVector.magnitudeSquared }
+
+            val pointClusters: List<List<Point>> = pointsSorted.clusterSimilar { cloud, point ->
+                val cloudAverage = average(cloud)
+
+                distanceBetween(cloudAverage, point) < tolerance.spanTolerance
+            }
+
+            return pointClusters.map { pointCluster ->
+                Point.average(pointCluster)
+            }.toSet()
         }
 
         fun midPoint(
@@ -74,7 +107,7 @@ data class Point(
     ): Boolean = when {
         other !is Point -> false
 
-        else -> Point.distanceBetween(this, other).equalsWithSpatialTolerance(
+        else -> distanceBetween(this, other).equalsWithSpatialTolerance(
             Span.Zero,
             tolerance = tolerance,
         )
@@ -83,9 +116,12 @@ data class Point(
     fun translateByDistance(
         direction: Direction,
         distance: Span,
-    ): Point {
-        TODO()
-    }
+    ): Point = transformBy(
+        Translation.inDirection(
+            direction = direction,
+            distance = distance,
+        ),
+    )
 
     fun translationTo(
         target: Point,
