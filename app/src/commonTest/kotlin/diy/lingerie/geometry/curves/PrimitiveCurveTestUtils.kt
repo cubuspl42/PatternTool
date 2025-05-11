@@ -1,6 +1,7 @@
 package diy.lingerie.geometry.curves
 
 import diy.lingerie.geometry.Point
+import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 
 internal data class ExpectedIntersection(
@@ -20,6 +21,7 @@ internal fun <CurveT : OpenCurve> testIntersectionsSymmetric(
     secondCurve: CurveT,
     findIntersections: (CurveT, CurveT) -> Set<OpenCurve.Intersection>,
     expectedIntersection: List<ExpectedIntersection>,
+    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
 ) {
     val intersectionsOneWay = findIntersections(
         firstCurve,
@@ -29,6 +31,7 @@ internal fun <CurveT : OpenCurve> testIntersectionsSymmetric(
     assertIntersectionsEqual(
         expectedIntersections = expectedIntersection,
         actualIntersections = intersectionsOneWay,
+        tolerance = tolerance,
     )
 
     val intersectionsOtherWay = findIntersections(
@@ -41,12 +44,14 @@ internal fun <CurveT : OpenCurve> testIntersectionsSymmetric(
             it.swap()
         },
         actualIntersections = intersectionsOtherWay,
+        tolerance = tolerance,
     )
 }
 
 internal fun assertIntersectionsEqual(
     expectedIntersections: List<ExpectedIntersection>,
     actualIntersections: Set<OpenCurve.Intersection>,
+    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
 ) {
     assertEqualsWithTolerance(
         expected = expectedIntersections.map { intersection ->
@@ -57,5 +62,6 @@ internal fun assertIntersectionsEqual(
             }
         },
         actual = actualIntersections.sortedBy { it.point.x },
+        tolerance = tolerance,
     )
 }
