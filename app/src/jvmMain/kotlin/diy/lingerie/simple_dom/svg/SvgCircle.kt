@@ -12,7 +12,7 @@ data class SvgCircle(
     val center: Point,
     val radius: Double,
     override val stroke: Stroke? = Stroke.default,
-    override val fill: Fill? = Fill.default,
+    override val fill: Fill.Specified? = Fill.Specified.default,
 ) : SvgShape() {
     override fun toRawElement(
         document: Document,

@@ -10,7 +10,6 @@ import diy.lingerie.pattern_tool.Outline.Verge
 import diy.lingerie.simple_dom.mm
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
-import diy.lingerie.simple_dom.svg.SvgShape
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import diy.lingerie.utils.getResourceAsReader
 import kotlin.test.Ignore
@@ -348,7 +347,7 @@ class OutlineTests {
         val point23Control = Point(997.57, 842.14)
 
         val svgRoot = SvgRoot(
-            children = listOf(
+            graphicsElements = listOf(
                 SvgPath(
                     segments = listOf(
                         SvgPath.Segment.MoveTo(

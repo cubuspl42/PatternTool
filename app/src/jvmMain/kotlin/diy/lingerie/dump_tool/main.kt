@@ -201,9 +201,11 @@ class Tool : CliktCommand() {
         areaRectangle: SvgRectangle,
         svgPath: SvgPath,
     ) {
-        val hexColorString = "[${svgPath.stroke.color.toHexString()}]"
+        val hexColorString = svgPath.stroke?.let {  stroke ->
+            "[${svgPath.stroke.color.toHexString()}]"
+        }
 
-        println("(SVG path [$hexColorString])")
+        println("(SVG path, color: $hexColorString)")
 
         val spline = Spline.importSvgPath(svgPath = svgPath)
 

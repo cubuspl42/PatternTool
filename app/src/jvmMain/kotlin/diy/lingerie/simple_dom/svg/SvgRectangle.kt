@@ -13,7 +13,7 @@ data class SvgRectangle(
     val position: Point,
     val size: Size,
     override val stroke: Stroke? = Stroke.default,
-    override val fill: Fill? = Fill.default,
+    override val fill: Fill.Specified? = Fill.Specified.default,
 ) : SvgShape() {
     override fun toRawElement(
         document: Document,

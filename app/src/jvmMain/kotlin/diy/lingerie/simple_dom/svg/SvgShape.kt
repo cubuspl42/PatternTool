@@ -7,7 +7,7 @@ import diy.lingerie.math.algebra.equalsWithToleranceOrNull
 import diy.lingerie.simple_dom.SimpleColor
 import org.w3c.dom.Element
 
-abstract class SvgShape : SvgElement() {
+abstract class SvgShape : SvgGraphicsElements() {
     data class Stroke(
         val color: SimpleColor,
         val width: Double,
@@ -33,22 +33,40 @@ abstract class SvgShape : SvgElement() {
         }
     }
 
-    data class Fill(
-        val color: SimpleColor,
-    ) : NumericObject {
-        companion object {
-            val default = Fill(
-                color = SimpleColor.black,
-            )
+    sealed class Fill : NumericObject {
+        data class Specified(
+            val color: SimpleColor,
+        ) : Fill() {
+            companion object {
+                val default = Specified(
+                    color = SimpleColor.black,
+                )
+            }
+
+            override fun equalsWithTolerance(
+                other: NumericObject, tolerance: NumericObject.Tolerance
+            ): Boolean = when {
+                other !is Specified -> false
+                color != other.color -> false
+                else -> true
+            }
+
+            override fun toFillString(): String = color.toHexString()
         }
 
-        override fun equalsWithTolerance(
-            other: NumericObject, tolerance: NumericObject.Tolerance
-        ): Boolean = when {
-            other !is Fill -> false
-            color != other.color -> false
-            else -> true
+        data object None : Fill() {
+            override fun toFillString(): String = "none"
+
+            override fun equalsWithTolerance(
+                other: NumericObject,
+                tolerance: NumericObject.Tolerance
+            ): Boolean {
+                TODO("Not yet implemented")
+            }
         }
+
+
+        abstract fun toFillString(): String
     }
 
 
@@ -65,28 +83,16 @@ abstract class SvgShape : SvgElement() {
         val stroke = this.stroke
 
         return element.apply {
-            when {
-                fill != null -> {
-                    setAttribute("fill", fill.color.toHexString())
-                }
-
-                else -> {
-                    setAttribute("fill", "none")
-                }
+            if (fill != null) {
+                setAttribute("fill", fill.toFillString())
             }
 
-            when {
-                stroke != null -> {
-                    setAttribute("stroke", stroke.color.toHexString())
-                    setAttribute("stroke-width", stroke.width.toString())
+            if (stroke != null) {
+                setAttribute("stroke", stroke.color.toHexString())
+                setAttribute("stroke-width", stroke.width.toString())
 
-                    stroke.toDashArrayString()?.let {
-                        setAttribute("stroke-dasharray", it)
-                    }
-                }
-
-                else -> {
-                    setAttribute("stroke", "none")
+                stroke.toDashArrayString()?.let {
+                    setAttribute("stroke-dasharray", it)
                 }
             }
         }

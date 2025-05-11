@@ -5,7 +5,6 @@ import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
 import diy.lingerie.pattern_tool.pattern_document.PatternPage
 import diy.lingerie.simple_dom.svg.SvgGroup
-import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
 import kotlinx.serialization.Serializable
 
@@ -17,7 +16,7 @@ data class PatternPageLayout(
         fun reconstruct(
             pageSvgRoot: SvgRoot,
         ): PatternPageLayout = PatternPageLayout(
-            pieceLayoutById = pageSvgRoot.children.mapNotNull { svgElement ->
+            pieceLayoutById = pageSvgRoot.graphicsElements.mapNotNull { svgElement ->
                 (svgElement as? SvgGroup)?.let { svgGroup ->
                     PatternPieceLayout.reconstruct(svgGroup)
                 }
@@ -31,7 +30,7 @@ data class PatternPageLayout(
         pageSvgRoot = SvgRoot(
             width = PaperSizeConstants.A4.width,
             height = PaperSizeConstants.A4.height,
-            children = pieceLayoutById.map { (id, patternPieceLayout) ->
+            graphicsElements = pieceLayoutById.map { (id, patternPieceLayout) ->
                 val patternPiece =
                     patternPieceById[id] ?: throw IllegalArgumentException("Pattern piece with id $id not found")
 

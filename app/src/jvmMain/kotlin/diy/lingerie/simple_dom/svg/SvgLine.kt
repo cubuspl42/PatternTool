@@ -11,7 +11,7 @@ data class SvgLine(
     val end: Point,
     override val stroke: Stroke = Stroke.default,
 ) : SvgShape() {
-    override val fill: Fill? = null
+    override val fill: Fill.Specified? = null
 
     override fun toRawElement(
         document: Document,

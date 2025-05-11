@@ -5,7 +5,6 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.equalsWithToleranceOrNull
 import diy.lingerie.simple_dom.SimpleDimension
-import diy.lingerie.simple_dom.SimpleUnit
 import diy.lingerie.utils.xml.childElements
 import diy.lingerie.utils.xml.getAttributeOrNull
 import diy.lingerie.utils.xml.svg.MinimalCssContext
@@ -24,9 +23,10 @@ import java.nio.file.Path
 
 data class SvgRoot(
     val viewBox: ViewBox? = null,
+    val defs: List<SvgDef> = emptyList(),
     val width: SimpleDimension<*>,
     val height: SimpleDimension<*>,
-    val children: List<SvgElement>,
+    val graphicsElements: List<SvgGraphicsElements>,
 ) : SvgElement() {
     data class ViewBox(
         val x: Double,
@@ -108,6 +108,14 @@ data class SvgRoot(
         )
     }
 
+    private fun toDefsElement(
+        document: Document,
+    ): Element = document.createSvgElement("defs").apply {
+        defs.forEach { def ->
+            appendChild(def.toRawElement(document = document))
+        }
+    }
+
     private fun setup(
         document: Document,
         root: Element,
@@ -122,7 +130,11 @@ data class SvgRoot(
                 setAttribute("viewBox", viewBox.toViewBoxString())
             }
 
-            children.forEach { child ->
+            appendChild(
+                toDefsElement(document = document)
+            )
+
+            graphicsElements.forEach { child ->
                 appendChild(child.toRawElement(document = document))
             }
         }
@@ -151,9 +163,9 @@ data class SvgRoot(
         }
     }
 
-    override fun flatten(
+    fun flatten(
         baseTransformation: Transformation,
-    ): List<SvgShape> = children.flatMap {
+    ): List<SvgShape> = graphicsElements.flatMap {
         it.flatten(baseTransformation = baseTransformation)
     }
 }
@@ -175,8 +187,8 @@ fun SVGDocument.toSimple(): SvgRoot {
         width = width,
         height = height,
         viewBox = viewBox,
-        children = documentSvgElement.childElements.mapNotNull {
-            it.toSimpleElement()
+        graphicsElements = documentSvgElement.childElements.mapNotNull {
+            it.toSvgGraphicsElements()
         },
     )
 }

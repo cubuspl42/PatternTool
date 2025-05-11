@@ -1,6 +1,5 @@
 package diy.lingerie.simple_dom.svg
 
-import diy.lingerie.geometry.transformations.CombinedTransformation
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
@@ -14,8 +13,8 @@ import org.w3c.dom.svg.SVGTransformList
 data class SvgGroup(
     val id: String? = null,
     val transformation: Transformation? = null,
-    val children: List<SvgElement>,
-) : SvgElement() {
+    val children: List<SvgGraphicsElements>,
+) : SvgGraphicsElements() {
     override fun toRawElement(
         document: Document,
     ): Element = document.createSvgElement("g").apply {
@@ -62,7 +61,7 @@ fun SVGGElement.toSimpleGroup(): SvgGroup = SvgGroup(
     transformation = Transformation.fromSvgTransformList(
         transformList = transform.baseVal,
     ),
-    children = childElements.mapNotNull { it.toSimpleElement() },
+    children = childElements.mapNotNull { it.toSvgGraphicsElements() },
 )
 
 fun Transformation.Companion.fromSvgTransformList(
