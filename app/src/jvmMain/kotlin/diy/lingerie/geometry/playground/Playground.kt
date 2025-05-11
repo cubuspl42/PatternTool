@@ -25,6 +25,8 @@ data class Playground(
     val items: List<Item>,
 ) {
     sealed class Item {
+        abstract val color: SimpleColor
+
         abstract fun toSvgElement(): SvgGraphicsElements
 
         abstract fun findBoundingBox(): BoundingBox
@@ -37,6 +39,7 @@ data class Playground(
     }
 
     data class BezierCurveItem(
+        override val color: SimpleColor = SimpleColor.red,
         val bezierCurve: BezierCurve,
     ) : OpenCurveItem() {
         companion object {
@@ -64,7 +67,7 @@ data class Playground(
 
         private fun toPrimarySvgPath(): SvgPath = bezierCurve.toSvgPath(
             stroke = SvgShape.Stroke(
-                color = SimpleColor.red,
+                color = color,
                 width = 0.5,
             ),
         ).copy(
@@ -129,6 +132,7 @@ data class Playground(
     }
 
     data class PointItem(
+        override val color: SimpleColor = SimpleColor.black,
         val point: Point,
     ) : Item() {
         override fun toSvgElement(): SvgCircle = SvgCircle(
@@ -136,7 +140,7 @@ data class Playground(
             radius = 1.0,
             stroke = null,
             fill = SvgShape.Fill.Specified(
-                color = SimpleColor.black,
+                color = color,
             ),
         )
 

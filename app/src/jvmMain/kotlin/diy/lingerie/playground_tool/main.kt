@@ -9,6 +9,7 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.playground.Playground
+import diy.lingerie.simple_dom.SimpleColor
 import java.nio.file.Path
 
 class MainCommand : CliktCommand() {
@@ -20,31 +21,37 @@ class MainCommand : CliktCommand() {
 
     override fun run() {
         val firstCurve = BezierCurve(
-            start = Point(383.0995044708252, 275.80810546875),
-            firstControl = Point(435.23948860168457, 325.49310302734375),
-            secondControl = Point(510.3655261993408, 384.4371032714844),
-            end = Point(614.6575183868408, 453.4740905761719),
+            start = Point(273.80049324035645, 489.08709716796875),
+            firstControl = Point(684.4749774932861, 329.1851005554199),
+            secondControl = Point(591.8677291870117, 214.5483512878418),
+            end = Point(492.59773540496826, 197.3452272415161),
         )
 
         val secondCurve = BezierCurve(
-            start = Point(372.14351081848145, 439.6011047363281),
-            firstControl = Point(496.5914783477783, 370.8171081542969),
-            secondControl = Point(559.4554920196533, 307.91810607910156),
-            end = Point(582.3854846954346, 253.8291015625),
+            start = Point(492.59773540496826, 197.3452272415161),
+            firstControl = Point(393.3277416229248, 180.14210319519043),
+            secondControl = Point(287.3950023651123, 260.3726043701172),
+            end = Point(671.4185047149658, 490.2051086425781),
         )
 
-        val intersectionPoint = Point(488.177482, 364.171107)
+        val intersectionPoint1 = Point(492.59773540496826, 197.3452272415161)
+        val intersectionPoint2 = Point(501.579334, 374.596689)
 
         val playground = Playground(
             items = listOf(
                 Playground.BezierCurveItem(
+                    color = SimpleColor.red,
                     bezierCurve = firstCurve,
                 ),
                 Playground.BezierCurveItem(
+                    color = SimpleColor.blue,
                     bezierCurve = secondCurve,
                 ),
                 Playground.PointItem(
-                    point = intersectionPoint,
+                    point = intersectionPoint1,
+                ),
+                Playground.PointItem(
+                    point = intersectionPoint2,
                 ),
             ),
         )
