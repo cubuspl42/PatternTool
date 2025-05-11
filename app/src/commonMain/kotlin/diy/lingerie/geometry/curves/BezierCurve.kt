@@ -73,7 +73,6 @@ data class BezierCurve(
             return BezierCurve.findIntersectionsByEquationSolving(
                 subjectBezierCurve = subjectBezierCurve,
                 objectBezierCurve = objectBezierCurve,
-                tolerance = NumericObject.Tolerance.Default,
             )
         }
 
@@ -84,11 +83,10 @@ data class BezierCurve(
         fun findIntersectionsByEquationSolving(
             subjectBezierCurve: BezierCurve,
             objectBezierCurve: BezierCurve,
-            tolerance: NumericObject.Tolerance,
         ): Set<Intersection> = findIntersectionsByEquationSolving(
             simpleSubjectCurve = subjectBezierCurve,
             complexObjectCurve = objectBezierCurve,
-            tolerance = tolerance,
+            tolerance = NumericObject.Tolerance.Default,
         )
 
         /**
@@ -96,12 +94,26 @@ data class BezierCurve(
          * recursively and checking for overlaps
          */
         fun findIntersectionsBySubdivision(
-            firstCurve: BezierCurve,
-            secondCurve: BezierCurve,
+            subjectBezierCurve: BezierCurve,
+            objectBezierCurve: BezierCurve,
             tolerance: SpatialObject.SpatialTolerance,
-        ): Set<Point> {
-            val firstBoundingBox = firstCurve.findBoundingBox()
-            val secondBoundingBox = secondCurve.findBoundingBox()
+        ): Set<Intersection> = findIntersectionsBySubdivisionRecursively(
+            subjectBezierCurve = subjectBezierCurve,
+            subjectCoordRange = Coord.fullRange,
+            objectBezierCurve = objectBezierCurve,
+            objectCoordRange = Coord.fullRange,
+            tolerance = tolerance,
+        )
+
+        fun findIntersectionsBySubdivisionRecursively(
+            subjectBezierCurve: BezierCurve,
+            subjectCoordRange: ClosedRange<Coord>,
+            objectBezierCurve: BezierCurve,
+            objectCoordRange: ClosedRange<Coord>,
+            tolerance: SpatialObject.SpatialTolerance,
+        ): Set<Intersection> {
+            val firstBoundingBox = subjectBezierCurve.findBoundingBox()
+            val secondBoundingBox = objectBezierCurve.findBoundingBox()
 
             if (!firstBoundingBox.overlaps(secondBoundingBox)) {
                 return emptySet()
@@ -111,32 +123,51 @@ data class BezierCurve(
             val isSecondBoundingBoxSmallEnough = secondBoundingBox.area < tolerance.spanTolerance.valueSquared
 
             if (isFirstBoundingBoxSmallEnough && isSecondBoundingBoxSmallEnough) {
+                val intersectionPoint = Point.Companion.midPoint(
+                    firstBoundingBox.center,
+                    secondBoundingBox.center,
+                )
+
                 return setOf(
-                    Point.Companion.midPoint(
-                        firstBoundingBox.center,
-                        secondBoundingBox.center,
-                    ),
+                    object : Intersection() {
+                        override val point: Point = intersectionPoint
+
+                        override val subjectCoord: Coord = subjectCoordRange.start
+
+                        override val objectCoord: Coord = objectCoordRange.start
+                    },
                 )
             }
 
-            val (firstCurveLeft, firstCurveRight) = firstCurve.splitAt(coord = Coord.half)
-            val (secondCurveLeft, secondCurveRight) = secondCurve.splitAt(coord = Coord.half)
+            val (firstCurveLeftCoordRange, firstCurveRightCoordRange) = subjectCoordRange.splitAtHalf()
+            val (firstCurveLeft, firstCurveRight) = subjectBezierCurve.splitAt(coord = Coord.half)
 
-            return findIntersectionsBySubdivision(
-                firstCurve = firstCurveLeft,
-                secondCurve = secondCurveLeft,
+            val (secondCurveLeftCoordRange, secondCurveRightCoordRange) = objectCoordRange.splitAtHalf()
+            val (secondCurveLeft, secondCurveRight) = objectBezierCurve.splitAt(coord = Coord.half)
+
+            return findIntersectionsBySubdivisionRecursively(
+                subjectBezierCurve = firstCurveLeft,
+                subjectCoordRange = firstCurveLeftCoordRange,
+                objectBezierCurve = secondCurveLeft,
+                objectCoordRange = secondCurveLeftCoordRange,
                 tolerance = tolerance,
-            ) + findIntersectionsBySubdivision(
-                firstCurve = firstCurveLeft,
-                secondCurve = secondCurveRight,
+            ) + findIntersectionsBySubdivisionRecursively(
+                subjectBezierCurve = firstCurveLeft,
+                subjectCoordRange = firstCurveLeftCoordRange,
+                objectBezierCurve = secondCurveRight,
+                objectCoordRange = secondCurveRightCoordRange,
                 tolerance = tolerance,
-            ) + findIntersectionsBySubdivision(
-                firstCurve = firstCurveRight,
-                secondCurve = secondCurveLeft,
+            ) + findIntersectionsBySubdivisionRecursively(
+                subjectBezierCurve = firstCurveRight,
+                subjectCoordRange = firstCurveRightCoordRange,
+                objectBezierCurve = secondCurveLeft,
+                objectCoordRange = secondCurveLeftCoordRange,
                 tolerance = tolerance,
-            ) + findIntersectionsBySubdivision(
-                firstCurve = firstCurveRight,
-                secondCurve = secondCurveRight,
+            ) + findIntersectionsBySubdivisionRecursively(
+                subjectBezierCurve = firstCurveRight,
+                subjectCoordRange = firstCurveRightCoordRange,
+                objectBezierCurve = secondCurveRight,
+                objectCoordRange = secondCurveRightCoordRange,
                 tolerance = tolerance,
             )
         }

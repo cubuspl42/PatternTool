@@ -8,10 +8,10 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.Ray
-import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.RealFunction
+import diy.lingerie.utils.avgOf
 import diy.lingerie.utils.split
 import kotlin.jvm.JvmInline
 
@@ -104,16 +104,16 @@ abstract class OpenCurve : NumericObject, ReprObject {
          * The t-value for the basis function
          */
         val t: Double,
-    ) : NumericObject, ReprObject {
+    ) : NumericObject, ReprObject, Comparable<Coord> {
         companion object {
-            val range = 0.0..1.0
+            private val tRange = 0.0..1.0
 
             /**
              * @param t t-value, unconstrained
              * @return coord if t is in [0, 1], null otherwise
              */
             fun of(t: Double): Coord? = when (t) {
-                in range -> Coord(t = t)
+                in tRange -> Coord(t = t)
                 else -> null
             }
 
@@ -128,6 +128,8 @@ abstract class OpenCurve : NumericObject, ReprObject {
             val end = Coord(
                 t = 1.0,
             )
+
+            val fullRange = start..end
         }
 
         val complement: Coord
@@ -136,7 +138,7 @@ abstract class OpenCurve : NumericObject, ReprObject {
             )
 
         init {
-            require(t in range)
+            require(t in tRange)
         }
 
         override fun equalsWithTolerance(
@@ -149,6 +151,8 @@ abstract class OpenCurve : NumericObject, ReprObject {
         }
 
         override fun toReprString(): String = "Coord(t = $t)"
+
+        override fun compareTo(other: Coord): Int = t.compareTo(other.t)
     }
 
     /**
@@ -286,4 +290,14 @@ abstract class OpenCurve : NumericObject, ReprObject {
     internal abstract fun findIntersectionsOpenSpline(
         subjectSpline: OpenSpline,
     ): Set<Intersection>
+}
+
+fun ClosedRange<OpenCurve.Coord>.splitAtHalf(): Pair<ClosedRange<OpenCurve.Coord>, ClosedRange<OpenCurve.Coord>> {
+    val tHalf = avgOf(start.t, endInclusive.t)
+    val coordHalf = OpenCurve.Coord(t = tHalf)
+
+    return Pair(
+        start..coordHalf,
+        coordHalf..endInclusive,
+    )
 }

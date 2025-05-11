@@ -6,6 +6,14 @@ interface SpatialObject : GeometricObject {
     data class SpatialTolerance(
         val spanTolerance: Span,
     ) {
+        companion object {
+            val default = SpatialTolerance(
+                spanTolerance = Span.of(
+                    value = 1e-6,
+                ),
+            )
+        }
+
         fun equalsApproximately(
             one: Span,
             another: Span,
