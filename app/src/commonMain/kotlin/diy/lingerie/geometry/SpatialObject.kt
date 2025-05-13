@@ -14,6 +14,12 @@ interface SpatialObject : GeometricObject {
             )
         }
 
+        operator fun times(
+            factor: Int,
+        ): SpatialTolerance = SpatialTolerance(
+            spanTolerance = spanTolerance * factor.toDouble(),
+        )
+
         fun equalsApproximately(
             one: Span,
             another: Span,
