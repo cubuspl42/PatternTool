@@ -1,26 +1,12 @@
-from sympy import symbols, binomial, Matrix, expand, solve, Expr
-from typing import Tuple, List
+from sympy import symbols, binomial, Matrix, expand, solve, Expr, lambdify
+from typing import Tuple, List, Any
+from sympy.core.numbers import I
 
 # N = 3 for cubic Bézier curves
 n = 3
 
 # Define symbolic variables
 x_sym, y_sym, t_sym = symbols('x y t', real=True)
-
-a_p0_x, a_p0_y, a_p1_x, a_p1_y, a_p2_x, a_p2_y, a_p3_x, a_p3_y = symbols(
-    'a_p0_x a_p0_y a_p1_x a_p1_y a_p2_x a_p2_y a_p3_x a_p3_y', real=True)
-
-a_p0 = (a_p0_x, a_p0_y)
-a_p1 = (a_p1_x, a_p1_y)
-a_p2 = (a_p2_x, a_p2_y)
-a_p3 = (a_p3_x, a_p3_y)
-a_coords = [a_p0, a_p1, a_p2, a_p3]
-
-a_a3_x, a_a3_y, a_a2_x, a_a2_y, a_a1_x, a_a1_y, a_a0_x, a_a0_y = symbols(
-    'a_a3_x a_a3_y a_a2_x a_a2_y a_a1_x a_a1_y a_a0_x a_a0_y', real=True)
-b_a3_x, b_a3_y, b_a2_x, b_a2_y, b_a1_x, b_a1_y, b_a0_x, b_a0_y = symbols(
-    'b_a3_x b_a3_y b_a2_x b_a2_y b_a1_x b_a1_y b_a0_x b_a0_y', real=True)
-
 
 class BezierCurve:
     def __init__(
@@ -54,6 +40,9 @@ class BezierCurve:
                 3 * (1 - t_sym) * t_sym ** 2 * p2 +
                 t_sym ** 3 * p3
         )
+
+    def to_polynomial_lambda(self):
+        return lambdify(t_sym, self.to_polynomial(), 'numpy')
 
     def l_ij(self, i: int, j: int) -> Expr:
         """
@@ -107,27 +96,52 @@ class BezierCurve:
         # Get the determinant, which is your implicit polynomial f(x,y)
         return a_impl_mat.det()
 
-    def invert(self) -> Expr:
+    def implicitize_lambda(self):
+        return lambdify((x_sym, y_sym), self.implicitize(), 'numpy')
+
+    def implicitize_bruteforce(self) -> Expr:
+        p = self.to_polynomial()
+        x_t, y_t = p
+
+        tx_1, tx_2, tx_3 = solve(x_t - x_sym, t_sym)
+
+        assert tx_1.has(I)
+        assert tx_2.has(I)
+        assert not tx_3.has(I)
+
+        impl = y_t.subs(t_sym, tx_3)
+
+        return impl
+
+    def implicitize_bruteforce_lambda(self):
+        return lambdify((x_sym, y_sym), self.implicitize_bruteforce(), 'numpy')
+
+    def invert(self) -> Expr | None:
         c1_n_mat = Matrix([
-            [a_p0_x, a_p0_y, 1.0],
-            [a_p1_x, a_p1_y, 1.0],
-            [a_p3_x, a_p3_y, 1.0],
+            [self.p0[0], self.p0[1], 1.0],
+            [self.p1[0], self.p1[1], 1.0],
+            [self.p3[0], self.p3[1], 1.0],
         ])
 
         c2_n_mat = Matrix([
-            [a_p0_x, a_p0_y, 1.0],
-            [a_p2_x, a_p2_y, 1.0],
-            [a_p3_x, a_p3_y, 1.0],
+            [self.p0[0], self.p0[1], 1.0],
+            [self.p2[0], self.p2[1], 1.0],
+            [self.p3[0], self.p3[1], 1.0],
         ])
 
         c_d_mat = Matrix([
-            [a_p1_x, a_p1_y, 1.0],
-            [a_p2_x, a_p2_y, 1.0],
-            [a_p3_x, a_p3_y, 1.0],
+            [self.p1[0], self.p1[1], 1.0],
+            [self.p2[0], self.p2[1], 1.0],
+            [self.p3[0], self.p3[1], 1.0],
         ])
 
-        c1 = c1_n_mat.det() / c_d_mat.det()
-        c2 = c2_n_mat.det() / c_d_mat.det()
+        denominator = 3 * c_d_mat.det()
+
+        if denominator == 0:
+            return None
+
+        c1 = c1_n_mat.det() / denominator
+        c2 = -(c2_n_mat.det() / denominator)
 
         la = c1 * self.l31 + c2 * (self.l30 + self.l21) + self.l20
         lb = c1 * self.l30 + c2 * self.l20 + self.l10
@@ -152,67 +166,3 @@ class BezierCurve:
         })
 
         return expand(intersection_polynomial)
-
-
-bezier_nine_a = BezierCurve(
-    p0=(273.80049324035645, 489.08709716796875),
-    p1=(1068.5394763946533, 253.16610717773438),
-    p2=(-125.00849723815918, 252.71710205078125),
-    p3=(671.4185047149658, 490.2051086425781),
-)
-
-bezier_nine_b = BezierCurve(
-    p0=(372.6355152130127, 191.58710479736328),
-    p1=(496.35252571105957, 852.5531311035156),
-    p2=(442.4235095977783, -54.72489929199219),
-    p3=(569.3854846954346, 487.569091796875),
-)
-
-bezier_split_a = BezierCurve(
-    p0=(273.80049324035645, 489.08709716796875),
-    p1=(684.4749774932861, 329.1851005554199),
-    p2=(591.8677291870117, 214.5483512878418),
-    p3=(492.59773540496826, 197.3452272415161),
-)
-
-bezier_split_b = BezierCurve(
-    p0=(492.59773540496826, 197.3452272415161),
-    p1=(393.3277416229248, 180.14210319519043),
-    p2=(287.3950023651123, 260.3726043701172),
-    p3=(671.4185047149658, 490.2051086425781),
-)
-
-# bezier0 = bezier_nine_a
-# bezier1 = bezier_nine_b
-
-bezier0 = bezier_split_a
-bezier1 = bezier_split_b
-
-bezier0_poly_x, bezier0_poly_y = bezier0.to_polynomial()
-bezier1_poly_x, bezier1_poly_y = bezier1.to_polynomial()
-
-print("bezier0_poly_x:")
-print(expand(bezier0_poly_x))
-
-print("bezier0_poly_y:")
-print(expand(bezier0_poly_y))
-
-print("bezier1_poly_x:")
-print(expand(bezier1_poly_x))
-
-print("bezier1_poly_y:")
-print(expand(bezier1_poly_y))
-
-intersection0 = bezier0.intersect(bezier1)
-
-print("intersection0:")
-print(intersection0)
-
-intersection1 = bezier1.intersect(bezier0)
-
-print("intersection1:")
-print(intersection1)
-
-roots = solve(intersection1)
-
-print(roots)
