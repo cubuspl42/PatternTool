@@ -394,6 +394,53 @@ class BezierCurveTests {
             ),
         )
     }
+
+    @Test
+    @Ignore // FIXME: Fix various issues with self-intersection
+    fun testFindIntersections_BezierCurve_oneSelfIntersection() {
+        // A loop
+        val bezierCurve = BezierCurve(
+            start = Point(233.92449010844575, 500.813035986871),
+            firstControl = Point(863.426829231712, 303.18800785949134),
+            secondControl = Point(53.73076075494464, 164.97814335091425),
+            end = Point(551.3035908506827, 559.7310384198445),
+        )
+
+        // Correct values
+        val expectedIntersectionPoint = Point(413.87430209404283, 426.9901974419915)
+        val expectedTValue1 = 0.131531503613082
+        val expectedTValue2 = 0.8639172755496
+
+        // FIXME: Multum intersection points are found, as a curve has infinite
+        //        common points with itself (maybe it makes sense?)
+        testBezierIntersectionsBySubdivisionSymmetric(
+            firstCurve = bezierCurve,
+            secondCurve = bezierCurve,
+            expectedIntersection = listOf(
+                ExpectedIntersection(
+                    point = expectedIntersectionPoint,
+                    firstCoord = OpenCurve.Coord(t = expectedTValue1),
+                    secondCoord = OpenCurve.Coord(t = expectedTValue2),
+                ),
+            )
+        )
+
+        // FIXME: One intersection is found, it's the point on curve, but
+        //        otherwise its position is seemingly random
+        testBezierIntersectionsByEquationSolvingSymmetric(
+            firstCurve = bezierCurve,
+            secondCurve = bezierCurve,
+
+            expectedIntersection = listOf(
+                ExpectedIntersection(
+                    point = expectedIntersectionPoint,
+                    firstCoord = OpenCurve.Coord(t = expectedTValue1),
+                    secondCoord = OpenCurve.Coord(t = expectedTValue2),
+                ),
+            )
+
+        )
+    }
 }
 
 internal fun testBezierIntersectionsConsistentSymmetric(
