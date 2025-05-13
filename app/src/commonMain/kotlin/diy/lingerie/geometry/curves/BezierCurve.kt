@@ -103,7 +103,7 @@ data class BezierCurve(
                 subjectCoordRange = Coord.fullRange,
                 objectBezierCurve = objectBezierCurve,
                 objectCoordRange = Coord.fullRange,
-                tolerance = tolerance,
+                sizeThreshold = tolerance.spanTolerance.value / 2.0,
             )
 
             val consolidatedIntersections = Intersection.consolidate(
@@ -119,7 +119,7 @@ data class BezierCurve(
             subjectCoordRange: ClosedRange<Coord>,
             objectBezierCurve: BezierCurve,
             objectCoordRange: ClosedRange<Coord>,
-            tolerance: SpatialObject.SpatialTolerance,
+            sizeThreshold: Double,
         ): Set<Intersection> {
             val firstBoundingBox = subjectBezierCurve.findBoundingBox()
             val secondBoundingBox = objectBezierCurve.findBoundingBox()
@@ -128,8 +128,8 @@ data class BezierCurve(
                 return emptySet()
             }
 
-            val isFirstBoundingBoxSmallEnough = firstBoundingBox.smallerSide < tolerance.spanTolerance.value
-            val isSecondBoundingBoxSmallEnough = secondBoundingBox.smallerSide < tolerance.spanTolerance.value
+            val isFirstBoundingBoxSmallEnough = firstBoundingBox.smallerSide < sizeThreshold
+            val isSecondBoundingBoxSmallEnough = secondBoundingBox.smallerSide < sizeThreshold
 
             if (isFirstBoundingBoxSmallEnough && isSecondBoundingBoxSmallEnough) {
                 val intersectionPoint = Point.Companion.midPoint(
@@ -159,25 +159,25 @@ data class BezierCurve(
                 subjectCoordRange = firstCurveLeftCoordRange,
                 objectBezierCurve = secondCurveLeft,
                 objectCoordRange = secondCurveLeftCoordRange,
-                tolerance = tolerance,
+                sizeThreshold = sizeThreshold,
             ) + findIntersectionsBySubdivisionRecursively(
                 subjectBezierCurve = firstCurveLeft,
                 subjectCoordRange = firstCurveLeftCoordRange,
                 objectBezierCurve = secondCurveRight,
                 objectCoordRange = secondCurveRightCoordRange,
-                tolerance = tolerance,
+                sizeThreshold = sizeThreshold,
             ) + findIntersectionsBySubdivisionRecursively(
                 subjectBezierCurve = firstCurveRight,
                 subjectCoordRange = firstCurveRightCoordRange,
                 objectBezierCurve = secondCurveLeft,
                 objectCoordRange = secondCurveLeftCoordRange,
-                tolerance = tolerance,
+                sizeThreshold = sizeThreshold,
             ) + findIntersectionsBySubdivisionRecursively(
                 subjectBezierCurve = firstCurveRight,
                 subjectCoordRange = firstCurveRightCoordRange,
                 objectBezierCurve = secondCurveRight,
                 objectCoordRange = secondCurveRightCoordRange,
-                tolerance = tolerance,
+                sizeThreshold = sizeThreshold,
             )
         }
 
