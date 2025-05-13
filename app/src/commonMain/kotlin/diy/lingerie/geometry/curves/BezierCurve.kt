@@ -128,8 +128,8 @@ data class BezierCurve(
                 return emptySet()
             }
 
-            val isFirstBoundingBoxSmallEnough = firstBoundingBox.smallerSide < tolerance.spanTolerance.valueSquared
-            val isSecondBoundingBoxSmallEnough = secondBoundingBox.smallerSide < tolerance.spanTolerance.valueSquared
+            val isFirstBoundingBoxSmallEnough = firstBoundingBox.smallerSide < tolerance.spanTolerance.value
+            val isSecondBoundingBoxSmallEnough = secondBoundingBox.smallerSide < tolerance.spanTolerance.value
 
             if (isFirstBoundingBoxSmallEnough && isSecondBoundingBoxSmallEnough) {
                 val intersectionPoint = Point.Companion.midPoint(
