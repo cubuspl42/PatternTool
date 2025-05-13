@@ -6,6 +6,7 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Test
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class CubicBezierBinomialTests {
@@ -73,6 +74,36 @@ class CubicBezierBinomialTests {
                 tolerance = NumericObject.Tolerance.Default,
             ),
         )
+    }
+
+    @Test
+    fun testInvert() {
+        val bezierCurve = BezierCurve(
+            start = Point(492.59773540496826, 197.3452272415161),
+            firstControl = Point(393.3277416229248, 180.14210319519043),
+            secondControl = Point(287.3950023651123, 260.3726043701172),
+            end = Point(671.4185047149658, 490.2051086425781),
+        )
+
+        val cubicBezierBinomial = bezierCurve.basisFunction
+
+        val invertedPolynomial = assertNotNull(
+            cubicBezierBinomial.invert(),
+        )
+
+        val samples = cubicBezierBinomial.sample(n = 100)
+
+        samples.forEachIndexed { index, sample ->
+            val ratio = assertNotNull(
+                invertedPolynomial.apply(sample.point),
+            )
+
+            assertEqualsWithTolerance(
+                actual = ratio.value,
+                expected = sample.t,
+                tolerance = NumericObject.Tolerance.Default,
+            )
+        }
     }
 
     @Test

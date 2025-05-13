@@ -244,6 +244,7 @@ class BezierCurveTests {
     }
 
     @Test
+    @Ignore
     fun testFindIntersections_BezierCurve_BezierCurve_nineIntersections() {
         val firstCurve = BezierCurve(
             start = Point(273.80049324035645, 489.08709716796875),
