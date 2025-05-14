@@ -1,5 +1,6 @@
 package diy.lingerie.math.alegebra.polynomials
 
+import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.polynomials.ConstantPolynomial
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.HighPolynomial
@@ -7,7 +8,9 @@ import diy.lingerie.math.algebra.polynomials.LinearPolynomial
 import diy.lingerie.math.algebra.polynomials.QuadraticPolynomial
 import diy.lingerie.math.algebra.polynomials.times
 import diy.lingerie.math.algebra.polynomials.plus
+import diy.lingerie.math.algebra.sample
 import diy.lingerie.test_utils.assertEqualsWithTolerance
+import diy.lingerie.utils.iterable.LinSpace
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -301,6 +304,56 @@ class CubicPolynomialTests {
         assertEqualsWithTolerance(
             expected = listOf(1.0, 2.0, 3.0),
             actual = roots,
+        )
+    }
+
+    @Test
+    fun testToTenseForm() {
+        val originalCubicPolynomial = CubicPolynomial(
+            a3 = 1.234,
+            a2 = 2.345,
+            a1 = 3.456,
+            a0 = 4.567,
+        )
+
+        val tenseForm = originalCubicPolynomial.toTenseForm()
+
+        assertEqualsWithTolerance(
+            expected = Vector2(
+                a0 = -0.6334413830361967,
+                a1 = 3.0051109312714974,
+            ),
+            actual = tenseForm.origin,
+        )
+
+        assertEqualsWithTolerance(
+            expected = Vector2(
+                a0 = 0.5584233304849502,
+                a1 = 1.1004178224520431,
+            ),
+            actual = tenseForm.tension,
+        )
+
+        val linSpace = LinSpace(
+            range = -2.0..2.0,
+            n = 100,
+        )
+
+        val originalSamples = originalCubicPolynomial.sample(linSpace = linSpace)
+        val tenseSamples = tenseForm.sample(linSpace = linSpace)
+
+        originalSamples.forEachIndexed { index, originalSample ->
+            assertEqualsWithTolerance(
+                expected = originalSample.b,
+                actual = tenseSamples[index].b,
+            )
+        }
+
+        val recreatedCubicPolynomial = tenseForm.toStandardForm()
+
+        assertEqualsWithTolerance(
+            expected = originalCubicPolynomial,
+            actual = recreatedCubicPolynomial,
         )
     }
 }

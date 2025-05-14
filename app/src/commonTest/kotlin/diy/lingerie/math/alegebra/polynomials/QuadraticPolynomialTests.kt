@@ -1,12 +1,15 @@
 package diy.lingerie.math.alegebra.polynomials
 
+import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.polynomials.ConstantPolynomial
 import diy.lingerie.math.algebra.polynomials.HighPolynomial
 import diy.lingerie.math.algebra.polynomials.LinearPolynomial
 import diy.lingerie.math.algebra.polynomials.Polynomial
 import diy.lingerie.math.algebra.polynomials.QuadraticPolynomial
 import diy.lingerie.math.algebra.polynomials.times
+import diy.lingerie.math.algebra.sample
 import diy.lingerie.test_utils.assertEqualsWithTolerance
+import diy.lingerie.utils.iterable.LinSpace
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -238,6 +241,53 @@ class QuadraticPolynomialTests {
 
         assertNull(
             pa.findRoots(),
+        )
+    }
+
+    @Test
+    fun testToVertexForm() {
+        val originalQuadraticPolynomial = QuadraticPolynomial(
+            a2 = 2.345,
+            a1 = 3.456,
+            a0 = 4.567,
+        )
+
+        val vertexForm = originalQuadraticPolynomial.toVertexForm()
+
+        // Vector2(a0=-0.7368869936034115, a1=3.2936592750533054)
+        assertEqualsWithTolerance(
+            expected = Vector2(
+                a0 = -0.7368869936034115,
+                a1 = 3.2936592750533054,
+            ),
+            actual = vertexForm.origin,
+        )
+
+        assertEqualsWithTolerance(
+            expected = 2.345,
+            actual = vertexForm.verticalScale,
+        )
+
+        val linSpace = LinSpace(
+            range = -2.0..2.0,
+            n = 100,
+        )
+
+        val originalSamples = originalQuadraticPolynomial.sample(linSpace = linSpace)
+        val tenseSamples = vertexForm.sample(linSpace = linSpace)
+
+        originalSamples.forEachIndexed { index, originalSample ->
+            assertEqualsWithTolerance(
+                expected = originalSample.b,
+                actual = tenseSamples[index].b,
+            )
+        }
+
+        val recreatedQuadraticPolynomial = vertexForm.toStandardForm()
+
+        assertEqualsWithTolerance(
+            expected = originalQuadraticPolynomial,
+            actual = recreatedQuadraticPolynomial,
         )
     }
 }
