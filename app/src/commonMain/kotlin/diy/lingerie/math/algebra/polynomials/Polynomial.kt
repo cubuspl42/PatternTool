@@ -127,7 +127,7 @@ sealed interface Polynomial : NumericObject, RealFunction<Double> {
     }
 
     val derivative: Polynomial
-        get() = Polynomial.normalized(
+        get() = normalized(
             coefficients = coefficients.mapIndexed { i, ai ->
                 i * ai
             }.drop(1),
@@ -196,6 +196,9 @@ sealed class LowPolynomial : Polynomial {
 
     abstract fun findRootsAnalytically(): List<Double>
 }
+
+val LowPolynomial.derivativeSubCubic: SubCubicPolynomial
+    get() = this.derivative as SubCubicPolynomial
 
 /**
  * A polynomial of a degree smaller than cubic (at most quadratic)
