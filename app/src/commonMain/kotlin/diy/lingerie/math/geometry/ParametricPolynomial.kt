@@ -11,8 +11,9 @@ import diy.lingerie.math.algebra.polynomials.LowPolynomial
 import diy.lingerie.math.algebra.polynomials.Polynomial
 import diy.lingerie.math.algebra.polynomials.SubCubicPolynomial
 import diy.lingerie.math.algebra.polynomials.SubQuadraticPolynomial
+import diy.lingerie.math.algebra.polynomials.derivativeSubCubic
 
-data class ParametricPolynomial<P: Polynomial>(
+data class ParametricPolynomial<P: LowPolynomial>(
     val xFunction: P,
     val yFunction: P,
 ) : RealFunction<Vector2>, NumericObject {
@@ -115,9 +116,9 @@ data class ParametricPolynomial<P: Polynomial>(
         else -> true
     }
 
-    fun findDerivative(): ParametricPolynomial<*> = ParametricPolynomial(
-        xFunction = xFunction.derivative,
-        yFunction = yFunction.derivative,
+    fun findDerivative(): SubCubicParametricPolynomial = ParametricPolynomial(
+        xFunction = xFunction.derivativeSubCubic,
+        yFunction = yFunction.derivativeSubCubic,
     )
 }
 
