@@ -1,7 +1,10 @@
 package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.utils.sq
 import kotlin.math.sqrt
 
 data class QuadraticPolynomial internal constructor(
@@ -9,6 +12,38 @@ data class QuadraticPolynomial internal constructor(
     override val a1: Double,
     override val a2: Double,
 ) : SubCubicPolynomial(), SuperLinearPolynomial {
+    /**
+     * The vertex form of the quadratic function, i.e. the polynomial a' x^2
+     * anchored at the given [origin]
+     */
+    data class VertexForm(
+        /**
+         * The position of the vertex
+         */
+        val origin: Vector2,
+        /**
+         * The vertical scale factor
+         */
+        val verticalScale: Double,
+    ) : RealFunction<Double> {
+        init {
+            require(verticalScale != 0.0)
+        }
+
+        val horizontalScale: Double
+            get() = sqrt(1 / verticalScale)
+
+        override fun apply(
+            x: Double,
+        ): Double = verticalScale * (x - origin.a0).sq + origin.a1
+
+        fun toStandardForm(): QuadraticPolynomial = QuadraticPolynomial(
+            a0 = verticalScale * origin.a0.sq + origin.a1,
+            a1 = -2 * verticalScale * origin.a0,
+            a2 = verticalScale,
+        )
+    }
+
     companion object {
         fun normalized(
             a0: Double,
@@ -44,6 +79,24 @@ data class QuadraticPolynomial internal constructor(
         )
 
     override fun findRootsAnalytically(): List<Double> = findRoots()?.toList() ?: emptyList()
+
+    /**
+     * The parameter x0 of the vertical line x = x0 that's the axis of symmetry
+     * of the parabola
+     */
+    val symmetryAxis: Double
+        get() = -a1 / (2 * a2)
+
+    val vertex: Vector2
+        get() = Vector2(
+            symmetryAxis,
+            apply(symmetryAxis),
+        )
+
+    fun toVertexForm(): VertexForm = VertexForm(
+        origin = vertex,
+        verticalScale = a2,
+    )
 
     fun findRoots(): Pair<Double, Double>? {
         val a = a2

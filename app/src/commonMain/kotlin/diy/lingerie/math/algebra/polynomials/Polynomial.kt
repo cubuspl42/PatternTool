@@ -149,6 +149,15 @@ operator fun Polynomial.plus(
     },
 )
 
+operator fun Polynomial.plus(
+    constant: Double,
+): Polynomial = this + ConstantPolynomial(constant)
+
+operator fun Double.plus(
+    polynomial: Polynomial,
+): Polynomial = ConstantPolynomial(this) + polynomial
+
+
 operator fun Polynomial.times(
     other: Polynomial,
 ): Polynomial {

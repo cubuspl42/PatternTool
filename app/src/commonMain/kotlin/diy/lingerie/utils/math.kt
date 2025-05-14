@@ -10,3 +10,6 @@ fun Double.split(): Pair<Int, Double> {
     val fractionalPart = this - integerPart
     return Pair(integerPart, fractionalPart)
 }
+
+inline val Double.sq: Double
+    get() = this * this
