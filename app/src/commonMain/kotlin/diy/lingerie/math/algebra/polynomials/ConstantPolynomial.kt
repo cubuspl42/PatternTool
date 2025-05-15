@@ -6,7 +6,7 @@ import diy.lingerie.math.algebra.linear.vectors.Vector2
 
 data class ConstantPolynomial(
     override val a0: Double,
-) : SubLinearPolynomial(), LowPolynomial.OriginForm {
+) : SubLinearPolynomial() {
     companion object {
         val zero: ConstantPolynomial = ConstantPolynomial(
             a0 = 0.0,
@@ -20,11 +20,16 @@ data class ConstantPolynomial(
 
     override fun divide(
         x0: Double,
-    ): Pair<Polynomial, Double> = Pair(ConstantPolynomial.zero, a0)
+    ): Pair<Polynomial, Double> = Pair(zero, a0)
 
-    override fun toOriginForm(): OriginForm = this
+    override val isNormalized: Boolean
+        get() = true
+
+    override fun toOriginForm(): Nothing? = null
 
     override fun findRootsAnalytically(): List<Double> = emptyList()
+
+    override fun substitute(p: LinearPolynomial): LowPolynomial = p
 
     override fun equalsWithTolerance(
         other: NumericObject,
@@ -37,15 +42,4 @@ data class ConstantPolynomial(
 
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override fun apply(x: Double): Double = a0
-
-    override val origin: Vector2
-        get() = Vector2(
-            a0 = 0.0,
-            a1 = a0,
-        )
-
-    override val horizontalScale: Double?
-        get() = null
-
-    override fun normalizeHorizontally(): OriginForm = this
 }

@@ -3,7 +3,6 @@ package diy.lingerie.math.algebra.polynomials
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
-import diy.lingerie.math.algebra.polynomials.CubicPolynomial.TenseForm
 import diy.lingerie.utils.sq
 import kotlin.math.sqrt
 
@@ -27,6 +26,13 @@ data class QuadraticPolynomial internal constructor(
         val verticalScale: Double,
     ) : OriginForm {
         companion object {
+            fun normal(
+                origin: Vector2,
+            ): VertexForm = VertexForm(
+                origin = origin,
+                verticalScale = 1.0,
+            )
+
             fun of(
                 origin: Vector2,
                 horizontalScale: Double,
@@ -47,16 +53,20 @@ data class QuadraticPolynomial internal constructor(
             x: Double,
         ): Double = verticalScale * (x - origin.a0).sq + origin.a1
 
-        fun toStandardForm(): QuadraticPolynomial = QuadraticPolynomial(
+        override fun toStandardForm(): QuadraticPolynomial = QuadraticPolynomial(
             a0 = verticalScale * origin.a0.sq + origin.a1,
             a1 = -2 * verticalScale * origin.a0,
             a2 = verticalScale,
         )
 
-        override fun normalizeHorizontally(): VertexForm = of(
-            origin = origin,
-            horizontalScale = 1.0,
-        )
+        override fun normalize(): Pair<OriginForm, Double> {
+            val dilation = sqrt(1 / verticalScale)
+
+            return Pair(
+                normal(origin = origin),
+                dilation,
+            )
+        }
     }
 
     companion object {
@@ -78,6 +88,13 @@ data class QuadraticPolynomial internal constructor(
         }
     }
 
+    override val isNormalized: Boolean
+        get() = when {
+            !a1.equalsWithTolerance(0.0) -> false
+            !a2.equalsWithTolerance(1.0) -> false
+            else -> true
+        }
+
     operator fun plus(
         other: SubQuadraticPolynomial,
     ): QuadraticPolynomial = QuadraticPolynomial(
@@ -93,7 +110,15 @@ data class QuadraticPolynomial internal constructor(
             a2,
         )
 
+
     override fun findRootsAnalytically(): List<Double> = findRoots()?.toList() ?: emptyList()
+
+    override fun substitute(
+        p: LinearPolynomial,
+    ): QuadraticPolynomial {
+        val result = a0 + a1 * p + a2 * p * p
+        return result as QuadraticPolynomial
+    }
 
     override fun toOriginForm(): OriginForm = toVertexForm()
 

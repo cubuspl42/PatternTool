@@ -13,7 +13,7 @@ import diy.lingerie.math.algebra.polynomials.SubCubicPolynomial
 import diy.lingerie.math.algebra.polynomials.SubQuadraticPolynomial
 import diy.lingerie.math.algebra.polynomials.derivativeSubCubic
 
-data class ParametricPolynomial<P: LowPolynomial>(
+data class ParametricPolynomial<P : LowPolynomial>(
     val xFunction: P,
     val yFunction: P,
 ) : RealFunction<Vector2>, NumericObject {
@@ -120,6 +120,34 @@ data class ParametricPolynomial<P: LowPolynomial>(
         xFunction = xFunction.derivativeSubCubic,
         yFunction = yFunction.derivativeSubCubic,
     )
+
+    fun normalize(): ParametricPolynomial<*> {
+        // If the X function can't be normalized (it's constant), we're
+        // dealing with a denormalized line-alike curve. If neither X nor Y
+        // can be normalized (both are constant), this curve degenerates to a
+        // point, and a point is already normalized
+        return normalizeByX() ?: normalizeByY() ?: this
+    }
+
+    private fun normalizeByX(): ParametricPolynomial<*>? {
+        val (xFunctionNormalized, normalProjection) = xFunction.normalize() ?: return null
+        val yFunctionNormalized = yFunction.project(normalProjection.invert())
+
+        return ParametricPolynomial(
+            xFunction = xFunctionNormalized,
+            yFunction = yFunctionNormalized,
+        )
+    }
+
+    private fun normalizeByY(): ParametricPolynomial<*>? {
+        val (yFunctionNormalized, normalProjection) = yFunction.normalize() ?: return null
+        val xFunctionNormalized = xFunction.project(normalProjection.invert())
+
+        return ParametricPolynomial(
+            xFunction = xFunctionNormalized,
+            yFunction = yFunctionNormalized,
+        )
+    }
 }
 
 typealias LowParametricPolynomial = ParametricPolynomial<LowPolynomial>
