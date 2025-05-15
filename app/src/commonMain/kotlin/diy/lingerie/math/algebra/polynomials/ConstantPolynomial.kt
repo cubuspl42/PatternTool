@@ -32,5 +32,6 @@ data class ConstantPolynomial(
         else -> true
     }
 
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override fun apply(x: Double): Double = a0
 }
