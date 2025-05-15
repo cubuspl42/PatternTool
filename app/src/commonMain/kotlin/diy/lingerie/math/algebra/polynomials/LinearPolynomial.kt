@@ -3,9 +3,7 @@ package diy.lingerie.math.algebra.polynomials
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
-import diy.lingerie.math.algebra.polynomials.CubicPolynomial.TenseForm
 import diy.lingerie.math.algebra.polynomials.QuadraticPolynomial.VertexForm
-import diy.lingerie.utils.sq
 
 data class LinearPolynomial internal constructor(
     override val a0: Double,
@@ -16,6 +14,13 @@ data class LinearPolynomial internal constructor(
         val slope: Double,
     ) : OriginForm {
         companion object {
+            fun normal(
+                root: Double,
+            ) = FactoredForm(
+                slope = 1.0,
+                root = root,
+            )
+
             fun of(
                 origin: Vector2,
                 horizontalScale: Double,
@@ -33,11 +38,20 @@ data class LinearPolynomial internal constructor(
             get() = Vector2(root, 0.0)
 
         override val horizontalScale: Double
-            get() = 1 / slope
+            get() = TODO("Nuke")
 
-        override fun normalizeHorizontally(): VertexForm = of(
-            origin = origin,
-            horizontalScale = 1.0,
+        override fun normalize(): Pair<OriginForm, Double> {
+            val dilation = 1 / slope
+
+            return Pair(
+                normal(root = root),
+                dilation,
+            )
+        }
+
+        override fun toStandardForm(): LinearPolynomial = LinearPolynomial(
+            a0 = -slope * root,
+            a1 = slope,
         )
     }
 
@@ -57,6 +71,12 @@ data class LinearPolynomial internal constructor(
         }
     }
 
+    override val isNormalized: Boolean
+        get() = when {
+            !a1.equalsWithTolerance(1.0) -> false
+            else -> true
+        }
+
     fun toFactoredForm(): FactoredForm = FactoredForm(
         root = findRoot(),
         slope = a1,
@@ -69,6 +89,11 @@ data class LinearPolynomial internal constructor(
         )
 
     override fun findRootsAnalytically(): List<Double> = listOf(findRoot())
+
+    override fun substitute(p: LinearPolynomial): LowPolynomial {
+        val result = a0 + a1 * p
+        return result as LinearPolynomial
+    }
 
     fun findRoot(): Double = -a0 / a1
 

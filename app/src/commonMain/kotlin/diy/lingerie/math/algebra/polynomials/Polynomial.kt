@@ -2,6 +2,7 @@ package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
+import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.polynomials.LowPolynomial.Projection
 import diy.lingerie.utils.iterable.uncons
@@ -192,17 +193,99 @@ sealed class LowPolynomial : Polynomial {
     data class Projection(
         val shift: Double,
         val dilation: Double,
-    )
+    ) : NumericObject {
+        init {
+            require(dilation != 0.0) { "Dilation must not be zero" }
+        }
+
+        fun invert(): Projection = Projection(
+            shift = -shift / dilation,
+            dilation = 1.0 / dilation,
+        )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance
+        ): Boolean = when {
+            other !is Projection -> false
+            !shift.equalsWithTolerance(other.shift, tolerance = tolerance) -> false
+            !dilation.equalsWithTolerance(other.dilation, tolerance = tolerance) -> false
+            else -> true
+        }
+    }
 
     interface OriginForm : RealFunction<Double> {
         val origin: Vector2
 
         val horizontalScale: Double?
 
-        fun normalizeHorizontally(): OriginForm
+        /**
+         * Normalize scale-wise, but keep the origin
+         *
+         * @return the normalized form and the normalization scale
+         */
+        fun normalize(): Pair<OriginForm, Double>
+
+        fun toStandardForm(): LowPolynomial
     }
 
-    abstract fun toOriginForm(): OriginForm
+    /**
+     * Normalize, moving the polynomial to X=0
+     *
+     * @return the normalized polynomial and the normalization projection, or
+     * null if this polynomial couldn't be normalized (is constant)
+     */
+    fun normalize(): Pair<LowPolynomial, Projection>? {
+        val originForm = toOriginForm() ?: return null
+        val (normalizedOriginForm, dilation) = originForm.normalize()
+
+        val shift = originForm.origin.a0
+
+        val projection = Projection(
+            shift = shift,
+            dilation = dilation,
+        )
+
+        return Pair(
+            normalizedOriginForm.toStandardForm().shiftBy(-shift),
+            projection,
+        )
+    }
+
+    fun shiftBy(
+        dx: Double,
+    ): LowPolynomial {
+        // f(x - dx)
+        return substitute(
+            // (x - dx)
+            LinearPolynomial(
+                a0 = -dx,
+                a1 = 1.0,
+            ),
+        )
+    }
+
+    fun project(
+        projection: Projection,
+    ): LowPolynomial = substitute(
+        LinearPolynomial(
+            a0 = 0.0,
+            a1 = 1.0 / projection.dilation,
+        ),
+    ).substitute(
+        LinearPolynomial(
+            a0 = -projection.shift,
+            a1 = 1.0,
+        ),
+    )
+
+    val prettyString: String
+        get() = coefficients.mapIndexed { index, coefficient ->
+            when (index) {
+                0 -> coefficient.toString()
+                else -> "$coefficient x^$index"
+            }
+        }.joinToString(separator = " + ")
 
     override fun findRoots(
         maxDepth: Int,
@@ -211,26 +294,24 @@ sealed class LowPolynomial : Polynomial {
         areClose: (Double, Double) -> Boolean,
     ): List<Double> = findRootsAnalytically()
 
+    abstract val isNormalized: Boolean
+
+    abstract fun toOriginForm(): OriginForm?
+
     abstract fun findRootsAnalytically(): List<Double>
+
+    abstract fun substitute(
+        p: LinearPolynomial,
+    ): LowPolynomial
 }
 
-/**
- * @return a normalized polynomial with the normalization projection or null if
- * the polynomial is already normalized but the projection cannot be constructed
- * (constant polynomial)
- */
-fun LowPolynomial.OriginForm.normalizeHorizontallyWithProjection(): Pair<LowPolynomial.OriginForm, LowPolynomial.Projection>? {
-    val shift = origin.a0
-    val dilation = horizontalScale ?: return null
-
-    return Pair(
-        normalizeHorizontally(),
-        Projection(
-            shift = shift,
-            dilation = dilation,
-        ),
-    )
-}
+val LowPolynomial.OriginForm.normalProjection
+    get(): Projection? {
+        return Projection(
+            shift = origin.a0,
+            dilation = horizontalScale ?: return null,
+        )
+    }
 
 val LowPolynomial.derivativeSubCubic: SubCubicPolynomial
     get() = this.derivative as SubCubicPolynomial

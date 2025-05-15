@@ -5,6 +5,7 @@ import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.linear.vectors.Vector4
+import diy.lingerie.utils.sq
 import kotlin.math.acos
 import kotlin.math.cbrt
 import kotlin.math.cos
@@ -37,20 +38,44 @@ data class CubicPolynomial internal constructor(
          */
         override val origin: Vector2,
         /**
-         * The scale factor (a')
+         * The vertical scale factor (a')
          */
-        val scale: Double,
+        val verticalScale: Double,
         /**
          * The initial slope (c')
          */
         val initialSlope: Double,
-    ) : ShiftedForm() {
-        init {
-            require(scale != 0.0)
+    ) : ShiftedForm(), OriginForm {
+        companion object {
+            fun normal(
+                origin: Vector2,
+                initialSlope: Double,
+            ): AnchoredForm = AnchoredForm(
+                origin = origin,
+                verticalScale = 1.0,
+                initialSlope = initialSlope,
+            )
         }
 
-        fun toStandardForm(): CubicPolynomial = CubicPolynomial(
-            a3 = scale,
+        init {
+            require(verticalScale != 0.0)
+        }
+
+        override fun normalize(): Pair<OriginForm, Double> {
+            val denominator = cbrt(verticalScale)
+            val dilation = verticalScale / denominator
+
+            return Pair(
+                normal(
+                    origin = origin,
+                    initialSlope = initialSlope / denominator
+                ),
+                dilation,
+            )
+        }
+
+        override fun toStandardForm(): CubicPolynomial = CubicPolynomial(
+            a3 = verticalScale,
             a2 = 0.0,
             a1 = initialSlope,
             a0 = 0.0,
@@ -58,62 +83,12 @@ data class CubicPolynomial internal constructor(
             t = origin,
         )
 
-        /**
-         * Convert to the normalized tense form, i.e. with the tension vector
-         * pointing in the +X direction
-         */
-        fun toTenseForm(): TenseForm {
-            val denominator = sqrt(1 + initialSlope * initialSlope)
-
-            val tension = Vector2(
-                scale / denominator,
-                (scale * initialSlope) / denominator,
-            )
-
-            return TenseForm(
-                origin = origin,
-                tension = tension,
-            )
-        }
-
         override fun applyShifted(
             x: Double,
-        ): Double = scale * (x * x * x) + initialSlope * x
-    }
+        ): Double = verticalScale * (x * x * x) + initialSlope * x
 
-    data class TenseForm(
-        /**
-         * The point of symmetry
-         */
-        override val origin: Vector2,
-        /**
-         * The tension vector
-         */
-        val tension: Vector2,
-    ) : ShiftedForm(), OriginForm {
-        init {
-            require(tension != Vector2.Zero)
-        }
-
-        fun toStandardForm(): CubicPolynomial = toAnchoredForm().toStandardForm()
-
-        fun toAnchoredForm(): AnchoredForm = AnchoredForm(
-            origin = origin,
-            scale = tension.magnitude,
-            initialSlope = tension.a1 / tension.a0,
-        )
-
-        override fun applyShifted(
-            x: Double,
-        ): Double = tension.magnitude * (x * x * x) + tension.a1 / tension.a0 * x
-
-        override val horizontalScale: Double
-            get() = tension.a0
-
-        override fun normalizeHorizontally(): TenseForm = TenseForm(
-            origin = origin,
-            tension = tension.copy(a0 = 1.0)
-        )
+        override val horizontalScale: Double?
+            get() = TODO("Not yet implemented")
     }
 
     companion object {
@@ -153,7 +128,7 @@ data class CubicPolynomial internal constructor(
         // f(x - t.x) + t.y
         return substitute(
             // (x - t.x)
-            linearPolynomial = LinearPolynomial(
+            LinearPolynomial(
                 a0 = -t.a0,
                 a1 = 1.0,
             ),
@@ -249,17 +224,21 @@ data class CubicPolynomial internal constructor(
         x: Double,
     ): Double = a0 + a1 * x + a2 * x * x + a3 * x * x * x
 
-    override fun toOriginForm(): OriginForm = toTenseForm()
+    override val isNormalized: Boolean
+        get() = when {
+            !a2.equalsWithTolerance(0.0) -> false
+            !a3.equalsWithTolerance(1.0) -> false
+            else -> true
+        }
 
-    fun substitute(
-        linearPolynomial: LinearPolynomial,
-    ): CubicPolynomial = this.substitute(
-        p = linearPolynomial,
-    ) as CubicPolynomial
+    override fun toOriginForm(): OriginForm = toAnchoredForm()
 
-    fun substitute(
-        p: Polynomial,
-    ) = a0 + a1 * p + a2 * p * p + a3 * p * p * p
+    override fun substitute(
+        p: LinearPolynomial,
+    ): CubicPolynomial {
+        val result = a0 + a1 * p + a2 * p * p + a3 * p * p * p
+        return result as CubicPolynomial
+    }
 
     val derivativeQuadratic: QuadraticPolynomial
         get() = derivative as QuadraticPolynomial
@@ -290,10 +269,8 @@ data class CubicPolynomial internal constructor(
 
         return AnchoredForm(
             origin = symmetryPoint,
-            scale = shiftedPolynomial.a3,
+            verticalScale = shiftedPolynomial.a3,
             initialSlope = shiftedPolynomial.a1,
         )
     }
-
-    fun toTenseForm(): TenseForm = toAnchoredForm().toTenseForm()
 }
