@@ -197,10 +197,12 @@ sealed class LowPolynomial : Polynomial {
     interface OriginForm : RealFunction<Double> {
         val origin: Vector2
 
-        val horizontalScale: Double
+        val horizontalScale: Double?
 
         fun normalizeHorizontally(): OriginForm
     }
+
+    abstract fun toOriginForm(): OriginForm
 
     override fun findRoots(
         maxDepth: Int,
@@ -212,9 +214,14 @@ sealed class LowPolynomial : Polynomial {
     abstract fun findRootsAnalytically(): List<Double>
 }
 
-fun LowPolynomial.OriginForm.normalizeHorizontallyWithProjection(): Pair<LowPolynomial.OriginForm, LowPolynomial.Projection> {
+/**
+ * @return a normalized polynomial with the normalization projection or null if
+ * the polynomial is already normalized but the projection cannot be constructed
+ * (constant polynomial)
+ */
+fun LowPolynomial.OriginForm.normalizeHorizontallyWithProjection(): Pair<LowPolynomial.OriginForm, LowPolynomial.Projection>? {
     val shift = origin.a0
-    val dilation = horizontalScale
+    val dilation = horizontalScale ?: return null
 
     return Pair(
         normalizeHorizontally(),
