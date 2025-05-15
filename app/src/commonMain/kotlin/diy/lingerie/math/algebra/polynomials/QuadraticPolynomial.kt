@@ -1,7 +1,6 @@
 package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.utils.sq
@@ -20,12 +19,12 @@ data class QuadraticPolynomial internal constructor(
         /**
          * The position of the vertex
          */
-        val origin: Vector2,
+        override val origin: Vector2,
         /**
          * The vertical scale factor
          */
         val verticalScale: Double,
-    ) : RealFunction<Double> {
+    ) : OriginForm {
         init {
             require(verticalScale != 0.0)
         }

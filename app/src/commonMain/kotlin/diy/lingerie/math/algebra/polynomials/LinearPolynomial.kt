@@ -2,11 +2,24 @@ package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.linear.vectors.Vector2
 
 data class LinearPolynomial internal constructor(
     override val a0: Double,
     override val a1: Double,
 ) : SubQuadraticPolynomial(), SuperConstantPolynomial {
+    data class FactoredForm(
+        val root: Double,
+        val slope: Double,
+    ) : OriginForm {
+        override fun apply(
+            a: Double,
+        ): Double = slope * (a - root)
+
+        override val origin: Vector2
+            get() = Vector2(root, 0.0)
+    }
+
     companion object {
         fun normalized(
             a0: Double,
@@ -22,6 +35,11 @@ data class LinearPolynomial internal constructor(
             )
         }
     }
+
+    fun toFactoredForm(): FactoredForm = FactoredForm(
+        root = findRoot(),
+        slope = a1,
+    )
 
     override val coefficients: List<Double>
         get() = listOf(

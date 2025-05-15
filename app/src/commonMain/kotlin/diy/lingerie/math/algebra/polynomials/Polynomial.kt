@@ -2,6 +2,7 @@ package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
+import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.untrail
 import kotlin.math.max
@@ -187,6 +188,10 @@ operator fun Double.times(
  * A polynomial of a low degree (at most cubic)
  */
 sealed class LowPolynomial : Polynomial {
+    interface OriginForm : RealFunction<Double> {
+        val origin: Vector2
+    }
+
     override fun findRoots(
         maxDepth: Int,
         guessedRoot: Double,

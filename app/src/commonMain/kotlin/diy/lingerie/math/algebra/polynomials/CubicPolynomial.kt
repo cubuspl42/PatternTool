@@ -90,7 +90,7 @@ data class CubicPolynomial internal constructor(
          * The tension vector
          */
         val tension: Vector2,
-    ) : ShiftedForm() {
+    ) : ShiftedForm(), OriginForm {
         init {
             require(tension != Vector2.Zero)
         }
