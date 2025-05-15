@@ -85,4 +85,6 @@ data class LinearPolynomial internal constructor(
         !a1.equalsWithTolerance(other.a1, tolerance = tolerance) -> false
         else -> true
     }
+
+    override fun toOriginForm(): OriginForm = toFactoredForm()
 }

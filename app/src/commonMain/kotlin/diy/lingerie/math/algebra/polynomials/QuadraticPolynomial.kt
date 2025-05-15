@@ -95,6 +95,8 @@ data class QuadraticPolynomial internal constructor(
 
     override fun findRootsAnalytically(): List<Double> = findRoots()?.toList() ?: emptyList()
 
+    override fun toOriginForm(): OriginForm = toVertexForm()
+
     /**
      * The parameter x0 of the vertical line x = x0 that's the axis of symmetry
      * of the parabola

@@ -249,6 +249,8 @@ data class CubicPolynomial internal constructor(
         x: Double,
     ): Double = a0 + a1 * x + a2 * x * x + a3 * x * x * x
 
+    override fun toOriginForm(): OriginForm = toTenseForm()
+
     fun substitute(
         linearPolynomial: LinearPolynomial,
     ): CubicPolynomial = this.substitute(
