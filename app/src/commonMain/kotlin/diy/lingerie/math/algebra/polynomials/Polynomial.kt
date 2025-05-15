@@ -3,6 +3,7 @@ package diy.lingerie.math.algebra.polynomials
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.polynomials.LowPolynomial.Projection
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.untrail
 import kotlin.math.max
@@ -196,7 +197,9 @@ sealed class LowPolynomial : Polynomial {
     interface OriginForm : RealFunction<Double> {
         val origin: Vector2
 
-        fun normalizeHorizontally(): Pair<OriginForm, Projection>
+        val horizontalScale: Double
+
+        fun normalizeHorizontally(): OriginForm
     }
 
     override fun findRoots(
@@ -207,6 +210,19 @@ sealed class LowPolynomial : Polynomial {
     ): List<Double> = findRootsAnalytically()
 
     abstract fun findRootsAnalytically(): List<Double>
+}
+
+fun LowPolynomial.OriginForm.normalizeHorizontallyWithProjection(): Pair<LowPolynomial.OriginForm, LowPolynomial.Projection> {
+    val shift = origin.a0
+    val dilation = horizontalScale
+
+    return Pair(
+        normalizeHorizontally(),
+        Projection(
+            shift = shift,
+            dilation = dilation,
+        ),
+    )
 }
 
 val LowPolynomial.derivativeSubCubic: SubCubicPolynomial

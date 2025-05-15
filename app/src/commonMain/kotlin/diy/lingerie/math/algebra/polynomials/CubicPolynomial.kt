@@ -107,21 +107,13 @@ data class CubicPolynomial internal constructor(
             x: Double,
         ): Double = tension.magnitude * (x * x * x) + tension.a1 / tension.a0 * x
 
-        override fun normalizeHorizontally(): Pair<OriginForm, Projection> {
-            val shift = origin.a0
-            val dilation = tension.a0
+        override val horizontalScale: Double
+            get() = tension.a0
 
-            return Pair(
-                TenseForm(
-                    origin = origin,
-                    tension = tension.copy(a0 = 1.0)
-                ),
-                Projection(
-                    shift = shift,
-                    dilation = dilation,
-                ),
-            )
-        }
+        override fun normalizeHorizontally(): TenseForm = TenseForm(
+            origin = origin,
+            tension = tension.copy(a0 = 1.0)
+        )
     }
 
     companion object {
