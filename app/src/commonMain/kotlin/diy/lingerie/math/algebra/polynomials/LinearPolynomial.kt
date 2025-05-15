@@ -4,6 +4,8 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial.TenseForm
+import diy.lingerie.math.algebra.polynomials.QuadraticPolynomial.VertexForm
+import diy.lingerie.utils.sq
 
 data class LinearPolynomial internal constructor(
     override val a0: Double,
@@ -13,6 +15,16 @@ data class LinearPolynomial internal constructor(
         val root: Double,
         val slope: Double,
     ) : OriginForm {
+        companion object {
+            fun of(
+                origin: Vector2,
+                horizontalScale: Double,
+            ): VertexForm = VertexForm(
+                origin = origin,
+                verticalScale = 1 / horizontalScale,
+            )
+        }
+
         override fun apply(
             a: Double,
         ): Double = slope * (a - root)
@@ -20,9 +32,13 @@ data class LinearPolynomial internal constructor(
         override val origin: Vector2
             get() = Vector2(root, 0.0)
 
-        override fun normalizeHorizontally(): Pair<OriginForm, Projection> {
-            TODO()
-        }
+        override val horizontalScale: Double
+            get() = 1 / slope
+
+        override fun normalizeHorizontally(): VertexForm = of(
+            origin = origin,
+            horizontalScale = 1.0,
+        )
     }
 
     companion object {

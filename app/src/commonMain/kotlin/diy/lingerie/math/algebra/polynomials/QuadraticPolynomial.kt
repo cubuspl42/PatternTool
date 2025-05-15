@@ -40,7 +40,7 @@ data class QuadraticPolynomial internal constructor(
             require(verticalScale != 0.0)
         }
 
-        val horizontalScale: Double
+        override val horizontalScale: Double
             get() = sqrt(1 / verticalScale)
 
         override fun apply(
@@ -53,21 +53,10 @@ data class QuadraticPolynomial internal constructor(
             a2 = verticalScale,
         )
 
-        override fun normalizeHorizontally(): Pair<OriginForm, Projection> {
-            val shift = origin.a0
-            val dilation = horizontalScale
-
-            return Pair(
-                VertexForm.of(
-                    origin = origin,
-                    horizontalScale = 1.0,
-                ),
-                Projection(
-                    shift = shift,
-                    dilation = dilation,
-                ),
-            )
-        }
+        override fun normalizeHorizontally(): VertexForm = of(
+            origin = origin,
+            horizontalScale = 1.0,
+        )
     }
 
     companion object {
