@@ -188,8 +188,15 @@ operator fun Double.times(
  * A polynomial of a low degree (at most cubic)
  */
 sealed class LowPolynomial : Polynomial {
+    data class Projection(
+        val shift: Double,
+        val dilation: Double,
+    )
+
     interface OriginForm : RealFunction<Double> {
         val origin: Vector2
+
+        fun normalizeHorizontally(): Pair<OriginForm, Projection>
     }
 
     override fun findRoots(

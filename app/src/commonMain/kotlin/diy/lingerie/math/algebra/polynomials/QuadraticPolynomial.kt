@@ -3,6 +3,7 @@ package diy.lingerie.math.algebra.polynomials
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.polynomials.CubicPolynomial.TenseForm
 import diy.lingerie.utils.sq
 import kotlin.math.sqrt
 
@@ -25,6 +26,16 @@ data class QuadraticPolynomial internal constructor(
          */
         val verticalScale: Double,
     ) : OriginForm {
+        companion object {
+            fun of(
+                origin: Vector2,
+                horizontalScale: Double,
+            ): VertexForm = VertexForm(
+                origin = origin,
+                verticalScale = 1 / horizontalScale.sq,
+            )
+        }
+
         init {
             require(verticalScale != 0.0)
         }
@@ -41,6 +52,22 @@ data class QuadraticPolynomial internal constructor(
             a1 = -2 * verticalScale * origin.a0,
             a2 = verticalScale,
         )
+
+        override fun normalizeHorizontally(): Pair<OriginForm, Projection> {
+            val shift = origin.a0
+            val dilation = horizontalScale
+
+            return Pair(
+                VertexForm.of(
+                    origin = origin,
+                    horizontalScale = 1.0,
+                ),
+                Projection(
+                    shift = shift,
+                    dilation = dilation,
+                ),
+            )
+        }
     }
 
     companion object {

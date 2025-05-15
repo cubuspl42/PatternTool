@@ -3,6 +3,7 @@ package diy.lingerie.math.algebra.polynomials
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.polynomials.CubicPolynomial.TenseForm
 
 data class LinearPolynomial internal constructor(
     override val a0: Double,
@@ -18,6 +19,10 @@ data class LinearPolynomial internal constructor(
 
         override val origin: Vector2
             get() = Vector2(root, 0.0)
+
+        override fun normalizeHorizontally(): Pair<OriginForm, Projection> {
+            TODO()
+        }
     }
 
     companion object {
