@@ -8,7 +8,7 @@ import kotlin.test.Test
 
 class ParametricPolynomialTests {
     @Test
-    @Ignore
+    @Ignore // FIXME: Fix cubic normalization
     fun testNormalize() {
         val projection = LowPolynomial.Projection(
             shift = 1.1,
