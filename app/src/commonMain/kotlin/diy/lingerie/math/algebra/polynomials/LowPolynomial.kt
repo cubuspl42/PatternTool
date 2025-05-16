@@ -120,7 +120,7 @@ sealed class LowPolynomial : Polynomial {
         }
     }
 
-    fun normalizeBySymmetry(): Pair<LowPolynomial, Modulation>? {
+    fun normalize(): Pair<LowPolynomial, Modulation>? {
         val symmetryAxis = this.symmetryAxis ?: return null
 
         // A shift from the symmetric form
