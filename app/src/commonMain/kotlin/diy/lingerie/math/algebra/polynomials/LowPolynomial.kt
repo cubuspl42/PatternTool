@@ -14,15 +14,19 @@ import kotlin.math.max
  * A polynomial of a low degree (at most cubic)
  */
 sealed class LowPolynomial : Polynomial {
+    sealed class Transformation : NumericObject {
+        abstract fun invert(): Transformation
+    }
+
     data class Projection(
         val shift: Double,
         val dilation: Double,
-    ) : NumericObject {
+    ) : Transformation() {
         init {
             require(dilation != 0.0) { "Dilation must not be zero" }
         }
 
-        fun invert(): Projection = Projection(
+        override fun invert(): Projection = Projection(
             shift = -shift / dilation,
             dilation = 1.0 / dilation,
         )
