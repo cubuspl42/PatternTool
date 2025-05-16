@@ -100,6 +100,16 @@ data class LinearPolynomial internal constructor(
     override val symmetryAxis: Double
         get() = 0.0
 
+    override fun normalizeSymmetric(): Pair<LowPolynomial, Dilation> = Pair(
+        LinearPolynomial(
+            a1 = 1.0,
+            a0 = a0,
+        ),
+        Dilation(
+            dilation = 1 / a1,
+        ),
+    )
+
     override fun apply(
         x: Double,
     ): Double = a0 + a1 * x
