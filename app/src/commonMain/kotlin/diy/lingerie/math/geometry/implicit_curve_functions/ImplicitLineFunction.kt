@@ -80,8 +80,8 @@ data class ImplicitLineFunction(
     override fun substitute(
         p: ParametricPolynomial<*>,
     ): Polynomial = substitute(
-        x = p.xFunction,
-        y = p.yFunction,
+        x = p.xPolynomial,
+        y = p.yPolynomial,
     )
 
     override fun apply(

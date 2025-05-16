@@ -15,8 +15,8 @@ import diy.lingerie.math.algebra.polynomials.derivativeSubCubic
 import diy.lingerie.math.algebra.polynomials.modulate
 
 data class ParametricPolynomial<P : LowPolynomial>(
-    val xFunction: P,
-    val yFunction: P,
+    val xPolynomial: P,
+    val yPolynomial: P,
 ) : RealFunction<Vector2>, NumericObject {
     data class RootSet(
         val xRoots: Set<Double>,
@@ -40,13 +40,13 @@ data class ParametricPolynomial<P : LowPolynomial>(
             a1: Vector2,
             a0: Vector2,
         ): ParametricPolynomial<LowPolynomial> = ParametricPolynomial(
-            xFunction = Polynomial.cubic(
+            xPolynomial = Polynomial.cubic(
                 a3 = a3.x,
                 a2 = a2.x,
                 a1 = a1.x,
                 a0 = a0.x,
             ),
-            yFunction = Polynomial.cubic(
+            yPolynomial = Polynomial.cubic(
                 a3 = a3.y,
                 a2 = a2.y,
                 a1 = a1.y,
@@ -59,12 +59,12 @@ data class ParametricPolynomial<P : LowPolynomial>(
             b: Vector2,
             c: Vector2,
         ): ParametricPolynomial<SubCubicPolynomial> = ParametricPolynomial(
-            xFunction = Polynomial.quadratic(
+            xPolynomial = Polynomial.quadratic(
                 a2 = a.x,
                 a1 = b.x,
                 a0 = c.x,
             ),
-            yFunction = Polynomial.quadratic(
+            yPolynomial = Polynomial.quadratic(
                 a2 = a.y,
                 a1 = b.y,
                 a0 = c.y,
@@ -75,11 +75,11 @@ data class ParametricPolynomial<P : LowPolynomial>(
             a1: Vector2,
             a0: Vector2,
         ): ParametricPolynomial<SubQuadraticPolynomial> = ParametricPolynomial(
-            xFunction = Polynomial.linear(
+            xPolynomial = Polynomial.linear(
                 a1 = a1.x,
                 a0 = a0.x,
             ),
-            yFunction = Polynomial.linear(
+            yPolynomial = Polynomial.linear(
                 a1 = a1.y,
                 a0 = a0.y,
             ),
@@ -88,23 +88,23 @@ data class ParametricPolynomial<P : LowPolynomial>(
         fun constant(
             a: Vector2,
         ): ParametricPolynomial<ConstantPolynomial> = ParametricPolynomial(
-            xFunction = Polynomial.constant(
+            xPolynomial = Polynomial.constant(
                 a0 = a.x,
             ),
-            yFunction = Polynomial.constant(
+            yPolynomial = Polynomial.constant(
                 a0 = a.y,
             ),
         )
     }
 
     fun findRoots(): RootSet = RootSet(
-        xRoots = xFunction.findRoots().toSet(),
-        yRoots = yFunction.findRoots().toSet(),
+        xRoots = xPolynomial.findRoots().toSet(),
+        yRoots = yPolynomial.findRoots().toSet(),
     )
 
     override fun apply(x: Double): Vector2 = Vector2(
-        x = xFunction.apply(x),
-        y = yFunction.apply(x),
+        x = xPolynomial.apply(x),
+        y = yPolynomial.apply(x),
     )
 
     override fun equalsWithTolerance(
@@ -112,14 +112,14 @@ data class ParametricPolynomial<P : LowPolynomial>(
         tolerance: NumericObject.Tolerance,
     ): Boolean = when {
         other !is ParametricPolynomial<*> -> false
-        xFunction != other.xFunction -> false
-        yFunction != other.yFunction -> false
+        !xPolynomial.equalsWithTolerance(other.xPolynomial) -> false
+        !yPolynomial.equalsWithTolerance(other.yPolynomial) -> false
         else -> true
     }
 
     fun findDerivative(): SubCubicParametricPolynomial = ParametricPolynomial(
-        xFunction = xFunction.derivativeSubCubic,
-        yFunction = yFunction.derivativeSubCubic,
+        xPolynomial = xPolynomial.derivativeSubCubic,
+        yPolynomial = yPolynomial.derivativeSubCubic,
     )
 
     fun normalize(): ParametricPolynomial<*> {
@@ -131,22 +131,22 @@ data class ParametricPolynomial<P : LowPolynomial>(
     }
 
     private fun normalizeByX(): ParametricPolynomial<*>? {
-        val (xFunctionNormalized, normalProjection) = xFunction.normalize() ?: return null
-        val yFunctionNormalized = yFunction.modulate(normalProjection.invert())
+        val (xFunctionNormalized, normalProjection) = xPolynomial.normalize() ?: return null
+        val yFunctionNormalized = yPolynomial.modulate(normalProjection.invert())
 
         return ParametricPolynomial(
-            xFunction = xFunctionNormalized,
-            yFunction = yFunctionNormalized,
+            xPolynomial = xFunctionNormalized,
+            yPolynomial = yFunctionNormalized,
         )
     }
 
     private fun normalizeByY(): ParametricPolynomial<*>? {
-        val (yFunctionNormalized, normalProjection) = yFunction.normalize() ?: return null
-        val xFunctionNormalized = xFunction.modulate(normalProjection.invert())
+        val (yFunctionNormalized, normalProjection) = yPolynomial.normalize() ?: return null
+        val xFunctionNormalized = xPolynomial.modulate(normalProjection.invert())
 
         return ParametricPolynomial(
-            xFunction = xFunctionNormalized,
-            yFunction = yFunctionNormalized,
+            xPolynomial = xFunctionNormalized,
+            yPolynomial = yFunctionNormalized,
         )
     }
 }
