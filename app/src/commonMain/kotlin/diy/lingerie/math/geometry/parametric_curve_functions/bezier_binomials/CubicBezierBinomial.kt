@@ -2,7 +2,6 @@ package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
-import diy.lingerie.math.Ratio
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.matrices.matrix2.MatrixNx2
@@ -236,6 +235,8 @@ data class CubicBezierBinomial(
         )
     }
 
+    // TODO: Nuke the control check, simplify the verification, move to a higher
+    //  layer
     private fun locatePointByInversionWithControlCheck(
         point: Vector2,
         tolerance: NumericObject.Tolerance,
@@ -244,13 +245,11 @@ data class CubicBezierBinomial(
 
         val locatedTValue = locatePointByInversion(
             point = point,
-            tolerance = tolerance,
         )
 
         // A control check with an extremely close point
         val locatedControlTValue = locatePointByInversion(
             point = point + Vector2(eps, eps),
-            tolerance = tolerance,
         )
 
         return when {
@@ -279,20 +278,7 @@ data class CubicBezierBinomial(
      */
     internal fun locatePointByInversion(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
-    ): Double? {
-        val invertedPolynomial = invert() ?: return null
-        val invertedRatio = invertedPolynomial.apply(point)
-
-        return when {
-            invertedRatio.equalsWithTolerance(Ratio.ZeroByZero, tolerance = tolerance) -> {
-                // TODO: This means there are two solutions (at the self-intersection), while we couldn't find either
-                null
-            }
-
-            else -> invertedRatio.value
-        }
-    }
+    ): Double? = inverted?.applyOrNull(point)
 
     /**
      * @return the t-value (or one of t-values) for [point] if it lies on the
@@ -365,7 +351,7 @@ data class CubicBezierBinomial(
      *
      * @return The inverted polynomial, or null if the curve is degenerate
      */
-    internal fun invert(): RationalImplicitPolynomial? {
+    private fun invert(): RationalImplicitPolynomial? {
         val denominator = 3.0 * Matrix3x3.rowMajor(
             row0 = point1.toVector3(),
             row1 = point2.toVector3(),
@@ -405,6 +391,8 @@ data class CubicBezierBinomial(
             denominatorFunction = lb - la,
         )
     }
+
+    val inverted: RationalImplicitPolynomial? by lazy { invert() }
 
     override fun implicitize(): ImplicitCubicCurveFunction {
         val l32 = this.l32

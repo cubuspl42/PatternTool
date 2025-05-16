@@ -2,10 +2,6 @@ package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.BezierCurve
-import diy.lingerie.geometry.curves.ExpectedIntersection
-import diy.lingerie.geometry.curves.OpenCurve
-import diy.lingerie.geometry.curves.PrimitiveCurve
-import diy.lingerie.geometry.curves.testBezierIntersectionsConsistentSymmetric
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.test_utils.assertEqualsWithTolerance
@@ -22,7 +18,6 @@ class CubicBezierBinomialTests {
         val tValue = assertNotNull(
             cubicBezierBinomial.locatePointByInversion(
                 point = point,
-                tolerance = NumericObject.Tolerance.Default,
             ),
         )
 
@@ -62,7 +57,6 @@ class CubicBezierBinomialTests {
             actual = samples.map { sample ->
                 cubicBezierBinomial.locatePointByInversion(
                     point = sample.point,
-                    tolerance = NumericObject.Tolerance.Default,
                 ) ?: throw AssertionError("Cannot find t for point ${sample.point}")
             },
         )
@@ -79,7 +73,6 @@ class CubicBezierBinomialTests {
                 // A good approximation of the self intersection point, too close
                 // to the self-intersection, triggers the 0/0 safeguard
                 point = Vector2(501.14355433959827, 374.2024184921395),
-                tolerance = NumericObject.Tolerance.Default,
             ),
         )
 
@@ -89,7 +82,6 @@ class CubicBezierBinomialTests {
                 // very close to the self-intersection, but doesn't trigger
                 // the 0/0 safeguard
                 point = Vector2(501.1438111319996, 374.2024184921395),
-                tolerance = NumericObject.Tolerance.Default,
             ),
         )
 
@@ -112,7 +104,7 @@ class CubicBezierBinomialTests {
         val cubicBezierBinomial = bezierCurve.basisFunction
 
         val invertedPolynomial = assertNotNull(
-            cubicBezierBinomial.invert(),
+            cubicBezierBinomial.inverted,
         )
 
         val samples = cubicBezierBinomial.sample(n = 100)

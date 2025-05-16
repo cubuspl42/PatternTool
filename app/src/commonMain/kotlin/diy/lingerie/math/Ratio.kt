@@ -1,6 +1,7 @@
 package diy.lingerie.math
 
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.divideWithTolerance
 import diy.lingerie.math.algebra.equalsWithTolerance
 
 data class Ratio(
@@ -15,10 +16,7 @@ data class Ratio(
     }
 
     val valueOrNull: Double?
-        get() = when (denominator) {
-            0.0 -> null
-            else -> nominator / denominator
-        }
+        get() = nominator.divideWithTolerance(denominator)
 
     val value: Double
         get() = nominator / denominator

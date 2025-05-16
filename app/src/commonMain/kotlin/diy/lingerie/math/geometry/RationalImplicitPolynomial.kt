@@ -15,6 +15,8 @@ data class RationalImplicitPolynomial(
         denominator = denominatorFunction.apply(v),
     )
 
+    fun applyOrNull(v: Vector2): Double? = apply(v).valueOrNull
+
     override fun equalsWithTolerance(
         other: NumericObject,
         tolerance: NumericObject.Tolerance,
