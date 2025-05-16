@@ -40,7 +40,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     }
 
     fun sample(n: Int): List<Sample> = this.sample(
-        linSpace = LinSpace(n = n)
+        linSpace = LinSpace(sampleCount = n)
     ).map {
         Sample(t = it.a, point = it.b)
     }
