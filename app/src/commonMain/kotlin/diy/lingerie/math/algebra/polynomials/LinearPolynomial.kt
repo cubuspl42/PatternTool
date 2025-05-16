@@ -97,6 +97,9 @@ data class LinearPolynomial internal constructor(
 
     fun findRoot(): Double = -a0 / a1
 
+    override val symmetryAxis: Double
+        get() = 0.0
+
     override fun apply(
         x: Double,
     ): Double = a0 + a1 * x

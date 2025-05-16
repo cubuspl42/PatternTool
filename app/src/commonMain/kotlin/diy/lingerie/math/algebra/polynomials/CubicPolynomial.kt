@@ -243,7 +243,7 @@ data class CubicPolynomial internal constructor(
     val derivativeQuadratic: QuadraticPolynomial
         get() = derivative as QuadraticPolynomial
 
-    val symmetryAxis: Double
+    override val symmetryAxis: Double
         get() = derivativeQuadratic.symmetryAxis
 
     val symmetryPoint: Vector2
