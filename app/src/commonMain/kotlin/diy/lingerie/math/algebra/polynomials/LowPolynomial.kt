@@ -1,9 +1,7 @@
 package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
-import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.polynomials.LowPolynomial.Modulation
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.untrail
@@ -122,44 +120,6 @@ sealed class LowPolynomial : Polynomial {
         }
     }
 
-    interface OriginForm : RealFunction<Double> {
-        val origin: Vector2
-
-        val horizontalScale: Double?
-
-        /**
-         * Normalize scale-wise, but keep the origin
-         *
-         * @return the normalized form and the normalization scale
-         */
-        fun normalize(): Pair<OriginForm, Double>
-
-        fun toStandardForm(): LowPolynomial
-    }
-
-    /**
-     * Normalize, moving the polynomial to X=0
-     *
-     * @return the normalized polynomial and the normalization projection, or
-     * null if this polynomial couldn't be normalized (is constant)
-     */
-    fun normalize(): Pair<LowPolynomial, Modulation>? {
-        val originForm = toOriginForm() ?: return null
-        val (normalizedOriginForm, dilation) = originForm.normalize()
-
-        val shift = originForm.origin.a0
-
-        val modulation = Modulation(
-            shift = shift,
-            dilation = dilation,
-        )
-
-        return Pair(
-            normalizedOriginForm.toStandardForm().shiftBy(-shift),
-            modulation,
-        )
-    }
-
     fun normalizeBySymmetry(): Pair<LowPolynomial, Modulation>? {
         val symmetryAxis = this.symmetryAxis ?: return null
 
@@ -221,8 +181,6 @@ sealed class LowPolynomial : Polynomial {
 
     abstract val isNormalized: Boolean
 
-    abstract fun toOriginForm(): OriginForm?
-
     abstract fun findRootsAnalytically(): List<Double>
 
     abstract fun substituteDirectly(
@@ -253,14 +211,6 @@ fun <P : LowPolynomial> P.shift(
 fun <P : LowPolynomial> P.modulate(
     modulation: Modulation,
 ): P = modulation.transform(this)
-
-val LowPolynomial.OriginForm.normalModulation
-    get(): Modulation? {
-        return Modulation(
-            shift = origin.a0,
-            dilation = horizontalScale ?: return null,
-        )
-    }
 
 val LowPolynomial.derivativeSubCubic: SubCubicPolynomial
     get() = this.derivative as SubCubicPolynomial

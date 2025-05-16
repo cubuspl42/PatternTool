@@ -101,7 +101,7 @@ class LowPolynomialTests {
         val projectedPolynomial = normalPolynomial.modulate(modulation)
 
         val (normalizedPolynomial, normalModulation) = assertNotNull(
-            projectedPolynomial.normalize(),
+            projectedPolynomial.normalizeBySymmetry(),
         )
 
         val renormalizedPolynomial = projectedPolynomial.modulate(
@@ -170,8 +170,8 @@ class LowPolynomialTests {
                 a1 = 1.0,
             ),
             modulation = Modulation(
-                shift = 1.1,
-                dilation = 2.2,
+                dilation = Dilation(dilation = 2.2),
+                shift = Shift(shift = 0.0),
             ),
         )
     }

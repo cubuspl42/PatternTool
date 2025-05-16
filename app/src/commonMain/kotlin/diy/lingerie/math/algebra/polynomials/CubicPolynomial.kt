@@ -27,69 +27,6 @@ data class CubicPolynomial internal constructor(
         abstract fun applyShifted(x: Double): Double
     }
 
-    /**
-     * The "anchored form", i.e. the polynomial a' x^3 + c' x anchored at the given
-     * [origin]
-     */
-    data class AnchoredForm(
-        /**
-         * The point of symmetry
-         */
-        override val origin: Vector2,
-        /**
-         * The vertical scale factor (a')
-         */
-        val verticalScale: Double,
-        /**
-         * The initial slope (c')
-         */
-        val initialSlope: Double,
-    ) : ShiftedForm(), OriginForm {
-        companion object {
-            fun normal(
-                origin: Vector2,
-                initialSlope: Double,
-            ): AnchoredForm = AnchoredForm(
-                origin = origin,
-                verticalScale = 1.0,
-                initialSlope = initialSlope,
-            )
-        }
-
-        init {
-            require(verticalScale != 0.0)
-        }
-
-        override fun normalize(): Pair<OriginForm, Double> {
-            val denominator = cbrt(verticalScale)
-            val dilation = verticalScale / denominator
-
-            return Pair(
-                normal(
-                    origin = origin,
-                    initialSlope = initialSlope / denominator
-                ),
-                dilation,
-            )
-        }
-
-        override fun toStandardForm(): CubicPolynomial = CubicPolynomial(
-            a3 = verticalScale,
-            a2 = 0.0,
-            a1 = initialSlope,
-            a0 = 0.0,
-        ).translate(
-            t = origin,
-        )
-
-        override fun applyShifted(
-            x: Double,
-        ): Double = verticalScale * (x * x * x) + initialSlope * x
-
-        override val horizontalScale: Double?
-            get() = TODO("Not yet implemented")
-    }
-
     companion object {
         fun normalized(
             a0: Double,
@@ -230,8 +167,6 @@ data class CubicPolynomial internal constructor(
             else -> true
         }
 
-    override fun toOriginForm(): OriginForm = toAnchoredForm()
-
     override fun substituteDirectly(
         p: LinearPolynomial,
     ): CubicPolynomial {
@@ -264,34 +199,6 @@ data class CubicPolynomial internal constructor(
                 a0 = a0,
             ),
             normalDilation,
-        )
-    }
-
-    val symmetryPoint: Vector2
-        get() = Vector2(
-            symmetryAxis,
-            apply(symmetryAxis),
-        )
-
-    fun toAnchoredForm(): AnchoredForm {
-        val symmetryPoint = this.symmetryPoint
-
-        val shiftedPolynomial = this.translate(
-            t = -symmetryPoint,
-        )
-
-        if (!shiftedPolynomial.a0.equalsWithTolerance(0.0)) {
-            throw AssertionError()
-        }
-
-        if (!shiftedPolynomial.a2.equalsWithTolerance(0.0)) {
-            throw AssertionError()
-        }
-
-        return AnchoredForm(
-            origin = symmetryPoint,
-            verticalScale = shiftedPolynomial.a3,
-            initialSlope = shiftedPolynomial.a1,
         )
     }
 }
