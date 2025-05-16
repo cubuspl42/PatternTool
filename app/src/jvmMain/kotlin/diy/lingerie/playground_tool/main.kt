@@ -41,7 +41,7 @@ class MainCommand : CliktCommand() {
         )
 
         val intersectionPoints = listOf(
-            Point(413.8638152871538, 426.9971560440854),
+            Point(355.98023324908263, 456.00230813468403),
         )
 
         val playground = Playground(

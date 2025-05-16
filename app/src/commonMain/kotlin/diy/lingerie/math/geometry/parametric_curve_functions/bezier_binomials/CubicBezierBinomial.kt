@@ -192,6 +192,12 @@ data class CubicBezierBinomial(
         )
     }
 
+    fun isFullyOverlapping(
+        other: CubicBezierBinomial,
+    ): Boolean = normalize().equalsWithTolerance(other.normalize())
+
+    fun normalize(): ParametricPolynomial<*> = toParametricPolynomial().normalize()
+
     override fun toParametricPolynomial(): LowParametricPolynomial = ParametricPolynomial.cubic(
         a3 = -point0 + 3.0 * point1 - 3.0 * point2 + point3,
         a2 = 3.0 * point0 - 6.0 * point1 + 3.0 * point2,

@@ -442,7 +442,6 @@ class BezierCurveTests {
         )
     }
 
-
     @Test
     fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_anotherCutLoop() {
         // A loop cut into two pieces that make it non-obvious that any loop
