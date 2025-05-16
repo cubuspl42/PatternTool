@@ -2,7 +2,7 @@ package diy.lingerie.math.geometry
 
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.LowPolynomial
-import diy.lingerie.math.algebra.polynomials.project
+import diy.lingerie.math.algebra.polynomials.modulate
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -11,7 +11,7 @@ class ParametricPolynomialTests {
     @Test
     @Ignore // FIXME: Fix cubic normalization
     fun testNormalize() {
-        val projection = LowPolynomial.Projection(
+        val modulation = LowPolynomial.Modulation(
             shift = 1.1,
             dilation = 2.2,
         )
@@ -23,7 +23,7 @@ class ParametricPolynomialTests {
             a3 = 4.567,
         )
 
-        val xPolynomialProjected = xPolynomial.project(projection)
+        val xPolynomialProjected = xPolynomial.modulate(modulation)
 
         if (!xPolynomialProjected.equalsWithTolerance(
                 CubicPolynomial(
@@ -44,7 +44,7 @@ class ParametricPolynomialTests {
             a3 = 8.901,
         )
 
-        val yPolynomialProjected = yPolynomial.project(projection)
+        val yPolynomialProjected = yPolynomial.modulate(modulation)
 
         if (!yPolynomialProjected.equalsWithTolerance(
                 CubicPolynomial(

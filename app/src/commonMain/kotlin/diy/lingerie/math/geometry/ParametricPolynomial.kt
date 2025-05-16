@@ -12,7 +12,7 @@ import diy.lingerie.math.algebra.polynomials.Polynomial
 import diy.lingerie.math.algebra.polynomials.SubCubicPolynomial
 import diy.lingerie.math.algebra.polynomials.SubQuadraticPolynomial
 import diy.lingerie.math.algebra.polynomials.derivativeSubCubic
-import diy.lingerie.math.algebra.polynomials.project
+import diy.lingerie.math.algebra.polynomials.modulate
 
 data class ParametricPolynomial<P : LowPolynomial>(
     val xFunction: P,
@@ -132,7 +132,7 @@ data class ParametricPolynomial<P : LowPolynomial>(
 
     private fun normalizeByX(): ParametricPolynomial<*>? {
         val (xFunctionNormalized, normalProjection) = xFunction.normalize() ?: return null
-        val yFunctionNormalized = yFunction.project(normalProjection.invert())
+        val yFunctionNormalized = yFunction.modulate(normalProjection.invert())
 
         return ParametricPolynomial(
             xFunction = xFunctionNormalized,
@@ -142,7 +142,7 @@ data class ParametricPolynomial<P : LowPolynomial>(
 
     private fun normalizeByY(): ParametricPolynomial<*>? {
         val (yFunctionNormalized, normalProjection) = yFunction.normalize() ?: return null
-        val xFunctionNormalized = xFunction.project(normalProjection.invert())
+        val xFunctionNormalized = xFunction.modulate(normalProjection.invert())
 
         return ParametricPolynomial(
             xFunction = xFunctionNormalized,
