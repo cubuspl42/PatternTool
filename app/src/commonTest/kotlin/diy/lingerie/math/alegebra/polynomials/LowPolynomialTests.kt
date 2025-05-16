@@ -12,6 +12,31 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class LowPolynomialTests {
+    @Test
+    fun testProject() {
+        val cubicPolynomial = CubicPolynomial(
+            a0 = 1.234,
+            a1 = 2.345,
+            a2 = 3.456,
+            a3 = 4.567,
+        )
+
+        assertEqualsWithTolerance(
+            expected = CubicPolynomial(
+                a0 = 0.35462499999999975,
+                a1 = 1.0519318181818185,
+                a2 = -0.7013429752066117,
+                a3 = 0.4289068369646882,
+            ),
+            actual = cubicPolynomial.project(
+                projection = LowPolynomial.Projection(
+                    shift = 1.1,
+                    dilation = 2.2,
+                ),
+            )
+        )
+    }
+
     /**
      * Starting from a normal polynomial, project it in an arbitrary way,
      * then normalize. The result should be the same as the original, yielding
