@@ -418,7 +418,7 @@ sealed class RelativeAngle : RadialObject {
 
             return LinSpace(
                 firstFi..lastFi,
-                n = n,
+                sampleCount = n,
             ).generate().map { fi ->
                 Radial.normalize(fi = fi)
             }.toList()

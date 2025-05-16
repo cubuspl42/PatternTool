@@ -13,3 +13,17 @@ fun Double.split(): Pair<Int, Double> {
 
 inline val Double.sq: Double
     get() = this * this
+
+/**
+ * Divides the number by the denominator and returns the quotient and remainder.
+ *
+ * @return A pair of the quotient and the remainder .
+ */
+fun Double.divideWithRemainder(denominator: Int): Pair<Int, Double> {
+    require(denominator >= 1) { "Denominator must be a positive number" }
+
+    val quotient = this / denominator
+    val remainder = this % denominator
+
+    return Pair(quotient.toInt(), remainder)
+}

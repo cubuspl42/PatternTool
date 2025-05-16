@@ -79,7 +79,7 @@ data class Playground(
             val samples = bezierCurve.basisFunction.sample(
                 linSpace = LinSpace(
                     range = extendedCurveSampleRange,
-                    n = extendedCurveSampleCount,
+                    sampleCount = extendedCurveSampleCount,
                 ),
             )
 
