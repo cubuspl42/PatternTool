@@ -60,6 +60,11 @@ data class ParametricLineFunction(
 
     /**
      * Solve the equation s + d * t = p for t
+     *
+     * @return the t-value for the [point] if it lies on the line, a
+     * t-value of a point lying on the line close to [point] (but _not_ an
+     * actual projection) if [point] does not lye on the line, `null` if this
+     * line degenerates to a point
      */
     override fun locatePoint(
         point: Vector2,

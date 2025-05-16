@@ -265,6 +265,19 @@ data class BezierCurve(
         pointVector = basisFunction.apply(coord.t),
     )
 
+    override fun locatePoint(point: Point): Coord? {
+        // TODO: Guard against big gradient!
+        val tValue = basisFunction.locatePointByInversion(
+            point = point.pointVector,
+            tolerance = NumericObject.Tolerance.Default,
+        ) ?: basisFunction.locatePointByProjection(
+            point = point.pointVector,
+            tolerance = NumericObject.Tolerance.Default,
+        ) ?: return null
+
+        return Coord.of(t = tValue)
+    }
+
     override fun equalsWithTolerance(
         other: NumericObject,
         tolerance: NumericObject.Tolerance,

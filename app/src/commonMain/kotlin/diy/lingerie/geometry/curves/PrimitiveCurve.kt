@@ -111,16 +111,6 @@ abstract class PrimitiveCurve : OpenCurve() {
         return endTangent.equalsWithRadialTolerance(nextStartTangent)
     }
 
-    abstract val basisFunction: ParametricCurveFunction
-
-    abstract val edge: Edge
-
-    abstract override fun splitAt(
-        coord: Coord,
-    ): Pair<PrimitiveCurve, PrimitiveCurve>
-
-    abstract fun evaluate(coord: Coord): Point
-
     abstract override fun transformBy(
         transformation: Transformation,
     ): PrimitiveCurve
@@ -139,4 +129,22 @@ abstract class PrimitiveCurve : OpenCurve() {
         complexObjectCurve = this,
         tolerance = Tolerance.Default,
     )
+
+    abstract val basisFunction: ParametricCurveFunction
+
+    abstract val edge: Edge
+
+    abstract override fun splitAt(
+        coord: Coord,
+    ): Pair<PrimitiveCurve, PrimitiveCurve>
+
+    abstract fun evaluate(coord: Coord): Point
+
+    /**
+     * Locate the point on the curve
+     *
+     * @return If the [point] is on the curve, coordinate of that point. If the
+     * point is not on the curve, `null`
+     */
+    abstract fun locatePoint(point: Point): Coord?
 }

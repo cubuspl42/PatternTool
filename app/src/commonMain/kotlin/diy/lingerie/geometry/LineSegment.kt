@@ -112,6 +112,22 @@ data class LineSegment(
         pointVector = start.pointVector + coord.t * (end.pointVector - start.pointVector),
     )
 
+    override fun locatePoint(point: Point): Coord? {
+        val tValue = basisFunction.locatePoint(
+            point.pointVector,
+            tolerance = NumericObject.Tolerance.Default,
+        ) ?: return when {
+            // If a line is degenerated, _all_ t-values are a good answer, but
+            // we don't want to say that the point is not on the curve when it
+            // kind of is
+            start.equalsWithTolerance(point) -> Coord.start
+
+            else -> null
+        }
+
+        return Coord.of(t = tValue)
+    }
+
     override fun equalsWithTolerance(
         other: NumericObject,
         tolerance: Tolerance,

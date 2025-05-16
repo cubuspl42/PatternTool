@@ -4,6 +4,7 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.curves.ExpectedIntersection
 import diy.lingerie.geometry.curves.OpenCurve
+import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.curves.testBezierIntersectionsConsistentSymmetric
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
@@ -11,10 +12,34 @@ import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class CubicBezierBinomialTests {
+    private fun testCorrectPointLocation(
+        cubicBezierBinomial: CubicBezierBinomial,
+        point: Vector2,
+    ) {
+        val tValue = assertNotNull(
+            cubicBezierBinomial.locatePointByInversion(
+                point = point,
+                tolerance = NumericObject.Tolerance.Default,
+            ),
+        )
+
+        assertTrue(
+            tValue in 0.0..1.0,
+        )
+
+        val actualPoint = cubicBezierBinomial.apply(tValue)
+
+        assertEqualsWithTolerance(
+            expected = point,
+            actual = actualPoint,
+        )
+    }
+
     @Test
-    fun testLocatePoint() {
+    fun testLocatePointByInversion() {
         // A curve with a self-intersection (outside its [0, 1] range!)
         val bezierCurve = BezierCurve(
             start = Point(492.59773540496826, 197.3452272415161),
@@ -35,47 +60,43 @@ class CubicBezierBinomialTests {
                 sample.t
             },
             actual = samples.map { sample ->
-                cubicBezierBinomial.locatePoint(
+                cubicBezierBinomial.locatePointByInversion(
                     point = sample.point,
                     tolerance = NumericObject.Tolerance.Default,
                 ) ?: throw AssertionError("Cannot find t for point ${sample.point}")
             },
         )
 
-        // An acceptable approximation of the self intersection point
-        // Internally, it gives an acceptable approximation of the t-value, but it
-        // doesn't pass the control check
-        val selfIntersectionPoint0 = Vector2(501.14313780321595, 374.2020798247014)
+        testCorrectPointLocation(
+            cubicBezierBinomial = cubicBezierBinomial,
+            // An acceptable approximation of the self intersection point,
+            // location works fine
+            point = Vector2(501.14313780321595, 374.2020798247014),
+        )
 
         assertNull(
-            actual = cubicBezierBinomial.locatePoint(
-                point = selfIntersectionPoint0,
+            actual = cubicBezierBinomial.locatePointByInversion(
+                // A good approximation of the self intersection point, too close
+                // to the self-intersection, triggers the 0/0 safeguard
+                point = Vector2(501.14355433959827, 374.2024184921395),
                 tolerance = NumericObject.Tolerance.Default,
             ),
         )
 
-        // A good approximation of the self intersection point
-        // Of the provided approximations, only this one internally results in a
-        // ratio close to 0/0 and doesn't need to rely on the control check
-        val selfIntersectionPoint1 = Vector2(501.14355433959827, 374.2024184921395)
-
-        assertNull(
-            actual = cubicBezierBinomial.locatePoint(
-                point = selfIntersectionPoint1,
+        val badTValue = assertNotNull(
+            cubicBezierBinomial.locatePointByInversion(
+                // Another good approximation of the self intersection point,
+                // very close to the self-intersection, but doesn't trigger
+                // the 0/0 safeguard
+                point = Vector2(501.1438111319996, 374.2024184921395),
                 tolerance = NumericObject.Tolerance.Default,
             ),
         )
 
-        // Another good approximation of the self intersection point
-        // Internally, it gives a very bad approximation of t-value and in
-        // consequence doesn't pass the control check
-        val selfIntersectionPoint2 = Vector2(501.1438111319996, 374.2024184921395)
-
-        assertNull(
-            actual = cubicBezierBinomial.locatePoint(
-                point = selfIntersectionPoint2,
-                tolerance = NumericObject.Tolerance.Default,
-            ),
+        assertEqualsWithTolerance(
+            // A very bad approximation of t-value (not even in the [0, 1] range)
+            expected = -5.68379446238774,
+            actual = badTValue
         )
     }
 
