@@ -2,11 +2,6 @@ package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
-import diy.lingerie.math.algebra.equalsWithTolerance
-import diy.lingerie.math.algebra.linear.vectors.Vector2
-import diy.lingerie.math.algebra.polynomials.LowPolynomial.Projection
-import diy.lingerie.utils.iterable.uncons
-import diy.lingerie.utils.iterable.untrail
 import kotlin.math.max
 
 private fun areCloseNever(

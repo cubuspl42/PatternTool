@@ -4,7 +4,7 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
-import diy.lingerie.math.algebra.polynomials.LowPolynomial.Projection
+import diy.lingerie.math.algebra.polynomials.LowPolynomial.Modulation
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.untrail
 
@@ -84,7 +84,7 @@ sealed class LowPolynomial : Polynomial {
         )
     }
 
-    data class Projection(
+    data class Modulation(
         val dilation: Dilation,
         val shift: Shift,
     ) : Transformation() {
@@ -102,10 +102,10 @@ sealed class LowPolynomial : Polynomial {
             dilation.transform(polynomial),
         )
 
-        override fun invert(): Projection {
+        override fun invert(): Modulation {
             val invertedDilation = dilation.invert()
 
-            return Projection(
+            return Modulation(
                 dilation = invertedDilation,
                 shift = shift.invert().dilate(invertedDilation),
             )
@@ -115,7 +115,7 @@ sealed class LowPolynomial : Polynomial {
             other: NumericObject,
             tolerance: NumericObject.Tolerance,
         ): Boolean = when {
-            other !is Projection -> false
+            other !is Modulation -> false
             !shift.equalsWithTolerance(other.shift, tolerance = tolerance) -> false
             !dilation.equalsWithTolerance(other.dilation, tolerance = tolerance) -> false
             else -> true
@@ -143,20 +143,20 @@ sealed class LowPolynomial : Polynomial {
      * @return the normalized polynomial and the normalization projection, or
      * null if this polynomial couldn't be normalized (is constant)
      */
-    fun normalize(): Pair<LowPolynomial, Projection>? {
+    fun normalize(): Pair<LowPolynomial, Modulation>? {
         val originForm = toOriginForm() ?: return null
         val (normalizedOriginForm, dilation) = originForm.normalize()
 
         val shift = originForm.origin.a0
 
-        val projection = Projection(
+        val modulation = Modulation(
             shift = shift,
             dilation = dilation,
         )
 
         return Pair(
             normalizedOriginForm.toStandardForm().shiftBy(-shift),
-            projection,
+            modulation,
         )
     }
 
@@ -214,13 +214,13 @@ fun <P : LowPolynomial> P.transform(
     transformation: LowPolynomial.Transformation,
 ): P = transformation.transform(this)
 
-fun <P : LowPolynomial> P.project(
-    projection: Projection,
-): P = projection.transform(this)
+fun <P : LowPolynomial> P.modulate(
+    modulation: Modulation,
+): P = modulation.transform(this)
 
-val LowPolynomial.OriginForm.normalProjection
-    get(): Projection? {
-        return Projection(
+val LowPolynomial.OriginForm.normalModulation
+    get(): Modulation? {
+        return Modulation(
             shift = origin.a0,
             dilation = horizontalScale ?: return null,
         )
