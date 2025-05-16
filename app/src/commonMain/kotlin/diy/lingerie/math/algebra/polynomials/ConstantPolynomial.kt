@@ -2,7 +2,6 @@ package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
-import diy.lingerie.math.algebra.linear.vectors.Vector2
 
 data class ConstantPolynomial(
     override val a0: Double,
@@ -21,6 +20,9 @@ data class ConstantPolynomial(
     override fun divide(
         x0: Double,
     ): Pair<Polynomial, Double> = Pair(zero, a0)
+
+    override val symmetryAxis: Nothing?
+        get() = null
 
     override val isNormalized: Boolean
         get() = true

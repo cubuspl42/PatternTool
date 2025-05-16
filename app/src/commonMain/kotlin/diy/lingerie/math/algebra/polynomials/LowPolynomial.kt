@@ -102,6 +102,7 @@ sealed class LowPolynomial : Polynomial {
         ),
     )
 
+    @Suppress("unused")
     val prettyString: String
         get() = coefficients.mapIndexed { index, coefficient ->
             when (index) {
@@ -116,6 +117,8 @@ sealed class LowPolynomial : Polynomial {
         tolerance: NumericObject.Tolerance,
         areClose: (Double, Double) -> Boolean,
     ): List<Double> = findRootsAnalytically()
+
+    abstract val symmetryAxis: Double?
 
     abstract val isNormalized: Boolean
 

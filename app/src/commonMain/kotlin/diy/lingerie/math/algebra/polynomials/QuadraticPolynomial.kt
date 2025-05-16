@@ -126,7 +126,7 @@ data class QuadraticPolynomial internal constructor(
      * The parameter x0 of the vertical line x = x0 that's the axis of symmetry
      * of the parabola
      */
-    val symmetryAxis: Double
+    override val symmetryAxis: Double
         get() = -a1 / (2 * a2)
 
     val vertex: Vector2
