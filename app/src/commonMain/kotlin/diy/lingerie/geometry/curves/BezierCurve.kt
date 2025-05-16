@@ -67,10 +67,17 @@ data class BezierCurve(
         fun findIntersections(
             subjectBezierCurve: BezierCurve,
             objectBezierCurve: BezierCurve,
-        ): Set<Intersection> {
-            // For two Bézier curves, let's use the intersection equation solving
-            // strategy
-            return BezierCurve.findIntersectionsByEquationSolving(
+            tolerance: SpatialObject.SpatialTolerance,
+        ): Set<Intersection> = when {
+            subjectBezierCurve.basisFunction.isFullyOverlapping(
+                other = objectBezierCurve.basisFunction,
+            ) -> BezierCurve.findIntersectionsBySubdivision(
+                subjectBezierCurve = subjectBezierCurve,
+                objectBezierCurve = objectBezierCurve,
+                tolerance = tolerance,
+            )
+
+            else -> BezierCurve.findIntersectionsByEquationSolving(
                 subjectBezierCurve = subjectBezierCurve,
                 objectBezierCurve = objectBezierCurve,
             )
@@ -320,6 +327,7 @@ data class BezierCurve(
     ): Set<Intersection> = BezierCurve.findIntersections(
         subjectBezierCurve = subjectBezierCurve,
         objectBezierCurve = this,
+        tolerance = SpatialObject.SpatialTolerance.default,
     )
 
     override fun toReprString(): String {
