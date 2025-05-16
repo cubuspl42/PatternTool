@@ -11,7 +11,6 @@ import diy.lingerie.math.algebra.polynomials.dilate
 import diy.lingerie.math.algebra.polynomials.modulate
 import diy.lingerie.math.algebra.polynomials.shift
 import diy.lingerie.test_utils.assertEqualsWithTolerance
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -92,30 +91,50 @@ class LowPolynomialTests {
     /**
      * Starting from a normal polynomial, project it in an arbitrary way,
      * then normalize. The result should be the same as the original, yielding
-     * the used projection.
+     * the used modulation.
      */
     private fun testNormalModulationForward(
         normalPolynomial: LowPolynomial,
-        modulation: Modulation,
+        arbitraryModulation: Modulation,
     ) {
-        val projectedPolynomial = normalPolynomial.modulate(modulation)
+        if (!normalPolynomial.isNormalized) {
+            throw AssertionError("The original polynomial is not normalized")
+        }
 
+        // Modulate the polynomial in an arbitrary way
+        val modulatedPolynomial = normalPolynomial.modulate(arbitraryModulation)
+
+        // Normalize the modulated polynomial
         val (normalizedPolynomial, normalModulation) = assertNotNull(
-            projectedPolynomial.normalize(),
+            modulatedPolynomial.normalize(),
         )
 
-        val renormalizedPolynomial = projectedPolynomial.modulate(
-            normalModulation.invert(),
-        )
-
+        // Ensure that the normal modulation is the original modulation
         assertEqualsWithTolerance(
-            expected = modulation,
+            expected = arbitraryModulation,
             actual = normalModulation,
         )
 
+        // Ensure that the normalized polynomial is the original polynomial
         assertEqualsWithTolerance(
             expected = normalPolynomial,
             actual = normalizedPolynomial,
+        )
+
+        // Modulate the normalized polynomial using the calculated modulation
+        val remodulatedPolynomial = normalizedPolynomial.modulate(
+            normalModulation,
+        )
+
+        // Ensure that it's the same as the originally modulated polynomial
+        assertEqualsWithTolerance(
+            expected = modulatedPolynomial,
+            actual = remodulatedPolynomial,
+        )
+
+        // Now invert the modulation and apply it to the modulated polynomial
+        val renormalizedPolynomial = modulatedPolynomial.modulate(
+            normalModulation.invert(),
         )
 
         assertEqualsWithTolerance(
@@ -129,33 +148,40 @@ class LowPolynomialTests {
      * the result is a normal polynomial.
      */
     private fun testNormalModulationBackward(
-        polynomial: LowPolynomial,
+        arbitraryPolynomial: LowPolynomial,
         expectedNormalModulation: Modulation,
     ) {
+        // Normalize the polynomial
         val (normalizedPolynomial, normalModulation) = assertNotNull(
-            polynomial.normalize(),
+            arbitraryPolynomial.normalize(),
         )
 
+        // Ensure it's actually normalized
         assertTrue(
             normalizedPolynomial.isNormalized,
         )
 
+        // Check if the calculated normal modulation is as expected
         assertEqualsWithTolerance(
             expected = expectedNormalModulation,
             actual = normalModulation,
         )
 
+        // Recover the original polynomial by applying the modulation
         val recoveredPolynomial = normalizedPolynomial.modulate(normalModulation)
 
+        // Ensure that it's actually the same as the original
         assertEqualsWithTolerance(
-            expected = polynomial,
+            expected = arbitraryPolynomial,
             actual = recoveredPolynomial,
         )
 
-        val renormalizedPolynomial = polynomial.modulate(
+        // Invert the modulation and apply it to the original polynomial
+        val renormalizedPolynomial = arbitraryPolynomial.modulate(
             normalModulation.invert(),
         )
 
+        // Ensure that it's the same as the normalized polynomial
         assertEqualsWithTolerance(
             expected = normalizedPolynomial,
             actual = renormalizedPolynomial,
@@ -169,7 +195,7 @@ class LowPolynomialTests {
                 a0 = 0.0,
                 a1 = 1.0,
             ),
-            modulation = Modulation(
+            arbitraryModulation = Modulation(
                 dilation = Dilation(dilation = 2.2),
                 shift = Shift(shift = 0.0),
             ),
@@ -179,7 +205,7 @@ class LowPolynomialTests {
     @Test
     fun testReverseNormalModulationLinear() {
         testNormalModulationBackward(
-            polynomial = LinearPolynomial(
+            arbitraryPolynomial = LinearPolynomial(
                 a0 = 1.234,
                 a1 = 2.345,
             ),
@@ -198,7 +224,7 @@ class LowPolynomialTests {
                 a1 = 0.0,
                 a2 = 1.0,
             ),
-            modulation = Modulation(
+            arbitraryModulation = Modulation(
                 shift = 1.1,
                 dilation = 2.2,
             ),
@@ -208,7 +234,7 @@ class LowPolynomialTests {
     @Test
     fun testReverseNormalModulationQuadratic() {
         testNormalModulationBackward(
-            polynomial = QuadraticPolynomial(
+            arbitraryPolynomial = QuadraticPolynomial(
                 a0 = 1.234,
                 a1 = 2.345,
                 a2 = 3.456,
@@ -229,7 +255,7 @@ class LowPolynomialTests {
                 a2 = 0.0,
                 a3 = 1.0,
             ),
-            modulation = Modulation(
+            arbitraryModulation = Modulation(
                 shift = 1.1,
                 dilation = 1.0,
             ),
@@ -239,7 +265,7 @@ class LowPolynomialTests {
     @Test
     fun testReverseNormalModulationCubicSimple() {
         testNormalModulationBackward(
-            polynomial = CubicPolynomial(
+            arbitraryPolynomial = CubicPolynomial(
                 a0 = 1.234,
                 a1 = -2.345,
                 a2 = 0.0,
@@ -253,18 +279,17 @@ class LowPolynomialTests {
     }
 
     @Test
-    @Ignore
     fun testReverseNormalModulationCubic() {
         testNormalModulationBackward(
-            polynomial = CubicPolynomial(
+            arbitraryPolynomial = CubicPolynomial(
                 a0 = 1.234,
                 a1 = 2.345,
                 a2 = 3.456,
                 a3 = 4.567,
             ),
             expectedNormalModulation = Modulation(
-                shift = -0.2522443617254215,
-                dilation = 2.7526691000419197,
+                dilation = Dilation(dilation = 0.6027302605741011),
+                shift = Shift(shift = -0.2522443617254215),
             ),
         )
     }
