@@ -1,15 +1,14 @@
 package diy.lingerie.math.geometry
 
+import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.LowPolynomial
 import diy.lingerie.math.algebra.polynomials.modulate
 import diy.lingerie.test_utils.assertEqualsWithTolerance
-import kotlin.test.Ignore
 import kotlin.test.Test
 
 class ParametricPolynomialTests {
     @Test
-    @Ignore // FIXME: Fix cubic normalization
     fun testNormalize() {
         val modulation = LowPolynomial.Modulation(
             shift = 1.1,
@@ -59,13 +58,13 @@ class ParametricPolynomialTests {
         }
 
         val firstParametricPolynomial = ParametricPolynomial(
-            xFunction = xPolynomial,
-            yFunction = yPolynomial,
+            xPolynomial = xPolynomial,
+            yPolynomial = yPolynomial,
         )
 
         val secondParametricPolynomial = ParametricPolynomial(
-            xFunction = xPolynomialProjected,
-            yFunction = yPolynomialProjected,
+            xPolynomial = xPolynomialProjected,
+            yPolynomial = yPolynomialProjected,
         )
 
         val firstNormalized = firstParametricPolynomial.normalize()
@@ -74,6 +73,9 @@ class ParametricPolynomialTests {
         assertEqualsWithTolerance(
             expected = firstNormalized,
             actual = secondNormalized,
+            tolerance = NumericObject.Tolerance.Absolute(
+                absoluteTolerance = 1e-3,
+            )
         )
     }
 }

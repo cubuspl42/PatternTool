@@ -124,8 +124,8 @@ data class ImplicitQuadraticCurveFunction(
     override fun substitute(
         parametricPolynomial: ParametricPolynomial<*>,
     ): Polynomial {
-        val x = parametricPolynomial.xFunction
-        val y = parametricPolynomial.yFunction
+        val x = parametricPolynomial.xPolynomial
+        val y = parametricPolynomial.yPolynomial
 
         return a2 * (x * x) + a1b1 * (x * y) + b2 * (y * y) + a1 * x + b1 * y + c
     }
