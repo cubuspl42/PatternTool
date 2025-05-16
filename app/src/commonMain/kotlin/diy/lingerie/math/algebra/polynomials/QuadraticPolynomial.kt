@@ -3,7 +3,6 @@ package diy.lingerie.math.algebra.polynomials
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
-import diy.lingerie.utils.sq
 import kotlin.math.sqrt
 
 data class QuadraticPolynomial internal constructor(
@@ -11,64 +10,6 @@ data class QuadraticPolynomial internal constructor(
     override val a1: Double,
     override val a2: Double,
 ) : SubCubicPolynomial(), SuperLinearPolynomial {
-    /**
-     * The vertex form of the quadratic function, i.e. the polynomial a' x^2
-     * anchored at the given [origin]
-     */
-    data class VertexForm(
-        /**
-         * The position of the vertex
-         */
-        override val origin: Vector2,
-        /**
-         * The vertical scale factor
-         */
-        val verticalScale: Double,
-    ) : OriginForm {
-        companion object {
-            fun normal(
-                origin: Vector2,
-            ): VertexForm = VertexForm(
-                origin = origin,
-                verticalScale = 1.0,
-            )
-
-            fun of(
-                origin: Vector2,
-                horizontalScale: Double,
-            ): VertexForm = VertexForm(
-                origin = origin,
-                verticalScale = 1 / horizontalScale.sq,
-            )
-        }
-
-        init {
-            require(verticalScale != 0.0)
-        }
-
-        override val horizontalScale: Double
-            get() = sqrt(1 / verticalScale)
-
-        override fun apply(
-            x: Double,
-        ): Double = verticalScale * (x - origin.a0).sq + origin.a1
-
-        override fun toStandardForm(): QuadraticPolynomial = QuadraticPolynomial(
-            a0 = verticalScale * origin.a0.sq + origin.a1,
-            a1 = -2 * verticalScale * origin.a0,
-            a2 = verticalScale,
-        )
-
-        override fun normalize(): Pair<OriginForm, Double> {
-            val dilation = sqrt(1 / verticalScale)
-
-            return Pair(
-                normal(origin = origin),
-                dilation,
-            )
-        }
-    }
-
     companion object {
         fun normalized(
             a0: Double,
@@ -119,8 +60,6 @@ data class QuadraticPolynomial internal constructor(
         return result as QuadraticPolynomial
     }
 
-    override fun toOriginForm(): OriginForm = toVertexForm()
-
     /**
      * The parameter x0 of the vertical line x = x0 that's the axis of symmetry
      * of the parabola
@@ -142,17 +81,6 @@ data class QuadraticPolynomial internal constructor(
             normalDilation,
         )
     }
-
-    val vertex: Vector2
-        get() = Vector2(
-            symmetryAxis,
-            apply(symmetryAxis),
-        )
-
-    fun toVertexForm(): VertexForm = VertexForm(
-        origin = vertex,
-        verticalScale = a2,
-    )
 
     fun findRoots(): Pair<Double, Double>? {
         val a = a2

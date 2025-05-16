@@ -31,8 +31,6 @@ data class ConstantPolynomial(
     override val isNormalized: Boolean
         get() = true
 
-    override fun toOriginForm(): Nothing? = null
-
     override fun findRootsAnalytically(): List<Double> = emptyList()
 
     override fun substituteDirectly(p: LinearPolynomial): LowPolynomial = p
