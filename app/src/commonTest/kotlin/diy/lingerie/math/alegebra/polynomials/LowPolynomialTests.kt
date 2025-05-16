@@ -101,7 +101,7 @@ class LowPolynomialTests {
         val projectedPolynomial = normalPolynomial.modulate(modulation)
 
         val (normalizedPolynomial, normalModulation) = assertNotNull(
-            projectedPolynomial.normalizeBySymmetry(),
+            projectedPolynomial.normalize(),
         )
 
         val renormalizedPolynomial = projectedPolynomial.modulate(
@@ -133,7 +133,7 @@ class LowPolynomialTests {
         expectedNormalModulation: Modulation,
     ) {
         val (normalizedPolynomial, normalModulation) = assertNotNull(
-            polynomial.normalizeBySymmetry(),
+            polynomial.normalize(),
         )
 
         assertTrue(

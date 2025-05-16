@@ -131,7 +131,7 @@ data class ParametricPolynomial<P : LowPolynomial>(
     }
 
     private fun normalizeByX(): ParametricPolynomial<*>? {
-        val (xFunctionNormalized, normalProjection) = xFunction.normalizeBySymmetry() ?: return null
+        val (xFunctionNormalized, normalProjection) = xFunction.normalize() ?: return null
         val yFunctionNormalized = yFunction.modulate(normalProjection.invert())
 
         return ParametricPolynomial(
@@ -141,7 +141,7 @@ data class ParametricPolynomial<P : LowPolynomial>(
     }
 
     private fun normalizeByY(): ParametricPolynomial<*>? {
-        val (yFunctionNormalized, normalProjection) = yFunction.normalizeBySymmetry() ?: return null
+        val (yFunctionNormalized, normalProjection) = yFunction.normalize() ?: return null
         val xFunctionNormalized = xFunction.modulate(normalProjection.invert())
 
         return ParametricPolynomial(
