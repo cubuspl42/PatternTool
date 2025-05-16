@@ -160,6 +160,32 @@ sealed class LowPolynomial : Polynomial {
         )
     }
 
+    fun normalizeBySymmetry(): Pair<LowPolynomial, Modulation>? {
+        val symmetryAxis = this.symmetryAxis ?: return null
+
+        // A shift from the symmetric form
+        val symmetryShift = Shift(
+            shift = symmetryAxis,
+        )
+
+        val symmetricPolynomial = this.shift(
+            symmetryShift.invert(),
+        )
+
+        val (normalizedPolynomial, normalDilation) = symmetricPolynomial.normalizeSymmetric()
+
+        val normalModulation = Modulation(
+            dilation = normalDilation,
+            shift = symmetryShift,
+        )
+
+        return Pair(
+            normalizedPolynomial,
+            normalModulation,
+        )
+    }
+
+
     fun shiftBy(
         dx: Double,
     ): LowPolynomial {
@@ -190,6 +216,8 @@ sealed class LowPolynomial : Polynomial {
     ): List<Double> = findRootsAnalytically()
 
     abstract val symmetryAxis: Double?
+
+    abstract fun normalizeSymmetric(): Pair<LowPolynomial, Dilation>
 
     abstract val isNormalized: Boolean
 

@@ -128,6 +128,21 @@ data class QuadraticPolynomial internal constructor(
     override val symmetryAxis: Double
         get() = -a1 / (2 * a2)
 
+    override fun normalizeSymmetric(): Pair<LowPolynomial, Dilation> {
+        val normalDilation = Dilation(
+            dilation = sqrt(1 / a2),
+        )
+
+        return Pair(
+            QuadraticPolynomial(
+                a2 = 1.0,
+                a1 = 0.0,
+                a0 = a0,
+            ),
+            normalDilation,
+        )
+    }
+
     val vertex: Vector2
         get() = Vector2(
             symmetryAxis,

@@ -24,6 +24,10 @@ data class ConstantPolynomial(
     override val symmetryAxis: Nothing?
         get() = null
 
+    override fun normalizeSymmetric(): Pair<LowPolynomial, Dilation> {
+        throw UnsupportedOperationException()
+    }
+
     override val isNormalized: Boolean
         get() = true
 

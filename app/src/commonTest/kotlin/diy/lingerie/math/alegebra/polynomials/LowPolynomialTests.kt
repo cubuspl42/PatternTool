@@ -3,6 +3,9 @@ package diy.lingerie.math.alegebra.polynomials
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.LinearPolynomial
 import diy.lingerie.math.algebra.polynomials.LowPolynomial
+import diy.lingerie.math.algebra.polynomials.LowPolynomial.Dilation
+import diy.lingerie.math.algebra.polynomials.LowPolynomial.Modulation
+import diy.lingerie.math.algebra.polynomials.LowPolynomial.Shift
 import diy.lingerie.math.algebra.polynomials.QuadraticPolynomial
 import diy.lingerie.math.algebra.polynomials.dilate
 import diy.lingerie.math.algebra.polynomials.modulate
@@ -30,7 +33,7 @@ class LowPolynomialTests {
                 a2 = 0.7140495867768594,
                 a3 = 0.4289068369646881,
             ), actual = cubicPolynomial.dilate(
-                dilation = LowPolynomial.Dilation(
+                dilation = Dilation(
                     dilation = 2.2,
                 ),
             )
@@ -54,7 +57,7 @@ class LowPolynomialTests {
                 a3 = 4.567,
             ),
             actual = cubicPolynomial.shift(
-                shift = LowPolynomial.Shift(
+                shift = Shift(
                     shift = 3.3,
                 ),
             ),
@@ -78,7 +81,7 @@ class LowPolynomialTests {
                 a3 = 0.4289068369646882,
             ),
             actual = cubicPolynomial.modulate(
-                modulation = LowPolynomial.Modulation(
+                modulation = Modulation(
                     shift = 1.1,
                     dilation = 2.2,
                 ),
@@ -91,23 +94,23 @@ class LowPolynomialTests {
      * then normalize. The result should be the same as the original, yielding
      * the used projection.
      */
-    private fun testNormalProjectionForward(
+    private fun testNormalModulationForward(
         normalPolynomial: LowPolynomial,
-        modulation: LowPolynomial.Modulation,
+        modulation: Modulation,
     ) {
         val projectedPolynomial = normalPolynomial.modulate(modulation)
 
-        val (normalizedPolynomial, normalProjection) = assertNotNull(
+        val (normalizedPolynomial, normalModulation) = assertNotNull(
             projectedPolynomial.normalize(),
         )
 
         val renormalizedPolynomial = projectedPolynomial.modulate(
-            normalProjection.invert(),
+            normalModulation.invert(),
         )
 
         assertEqualsWithTolerance(
             expected = modulation,
-            actual = normalProjection,
+            actual = normalModulation,
         )
 
         assertEqualsWithTolerance(
@@ -125,24 +128,24 @@ class LowPolynomialTests {
      * Starting from an arbitrary polynomial, normalize it and ensure that
      * the result is a normal polynomial.
      */
-    private fun testNormalProjectionBackward(
+    private fun testNormalModulationBackward(
         polynomial: LowPolynomial,
-        expectedNormalModulation: LowPolynomial.Modulation,
+        expectedNormalModulation: Modulation,
     ) {
-        val (normalizedPolynomial, normalProjection) = assertNotNull(
-            polynomial.normalize(),
+        val (normalizedPolynomial, normalModulation) = assertNotNull(
+            polynomial.normalizeBySymmetry(),
         )
 
         assertTrue(
             normalizedPolynomial.isNormalized,
         )
 
-//        assertEqualsWithTolerance(
-//            expected = expectedNormalProjection,
-//            actual = normalProjection,
-//        )
+        assertEqualsWithTolerance(
+            expected = expectedNormalModulation,
+            actual = normalModulation,
+        )
 
-        val recoveredPolynomial = normalizedPolynomial.modulate(normalProjection)
+        val recoveredPolynomial = normalizedPolynomial.modulate(normalModulation)
 
         assertEqualsWithTolerance(
             expected = polynomial,
@@ -150,7 +153,7 @@ class LowPolynomialTests {
         )
 
         val renormalizedPolynomial = polynomial.modulate(
-            normalProjection.invert(),
+            normalModulation.invert(),
         )
 
         assertEqualsWithTolerance(
@@ -160,13 +163,13 @@ class LowPolynomialTests {
     }
 
     @Test
-    fun testNormalProjectionLinear() {
-        testNormalProjectionForward(
+    fun testNormalModulationLinear() {
+        testNormalModulationForward(
             normalPolynomial = LinearPolynomial(
                 a0 = 0.0,
                 a1 = 1.0,
             ),
-            modulation = LowPolynomial.Modulation(
+            modulation = Modulation(
                 shift = 1.1,
                 dilation = 2.2,
             ),
@@ -174,28 +177,28 @@ class LowPolynomialTests {
     }
 
     @Test
-    fun testReverseNormalProjectionLinear() {
-        testNormalProjectionBackward(
+    fun testReverseNormalModulationLinear() {
+        testNormalModulationBackward(
             polynomial = LinearPolynomial(
                 a0 = 1.234,
                 a1 = 2.345,
             ),
-            expectedNormalModulation = LowPolynomial.Modulation(
-                shift = -0.5262260127931769,
-                dilation = 0.42643923240938164,
+            expectedNormalModulation = Modulation(
+                dilation = Dilation(dilation = 0.42643923240938164),
+                shift = Shift(shift = 0.0),
             ),
         )
     }
 
     @Test
-    fun testNormalProjectionQuadratic() {
-        testNormalProjectionForward(
+    fun testNormalModulationQuadratic() {
+        testNormalModulationForward(
             normalPolynomial = QuadraticPolynomial(
                 a0 = 1.234,
                 a1 = 0.0,
                 a2 = 1.0,
             ),
-            modulation = LowPolynomial.Modulation(
+            modulation = Modulation(
                 shift = 1.1,
                 dilation = 2.2,
             ),
@@ -203,14 +206,14 @@ class LowPolynomialTests {
     }
 
     @Test
-    fun testReverseNormalProjectionQuadratic() {
-        testNormalProjectionBackward(
+    fun testReverseNormalModulationQuadratic() {
+        testNormalModulationBackward(
             polynomial = QuadraticPolynomial(
                 a0 = 1.234,
                 a1 = 2.345,
                 a2 = 3.456,
             ),
-            expectedNormalModulation = LowPolynomial.Modulation(
+            expectedNormalModulation = Modulation(
                 shift = -0.33926504629629634,
                 dilation = 0.537914353639919,
             ),
@@ -218,15 +221,15 @@ class LowPolynomialTests {
     }
 
     @Test
-    fun testNormalUpProjectionCubic() {
-        testNormalProjectionForward(
+    fun testNormalUpModulationCubic() {
+        testNormalModulationForward(
             normalPolynomial = CubicPolynomial(
                 a0 = 1.234,
                 a1 = 1.0,
                 a2 = 0.0,
                 a3 = 1.0,
             ),
-            modulation = LowPolynomial.Modulation(
+            modulation = Modulation(
                 shift = 1.1,
                 dilation = 1.0,
             ),
@@ -234,33 +237,32 @@ class LowPolynomialTests {
     }
 
     @Test
-    @Ignore
-    fun testReverseNormalProjectionCubicSimple() {
-        testNormalProjectionBackward(
+    fun testReverseNormalModulationCubicSimple() {
+        testNormalModulationBackward(
             polynomial = CubicPolynomial(
                 a0 = 1.234,
                 a1 = -2.345,
                 a2 = 0.0,
                 a3 = 4.567,
             ),
-            expectedNormalModulation = LowPolynomial.Modulation(
-                shift = -0.2522443617254215,
-                dilation = 2.7526691000419197,
+            expectedNormalModulation = Modulation(
+                dilation = Dilation(dilation = 0.6027302605741011),
+                shift = Shift(shift = -0.0),
             ),
         )
     }
 
     @Test
     @Ignore
-    fun testReverseNormalProjectionCubic() {
-        testNormalProjectionBackward(
+    fun testReverseNormalModulationCubic() {
+        testNormalModulationBackward(
             polynomial = CubicPolynomial(
                 a0 = 1.234,
                 a1 = 2.345,
                 a2 = 3.456,
                 a3 = 4.567,
             ),
-            expectedNormalModulation = LowPolynomial.Modulation(
+            expectedNormalModulation = Modulation(
                 shift = -0.2522443617254215,
                 dilation = 2.7526691000419197,
             ),

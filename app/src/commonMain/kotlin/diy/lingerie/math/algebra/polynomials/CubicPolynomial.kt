@@ -5,7 +5,6 @@ import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.linear.vectors.Vector4
-import diy.lingerie.utils.sq
 import kotlin.math.acos
 import kotlin.math.cbrt
 import kotlin.math.cos
@@ -245,6 +244,28 @@ data class CubicPolynomial internal constructor(
 
     override val symmetryAxis: Double
         get() = derivativeQuadratic.symmetryAxis
+
+    override fun normalizeSymmetric(): Pair<CubicPolynomial, Dilation> {
+        if (!a2.equalsWithTolerance(0.0)) {
+            throw AssertionError("The polynomial is not symmetric")
+        }
+
+        val denominator = cbrt(a3)
+
+        val normalDilation = Dilation(
+            1.0 / denominator,
+        )
+
+        return Pair(
+            CubicPolynomial(
+                a3 = 1.0,
+                a2 = 0.0,
+                a1 = a1 / denominator,
+                a0 = a0,
+            ),
+            normalDilation,
+        )
+    }
 
     val symmetryPoint: Vector2
         get() = Vector2(
