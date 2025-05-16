@@ -233,7 +233,7 @@ data class CubicPolynomial internal constructor(
 
     override fun toOriginForm(): OriginForm = toAnchoredForm()
 
-    override fun substitute(
+    override fun substituteDirectly(
         p: LinearPolynomial,
     ): CubicPolynomial {
         val result = a0 + a1 * p + a2 * p * p + a3 * p * p * p

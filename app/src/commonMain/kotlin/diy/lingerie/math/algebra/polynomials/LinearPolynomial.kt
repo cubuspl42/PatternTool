@@ -90,7 +90,7 @@ data class LinearPolynomial internal constructor(
 
     override fun findRootsAnalytically(): List<Double> = listOf(findRoot())
 
-    override fun substitute(p: LinearPolynomial): LowPolynomial {
+    override fun substituteDirectly(p: LinearPolynomial): LowPolynomial {
         val result = a0 + a1 * p
         return result as LinearPolynomial
     }
