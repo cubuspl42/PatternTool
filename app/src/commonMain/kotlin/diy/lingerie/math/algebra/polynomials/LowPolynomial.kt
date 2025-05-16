@@ -116,28 +116,32 @@ sealed class LowPolynomial : Polynomial {
 
     abstract fun findRootsAnalytically(): List<Double>
 
-    abstract fun substitute(
+    abstract fun substituteDirectly(
         p: LinearPolynomial,
     ): LowPolynomial
 }
 
-fun <P : LowPolynomial> P.project(
-    projection: Projection,
+fun <P : LowPolynomial> P.substitute(
+    p: LinearPolynomial,
 ): P {
-    val result = substitute(
-        LinearPolynomial(
-            a0 = 0.0,
-            a1 = 1.0 / projection.dilation,
-        ),
-    ).substitute(
-        LinearPolynomial(
-            a0 = -projection.shift,
-            a1 = 1.0,
-        ),
-    )
+    val result = substituteDirectly(p = p)
 
     @Suppress("UNCHECKED_CAST") return result as P
 }
+
+fun <P : LowPolynomial> P.project(
+    projection: Projection,
+): P = substitute(
+    LinearPolynomial(
+        a0 = 0.0,
+        a1 = 1.0 / projection.dilation,
+    ),
+).substitute(
+    LinearPolynomial(
+        a0 = -projection.shift,
+        a1 = 1.0,
+    ),
+)
 
 val LowPolynomial.OriginForm.normalProjection
     get(): Projection? {

@@ -110,10 +110,9 @@ data class QuadraticPolynomial internal constructor(
             a2,
         )
 
-
     override fun findRootsAnalytically(): List<Double> = findRoots()?.toList() ?: emptyList()
 
-    override fun substitute(
+    override fun substituteDirectly(
         p: LinearPolynomial,
     ): QuadraticPolynomial {
         val result = a0 + a1 * p + a2 * p * p

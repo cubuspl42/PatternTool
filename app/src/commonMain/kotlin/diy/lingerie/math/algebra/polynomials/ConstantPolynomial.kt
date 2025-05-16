@@ -31,7 +31,7 @@ data class ConstantPolynomial(
 
     override fun findRootsAnalytically(): List<Double> = emptyList()
 
-    override fun substitute(p: LinearPolynomial): LowPolynomial = p
+    override fun substituteDirectly(p: LinearPolynomial): LowPolynomial = p
 
     override fun equalsWithTolerance(
         other: NumericObject,
