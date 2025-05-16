@@ -2,6 +2,7 @@ package diy.lingerie.math.geometry
 
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.LowPolynomial
+import diy.lingerie.math.algebra.polynomials.project
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Ignore
 import kotlin.test.Test

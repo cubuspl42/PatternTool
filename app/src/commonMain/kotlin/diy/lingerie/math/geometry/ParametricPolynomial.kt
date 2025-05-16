@@ -12,6 +12,7 @@ import diy.lingerie.math.algebra.polynomials.Polynomial
 import diy.lingerie.math.algebra.polynomials.SubCubicPolynomial
 import diy.lingerie.math.algebra.polynomials.SubQuadraticPolynomial
 import diy.lingerie.math.algebra.polynomials.derivativeSubCubic
+import diy.lingerie.math.algebra.polynomials.project
 
 data class ParametricPolynomial<P : LowPolynomial>(
     val xFunction: P,
