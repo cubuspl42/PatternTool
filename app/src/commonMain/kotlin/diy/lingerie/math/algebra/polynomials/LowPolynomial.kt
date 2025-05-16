@@ -92,20 +92,6 @@ sealed class LowPolynomial : Polynomial {
         )
     }
 
-    fun project(
-        projection: Projection,
-    ): LowPolynomial = substitute(
-        LinearPolynomial(
-            a0 = 0.0,
-            a1 = 1.0 / projection.dilation,
-        ),
-    ).substitute(
-        LinearPolynomial(
-            a0 = -projection.shift,
-            a1 = 1.0,
-        ),
-    )
-
     @Suppress("unused")
     val prettyString: String
         get() = coefficients.mapIndexed { index, coefficient ->
@@ -133,6 +119,24 @@ sealed class LowPolynomial : Polynomial {
     abstract fun substitute(
         p: LinearPolynomial,
     ): LowPolynomial
+}
+
+fun <P : LowPolynomial> P.project(
+    projection: Projection,
+): P {
+    val result = substitute(
+        LinearPolynomial(
+            a0 = 0.0,
+            a1 = 1.0 / projection.dilation,
+        ),
+    ).substitute(
+        LinearPolynomial(
+            a0 = -projection.shift,
+            a1 = 1.0,
+        ),
+    )
+
+    @Suppress("UNCHECKED_CAST") return result as P
 }
 
 val LowPolynomial.OriginForm.normalProjection
