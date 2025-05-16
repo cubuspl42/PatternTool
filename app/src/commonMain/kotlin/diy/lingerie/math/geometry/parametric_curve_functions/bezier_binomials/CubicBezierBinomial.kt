@@ -225,13 +225,16 @@ data class CubicBezierBinomial(
     override fun locatePoint(
         point: Vector2,
         tolerance: NumericObject.Tolerance,
-    ): Double? = locatePointByInversionWithControlCheck(
-        point = point,
-        tolerance = tolerance,
-    ) ?: locatePointByProjection(
-        point = point,
-        tolerance = tolerance,
-    )
+    ): Double? {
+        // TODO: Move the responsibility of hybrid approaches to a higher layer
+        return locatePointByInversionWithControlCheck(
+            point = point,
+            tolerance = tolerance,
+        ) ?: locatePointByProjection(
+            point = point,
+            tolerance = tolerance,
+        )
+    }
 
     private fun locatePointByInversionWithControlCheck(
         point: Vector2,
@@ -264,7 +267,17 @@ data class CubicBezierBinomial(
         }
     }
 
-    private fun locatePointByInversion(
+    /**
+     * Solve the equation p(t) = p0
+     *
+     * @return either...
+     * - a t-value (t-value of the [point] if it lies on the curve or a t-value
+     * of a point lying on the curve close to [point], but not an actual projection,
+     * or a t-value of a quasi-random point if [point] is close to the self-intersection)
+     * - `null` if the t-value ćouldn't be found, because the curve degenerates
+     * to a line or a point, or if [point] is very close to the self-intersection
+     */
+    internal fun locatePointByInversion(
         point: Vector2,
         tolerance: NumericObject.Tolerance,
     ): Double? {
@@ -281,7 +294,11 @@ data class CubicBezierBinomial(
         }
     }
 
-    private fun locatePointByProjection(
+    /**
+     * @return the t-value (or one of t-values) for [point] if it lies on the
+     * curve or `null` if the point doesn't seem to lie on the curve
+     */
+    internal fun locatePointByProjection(
         point: Vector2,
         tolerance: NumericObject.Tolerance,
     ): Double? {
