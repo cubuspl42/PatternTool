@@ -7,32 +7,113 @@ import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.polynomials.LowPolynomial.Projection
 import diy.lingerie.utils.iterable.uncons
 import diy.lingerie.utils.iterable.untrail
-import kotlin.collections.sumOf
-import kotlin.math.max
 
 /**
  * A polynomial of a low degree (at most cubic)
  */
 sealed class LowPolynomial : Polynomial {
     sealed class Transformation : NumericObject {
+        abstract fun <P : LowPolynomial> transform(
+            polynomial: P,
+        ): P
+
         abstract fun invert(): Transformation
     }
 
-    data class Projection(
+    sealed class PrimitiveTransformation : Transformation() {
+        abstract val transformationPolynomial: LinearPolynomial
+
+        final override fun <P : LowPolynomial> transform(
+            polynomial: P,
+        ): P = polynomial.substitute(
+            transformationPolynomial,
+        )
+    }
+
+    data class Shift(
         val shift: Double,
-        val dilation: Double,
-    ) : Transformation() {
-        init {
-            require(dilation != 0.0) { "Dilation must not be zero" }
+    ) : PrimitiveTransformation() {
+        override fun invert(): Shift = Shift(
+            shift = -shift,
+        )
+
+        fun dilate(
+            dilation: Dilation,
+        ): Shift = Shift(
+            shift = shift * dilation.dilation,
+        )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance,
+        ): Boolean = when {
+            other !is Shift -> false
+            !shift.equalsWithTolerance(other.shift, tolerance = tolerance) -> false
+            else -> true
         }
 
-        override fun invert(): Projection = Projection(
-            shift = -shift / dilation,
+        override val transformationPolynomial: LinearPolynomial = LinearPolynomial(
+            a0 = -shift,
+            a1 = 1.0,
+        )
+    }
+
+    data class Dilation(
+        val dilation: Double,
+    ) : PrimitiveTransformation() {
+        init {
+            require(dilation != 0.0) { "Dilation cannot be zero" }
+        }
+
+        override fun invert(): Dilation = Dilation(
             dilation = 1.0 / dilation,
         )
 
         override fun equalsWithTolerance(
-            other: NumericObject, tolerance: NumericObject.Tolerance
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance,
+        ): Boolean = when {
+            other !is Dilation -> false
+            !dilation.equalsWithTolerance(other.dilation, tolerance = tolerance) -> false
+            else -> true
+        }
+
+        override val transformationPolynomial: LinearPolynomial = LinearPolynomial(
+            a0 = 0.0,
+            a1 = 1.0 / dilation,
+        )
+    }
+
+    data class Projection(
+        val dilation: Dilation,
+        val shift: Shift,
+    ) : Transformation() {
+        constructor(
+            shift: Double,
+            dilation: Double,
+        ) : this(
+            shift = Shift(shift = shift),
+            dilation = Dilation(dilation = dilation),
+        )
+
+        override fun <P : LowPolynomial> transform(
+            polynomial: P,
+        ): P = shift.transform(
+            dilation.transform(polynomial),
+        )
+
+        override fun invert(): Projection {
+            val invertedDilation = dilation.invert()
+
+            return Projection(
+                dilation = invertedDilation,
+                shift = shift.invert().dilate(invertedDilation),
+            )
+        }
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericObject.Tolerance,
         ): Boolean = when {
             other !is Projection -> false
             !shift.equalsWithTolerance(other.shift, tolerance = tolerance) -> false
@@ -129,19 +210,13 @@ fun <P : LowPolynomial> P.substitute(
     @Suppress("UNCHECKED_CAST") return result as P
 }
 
+fun <P : LowPolynomial> P.transform(
+    transformation: LowPolynomial.Transformation,
+): P = transformation.transform(this)
+
 fun <P : LowPolynomial> P.project(
     projection: Projection,
-): P = substitute(
-    LinearPolynomial(
-        a0 = 0.0,
-        a1 = 1.0 / projection.dilation,
-    ),
-).substitute(
-    LinearPolynomial(
-        a0 = -projection.shift,
-        a1 = 1.0,
-    ),
-)
+): P = projection.transform(this)
 
 val LowPolynomial.OriginForm.normalProjection
     get(): Projection? {
