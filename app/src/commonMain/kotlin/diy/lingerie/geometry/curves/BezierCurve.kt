@@ -7,6 +7,7 @@ import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.geometry.RationalImplicitPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 
 data class BezierCurve(
@@ -266,16 +267,45 @@ data class BezierCurve(
     )
 
     override fun locatePoint(point: Point): Coord? {
-        // TODO: Guard against big gradient!
-        val tValue = basisFunction.locatePointByInversion(
-            point = point.pointVector,
-            tolerance = NumericObject.Tolerance.Default,
+        val invertedCurve = basisFunction.inverted ?: run {
+            // If the curve is degenerated to a line (or a point), it still
+            // _can_ contain the given point, but for now we're giving up
+            return null
+        }
+
+        val tValue = locatePointByInversion(
+            invertedCurve = invertedCurve,
+            point = point,
         ) ?: basisFunction.locatePointByProjection(
             point = point.pointVector,
             tolerance = NumericObject.Tolerance.Default,
         ) ?: return null
 
         return Coord.of(t = tValue)
+    }
+
+    /**
+     * Locate the given point by inversion
+     *
+     * @return t-value of the [point] if it lies on the curve or `null` if the
+     * point is not on the curve or t-value ćouldn't be found by inversion
+     */
+    private fun locatePointByInversion(
+        invertedCurve: RationalImplicitPolynomial,
+        point: Point,
+    ): Double? {
+        val tValue = invertedCurve.applyOrNull(point.pointVector) ?: return null
+
+        val actualPoint = basisFunction.apply(tValue)
+
+        return when {
+            actualPoint.equalsWithTolerance(point) -> tValue
+
+            // There are at least two reasons why the points differ: either the
+            // given point really doesn't lye on the curve, or it _does_ but
+            // is close to the self-intersection (and the 0/0 safeguard failed)
+            else -> null
+        }
     }
 
     override fun equalsWithTolerance(
