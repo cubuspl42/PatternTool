@@ -4,7 +4,9 @@ import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.LinearPolynomial
 import diy.lingerie.math.algebra.polynomials.LowPolynomial
 import diy.lingerie.math.algebra.polynomials.QuadraticPolynomial
+import diy.lingerie.math.algebra.polynomials.dilate
 import diy.lingerie.math.algebra.polynomials.modulate
+import diy.lingerie.math.algebra.polynomials.shift
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -12,6 +14,53 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class LowPolynomialTests {
+    @Test
+    fun testDilation() {
+        val cubicPolynomial = CubicPolynomial(
+            a0 = 1.234,
+            a1 = 2.345,
+            a2 = 3.456,
+            a3 = 4.567,
+        )
+
+        assertEqualsWithTolerance(
+            expected = CubicPolynomial(
+                a0 = 1.234,
+                a1 = 1.065909090909091,
+                a2 = 0.7140495867768594,
+                a3 = 0.4289068369646881,
+            ), actual = cubicPolynomial.dilate(
+                dilation = LowPolynomial.Dilation(
+                    dilation = 2.2,
+                ),
+            )
+        )
+    }
+
+    @Test
+    fun testShift() {
+        val cubicPolynomial = CubicPolynomial(
+            a0 = 1.234,
+            a1 = 2.345,
+            a2 = 3.456,
+            a3 = 4.567,
+        )
+
+        assertEqualsWithTolerance(
+            expected = CubicPolynomial(
+                a0 = -132.992939,
+                a1 = 128.73928999999998,
+                a2 = -41.757299999999994,
+                a3 = 4.567,
+            ),
+            actual = cubicPolynomial.shift(
+                shift = LowPolynomial.Shift(
+                    shift = 3.3,
+                ),
+            ),
+        )
+    }
+
     @Test
     fun testProject() {
         val cubicPolynomial = CubicPolynomial(
@@ -33,7 +82,7 @@ class LowPolynomialTests {
                     shift = 1.1,
                     dilation = 2.2,
                 ),
-            )
+            ),
         )
     }
 
