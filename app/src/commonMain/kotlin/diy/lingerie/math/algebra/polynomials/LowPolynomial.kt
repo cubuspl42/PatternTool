@@ -214,6 +214,14 @@ fun <P : LowPolynomial> P.transform(
     transformation: LowPolynomial.Transformation,
 ): P = transformation.transform(this)
 
+fun <P : LowPolynomial> P.dilate(
+    dilation: LowPolynomial.Dilation,
+): P = dilation.transform(this)
+
+fun <P : LowPolynomial> P.shift(
+    shift: LowPolynomial.Shift,
+): P = shift.transform(this)
+
 fun <P : LowPolynomial> P.modulate(
     modulation: Modulation,
 ): P = modulation.transform(this)
