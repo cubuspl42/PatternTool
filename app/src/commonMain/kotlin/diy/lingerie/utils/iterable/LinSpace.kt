@@ -18,4 +18,13 @@ data class LinSpace(
         val step = (x1 - x0) / (sampleCount - 1)
         return generateSequence(0) { it + 1 }.take(sampleCount).map { i -> x0 + i * step }
     }
+
+    val step: Double
+        get() = (x1 - x0) / (sampleCount - 1)
+
+    fun asArray(): List<Double> = object : AbstractList<Double>() {
+        override val size: Int = sampleCount
+
+        override fun get(index: Int): Double = x0 + index * step
+    }
 }
