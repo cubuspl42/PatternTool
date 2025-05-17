@@ -1,0 +1,38 @@
+package diy.lingerie.utils.iterable
+
+@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
+data class WithNeighbours<L, M, R>(
+    val prevElement: L,
+    val element: M,
+    val nextElement: R,
+) where M : L, M : R
+
+@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
+fun <L, M, R> Sequence<M>.withNeighbours(
+    outerLeft: L,
+    outerRight: R,
+): Sequence<WithNeighbours<L, M, R>> where M : L, M : R = sequence {
+    val iterator = iterator()
+    if (!iterator.hasNext()) return@sequence
+
+    var prev: L = outerLeft
+    var current = iterator.next()
+
+    while (iterator.hasNext()) {
+        val next = iterator.next()
+        yield(WithNeighbours(prev, current, next))
+        prev = current
+        current = next
+    }
+
+    yield(WithNeighbours(prev, current, outerRight))
+}
+
+@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
+fun <L, M, R> Iterable<M>.withNeighbours(
+    outerLeft: L,
+    outerRight: R,
+): List<WithNeighbours<L, M, R>> where M : L, M : R = this.asSequence().withNeighbours(
+    outerLeft = outerLeft,
+    outerRight = outerRight,
+).toList()
