@@ -10,11 +10,8 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.geometry.RationalImplicitPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 
-data class BezierCurve(
-    override val start: Point,
-    val firstControl: Point,
-    val secondControl: Point,
-    override val end: Point,
+data class BezierCurve private constructor(
+    override val basisFunction: CubicBezierBinomial,
 ) : PrimitiveCurve() {
     data class Edge(
         val firstControl: Point,
@@ -72,13 +69,13 @@ data class BezierCurve(
         ): Set<Intersection> = when {
             subjectBezierCurve.basisFunction.isFullyOverlapping(
                 other = objectBezierCurve.basisFunction,
-            ) -> BezierCurve.findIntersectionsBySubdivision(
+            ) -> findIntersectionsBySubdivision(
                 subjectBezierCurve = subjectBezierCurve,
                 objectBezierCurve = objectBezierCurve,
                 tolerance = tolerance,
             )
 
-            else -> BezierCurve.findIntersectionsByEquationSolving(
+            else -> findIntersectionsByEquationSolving(
                 subjectBezierCurve = subjectBezierCurve,
                 objectBezierCurve = objectBezierCurve,
             )
@@ -201,12 +198,31 @@ data class BezierCurve(
         )
     }
 
-    override val basisFunction = CubicBezierBinomial(
-        point0 = start.pointVector,
-        point1 = firstControl.pointVector,
-        point2 = secondControl.pointVector,
-        point3 = end.pointVector,
+    constructor(
+        start: Point,
+        firstControl: Point,
+        secondControl: Point,
+        end: Point,
+    ) : this(
+        basisFunction = CubicBezierBinomial(
+            point0 = start.pointVector,
+            point1 = firstControl.pointVector,
+            point2 = secondControl.pointVector,
+            point3 = end.pointVector,
+        ),
     )
+
+    override val start: Point
+        get() = Point(basisFunction.point0)
+
+    val firstControl: Point
+        get() = Point(basisFunction.point1)
+
+    val secondControl: Point
+        get() = Point(basisFunction.point2)
+
+    override val end: Point
+        get() = Point(basisFunction.point3)
 
     val lastControl: Point
         get() = secondControl
@@ -229,33 +245,14 @@ data class BezierCurve(
     override fun splitAt(
         coord: Coord,
     ): Pair<BezierCurve, BezierCurve> {
-        val quadraticBezierBinomial = basisFunction.evaluatePartially(t = coord.t)
-        val lineFunction = quadraticBezierBinomial.evaluatePartially(t = coord.t)
-
-        val midPoint = Point(
-            pointVector = lineFunction.apply(coord.t),
-        )
+        val (firstBasisFunction, secondBasisFunction) = basisFunction.splitAt(t = coord.t)
 
         return Pair(
-            BezierCurve(
-                start = start,
-                firstControl = Point(
-                    pointVector = quadraticBezierBinomial.point0,
-                ),
-                secondControl = Point(
-                    pointVector = lineFunction.point0,
-                ),
-                end = midPoint,
+            first = BezierCurve(
+                basisFunction = firstBasisFunction,
             ),
-            BezierCurve(
-                start = midPoint,
-                firstControl = Point(
-                    pointVector = lineFunction.point1,
-                ),
-                secondControl = Point(
-                    pointVector = quadraticBezierBinomial.point2,
-                ),
-                end = end,
+            second = BezierCurve(
+                basisFunction = secondBasisFunction,
             ),
         )
     }
@@ -367,7 +364,7 @@ data class BezierCurve(
 
     override fun findIntersectionsBezierCurve(
         subjectBezierCurve: BezierCurve,
-    ): Set<Intersection> = BezierCurve.findIntersections(
+    ): Set<Intersection> = findIntersections(
         subjectBezierCurve = subjectBezierCurve,
         objectBezierCurve = this,
         tolerance = SpatialObject.SpatialTolerance.default,
