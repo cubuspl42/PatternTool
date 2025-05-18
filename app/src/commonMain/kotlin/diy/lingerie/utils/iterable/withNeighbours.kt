@@ -9,14 +9,14 @@ data class WithNeighbours<L, M, R>(
 
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
 fun <L, M, R> Sequence<M>.withNeighbours(
-    outerLeft: L,
-    outerRight: R,
+    buildOuterLeft: (M) -> L,
+    buildOuterRight: (M) -> R,
 ): Sequence<WithNeighbours<L, M, R>> where M : L, M : R = sequence {
     val iterator = iterator()
     if (!iterator.hasNext()) return@sequence
 
-    var prev: L = outerLeft
     var current = iterator.next()
+    var prev: L = buildOuterLeft(current)
 
     while (iterator.hasNext()) {
         val next = iterator.next()
@@ -25,8 +25,23 @@ fun <L, M, R> Sequence<M>.withNeighbours(
         current = next
     }
 
-    yield(WithNeighbours(prev, current, outerRight))
+    yield(WithNeighbours(prev, current, buildOuterRight(current)))
 }
+
+@Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
+fun <L, M, R> Sequence<M>.withNeighbours(
+    outerLeft: L,
+    outerRight: R,
+): Sequence<WithNeighbours<L, M, R>> where M : L, M : R = this.withNeighbours(
+    buildOuterLeft = { outerLeft },
+    buildOuterRight = { outerRight },
+)
+
+fun <M> Sequence<M>.withNeighboursSaturated(): Sequence<WithNeighbours<M, M, M>> =
+    this.withNeighbours(
+        buildOuterLeft = { it },
+        buildOuterRight = { it },
+    )
 
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
 fun <L, M, R> Iterable<M>.withNeighbours(

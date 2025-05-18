@@ -98,6 +98,12 @@ data class BoundingBox(
     val xMax: Double
         get() = bottomRight.x
 
+    val xRange: ClosedFloatingPointRange<Double>
+        get() = xMin..xMax
+
+    val yRange: ClosedFloatingPointRange<Double>
+        get() = yMin..yMax
+
     val yMin: Double
         get() = topLeft.y
 
