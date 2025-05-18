@@ -20,6 +20,7 @@ import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCubicCurveFun
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitLineFunction
 import diy.lingerie.math.geometry.implicit_curve_functions.times
 import diy.lingerie.utils.iterable.LinSpace
+import diy.lingerie.utils.iterable.partitionAtCenter
 import diy.lingerie.utils.iterable.withNeighboursSaturated
 import diy.lingerie.utils.minBy
 
@@ -329,9 +330,7 @@ data class CubicBezierBinomial(
      * the range start/end value if the true closest t-value is outside of [range]
      */
     fun projectPointIteratively(
-        range: ClosedFloatingPointRange<Double>,
-        point: Vector2,
-        tolerance: NumericObject.Tolerance.Absolute
+        range: ClosedFloatingPointRange<Double>, point: Vector2, tolerance: NumericObject.Tolerance.Absolute
     ): Double {
         val searchRange = findProjectionSearchRange(
             range = range,
@@ -421,6 +420,62 @@ data class CubicBezierBinomial(
         }
     }
 
+    fun splitAt(
+        t: Double,
+    ): Pair<CubicBezierBinomial, CubicBezierBinomial> {
+        val quadraticBezierBinomial = evaluatePartially(t = t)
+        val lineFunction = quadraticBezierBinomial.evaluatePartially(t = t)
+
+        val midPoint = lineFunction.apply(t)
+
+        return Pair(
+            CubicBezierBinomial(
+                point0 = point0,
+                point1 = quadraticBezierBinomial.point0,
+                point2 = lineFunction.point0,
+                point3 = midPoint,
+            ),
+            CubicBezierBinomial(
+                point0 = midPoint,
+                point1 = lineFunction.point1,
+                point2 = quadraticBezierBinomial.point2,
+                point3 = point3,
+            ),
+        )
+    }
+
+    /**
+     * @param tValuesSorted - a sorted list of t-values to split at
+     */
+    fun splitAtMultipleSorted(
+        tValuesSorted: List<Double>,
+    ): List<CubicBezierBinomial> {
+        val partitioningResult =
+            tValuesSorted.partitionAtCenter() ?: return listOf(this) // We're done, no more places to split
+
+        val leftTValues = partitioningResult.previousElements
+        val medianTValue = partitioningResult.innerElement
+        val rightTValues = partitioningResult.nextElements
+
+        val (leftSplitCurve, rightSplitCurve) = splitAt(
+            t = medianTValue,
+        )
+
+        val leftCorrectedTValues = leftTValues.map { it / medianTValue }
+        val rightCorrectedTValues = rightTValues.map { (it - medianTValue) / (1.0 - medianTValue) }
+
+        val leftSubSplitCurves = leftSplitCurve.splitAtMultipleSorted(
+            tValuesSorted = leftCorrectedTValues,
+        )
+
+        val rightSubSplitCurves = rightSplitCurve.splitAtMultipleSorted(
+            tValuesSorted = rightCorrectedTValues,
+        )
+
+        val subCurves = leftSubSplitCurves + rightSubSplitCurves
+
+        return subCurves
+    }
 
     override fun projectPoint(
         point: Vector2,
