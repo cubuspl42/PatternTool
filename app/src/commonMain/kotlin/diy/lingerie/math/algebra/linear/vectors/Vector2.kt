@@ -21,6 +21,16 @@ data class Vector2(
             a0 = a,
             a1 = a,
         )
+
+        fun distance(
+            first: Vector2,
+            second: Vector2,
+        ) = (second - first).magnitude
+
+        fun distanceSquared(
+            first: Vector2,
+            second: Vector2,
+        ) = (second - first).magnitudeSquared
     }
 
     operator fun get(i: Int): Double = when (i) {

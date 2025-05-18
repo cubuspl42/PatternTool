@@ -4,6 +4,16 @@ data class LinSpace(
     val range: ClosedFloatingPointRange<Double> = 0.0..1.0,
     val sampleCount: Int,
 ) {
+    companion object {
+        fun generate(
+            range: ClosedFloatingPointRange<Double> = 0.0..1.0,
+            sampleCount: Int,
+        ) = LinSpace(
+            range = range,
+            sampleCount = sampleCount,
+        ).generate()
+    }
+
     init {
         require(sampleCount >= 2) { "n must be at least 2 to include both boundaries" }
     }

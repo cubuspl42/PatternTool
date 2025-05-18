@@ -19,6 +19,9 @@ import diy.lingerie.math.geometry.RationalImplicitPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCubicCurveFunction
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitLineFunction
 import diy.lingerie.math.geometry.implicit_curve_functions.times
+import diy.lingerie.utils.iterable.LinSpace
+import diy.lingerie.utils.iterable.withNeighboursSaturated
+import diy.lingerie.utils.minBy
 
 data class CubicBezierBinomial(
     val point0: Vector2,
@@ -319,6 +322,69 @@ data class CubicBezierBinomial(
         return acceptableSamples.minOfOrNull { it.t }
     }
 
+    /**
+     * Project the [point] onto the curve within [range]
+     *
+     * @return the t-value of the point on the curve closest to [point] or
+     * the range start/end value if the true closest t-value is outside of [range]
+     */
+    fun projectPointIteratively(
+        range: ClosedFloatingPointRange<Double>,
+        point: Vector2,
+        tolerance: NumericObject.Tolerance.Absolute
+    ): Double {
+        val searchRange = findProjectionSearchRange(
+            range = range,
+            point = point,
+        )
+
+        return projectWithinRange(
+            searchRange = searchRange,
+            point = point,
+            tolerance = tolerance,
+        )
+    }
+
+    /**
+     * Find the search range by testing which triple of control t-values is the
+     * closest to [point].
+     *
+     * @return a t-value range that (with a high probability) contains the point
+     * on the curve closest to [point], small enough that (with a very high
+     * probability) the distance function is unimodal in that range
+     */
+    private fun findProjectionSearchRange(
+        range: ClosedFloatingPointRange<Double>,
+        point: Vector2,
+    ): ClosedFloatingPointRange<Double> {
+        val (tStart, _, tEnd) = LinSpace.generate(
+            range = range,
+            sampleCount = 64,
+        ).withNeighboursSaturated().minBy { (_, tMid, _) ->
+            val midPoint = apply(tMid)
+
+            Vector2.distanceSquared(
+                midPoint,
+                point,
+            )
+        }
+
+        return tStart..tEnd
+    }
+
+    private fun projectWithinRange(
+        searchRange: ClosedFloatingPointRange<Double>,
+        point: Vector2,
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): Double = searchRange.minBy(
+        tolerance = tolerance,
+    ) { t ->
+        Vector2.distanceSquared(
+            apply(t),
+            point,
+        )
+    }
+
     private fun projectPointAll(
         point: Vector2,
         tolerance: NumericObject.Tolerance,
@@ -337,6 +403,24 @@ data class CubicBezierBinomial(
 
         return roots
     }
+
+    fun projectPointClosest(
+        point: Vector2,
+        tolerance: NumericObject.Tolerance,
+    ): Double? {
+        val tValues = projectPointAll(
+            point = point,
+            tolerance = tolerance,
+        )
+
+        return tValues.minByOrNull {
+            Vector2.distance(
+                apply(it),
+                point,
+            )
+        }
+    }
+
 
     override fun projectPoint(
         point: Vector2,

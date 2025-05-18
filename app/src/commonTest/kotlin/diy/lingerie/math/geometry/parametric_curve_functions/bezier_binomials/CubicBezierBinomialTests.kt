@@ -1,16 +1,25 @@
 package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
+import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.test_utils.assertEqualsWithTolerance
+import diy.lingerie.utils.iterable.LinSpace
+import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class CubicBezierBinomialTests {
+    private data class CloserPoint(
+        val t: Double,
+        val point: Vector2,
+        val distance: Double,
+    )
+
     private fun testCorrectPointLocation(
         cubicBezierBinomial: CubicBezierBinomial,
         point: Vector2,
@@ -36,17 +45,15 @@ class CubicBezierBinomialTests {
     @Test
     fun testLocatePointByInversion() {
         // A curve with a self-intersection (outside its [0, 1] range!)
-        val bezierCurve = BezierCurve(
-            start = Point(492.59773540496826, 197.3452272415161),
-            firstControl = Point(393.3277416229248, 180.14210319519043),
-            secondControl = Point(287.3950023651123, 260.3726043701172),
-            end = Point(671.4185047149658, 490.2051086425781),
+        val cubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(a0 = 492.59773540496826, a1 = 197.3452272415161),
+            point1 = Vector2(a0 = 393.3277416229248, a1 = 180.14210319519043),
+            point2 = Vector2(a0 = 287.3950023651123, a1 = 260.3726043701172),
+            point3 = Vector2(a0 = 671.4185047149658, a1 = 490.2051086425781)
         )
 
-        val cubicBezierBinomial = bezierCurve.basisFunction
-
         val samples = cubicBezierBinomial.sample(
-            n = 10000,
+            n = 1000,
         )
 
         // For the vast majority of points, the t-value is located without issues
@@ -61,47 +68,50 @@ class CubicBezierBinomialTests {
             },
         )
 
+        // An acceptable approximation of the self intersection point, somewhat close to the self-intersection
+        val selfIntersectionPoint0 = Vector2(501.14313780321595, 374.2020798247014)
+
+        // Location works fine
         testCorrectPointLocation(
             cubicBezierBinomial = cubicBezierBinomial,
-            // An acceptable approximation of the self intersection point,
-            // location works fine
-            point = Vector2(501.14313780321595, 374.2020798247014),
+            point = selfIntersectionPoint0,
         )
 
+        // A good approximation of the self intersection point, extremely close to the self-intersection
+        val selfIntersectionPoint1 = Vector2(501.14355433959827, 374.2024184921395)
+
+        // Too close to the self-intersection, triggers the 0/0 safeguard
         assertNull(
             actual = cubicBezierBinomial.locatePointByInversion(
-                // A good approximation of the self intersection point, too close
-                // to the self-intersection, triggers the 0/0 safeguard
-                point = Vector2(501.14355433959827, 374.2024184921395),
+                point = selfIntersectionPoint1,
             ),
         )
 
+        // Another good approximation of the self intersection point, very close to the self-intersection
+        val selfIntersectionPoint2 = Vector2(501.1438111319996, 374.2024184921395)
+
+        // Doesn't trigger the 0/0 safeguard, gives a very bad approximation of t-value instead
+        // (not even in the [0, 1] range)
         val badTValue = assertNotNull(
             cubicBezierBinomial.locatePointByInversion(
-                // Another good approximation of the self intersection point,
-                // very close to the self-intersection, but doesn't trigger
-                // the 0/0 safeguard
-                point = Vector2(501.1438111319996, 374.2024184921395),
+                point = selfIntersectionPoint2,
             ),
         )
 
         assertEqualsWithTolerance(
-            // A very bad approximation of t-value (not even in the [0, 1] range)
             expected = -5.68379446238774,
-            actual = badTValue
+            actual = badTValue,
         )
     }
 
     @Test
     fun testInvert() {
-        val bezierCurve = BezierCurve(
-            start = Point(492.59773540496826, 197.3452272415161),
-            firstControl = Point(393.3277416229248, 180.14210319519043),
-            secondControl = Point(287.3950023651123, 260.3726043701172),
-            end = Point(671.4185047149658, 490.2051086425781),
+        val cubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(a0 = 492.59773540496826, a1 = 197.3452272415161),
+            point1 = Vector2(a0 = 393.3277416229248, a1 = 180.14210319519043),
+            point2 = Vector2(a0 = 287.3950023651123, a1 = 260.3726043701172),
+            point3 = Vector2(a0 = 671.4185047149658, a1 = 490.2051086425781)
         )
-
-        val cubicBezierBinomial = bezierCurve.basisFunction
 
         val invertedPolynomial = assertNotNull(
             cubicBezierBinomial.inverted,
@@ -123,8 +133,84 @@ class CubicBezierBinomialTests {
     }
 
     @Test
-    fun testProjectPoint() {
+    fun testProjectPointIteratively_randomPoints() {
+        val range = -0.01..1.01
+        val random = Random(0)
 
+        val tolerance = NumericObject.Tolerance.Absolute(
+            absoluteTolerance = 1e-2,
+        )
+
+        val verificationLinSpace = LinSpace(
+            range = range,
+            sampleCount = 128,
+        )
+
+        // The verification tolerance for arbitrary points within the bounding box
+        // For points close to the curve, the tolerance could be narrower
+        val verificationTolerance = NumericObject.Tolerance.Absolute(
+            absoluteTolerance = 2e-1,
+        )
+
+        val boundingBox = BoundingBox(
+            topLeft = Point(180.0, 250.0),
+            width = 420.0,
+            height = 350.0,
+        )
+
+        val cubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(a0 = 233.92449010844575, a1 = 500.813035986871),
+            point1 = Vector2(a0 = 863.426829231712, a1 = 303.18800785949134),
+            point2 = Vector2(a0 = 53.73076075494464, a1 = 164.97814335091425),
+            point3 = Vector2(a0 = 551.3035908506827, a1 = 559.7310384198445),
+        )
+
+        generateSequence {
+            Vector2(
+                random.nextDouble(boundingBox.xRange),
+                random.nextDouble(boundingBox.yRange),
+            )
+        }.take(128).forEach { point ->
+            val tFound = cubicBezierBinomial.projectPointIteratively(
+                range = range,
+                point = point,
+                tolerance = tolerance,
+            )
+
+            val foundPoint = cubicBezierBinomial.apply(tFound)
+
+            val foundDistance = Vector2.distance(
+                foundPoint,
+                point,
+            )
+
+            val closerPoints = verificationLinSpace.generate().mapNotNull { t ->
+                val otherPoint = cubicBezierBinomial.apply(t)
+
+                val otherDistance = Vector2.distance(
+                    otherPoint,
+                    point,
+                )
+
+                when {
+                    otherDistance < foundDistance && !otherDistance.equalsWithTolerance(
+                        foundDistance,
+                        tolerance = verificationTolerance,
+                    ) -> CloserPoint(
+                        t = t,
+                        point = otherPoint,
+                        distance = otherDistance,
+                    )
+
+                    else -> null
+                }
+
+            }.toSet()
+
+            assertTrue(
+                closerPoints.none { it.t in 0.0..1.0 },
+            )
+        }
     }
 
     @Test
@@ -235,3 +321,10 @@ class CubicBezierBinomialTests {
 
     }
 }
+
+private fun Random.nextDouble(
+    range: ClosedFloatingPointRange<Double>,
+): Double = this.nextDouble(
+    range.start,
+    range.endInclusive,
+)

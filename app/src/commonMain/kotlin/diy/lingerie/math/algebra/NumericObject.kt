@@ -15,6 +15,10 @@ interface NumericObject {
         data class Absolute(
             val absoluteTolerance: Double,
         ) : Tolerance() {
+            operator fun times(factor: Double) = Absolute(
+                absoluteTolerance = absoluteTolerance * factor,
+            )
+
             override fun equalsApproximately(
                 value: Double,
                 reference: Double,

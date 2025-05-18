@@ -43,3 +43,14 @@ fun Double.rescale(
     val normalized = sourceRange.normalize(this)
     return targetRange.linearlyInterpolate(normalized)
 }
+
+val ClosedFloatingPointRange<Double>.width: Double
+    get() = endInclusive - start
+
+val ClosedFloatingPointRange<Double>.mid: Double
+    get() = avgOf(start, endInclusive)
+
+fun ClosedFloatingPointRange<Double>.copy(
+    start: Double = this.start,
+    endInclusive: Double = this.endInclusive,
+): ClosedFloatingPointRange<Double> = start..endInclusive
