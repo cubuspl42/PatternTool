@@ -10,6 +10,7 @@ import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.curves.toCoordRange
 import diy.lingerie.geometry.playground.Playground
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
+import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.utils.iterable.LinSpace
 import java.nio.file.Path
@@ -29,24 +30,24 @@ class MainCommand : CliktCommand() {
             end = Point(551.3035908506827, 559.7310384198445),
         )
 
-        val subRanges = LinSpace.generateSubRanges(
-            range = ParametricCurveFunction.primaryTRange,
-            sampleCount = 6,
-        ).toList()
-
-        val subCurves = subRanges.map { tRange ->
-            bezierCurve.trim(
-                tRange.toCoordRange()!!,
-            )
+        val subCurves = LinSpace.generateSubRanges(
+            range = primaryTRange,
+            sampleCount = 12,
+        ).map { tRange ->
+            bezierCurve.trim(coordRange = tRange.toCoordRange()!!)
         }.toList()
 
+        val loweredCurves = subCurves.map {
+            it.basisFunction.lower()
+        }
+
         val playground = Playground(
-            items = subCurves.map { subCurve ->
-                Playground.BezierCurveItem(
+            items = loweredCurves.map { loweredCurve ->
+                Playground.QuadraticBezierBinomialItem(
                     color = SimpleColor.red,
-                    bezierCurve = subCurve,
+                    quadraticBezierBinomial = loweredCurve,
                 )
-            }
+            },
         )
 
         playground.writeToFile(

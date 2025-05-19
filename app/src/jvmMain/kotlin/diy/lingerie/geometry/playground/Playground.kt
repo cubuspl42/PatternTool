@@ -8,6 +8,7 @@ import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.svg.toSvgPath
 import diy.lingerie.math.algebra.sample
+import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.px
 import diy.lingerie.simple_dom.svg.SvgCircle
@@ -116,6 +117,61 @@ data class Playground(
             stroke = null,
             fill = SvgShape.Fill.Specified(
                 color = SimpleColor.lightGray,
+            ),
+        )
+
+        private fun toSvgControlLine(
+            start: Point,
+            end: Point,
+        ) = SvgLine(
+            start = start,
+            end = end,
+            stroke = SvgShape.Stroke(
+                color = SimpleColor.lightGray,
+                width = 1.0,
+            ),
+        )
+    }
+
+    data class QuadraticBezierBinomialItem(
+        override val color: SimpleColor = SimpleColor.red,
+        val quadraticBezierBinomial: QuadraticBezierBinomial,
+    ) : Item() {
+        companion object {
+            private const val extendedCurveSampleCount = 1024
+            private val extendedCurveSampleRange = (-2.0)..(2.0)
+        }
+
+        override fun toSvgElement(): SvgGraphicsElements = SvgGroup(
+            children = listOfNotNull(
+                toSvgControlShape(),
+                toPrimarySvgPath(),
+            ),
+        )
+
+        override fun findBoundingBox(): BoundingBox {
+            TODO("Not yet implemented")
+        }
+
+        private fun toPrimarySvgPath(): SvgPath = quadraticBezierBinomial.toSvgPath(
+            stroke = SvgShape.Stroke(
+                color = color,
+                width = 0.5,
+            ),
+        ).copy(
+            markerEndId = Playground.triangleMarkerId,
+        )
+
+        private fun toSvgControlShape(): SvgGroup = SvgGroup(
+            children = listOf(
+                toSvgControlLine(
+                    start = Point(pointVector = quadraticBezierBinomial.point0),
+                    end = Point(pointVector = quadraticBezierBinomial.point1),
+                ),
+                toSvgControlLine(
+                    start = Point(pointVector = quadraticBezierBinomial.point1),
+                    end = Point(pointVector = quadraticBezierBinomial.point2),
+                ),
             ),
         )
 
