@@ -11,6 +11,10 @@ import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
 import diy.lingerie.utils.iterable.LinSpace
 
 abstract class ParametricCurveFunction : RealFunction<Vector2> {
+    companion object {
+        val primaryTRange = 0.0..1.0
+    }
+
     data class Sample(
         val t: Double,
         val point: Vector2,

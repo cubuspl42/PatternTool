@@ -61,7 +61,7 @@ data class Playground(
                     anchor = bezierCurve.end,
                     handle = bezierCurve.secondControl,
                 ),
-                toExtendedSvgPath(),
+//                toExtendedSvgPath(),
                 toPrimarySvgPath(),
             ),
         )

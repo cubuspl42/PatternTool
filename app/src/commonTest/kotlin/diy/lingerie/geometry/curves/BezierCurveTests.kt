@@ -6,9 +6,11 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.Span
 import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.pattern_tool.Outline
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Ignore
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class BezierCurveTests {
     @Test
@@ -528,6 +530,41 @@ class BezierCurveTests {
             ),
         )
     }
+
+    @Test
+    fun testTrim() {
+        val bezierCurve = BezierCurve(
+            start = Point(233.92449010844575, 500.813035986871),
+            firstControl = Point(863.426829231712, 303.18800785949134),
+            secondControl = Point(53.73076075494464, 164.97814335091425),
+            end = Point(551.3035908506827, 559.7310384198445),
+        )
+
+        val startCoord = OpenCurve.Coord.of(t = 0.2)!!
+        val endCoord = OpenCurve.Coord.of(t = 0.8)!!
+
+        val subCurve = bezierCurve.trim(
+            coordRange = startCoord..endCoord,
+        )
+
+        assertEqualsWithTolerance(
+            expected = bezierCurve.evaluate(startCoord),
+            actual = subCurve.start,
+        )
+
+        assertEqualsWithTolerance(
+            expected = bezierCurve.evaluate(endCoord),
+            actual = subCurve.end,
+        )
+
+        subCurve.basisFunction.sample(16).forEach { sample ->
+            assertTrue(
+                bezierCurve.containsPoint(
+                    Point(pointVector = sample.point)
+                ),
+            )
+        }
+    }
 }
 
 internal fun testBezierIntersectionsConsistentSymmetric(
@@ -605,7 +642,6 @@ private fun testBezierIntersectionsVariousSymmetric(
         tolerance = numericObjectToleranceAbsolute,
     )
 }
-
 
 private fun testBezierIntersectionsByEquationSolvingSymmetric(
     firstCurve: BezierCurve,

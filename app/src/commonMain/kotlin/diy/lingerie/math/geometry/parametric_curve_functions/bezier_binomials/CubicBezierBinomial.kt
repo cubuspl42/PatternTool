@@ -31,13 +31,24 @@ data class CubicBezierBinomial(
     val point3: Vector2,
 ) : BezierBinomial() {
     companion object {
-        val primaryTRange = 0.0..1.0
+
+        const val n = 3
 
         /**
          * The characteristic matrix of the cubic Bézier curve.
          */
         val characteristicMatrix = Matrix4x4.rowMajor(
             row0 = Vector4(-1.0, 3.0, -3.0, 1.0),
+            row1 = Vector4(3.0, -6.0, 3.0, 0.0),
+            row2 = Vector4(-3.0, 3.0, 0.0, 0.0),
+            row3 = Vector4(1.0, 0.0, 0.0, 0.0),
+        )
+
+        /**
+         * A matrix for raising a quadratic curve to a cubic curve
+         */
+        val raiseMatrix = Matrix4x4.rowMajor(
+            row0 = Vector4(1.0, 0.0, 0.0, 0.0),
             row1 = Vector4(3.0, -6.0, 3.0, 0.0),
             row2 = Vector4(-3.0, 3.0, 0.0, 0.0),
             row3 = Vector4(1.0, 0.0, 0.0, 0.0),
@@ -407,7 +418,7 @@ data class CubicBezierBinomial(
 
     fun projectPointClosest(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
     ): Double? {
         val tValues = projectPointAll(
             point = point,
@@ -479,6 +490,8 @@ data class CubicBezierBinomial(
         return subCurves
     }
 
+    // TODO: Implement a hybrid algorithm (equation / interation) on a given range
+    //  + return distance
     override fun projectPoint(
         point: Vector2,
         tolerance: NumericObject.Tolerance,
