@@ -91,6 +91,15 @@ data class CubicBezierBinomial(
         }
     }
 
+    constructor(
+        pointMatrix: Matrix4x2,
+    ) : this(
+        point0 = pointMatrix.row0,
+        point1 = pointMatrix.row1,
+        point2 = pointMatrix.row2,
+        point3 = pointMatrix.row3,
+    )
+
     val pointMatrix: Matrix4x2
         get() = Matrix4x2(
             row0 = point0,
@@ -590,6 +599,18 @@ data class CubicBezierBinomial(
             |  point3 = ${point3.toReprString()},
             |)
         """.trimMargin()
+    }
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance,
+    ): Boolean = when {
+        other !is CubicBezierBinomial -> false
+        !point0.equalsWithTolerance(other.point0, tolerance = tolerance) -> false
+        !point1.equalsWithTolerance(other.point1, tolerance = tolerance) -> false
+        !point2.equalsWithTolerance(other.point2, tolerance = tolerance) -> false
+        !point3.equalsWithTolerance(other.point3, tolerance = tolerance) -> false
+        else -> true
     }
 }
 

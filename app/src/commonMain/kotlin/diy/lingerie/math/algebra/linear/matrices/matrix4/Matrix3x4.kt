@@ -128,13 +128,19 @@ data class Matrix3x4(
             row3 = column3,
         )
 
-    operator fun times(other: Matrix4x3): Matrix3x3 = Matrix3x3.rowMajor(
+    operator fun times(
+        other: Matrix4x2,
+    ): Matrix3x2 = Matrix3x2(
         row0 = row0.hDot(other),
         row1 = row1.hDot(other),
         row2 = row2.hDot(other),
     )
 
-    operator fun times(other: Matrix4x2): Matrix3x2 {
-        TODO()
-    }
+    operator fun times(
+        other: Matrix4x3,
+    ): Matrix3x3 = Matrix3x3.rowMajor(
+        row0 = row0.hDot(other),
+        row1 = row1.hDot(other),
+        row2 = row2.hDot(other),
+    )
 }
