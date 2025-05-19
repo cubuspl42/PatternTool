@@ -3,6 +3,7 @@ package diy.lingerie.math.algebra.linear.vectors
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.NumericObject.Tolerance
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix4x3
 import kotlin.math.sqrt
 
 data class Vector4(
@@ -91,6 +92,14 @@ data class Vector4(
     fun dot(
         other: Vector4,
     ): Double = a0 * other.a0 + a1 * other.a1 + a2 * other.a2 + a3 * other.a3
+
+    fun hDot(
+        other: Matrix4x3,
+    ): Vector3 = Vector3(
+        this.dot(other.column0),
+        this.dot(other.column1),
+        this.dot(other.column2),
+    )
 
     fun toList(): List<Double> = listOf(
         a0,

@@ -4,11 +4,15 @@ import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.linear.matrices.matrix2.Matrix4x2
 import diy.lingerie.math.algebra.linear.matrices.matrix2.MatrixNx2
 import diy.lingerie.math.algebra.linear.matrices.matrix3.Matrix3x3
+import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix3x4
+import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix4x3
 import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix4x4
 import diy.lingerie.math.algebra.linear.matrices.matrix4.MatrixNx4
 import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.linear.vectors.Vector3
 import diy.lingerie.math.algebra.linear.vectors.Vector4
 import diy.lingerie.math.algebra.linear.vectors.times
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial
@@ -31,7 +35,6 @@ data class CubicBezierBinomial(
     val point3: Vector2,
 ) : BezierBinomial() {
     companion object {
-
         const val n = 3
 
         /**
@@ -47,12 +50,14 @@ data class CubicBezierBinomial(
         /**
          * A matrix for raising a quadratic curve to a cubic curve
          */
-        val raiseMatrix = Matrix4x4.rowMajor(
-            row0 = Vector4(1.0, 0.0, 0.0, 0.0),
-            row1 = Vector4(3.0, -6.0, 3.0, 0.0),
-            row2 = Vector4(-3.0, 3.0, 0.0, 0.0),
-            row3 = Vector4(1.0, 0.0, 0.0, 0.0),
+        val raiseMatrix = Matrix4x3.rowMajor(
+            row0 = Vector3(1.0, 0.0, 0.0),
+            row1 = Vector3(1.0 / 3.0, 2.0 / 3.0, 0.0),
+            row2 = Vector3(0.0, 2.0 / 3.0, 1.0 / 3.0),
+            row3 = Vector3(0.0, 0.0, 1.0),
         )
+
+        val raiseMatrixPseudoInverse: Matrix3x4 = raiseMatrix.pseudoInverse()
 
         val characteristicMatrixInverted =
             characteristicMatrix.invert() ?: throw AssertionError("The characteristic matrix is not invertible")
@@ -71,17 +76,8 @@ data class CubicBezierBinomial(
                 },
             )
 
-            // T^t
-            val tMatrixTransposed = tMatrix.transposed
-
-            // T^t * T (a Gram matrix for T)
-            val tGramMatrix = tMatrixTransposed * tMatrix
-
-            // (T^t * T)^-1
-            val tGramMatrixInverted = tGramMatrix.invert() ?: throw AssertionError("Matrix is not invertible")
-
             // (M^-1) * (T^t * T)^-1 * T^t
-            val dMatrix = characteristicMatrixInverted * (tGramMatrixInverted * tMatrixTransposed)
+            val dMatrix = characteristicMatrixInverted * tMatrix.pseudoInverse()
 
             // P (weights)
             val controlVector = dMatrix * pMatrix
@@ -94,6 +90,14 @@ data class CubicBezierBinomial(
             )
         }
     }
+
+    val pointMatrix: Matrix4x2
+        get() = Matrix4x2(
+            row0 = point0,
+            row1 = point1,
+            row2 = point2,
+            row3 = point3,
+        )
 
     private val delta0: Vector2
         get() = point1 - point0
@@ -547,6 +551,10 @@ data class CubicBezierBinomial(
     }
 
     val inverted: RationalImplicitPolynomial? by lazy { invert() }
+
+    fun lower(): QuadraticBezierBinomial = QuadraticBezierBinomial(
+        pointMatrix = raiseMatrixPseudoInverse * pointMatrix,
+    )
 
     fun lowerNaively(): QuadraticBezierBinomial {
         TODO()

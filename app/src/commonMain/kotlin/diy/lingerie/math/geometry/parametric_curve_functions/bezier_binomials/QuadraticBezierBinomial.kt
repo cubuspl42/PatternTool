@@ -1,6 +1,7 @@
 package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix3x2
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.linear.vectors.times
 import diy.lingerie.math.geometry.ParametricPolynomial
@@ -18,6 +19,21 @@ class QuadraticBezierBinomial(
     val point1: Vector2,
     val point2: Vector2,
 ) : BezierBinomial() {
+    constructor(
+        pointMatrix: Matrix3x2,
+    ) : this(
+        point0 = pointMatrix.row0,
+        point1 = pointMatrix.row1,
+        point2 = pointMatrix.row2,
+    )
+
+    val pointMatrix: Matrix3x2
+        get() = Matrix3x2(
+            row0 = point0,
+            row1 = point1,
+            row2 = point2,
+        )
+
     private val delta0: Vector2
         get() = point1 - point0
 
