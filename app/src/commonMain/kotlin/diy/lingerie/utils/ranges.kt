@@ -2,6 +2,8 @@ package diy.lingerie.utils
 
 /**
  * Normalizes the value to the range [start, end].
+ *
+ * @return value within 0..1
  */
 fun ClosedFloatingPointRange<Double>.normalize(x: Double): Double {
     val x0 = start
@@ -36,11 +38,11 @@ fun ClosedFloatingPointRange<Double>.linearlyInterpolate(t: Double): Double = li
     x1 = endInclusive,
 )
 
-fun Double.rescale(
-    sourceRange: ClosedFloatingPointRange<Double>,
+fun ClosedFloatingPointRange<Double>.rescaleTo(
     targetRange: ClosedFloatingPointRange<Double>,
+    x: Double,
 ): Double {
-    val normalized = sourceRange.normalize(this)
+    val normalized = this.normalize(x)
     return targetRange.linearlyInterpolate(normalized)
 }
 

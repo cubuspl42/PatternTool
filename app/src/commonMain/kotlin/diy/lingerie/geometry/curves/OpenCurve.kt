@@ -4,15 +4,15 @@ import diy.lingerie.ReprObject
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.Direction
 import diy.lingerie.geometry.LineSegment
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.Point.Companion.distanceBetween
 import diy.lingerie.geometry.Ray
 import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
+import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.utils.avgOf
 import diy.lingerie.utils.iterable.clusterSimilar
 import diy.lingerie.utils.split
@@ -348,4 +348,14 @@ fun ClosedRange<OpenCurve.Coord>.splitAtHalf(): Pair<ClosedRange<OpenCurve.Coord
         start..coordHalf,
         coordHalf..endInclusive,
     )
+}
+
+val ClosedRange<OpenCurve.Coord>.tRange: ClosedFloatingPointRange<Double>
+    get() = start.t..endInclusive.t
+
+fun ClosedFloatingPointRange<Double>.toCoordRange(): ClosedRange<OpenCurve.Coord>? {
+    val startCoord = OpenCurve.Coord.of(this.start) ?: return null
+    val endCoord = OpenCurve.Coord.of(this.endInclusive) ?: return null
+
+    return startCoord..endCoord
 }
