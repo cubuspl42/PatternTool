@@ -4,6 +4,7 @@ import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.SpatialObject
+import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.LookupFunction
@@ -261,6 +262,17 @@ data class BezierCurve private constructor(
             ),
         )
     }
+
+    fun splitToSpline(
+        sampleCount: Int,
+    ): OpenSpline = OpenSpline.connect(
+        sequentialCurves = LinSpace.generateSubRanges(
+            range = primaryTRange,
+            sampleCount = sampleCount,
+        ).map { tRange ->
+            trim(coordRange = tRange.toCoordRange()!!)
+        }.toList()
+    )
 
     override fun evaluate(
         coord: Coord,

@@ -21,6 +21,8 @@ import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGPathSeg
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicAbs
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicRel
+import org.w3c.dom.svg.SVGPathSegCurvetoQuadraticAbs
+import org.w3c.dom.svg.SVGPathSegCurvetoQuadraticRel
 import org.w3c.dom.svg.SVGPathSegMovetoAbs
 
 data class SvgPath(
@@ -97,6 +99,53 @@ data class SvgPath(
             override fun transformVia(
                 transformation: Transformation,
             ): LineTo = LineTo(
+                finalPoint = transformation.transform(point = finalPoint),
+            )
+        }
+
+        sealed class QuadraticBezierSegment : CurveSegment()
+
+        data class QuadraticBezierCurveTo(
+            val controlPoint: Point,
+            override val finalPoint: Point,
+        ) : QuadraticBezierSegment() {
+            override fun toPathSegString(): String = "Q${controlPoint.toSvgString()} ${finalPoint.toSvgString()}"
+
+            override fun equalsWithTolerance(
+                other: NumericObject,
+                tolerance: NumericObject.Tolerance,
+            ): Boolean = when {
+                other !is QuadraticBezierCurveTo -> false
+                !controlPoint.equalsWithTolerance(other.controlPoint, tolerance) -> false
+                !finalPoint.equalsWithTolerance(other.finalPoint, tolerance) -> false
+                else -> true
+            }
+
+            override fun transformVia(
+                transformation: Transformation,
+            ): QuadraticBezierCurveTo = QuadraticBezierCurveTo(
+                controlPoint = transformation.transform(point = controlPoint),
+                finalPoint = transformation.transform(point = finalPoint),
+            )
+        }
+
+        data class SmoothQuadraticBezierCurveTo(
+            override val finalPoint: Point,
+        ) : QuadraticBezierSegment() {
+            override fun toPathSegString(): String = "T${finalPoint.toSvgString()}"
+
+            override fun equalsWithTolerance(
+                other: NumericObject,
+                tolerance: NumericObject.Tolerance,
+            ): Boolean = when {
+                other !is SmoothQuadraticBezierCurveTo -> false
+                !finalPoint.equalsWithTolerance(other.finalPoint, tolerance) -> false
+                else -> true
+            }
+
+            override fun transformVia(
+                transformation: Transformation,
+            ): SmoothQuadraticBezierCurveTo = SmoothQuadraticBezierCurveTo(
                 finalPoint = transformation.transform(point = finalPoint),
             )
         }
@@ -287,6 +336,40 @@ fun SVGPathSeg.toSimpleSegment(
         this as SVGPathSegMovetoAbs
 
         SvgPath.Segment.LineTo(
+            finalPoint = PrimitiveTransformation.Translation(
+                tx = x.toDouble(),
+                ty = y.toDouble(),
+            ).transform(
+                point = currentPoint,
+            ),
+        )
+    }
+
+    SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS -> {
+        this as SVGPathSegCurvetoQuadraticAbs
+
+        SvgPath.Segment.QuadraticBezierCurveTo(
+            controlPoint = Point(
+                x = x1.toDouble(),
+                y = y1.toDouble(),
+            ),
+            finalPoint = Point(
+                x = x.toDouble(),
+                y = y.toDouble(),
+            ),
+        )
+    }
+
+    SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL -> {
+        this as SVGPathSegCurvetoQuadraticRel
+
+        SvgPath.Segment.QuadraticBezierCurveTo(
+            controlPoint = PrimitiveTransformation.Translation(
+                tx = x1.toDouble(),
+                ty = y1.toDouble(),
+            ).transform(
+                point = currentPoint,
+            ),
             finalPoint = PrimitiveTransformation.Translation(
                 tx = x.toDouble(),
                 ty = y.toDouble(),

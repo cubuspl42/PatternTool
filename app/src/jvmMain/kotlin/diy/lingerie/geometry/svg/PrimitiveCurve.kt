@@ -1,10 +1,12 @@
 package diy.lingerie.geometry.svg
 
 import diy.lingerie.geometry.LineSegment
+import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.curves.BezierCurve.Edge
 import diy.lingerie.geometry.splines.Spline
+import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgPath.Segment
 import diy.lingerie.simple_dom.svg.SvgShape
@@ -16,6 +18,17 @@ fun BezierCurve.toSvgPath(
     segments = listOf(
         SvgPath.Segment.MoveTo(
             targetPoint = start,
+        ),
+    ) + toSvgBezierSegment(),
+)
+
+fun QuadraticBezierBinomial.toSvgPath(
+    stroke: SvgShape.Stroke = SvgShape.Stroke.default,
+): SvgPath = SvgPath(
+    stroke = stroke,
+    segments = listOf(
+        SvgPath.Segment.MoveTo(
+            targetPoint = Point(pointVector = point0),
         ),
     ) + toSvgBezierSegment(),
 )
@@ -36,10 +49,20 @@ fun BezierCurve.toSvgBezierSegment(): SvgPath.Segment.CubicBezierCurveTo = SvgPa
     finalPoint = end,
 )
 
+fun QuadraticBezierBinomial.toSvgBezierSegment(): SvgPath.Segment.QuadraticBezierCurveTo =
+    SvgPath.Segment.QuadraticBezierCurveTo(
+        controlPoint = Point(pointVector = point1),
+        finalPoint = Point(pointVector = point2),
+    )
+
 fun PrimitiveCurve.Edge.Companion.importSvgSegment(
     segment: SvgPath.Segment.CurveSegment,
 ): PrimitiveCurve.Edge = when (segment) {
     is Segment.LineTo -> LineSegment.Edge
+
+    is Segment.QuadraticBezierCurveTo -> TODO()
+
+    is Segment.SmoothQuadraticBezierCurveTo -> TODO()
 
     is Segment.CubicBezierCurveTo -> Edge(
         firstControl = segment.controlPoint1,
