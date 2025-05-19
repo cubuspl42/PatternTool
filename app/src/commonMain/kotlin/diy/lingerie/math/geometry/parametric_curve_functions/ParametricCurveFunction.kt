@@ -65,6 +65,21 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         },
     )
 
+    val primaryArcLengthApproximate: Double
+        get() = calculatePrimaryArcLengthBruteForce(sampleCount = 128)
+
+    val primaryArcLengthNearlyExact: Double
+        get() = calculatePrimaryArcLengthBruteForce(sampleCount = 10000)
+
+    fun calculatePrimaryArcLengthBruteForce(sampleCount: Int): Double = LinSpace.generateSubRanges(
+        range = 0.0..1.0,
+        sampleCount = sampleCount,
+    ).sumOf { tRange ->
+        val p0 = apply(tRange.start)
+        val p1 = apply(tRange.endInclusive)
+        Vector2.distance(p0, p1)
+    }
+
     /**
      * Locate a [point] lying on the curve.
      *
