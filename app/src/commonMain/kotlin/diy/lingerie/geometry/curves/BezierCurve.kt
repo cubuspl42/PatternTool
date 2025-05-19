@@ -458,25 +458,25 @@ data class BezierCurve private constructor(
         return LookupFunction.build(
             linSpace = LinSpace(
                 range = primaryTRange,
-                sampleCount = 64,
+                sampleCount = 12,
             ),
             initialValue = initialLength,
             calculateDelta = { tRange ->
                 calculateArcLength(
-                    coordRange = tRange.toCoordRange() ?: throw AssertionError()
+                    coordRange = tRange.toCoordRange()!!,
                 )
             },
         )
     }
 
     /**
-     * Calculate the curve length in the primary range
+     * Calculate the curve length in the given coordinate range
      */
     fun calculateArcLength(
         coordRange: ClosedRange<Coord>,
     ): Double {
         val trimmedCurve = trim(coordRange = coordRange)
-        val loweredBasisFunction = trimmedCurve.basisFunction.lowerNaively()
+        val loweredBasisFunction = trimmedCurve.basisFunction.lower()
         return loweredBasisFunction.primaryArcLength
     }
 }

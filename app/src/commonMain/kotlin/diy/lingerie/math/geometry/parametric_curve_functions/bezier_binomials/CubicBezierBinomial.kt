@@ -565,10 +565,6 @@ data class CubicBezierBinomial(
         pointMatrix = raiseMatrixPseudoInverse * pointMatrix,
     )
 
-    fun lowerNaively(): QuadraticBezierBinomial {
-        TODO()
-    }
-
     override fun implicitize(): ImplicitCubicCurveFunction {
         val l32 = this.l32
         val l31 = this.l31
