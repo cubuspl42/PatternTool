@@ -107,24 +107,10 @@ data class QuadraticBezierBinomial(
             return 2.0 * (d * e + f * g)
         }
 
-    val primaryArcLengthApproximate: Double
-        get() = calculatePrimaryArcLengthBruteForce(sampleCount = 128)
-
-    val primaryArcLengthNearlyExact: Double
-        get() = calculatePrimaryArcLengthBruteForce(sampleCount = 10000)
 
     fun raise(): CubicBezierBinomial = CubicBezierBinomial(
         pointMatrix = CubicBezierBinomial.raiseMatrix * pointMatrix,
     )
-
-    fun calculatePrimaryArcLengthBruteForce(sampleCount: Int): Double = LinSpace.generateSubRanges(
-        range = 0.0..1.0,
-        sampleCount = sampleCount,
-    ).sumOf { tRange ->
-        val p0 = apply(tRange.start)
-        val p1 = apply(tRange.endInclusive)
-        Vector2.distance(p0, p1)
-    }
 
     fun evaluatePartially(t: Double): ParametricLineFunction {
         val subPoint0 = point0 + delta0 * t
