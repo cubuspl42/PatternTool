@@ -36,6 +36,19 @@ data class MatrixNx4(
             columns = rows,
         )
 
+    /**
+     * A Moore-Penrose pseudoinverse (assuming this is a full column rank matrix)
+     */
+    fun pseudoInverse(): Matrix4xN {
+        val matrixTransposed = this.transposed
+
+        val gramMatrix = matrixTransposed * this
+
+        val gramMatrixInverted = gramMatrix.invert() ?: throw AssertionError("Matrix is not invertible")
+
+        return gramMatrixInverted * matrixTransposed
+    }
+
     override fun equalsWithTolerance(
         other: NumericObject,
         tolerance: NumericObject.Tolerance,

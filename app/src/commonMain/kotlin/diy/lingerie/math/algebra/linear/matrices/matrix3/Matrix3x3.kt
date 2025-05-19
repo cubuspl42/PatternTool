@@ -1,6 +1,7 @@
 package diy.lingerie.math.algebra.linear.matrices.matrix3
 
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix3x4
 import diy.lingerie.math.algebra.linear.vectors.Vector3
 
 sealed class Matrix3x3 : NumericObject {
@@ -65,6 +66,37 @@ sealed class Matrix3x3 : NumericObject {
         else -> throw IllegalArgumentException("Invalid column index: $j")
     }
 
+    val adjugate: Matrix3x3
+        get() {
+            val a = row0.a0
+            val b = row0.a1
+            val c = row0.a2
+            val d = row1.a0
+            val e = row1.a1
+            val f = row1.a2
+            val g = row2.a0
+            val h = row2.a1
+            val i = row2.a2
+
+            return Matrix3x3.rowMajor(
+                row0 = Vector3(
+                    -f * h + e * i,
+                    c * h - b * i,
+                    -c * e + b * f,
+                ),
+                row1 = Vector3(
+                    f * g - d * i,
+                    -c * g + a * i,
+                    c * d - a * f,
+                ),
+                row2 = Vector3(
+                    -e * g + d * h,
+                    b * g - a * h,
+                    -b * d + a * e,
+                ),
+            )
+        }
+
     val determinant: Double
         get() {
             val a = row0.a0
@@ -96,6 +128,51 @@ sealed class Matrix3x3 : NumericObject {
         |  $row2,
         |]
     """.trimMargin()
+
+    fun invert(): Matrix3x3? {
+        val determinant = determinant
+
+        if (determinant == 0.0) {
+            return null
+        }
+
+        val adjugate = this.adjugate
+
+        // {{-9.2553, 9.6216, -3.6963}, {12.4086, -16.1382, 7.3926}, {-4.1523, 7.5156, -3.6963}}
+
+        return adjugate / determinant
+    }
+
+    fun dotV(other: Vector3): Vector3 = Vector3(
+        row0.dot(other),
+        row1.dot(other),
+        row2.dot(other),
+    )
+
+    operator fun times(
+        other: Matrix3x4,
+    ): Matrix3x4 = Matrix3x4(
+        column0 = this.dotV(other.column0),
+        column1 = this.dotV(other.column1),
+        column2 = this.dotV(other.column2),
+        column3 = this.dotV(other.column3),
+    )
+
+    operator fun times(
+        scalar: Double,
+    ): Matrix3x3 = Matrix3x3.rowMajor(
+        row0 = row0 * scalar,
+        row1 = row1 * scalar,
+        row2 = row2 * scalar,
+    )
+
+    operator fun div(
+        scalar: Double,
+    ): Matrix3x3 = Matrix3x3.rowMajor(
+        row0 = row0 / scalar,
+        row1 = row1 / scalar,
+        row2 = row2 / scalar,
+    )
 
     abstract val row0: Vector3
     abstract val row1: Vector3
