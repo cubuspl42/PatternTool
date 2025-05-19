@@ -53,6 +53,10 @@ sealed class Span : SpatialObject, Comparable<Span> {
         else -> tolerance.equalsApproximately(this, other)
     }
 
+    fun equalsApproximatelyZero(
+        tolerance: SpatialObject.SpatialTolerance = SpatialObject.SpatialTolerance.default,
+    ): Boolean = tolerance.equalsApproximatelyZero(this)
+
     override fun compareTo(
         other: Span,
     ): Int = valueSquared.compareTo(other.valueSquared)

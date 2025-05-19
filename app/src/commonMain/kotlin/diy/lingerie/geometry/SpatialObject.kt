@@ -23,7 +23,11 @@ interface SpatialObject : GeometricObject {
         fun equalsApproximately(
             one: Span,
             another: Span,
-        ): Boolean = abs(one.valueSquared - another.valueSquared) <= spanTolerance.valueSquared
+        ): Boolean = abs(one.value - another.value) <= spanTolerance.value
+
+        fun equalsApproximatelyZero(
+            span: Span,
+        ): Boolean = span.valueSquared <= spanTolerance.valueSquared
     }
 
     override fun equalsWithGeometricTolerance(

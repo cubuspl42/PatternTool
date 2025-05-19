@@ -6,13 +6,13 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
+import diy.lingerie.math.algebra.LookupFunction
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.geometry.RationalImplicitPolynomial
+import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
-import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial.Companion.primaryTRange
-import diy.lingerie.math.algebra.LookupFunction
 import diy.lingerie.utils.iterable.LinSpace
-import diy.lingerie.utils.rescaleTo
+import diy.lingerie.utils.normalize
 
 
 data class BezierCurve private constructor(
@@ -394,23 +394,50 @@ data class BezierCurve private constructor(
         )
     }
 
-    fun trim(
+
+    fun trimFrom(coord: Coord): BezierCurve {
+        val (_, trimmedBasisFunction) = basisFunction.splitAt(t = coord.t)
+
+        return BezierCurve(
+            basisFunction = trimmedBasisFunction,
+        )
+    }
+
+    private fun trimRange(
         coordRange: ClosedRange<Coord>,
     ): BezierCurve {
-        val t0 = coordRange.start.t
-        val t1 = coordRange.endInclusive.t
+        val tStart = coordRange.start.t
+        val (_, leftTrimmedBasisFunction) = basisFunction.splitAt(t = tStart)
 
-        val t2 = primaryTRange.rescaleTo(
-            targetRange = t1..primaryTRange.endInclusive,
-            t1,
-        )
-
-        val (_, leftTrimmedBasisFunction) = basisFunction.splitAt(t = t0)
-        val (trimmedCurve, _) = leftTrimmedBasisFunction.splitAt(t = t2)
+        val tEnd = (tStart..1.0).normalize(coordRange.endInclusive.t)
+        val (trimmedCurve, _) = leftTrimmedBasisFunction.splitAt(t = tEnd)
 
         return BezierCurve(
             basisFunction = trimmedCurve,
         )
+    }
+
+    fun trim(
+        coordRange: ClosedRange<Coord>,
+    ): BezierCurve {
+        val startCoord = coordRange.start
+        val endCoord = coordRange.endInclusive
+
+        return when {
+            startCoord == Coord.start && endCoord == Coord.end -> this
+            startCoord == Coord.start -> trimTo(coord = endCoord)
+            endCoord == Coord.end -> trimFrom(coord = startCoord)
+            else -> trimRange(coordRange = coordRange)
+        }
+    }
+
+    fun containsPoint(point: Point): Boolean {
+        val tValue = basisFunction.projectPointClosest(point.pointVector) ?: return false
+        val coord = Coord.of(t = tValue) ?: return false
+
+        val distance = Point.distanceBetween(evaluate(coord), point)
+
+        return distance.equalsApproximatelyZero()
     }
 
     fun findArcLengthFunction(): LookupFunction {
