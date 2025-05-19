@@ -9,6 +9,11 @@ import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.geometry.RationalImplicitPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
+import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial.Companion.primaryTRange
+import diy.lingerie.math.algebra.LookupFunction
+import diy.lingerie.utils.iterable.LinSpace
+import diy.lingerie.utils.rescaleTo
+
 
 data class BezierCurve private constructor(
     override val basisFunction: CubicBezierBinomial,
@@ -379,5 +384,60 @@ data class BezierCurve private constructor(
             |  end = ${end.toReprString()},
             |)
         """.trimMargin()
+    }
+
+    fun trimTo(coord: Coord): BezierCurve {
+        val (trimmedBasisFunction, _) = basisFunction.splitAt(t = coord.t)
+
+        return BezierCurve(
+            basisFunction = trimmedBasisFunction,
+        )
+    }
+
+    fun trim(
+        coordRange: ClosedRange<Coord>,
+    ): BezierCurve {
+        val t0 = coordRange.start.t
+        val t1 = coordRange.endInclusive.t
+
+        val t2 = primaryTRange.rescaleTo(
+            targetRange = t1..primaryTRange.endInclusive,
+            t1,
+        )
+
+        val (_, leftTrimmedBasisFunction) = basisFunction.splitAt(t = t0)
+        val (trimmedCurve, _) = leftTrimmedBasisFunction.splitAt(t = t2)
+
+        return BezierCurve(
+            basisFunction = trimmedCurve,
+        )
+    }
+
+    fun findArcLengthFunction(): LookupFunction {
+        val initialLength = 0.0
+
+        return LookupFunction.build(
+            linSpace = LinSpace(
+                range = primaryTRange,
+                sampleCount = 64,
+            ),
+            initialValue = initialLength,
+            calculateDelta = { tRange ->
+                calculateArcLength(
+                    coordRange = tRange.toCoordRange() ?: throw AssertionError()
+                )
+            },
+        )
+    }
+
+    /**
+     * Calculate the curve length in the primary range
+     */
+    fun calculateArcLength(
+        coordRange: ClosedRange<Coord>,
+    ): Double {
+        val trimmedCurve = trim(coordRange = coordRange)
+        val loweredBasisFunction = trimmedCurve.basisFunction.lowerNaively()
+        return loweredBasisFunction.primaryArcLength
     }
 }

@@ -12,6 +12,14 @@ data class LinSpace(
             range = range,
             sampleCount = sampleCount,
         ).generate()
+
+        fun generateSubRanges(
+            range: ClosedFloatingPointRange<Double> = 0.0..1.0,
+            sampleCount: Int,
+        ) = LinSpace(
+            range = range,
+            sampleCount = sampleCount,
+        ).generateSubRanges()
     }
 
     init {
@@ -27,6 +35,10 @@ data class LinSpace(
     fun generate(): Sequence<Double> {
         val step = (x1 - x0) / (sampleCount - 1)
         return generateSequence(0) { it + 1 }.take(sampleCount).map { i -> x0 + i * step }
+    }
+
+    fun generateSubRanges(): Sequence<ClosedFloatingPointRange<Double>> = generate().zipWithNext { x0, x1 ->
+        x0..x1
     }
 
     val step: Double

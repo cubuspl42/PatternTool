@@ -31,6 +31,8 @@ data class CubicBezierBinomial(
     val point3: Vector2,
 ) : BezierBinomial() {
     companion object {
+        val primaryTRange = 0.0..1.0
+
         /**
          * The characteristic matrix of the cubic Bézier curve.
          */
@@ -532,6 +534,10 @@ data class CubicBezierBinomial(
     }
 
     val inverted: RationalImplicitPolynomial? by lazy { invert() }
+
+    fun lowerNaively(): QuadraticBezierBinomial {
+        TODO()
+    }
 
     override fun implicitize(): ImplicitCubicCurveFunction {
         val l32 = this.l32
