@@ -2,6 +2,7 @@ package diy.lingerie.math.algebra.linear.matrices.matrix2
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
+import diy.lingerie.math.algebra.linear.vectors.Vector4
 
 data class Matrix4x2(
     val row0: Vector2,
@@ -21,4 +22,20 @@ data class Matrix4x2(
         !row3.equalsWithTolerance(other.row3, tolerance = tolerance) -> false
         else -> true
     }
+
+    val column0: Vector4
+        get() = Vector4(
+            row0.a0,
+            row1.a0,
+            row2.a0,
+            row3.a0,
+        )
+
+    val column1: Vector4
+        get() = Vector4(
+            row0.a1,
+            row1.a1,
+            row2.a1,
+            row3.a1,
+        )
 }

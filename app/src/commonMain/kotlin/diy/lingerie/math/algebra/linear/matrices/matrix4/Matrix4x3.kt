@@ -1,6 +1,7 @@
 package diy.lingerie.math.algebra.linear.matrices.matrix4
 
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.linear.matrices.matrix2.Matrix4x2
 import diy.lingerie.math.algebra.linear.matrices.matrix3.Matrix3x3
 import diy.lingerie.math.algebra.linear.vectors.Vector3
 import diy.lingerie.math.algebra.linear.vectors.Vector4
@@ -133,6 +134,15 @@ data class Matrix4x3(
         row1 = row1.hDot(other),
         row2 = row2.hDot(other),
         row3 = row3.hDot(other),
+    )
+
+    operator fun times(
+        other: Matrix3x2,
+    ): Matrix4x2 = Matrix4x2(
+        row0 = this.row0.hDot(other),
+        row1 = this.row1.hDot(other),
+        row2 = this.row2.hDot(other),
+        row3 = this.row3.hDot(other),
     )
 
     /**

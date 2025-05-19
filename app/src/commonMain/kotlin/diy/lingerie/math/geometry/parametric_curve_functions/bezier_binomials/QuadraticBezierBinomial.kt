@@ -14,7 +14,7 @@ import kotlin.math.asinh
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class QuadraticBezierBinomial(
+data class QuadraticBezierBinomial(
     val point0: Vector2,
     val point1: Vector2,
     val point2: Vector2,
@@ -113,6 +113,9 @@ class QuadraticBezierBinomial(
     val primaryArcLengthNearlyExact: Double
         get() = calculatePrimaryArcLengthBruteForce(sampleCount = 10000)
 
+    fun raise(): CubicBezierBinomial = CubicBezierBinomial(
+        pointMatrix = CubicBezierBinomial.raiseMatrix * pointMatrix,
+    )
 
     fun calculatePrimaryArcLengthBruteForce(sampleCount: Int): Double = LinSpace.generateSubRanges(
         range = 0.0..1.0,
@@ -131,5 +134,16 @@ class QuadraticBezierBinomial(
             point0 = subPoint0,
             point1 = subPoint1,
         )
+    }
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance,
+    ): Boolean = when {
+        other !is QuadraticBezierBinomial -> false
+        !point0.equalsWithTolerance(other.point0, tolerance = tolerance) -> false
+        !point1.equalsWithTolerance(other.point1, tolerance = tolerance) -> false
+        !point2.equalsWithTolerance(other.point2, tolerance = tolerance) -> false
+        else -> true
     }
 }
