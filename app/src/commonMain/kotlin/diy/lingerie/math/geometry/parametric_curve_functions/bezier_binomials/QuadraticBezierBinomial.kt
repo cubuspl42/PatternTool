@@ -104,9 +104,46 @@ data class QuadraticBezierBinomial(
             return p + q * r
         }
 
+    fun calculateArcLengthUpTo(
+        t: Double,
+    ): Double = this.trimTo(t = t).primaryArcLength
+
     fun raise(): CubicBezierBinomial = CubicBezierBinomial(
         pointMatrix = CubicBezierBinomial.raiseMatrix * pointMatrix,
     )
+
+    fun trimTo(
+        t: Double,
+    ): QuadraticBezierBinomial {
+        require(t in 0.0..1.0)
+
+        val (trimmedBinomial, _) = splitAt(t = t)
+
+        return trimmedBinomial
+    }
+
+    fun splitAt(
+        t: Double,
+    ): Pair<QuadraticBezierBinomial, QuadraticBezierBinomial> {
+        require(t in 0.0..1.0)
+
+        val lineFunction = this.evaluatePartially(t = t)
+
+        val midPoint = lineFunction.apply(t)
+
+        return Pair(
+            QuadraticBezierBinomial(
+                point0 = point0,
+                point1 = lineFunction.point0,
+                point2 = midPoint,
+            ),
+            QuadraticBezierBinomial(
+                point0 = midPoint,
+                point1 = lineFunction.point1,
+                point2 = point2,
+            ),
+        )
+    }
 
     fun evaluatePartially(t: Double): ParametricLineFunction {
         val subPoint0 = point0 + delta0 * t
