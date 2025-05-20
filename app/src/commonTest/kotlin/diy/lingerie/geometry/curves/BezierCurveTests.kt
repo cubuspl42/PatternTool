@@ -8,6 +8,7 @@ import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.pattern_tool.Outline
 import diy.lingerie.test_utils.assertEqualsWithTolerance
+import kotlin.math.abs
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -564,6 +565,26 @@ class BezierCurveTests {
                 ),
             )
         }
+    }
+
+    @Test
+    fun testArcLength() {
+        val bezierCurve = BezierCurve(
+            start = Point(233.92449010844575, 500.813035986871),
+            firstControl = Point(863.426829231712, 303.18800785949134),
+            secondControl = Point(53.73076075494464, 164.97814335091425),
+            end = Point(551.3035908506827, 559.7310384198445),
+        )
+
+        val expectedArcLength = bezierCurve.basisFunction.primaryArcLengthNearlyExact
+
+        assertEqualsWithTolerance(
+            expected = expectedArcLength,
+            actual = bezierCurve.arcLength,
+            tolerance = NumericObject.Tolerance.Absolute(
+                absoluteTolerance = 0.2,
+            )
+        )
     }
 }
 

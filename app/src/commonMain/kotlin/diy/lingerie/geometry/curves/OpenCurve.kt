@@ -13,7 +13,9 @@ import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import diy.lingerie.utils.avgOf
+import diy.lingerie.utils.iterable.LinSpace
 import diy.lingerie.utils.iterable.clusterSimilar
 import diy.lingerie.utils.split
 import kotlin.jvm.JvmInline
@@ -120,6 +122,13 @@ abstract class OpenCurve : NumericObject, ReprObject {
                     t = tAverage,
                 )
             }
+
+            fun generateSubRanges(
+                sampleCount: Int,
+            ): Sequence<ClosedRange<Coord>> = LinSpace.generateSubRanges(
+                range = primaryTRange,
+                sampleCount = 12,
+            ).map { it.toCoordRange()!! }
 
             /**
              * @param t t-value, unconstrained

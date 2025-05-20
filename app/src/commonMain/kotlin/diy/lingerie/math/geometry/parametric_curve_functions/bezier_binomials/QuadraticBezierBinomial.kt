@@ -8,10 +8,8 @@ import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.SubCubicParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
-import diy.lingerie.utils.iterable.LinSpace
 import diy.lingerie.utils.sq
-import kotlin.math.asinh
-import kotlin.math.pow
+import kotlin.math.ln
 import kotlin.math.sqrt
 
 data class QuadraticBezierBinomial(
@@ -86,27 +84,25 @@ data class QuadraticBezierBinomial(
 
     val primaryArcLength: Double
         get() {
-            // For total length, u = 1
-            val u = 1.0
+            val d1 = point1 - point0
+            val d2 = point2 - point1
+            val a = d2 - d1
 
-            val delta1 = point1 - point0
-            val delta2 = point2 - point1
+            val aMSq = a.magnitudeSquared // |A|^2
+            val aM = sqrt(aMSq) // |A|
+            val aMCb = aMSq * aM // |A|^3
+            val d1M = d1.magnitude
+            val d2M = d2.magnitude
 
-            val (dx1, dy1) = delta1
-            val (dx2, dy2) = delta2
+            val ad1 = a.dot(d1)
+            val ad2 = a.dot(d2)
 
-            val a = (dx2 - dx1).sq + (dy2 - dy1).sq
-            val b = dx1 * (dx2 - dx1) + dy1 * (dy2 - dy1)
-            val c = dx1.sq + dy1.sq
+            val p = (d2M * ad2 - d1M * ad1) / aMSq
+            val q = d2.cross(d1).sq / aMCb
+            val r = ln((aM * d2M + ad2) / (aM * d1M + ad1))
 
-            val d = u + b / a
-            val e = sqrt(c + 2.0 * b * u + a * u.sq)
-            val f = (a * c - b.sq) / a.pow(3.0 / 2.0)
-            val g = asinh((a * u + b) / sqrt(a * c - b.sq))
-
-            return 2.0 * (d * e + f * g)
+            return p + q * r
         }
-
 
     fun raise(): CubicBezierBinomial = CubicBezierBinomial(
         pointMatrix = CubicBezierBinomial.raiseMatrix * pointMatrix,

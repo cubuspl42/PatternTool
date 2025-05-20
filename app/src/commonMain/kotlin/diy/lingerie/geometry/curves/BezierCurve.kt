@@ -12,6 +12,7 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.geometry.RationalImplicitPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
+import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
 import diy.lingerie.utils.iterable.LinSpace
 import diy.lingerie.utils.normalize
 
@@ -479,4 +480,13 @@ data class BezierCurve private constructor(
         val loweredBasisFunction = trimmedCurve.basisFunction.lower()
         return loweredBasisFunction.primaryArcLength
     }
+
+    val arcLength: Double
+        get() = Coord.generateSubRanges(
+            sampleCount = 12,
+        ).sumOf { coordRange ->
+            val trimmedCurve = trim(coordRange = coordRange)
+            val loweredBasisFunction = trimmedCurve.basisFunction.lower()
+            loweredBasisFunction.primaryArcLength
+        }
 }
