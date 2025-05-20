@@ -7,13 +7,37 @@ import diy.lingerie.geometry.Ray
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.svg.importSvgPath
+import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.simple_dom.svg.SvgLine
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRectangle
+import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.simple_dom.svg.SvgShape
 
 sealed class RecognizedShape {
     companion object {
+        fun interpretSvg(
+            svgRoot: SvgRoot,
+        ): List<RecognizedShape> {
+            val svgShapes = svgRoot.flatten(
+                baseTransformation = Transformation.Identity,
+            )
+
+            val (svgRects, otherSvgShapes) = svgShapes.partition {
+                it is SvgRectangle
+            }
+
+            val singleSvgRect = svgRects.singleOrNull()
+                ?: error("Expected a single rectangle, but found ${svgRects.size} rectangles")
+
+            val areaRectangle = singleSvgRect as SvgRectangle
+
+            return RecognizedShape.interpretSvgShapes(
+                areaRectangle = areaRectangle,
+                svgShapes = otherSvgShapes,
+            )
+        }
+
         fun interpretSvgShapes(
             areaRectangle: SvgRectangle,
             svgShapes: Iterable<SvgShape>,
