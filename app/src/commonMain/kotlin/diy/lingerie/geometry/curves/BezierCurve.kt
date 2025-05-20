@@ -7,7 +7,6 @@ import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.math.algebra.LookupFunction
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.geometry.RationalImplicitPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
@@ -15,6 +14,7 @@ import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.Cu
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
 import diy.lingerie.utils.iterable.LinSpace
 import diy.lingerie.utils.normalize
+import kotlin.math.roundToInt
 
 
 data class BezierCurve private constructor(
@@ -453,40 +453,50 @@ data class BezierCurve private constructor(
         return distance.equalsApproximatelyZero()
     }
 
-    fun findArcLengthFunction(): LookupFunction {
-        val initialLength = 0.0
-
-        return LookupFunction.build(
-            linSpace = LinSpace(
-                range = primaryTRange,
-                sampleCount = 12,
-            ),
-            initialValue = initialLength,
-            calculateDelta = { tRange ->
-                calculateArcLength(
-                    coordRange = tRange.toCoordRange()!!,
-                )
-            },
+    val totalArcLength: Double by lazy {
+        calculateArcLength(
+            coordRange = Coord.fullRange,
         )
     }
 
-    /**
-     * Calculate the curve length in the given coordinate range
-     */
-    fun calculateArcLength(
-        coordRange: ClosedRange<Coord>,
-    ): Double {
-        val trimmedCurve = trim(coordRange = coordRange)
-        val loweredBasisFunction = trimmedCurve.basisFunction.lower()
-        return loweredBasisFunction.primaryArcLength
+    fun guessCoordAtArcLength(
+        arcLength: Double,
+    ): Coord {
+        val t = arcLength / totalArcLength
+        val foo = lowerInRange(
+            Coord.start..Coord.ofSaturated(t = t + 0.1)
+        )
     }
 
-    val arcLength: Double
-        get() = Coord.generateSubRanges(
-            sampleCount = 12,
-        ).sumOf { coordRange ->
+    fun calculateArcLengthUpTo(
+        endCoord: Coord,
+    ): Double = calculateArcLength(
+        coordRange = Coord.start..endCoord,
+    )
+
+    fun calculateArcLength(
+        coordRange: ClosedRange<OpenCurve.Coord>,
+    ): Double = lowerInRange(
+        coordRange = coordRange,
+    ).sumOf {
+        it.primaryArcLength
+    }
+
+    private fun lowerInRange(
+        coordRange: ClosedRange<OpenCurve.Coord>,
+    ): Sequence<QuadraticBezierBinomial> {
+        val maxSampleCount = 12
+
+        val sampleCount = (coordRange.coverage * maxSampleCount).roundToInt().coerceAtLeast(
+            minimumValue = 2,
+        )
+
+        return Coord.generateSubRanges(
+            coordRange = coordRange,
+            sampleCount = sampleCount,
+        ).map { coordRange ->
             val trimmedCurve = trim(coordRange = coordRange)
-            val loweredBasisFunction = trimmedCurve.basisFunction.lower()
-            loweredBasisFunction.primaryArcLength
+            trimmedCurve.basisFunction.lower()
         }
+    }
 }

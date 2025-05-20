@@ -13,11 +13,11 @@ import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
-import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import diy.lingerie.utils.avgOf
 import diy.lingerie.utils.iterable.LinSpace
 import diy.lingerie.utils.iterable.clusterSimilar
 import diy.lingerie.utils.split
+import diy.lingerie.utils.width
 import kotlin.jvm.JvmInline
 
 /**
@@ -113,6 +113,14 @@ abstract class OpenCurve : NumericObject, ReprObject {
         companion object {
             private val tRange = 0.0..1.0
 
+            val start = Coord(t = 0.0)
+
+            val half = Coord(t = 0.5)
+
+            val end = Coord(t = 1.0)
+
+            val fullRange = start..end
+
             fun average(
                 coords: Iterable<Coord>,
             ): Coord {
@@ -124,11 +132,14 @@ abstract class OpenCurve : NumericObject, ReprObject {
             }
 
             fun generateSubRanges(
+                coordRange: ClosedRange<OpenCurve.Coord> = fullRange,
                 sampleCount: Int,
             ): Sequence<ClosedRange<Coord>> = LinSpace.generateSubRanges(
-                range = primaryTRange,
-                sampleCount = 12,
-            ).map { it.toCoordRange()!! }
+                range = coordRange.tRange,
+                sampleCount = sampleCount,
+            ).map {
+                it.toCoordRange()!!
+            }
 
             /**
              * @param t t-value, unconstrained
@@ -139,19 +150,11 @@ abstract class OpenCurve : NumericObject, ReprObject {
                 else -> null
             }
 
-            val start = Coord(
-                t = 0.0,
-            )
-
-            val half = Coord(
-                t = 0.5,
-            )
-
-            val end = Coord(
-                t = 1.0,
-            )
-
-            val fullRange = start..end
+            fun ofSaturated(t: Double): Coord = when {
+                t < 0.0 -> start
+                t > 1.0 -> end
+                else -> Coord(t = t)
+            }
         }
 
         val complement: Coord
@@ -361,6 +364,12 @@ fun ClosedRange<OpenCurve.Coord>.splitAtHalf(): Pair<ClosedRange<OpenCurve.Coord
 
 val ClosedRange<OpenCurve.Coord>.tRange: ClosedFloatingPointRange<Double>
     get() = start.t..endInclusive.t
+
+/**
+ * The fraction of the full coordinate range that this range covers.
+ */
+val ClosedRange<OpenCurve.Coord>.coverage: Double
+    get() = tRange.width
 
 fun ClosedFloatingPointRange<Double>.toCoordRange(): ClosedRange<OpenCurve.Coord>? {
     val startCoord = OpenCurve.Coord.of(this.start) ?: return null

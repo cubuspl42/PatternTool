@@ -6,9 +6,7 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.Span
 import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.pattern_tool.Outline
 import diy.lingerie.test_utils.assertEqualsWithTolerance
-import kotlin.math.abs
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -580,7 +578,7 @@ class BezierCurveTests {
 
         assertEqualsWithTolerance(
             expected = expectedArcLength,
-            actual = bezierCurve.arcLength,
+            actual = bezierCurve.totalArcLength,
             tolerance = NumericObject.Tolerance.Absolute(
                 absoluteTolerance = 0.2,
             )
