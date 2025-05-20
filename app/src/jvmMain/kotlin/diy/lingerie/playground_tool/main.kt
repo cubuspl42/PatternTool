@@ -8,7 +8,7 @@ import com.github.ajalt.clikt.parameters.types.path
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.curves.toCoordRange
-import diy.lingerie.geometry.playground.Playground
+import diy.lingerie.tool_utils.Playground
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import diy.lingerie.simple_dom.SimpleColor

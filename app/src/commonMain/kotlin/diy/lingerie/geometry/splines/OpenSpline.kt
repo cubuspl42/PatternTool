@@ -208,6 +208,8 @@ data class OpenSpline(
 
     fun toLineSegment(): LineSegment? = sequentialCurves.singleOrNull() as? LineSegment
 
+    fun toBezierCurve(): BezierCurve? = sequentialCurves.singleOrNull() as? BezierCurve
+
     override val segmentCurves: List<PrimitiveCurve>
         get() = sequentialCurves
 

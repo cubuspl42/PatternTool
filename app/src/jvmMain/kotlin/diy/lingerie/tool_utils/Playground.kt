@@ -1,11 +1,11 @@
-package diy.lingerie.geometry.playground
+package diy.lingerie.tool_utils
 
 import diy.lingerie.geometry.BoundingBox
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.Size
-import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.BezierCurve
+import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.svg.toSvgPath
 import diy.lingerie.math.algebra.sample
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
@@ -41,7 +41,7 @@ data class Playground(
     }
 
     data class BezierCurveItem(
-        override val color: SimpleColor = SimpleColor.red,
+        override val color: SimpleColor = SimpleColor.Companion.red,
         val bezierCurve: BezierCurve,
     ) : OpenCurveItem() {
         companion object {
@@ -73,7 +73,7 @@ data class Playground(
                 width = 0.5,
             ),
         ).copy(
-            markerEndId = Playground.triangleMarkerId,
+            markerEndId = triangleMarkerId,
         )
 
         private fun toExtendedSvgPath(): SvgPath? {
@@ -86,9 +86,9 @@ data class Playground(
 
             val points = samples.map { Point(pointVector = it.b) }
 
-            return SvgPath.polyline(
+            return SvgPath.Companion.polyline(
                 stroke = SvgShape.Stroke(
-                    color = SimpleColor.lightGray,
+                    color = SimpleColor.Companion.lightGray,
                     width = 0.25,
                 ),
                 points = points,
@@ -116,7 +116,7 @@ data class Playground(
             radius = 1.0,
             stroke = null,
             fill = SvgShape.Fill.Specified(
-                color = SimpleColor.lightGray,
+                color = SimpleColor.Companion.lightGray,
             ),
         )
 
@@ -127,14 +127,14 @@ data class Playground(
             start = start,
             end = end,
             stroke = SvgShape.Stroke(
-                color = SimpleColor.lightGray,
+                color = SimpleColor.Companion.lightGray,
                 width = 1.0,
             ),
         )
     }
 
     data class QuadraticBezierBinomialItem(
-        override val color: SimpleColor = SimpleColor.red,
+        override val color: SimpleColor = SimpleColor.Companion.red,
         val quadraticBezierBinomial: QuadraticBezierBinomial,
     ) : Item() {
         companion object {
@@ -159,7 +159,7 @@ data class Playground(
                 width = 0.5,
             ),
         ).copy(
-            markerEndId = Playground.triangleMarkerId,
+            markerEndId = triangleMarkerId,
         )
 
         private fun toSvgControlShape(): SvgGroup = SvgGroup(
@@ -182,14 +182,14 @@ data class Playground(
             start = start,
             end = end,
             stroke = SvgShape.Stroke(
-                color = SimpleColor.lightGray,
+                color = SimpleColor.Companion.lightGray,
                 width = 1.0,
             ),
         )
     }
 
     data class LineSegmentItem(
-        override val color: SimpleColor = SimpleColor.red,
+        override val color: SimpleColor = SimpleColor.Companion.red,
         val lineSegment: LineSegment,
     ) : OpenCurveItem() {
         companion object {
@@ -208,12 +208,12 @@ data class Playground(
                 width = 0.5,
             ),
         ).copy(
-            markerEndId = Playground.triangleMarkerId,
+            markerEndId = triangleMarkerId,
         )
     }
 
     data class PointItem(
-        override val color: SimpleColor = SimpleColor.black,
+        override val color: SimpleColor = SimpleColor.Companion.black,
         val point: Point,
     ) : Item() {
         override fun toSvgElement(): SvgCircle = SvgCircle(
@@ -225,7 +225,7 @@ data class Playground(
             ),
         )
 
-        override fun findBoundingBox(): BoundingBox = BoundingBox.of(
+        override fun findBoundingBox(): BoundingBox = BoundingBox.Companion.of(
             pointA = point,
             pointB = point,
         )
@@ -251,7 +251,7 @@ data class Playground(
                 fill = null,
                 segments = listOf(
                     SvgPath.Segment.MoveTo(
-                        targetPoint = Point.origin,
+                        targetPoint = Point.Companion.origin,
                     ),
                     SvgPath.Segment.LineTo(
                         finalPoint = Point(
@@ -292,7 +292,7 @@ data class Playground(
         )
     }
 
-    private fun findTrueBoundingBox(): BoundingBox = BoundingBox.unionAll(
+    private fun findTrueBoundingBox(): BoundingBox = BoundingBox.Companion.unionAll(
         items.map { it.findBoundingBox() },
     )
 

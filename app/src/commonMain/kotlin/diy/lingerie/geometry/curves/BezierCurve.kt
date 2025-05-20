@@ -484,7 +484,7 @@ data class BezierCurve private constructor(
         it.primaryArcLength
     }
 
-    private fun lowerInRange(
+    internal fun lowerInRange(
         coordRange: ClosedRange<OpenCurve.Coord>,
     ): Sequence<QuadraticBezierBinomial> {
         val maxSampleCount = 12
