@@ -7,11 +7,73 @@ import kotlin.test.Test
 
 class QuadraticBezierBinomialTests {
     @Test
-    fun testPrimaryArcLength() {
+    fun testPrimaryArcLength_1() {
         val quadraticBezierBinomial = QuadraticBezierBinomial(
             point0 = Vector2(0.0, 0.0),
             point1 = Vector2(100.0, 200.0),
             point2 = Vector2(200.0, 0.0),
+        )
+
+        val expectedArcLength = quadraticBezierBinomial.primaryArcLengthNearlyExact
+
+        assertEqualsWithTolerance(
+            expected = expectedArcLength,
+            actual = quadraticBezierBinomial.primaryArcLength,
+        )
+    }
+
+    @Test
+    fun testPrimaryArcLength_1b() {
+        val quadraticBezierBinomial = QuadraticBezierBinomial(
+            point0 = Vector2(0.123, 1.234),
+            point1 = Vector2(123.45, 211.123),
+            point2 = Vector2(200.123, 0.123),
+        )
+
+        val expectedArcLength = quadraticBezierBinomial.primaryArcLengthNearlyExact
+
+        assertEqualsWithTolerance(
+            expected = expectedArcLength,
+            actual = quadraticBezierBinomial.primaryArcLength,
+        )
+    }
+
+    @Test
+    fun testPrimaryArcLength_1c() {
+        val quadraticBezierBinomial = QuadraticBezierBinomial(
+            point0 = Vector2(0.01, 0.02),
+            point1 = Vector2(103.03, 213.14),
+            point2 = Vector2(200.125, 0.06),
+        )
+
+        val expectedArcLength = quadraticBezierBinomial.primaryArcLengthNearlyExact
+
+        assertEqualsWithTolerance(
+            expected = expectedArcLength,
+            actual = quadraticBezierBinomial.primaryArcLength,
+        )
+    }
+
+    @Test
+    fun testPrimaryArcLength_2() {
+        val quadraticBezierBinomial = QuadraticBezierBinomial(
+            point0 = Vector2(a0 = 233.93577665116857, a1 = 500.8149820195659),
+            point1 = Vector2(a0 = 274.92255777243605, a1 = 487.914717032481),
+            point2 = Vector2(a0 = 308.0861294612102, a1 = 475.40978102407877),
+        )
+
+        assertEqualsWithTolerance(
+            expected = quadraticBezierBinomial.primaryArcLengthNearlyExact,
+            actual = quadraticBezierBinomial.primaryArcLength,
+        )
+    }
+
+    @Test
+    fun testPrimaryArcLength_3() {
+        val quadraticBezierBinomial = QuadraticBezierBinomial(
+            point0 = Vector2(a0 = 417.93830801380375, a1 = 308.1645617010124),
+            point1 = Vector2(a0 = 450.04438645548777, a1 = 309.51100644858667),
+            point2 = Vector2(a0 = 403.130758788483, a1 = 312.7706856768071),
         )
 
         assertEqualsWithTolerance(
