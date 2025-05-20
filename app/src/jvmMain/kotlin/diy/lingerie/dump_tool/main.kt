@@ -83,22 +83,8 @@ class Tool : CliktCommand() {
             reader = svgFilePath.reader(),
         )
 
-        val svgShapes = svgRoot.flatten(
-            baseTransformation = Transformation.Identity,
-        )
-
-        val (svgRects, otherSvgShapes) = svgShapes.partition {
-            it is SvgRectangle
-        }
-
-        val singleSvgRect = svgRects.singleOrNull()
-            ?: error("Expected a single rectangle, but found ${svgRects.size} rectangles")
-
-        val areaRectangle = singleSvgRect as SvgRectangle
-
-        val recognizedShapes = RecognizedShape.interpretSvgShapes(
-            areaRectangle = areaRectangle,
-            svgShapes = otherSvgShapes,
+        val recognizedShapes = RecognizedShape.interpretSvg(
+            svgRoot = svgRoot,
         )
 
         recognizedShapes.forEachIndexed { index, recognizedShape ->
