@@ -466,6 +466,8 @@ data class BezierCurve private constructor(
         val foo = lowerInRange(
             Coord.start..Coord.ofSaturated(t = t + 0.1)
         )
+
+        TODO()
     }
 
     fun calculateArcLengthUpTo(

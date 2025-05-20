@@ -10,6 +10,7 @@ import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
 import diy.lingerie.geometry.LineSegment
 import diy.lingerie.geometry.Point
+import diy.lingerie.geometry.Ray
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
@@ -95,137 +96,44 @@ class Tool : CliktCommand() {
 
         val areaRectangle = singleSvgRect as SvgRectangle
 
-        otherSvgShapes.forEachIndexed { index, svgShape ->
-            println("SVG Shape #$index")
+        val recognizedShapes = RecognizedShape.interpretSvgShapes(
+            areaRectangle = areaRectangle,
+            svgShapes = otherSvgShapes,
+        )
 
-            processShape(
-                areaRectangle = areaRectangle,
-                svgShape = svgShape,
-            )
-        }
-    }
+        recognizedShapes.forEachIndexed { index, recognizedShape ->
+            println("Recognized shape #$index")
 
-    private fun processShape(
-        areaRectangle: SvgRectangle,
-        svgShape: SvgShape,
-    ) {
-        when (svgShape) {
-            is SvgLine -> {
-                processLine(
-                    areaRectangle = areaRectangle,
-                    svgLine = svgShape,
+            when (recognizedShape) {
+                is RecognizedShape.RecognizedLine -> TODO()
+
+                is RecognizedShape.RecognizedLineSegment -> dumpLineSegment(
+                    lineSegment = recognizedShape.lineSegment,
                 )
-            }
 
-            is SvgPath -> {
-                processPath(
-                    areaRectangle = areaRectangle,
-                    svgPath = svgShape,
+                is RecognizedShape.RecognizedRay -> dumpRay(
+                    ray = recognizedShape.ray,
                 )
-            }
 
-            else -> throw UnsupportedOperationException("Unsupported SVG shape: $svgShape")
-        }
-    }
-
-    private fun processLine(
-        areaRectangle: SvgRectangle,
-        svgLine: SvgLine,
-    ) {
-        println("(SVG line)")
-
-        when {
-            areaRectangle.contains(svgLine.start) && areaRectangle.contains(svgLine.end) -> {
-                dumpLineSegment(
-                    start = svgLine.start,
-                    end = svgLine.end,
-                )
-            }
-
-            areaRectangle.contains(svgLine.start) -> {
-                dumpRay(
-                    startingPoint = svgLine.start,
-                    finalPoint = svgLine.end,
-                )
-            }
-
-            areaRectangle.contains(svgLine.end) -> {
-                dumpRay(
-                    startingPoint = svgLine.end,
-                    finalPoint = svgLine.start,
-                )
-            }
-
-            else -> {
-                dumpLine(
-                    pointA = svgLine.start,
-                    pointB = svgLine.end,
+                is RecognizedShape.RecognizedSpline -> dumpSpline(
+                    spline = recognizedShape.spline,
                 )
             }
         }
     }
 
     private fun dumpLineSegment(
-        start: Point,
-        end: Point,
+        lineSegment: LineSegment,
     ) {
-        val lineSegment = LineSegment(
-            start = start,
-            end = end,
-        )
-
         println("Line segment:")
         println(lineSegment.toReprString())
     }
 
     private fun dumpRay(
-        startingPoint: Point,
-        finalPoint: Point,
+        ray: Ray,
     ) {
-        val ray = startingPoint.castRayTo(
-            target = finalPoint,
-        ) ?: throw UnsupportedOperationException("Ray cannot be created")
-
         println("Ray:")
         println(ray.toReprString())
-    }
-
-    private fun dumpLine(
-        pointA: Point,
-        pointB: Point,
-    ) {
-        TODO()
-    }
-
-    private fun processPath(
-        areaRectangle: SvgRectangle,
-        svgPath: SvgPath,
-    ) {
-        val hexColorString = svgPath.stroke?.let {  stroke ->
-            "[${svgPath.stroke.color.toHexString()}]"
-        }
-
-        println("(SVG path, color: $hexColorString)")
-
-        val spline = Spline.importSvgPath(svgPath = svgPath)
-
-        val lineSegment = (spline as? OpenSpline)?.toLineSegment()
-
-        when {
-            lineSegment != null -> {
-                processLine(
-                    areaRectangle = areaRectangle,
-                    svgLine = SvgLine(
-                        start = lineSegment.start,
-                        end = lineSegment.end,
-                    ),
-                )
-            }
-
-            else -> {
-                dumpSpline(spline = spline)
-            }
-        }
     }
 
     private fun dumpSpline(
