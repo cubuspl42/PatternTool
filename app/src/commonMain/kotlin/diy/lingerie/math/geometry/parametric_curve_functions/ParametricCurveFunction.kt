@@ -69,10 +69,13 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         get() = calculatePrimaryArcLengthBruteForce(sampleCount = 128)
 
     val primaryArcLengthNearlyExact: Double
-        get() = calculatePrimaryArcLengthBruteForce(sampleCount = 10000)
+        get() = calculatePrimaryArcLengthBruteForce()
 
-    fun calculatePrimaryArcLengthBruteForce(sampleCount: Int): Double = LinSpace.generateSubRanges(
-        range = 0.0..1.0,
+    fun calculatePrimaryArcLengthBruteForce(
+        range: ClosedFloatingPointRange<Double> = 0.0..1.0,
+        sampleCount: Int = 8192,
+    ): Double = LinSpace.generateSubRanges(
+        range = range,
         sampleCount = sampleCount,
     ).sumOf { tRange ->
         val p0 = apply(tRange.start)

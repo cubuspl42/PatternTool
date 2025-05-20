@@ -1,5 +1,6 @@
 package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
+import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix3x2
 import diy.lingerie.math.algebra.linear.vectors.Vector2
@@ -8,6 +9,7 @@ import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.SubCubicParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
+import diy.lingerie.utils.normalize
 import diy.lingerie.utils.sq
 import kotlin.math.ln
 import kotlin.math.sqrt
@@ -84,29 +86,50 @@ data class QuadraticBezierBinomial(
 
     val primaryArcLength: Double
         get() {
-            val d1 = point1 - point0
-            val d2 = point2 - point1
-            val a = d2 - d1
+            val b = point1 - point0
+            val f = point2 - point1
+            val a = f - b
 
             val aMSq = a.magnitudeSquared // |A|^2
             val aM = sqrt(aMSq) // |A|
+
             val aMCb = aMSq * aM // |A|^3
-            val d1M = d1.magnitude
-            val d2M = d2.magnitude
+            val bM = b.magnitude
+            val fM = f.magnitude
 
-            val ad1 = a.dot(d1)
-            val ad2 = a.dot(d2)
+            val ab = a.dot(b)
+            val af = a.dot(f)
 
-            val p = (d2M * ad2 - d1M * ad1) / aMSq
-            val q = d2.cross(d1).sq / aMCb
-            val r = ln((aM * d2M + ad2) / (aM * d1M + ad1))
+            val expr1 = (fM * af - bM * ab) / aMSq
+            val expr2 = f.cross(b).sq / aMCb
+            val expr3 = ln((aM * fM + af) / (aM * bM + ab))
 
-            return p + q * r
+            return expr1 + expr2 * expr3
         }
 
     fun calculateArcLengthUpTo(
         t: Double,
-    ): Double = this.trimTo(t = t).primaryArcLength
+    ): Double {
+        val b = point1 - point0
+        val f = point2 - point1
+        val a = f - b
+
+        val aMSq = a.magnitudeSquared // |A|^2
+        val aM = sqrt(aMSq) // |A|
+
+        val d = a.dot(b) / aMSq
+        val k = b.magnitudeSquared / aMSq - d.sq
+
+        val u = t + d
+
+        val sqrtUk = sqrt(u.sq + k)
+        val sqrtDk = sqrt(d.sq + k)
+
+        val expr1 = k * ln((u + sqrtUk) / (d + sqrtDk))
+        val expr2 = (u * sqrtUk) - (d * sqrtDk)
+
+        return aM * (expr1 + expr2)
+    }
 
     fun raise(): CubicBezierBinomial = CubicBezierBinomial(
         pointMatrix = CubicBezierBinomial.raiseMatrix * pointMatrix,

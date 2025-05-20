@@ -79,14 +79,11 @@ data class CubicBezierBinomial(
             // (M^-1) * (T^t * T)^-1 * T^t
             val dMatrix = characteristicMatrixInverted * tMatrix.pseudoInverse()
 
-            // P (weights)
-            val controlVector = dMatrix * pMatrix
+            // P (control points)
+            val pointMatrix = dMatrix * pMatrix
 
             return CubicBezierBinomial(
-                point0 = controlVector.row0,
-                point1 = controlVector.row1,
-                point2 = controlVector.row2,
-                point3 = controlVector.row3,
+                pointMatrix = pointMatrix,
             )
         }
     }
