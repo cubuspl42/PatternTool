@@ -459,7 +459,7 @@ data class BezierCurve private constructor(
         )
     }
 
-    fun guessCoordAtArcLength(
+    fun findCoordAtArcLength(
         arcLength: Double,
     ): Coord {
         val t = arcLength / totalArcLength
