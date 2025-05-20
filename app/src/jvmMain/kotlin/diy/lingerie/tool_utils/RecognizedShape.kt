@@ -1,4 +1,4 @@
-package diy.lingerie.dump_tool
+package diy.lingerie.tool_utils
 
 import diy.lingerie.geometry.Line
 import diy.lingerie.geometry.LineSegment
@@ -153,7 +153,7 @@ sealed class RecognizedShape {
 
             println("(SVG path, color: $hexColorString)")
 
-            val spline = Spline.importSvgPath(svgPath = svgPath)
+            val spline = Spline.Companion.importSvgPath(svgPath = svgPath)
 
             val lineSegment = (spline as? OpenSpline)?.toLineSegment()
 
