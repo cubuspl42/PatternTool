@@ -539,7 +539,7 @@ data class BezierCurve private constructor(
     internal fun lowerInRange(
         coordRange: ClosedRange<Coord>,
     ): Sequence<QuadraticApproximationSegment> {
-        val maxSampleCount = 12
+        val maxSampleCount = 9
 
         val sampleCount = (coordRange.coverage * maxSampleCount).roundToInt().coerceAtLeast(
             minimumValue = 2,
