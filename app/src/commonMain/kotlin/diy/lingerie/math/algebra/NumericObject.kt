@@ -70,6 +70,10 @@ fun <T : NumericObject> T?.equalsWithToleranceOrNull(
     else -> false
 }
 
+fun Double.equalsZeroWithTolerance(
+    tolerance: Tolerance.Absolute = Tolerance.Default,
+): Boolean = tolerance.equalsApproximately(this, 0.0)
+
 fun Double.equalsWithTolerance(
     other: Double,
     tolerance: Tolerance = Tolerance.Default,

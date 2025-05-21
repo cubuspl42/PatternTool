@@ -2,9 +2,11 @@ package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
 import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.math.algebra.NumericObject
+import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix3x2
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.linear.vectors.times
+import diy.lingerie.math.algebra.solveEqualityByBisection
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.SubCubicParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
@@ -107,6 +109,10 @@ data class QuadraticBezierBinomial(
             return expr1 + expr2 * expr3
         }
 
+    val arcLengthFunction = object : RealFunction<Double> {
+        override fun apply(a: Double): Double = calculateArcLengthUpTo(t = a)
+    }
+
     fun calculateArcLengthUpTo(
         t: Double,
     ): Double {
@@ -129,6 +135,25 @@ data class QuadraticBezierBinomial(
         val expr2 = (u * sqrtUk) - (d * sqrtDk)
 
         return aM * (expr1 + expr2)
+    }
+
+    /**
+     * Find the t value for the given arc length in the primary range
+     *
+     * @return t value in the range [0, 1] or null if no solution is found
+     * ([arcLength] > [primaryArcLength])
+     */
+    fun locateArcLength(
+        arcLength: Double,
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): Double? {
+        require(arcLength >= 0.0)
+
+        return arcLengthFunction.solveEqualityByBisection(
+            y = arcLength,
+            range = primaryTRange,
+            tolerance = tolerance,
+        )
     }
 
     fun raise(): CubicBezierBinomial = CubicBezierBinomial(

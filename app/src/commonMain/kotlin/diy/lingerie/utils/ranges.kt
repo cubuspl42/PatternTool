@@ -52,6 +52,13 @@ val ClosedFloatingPointRange<Double>.width: Double
 val ClosedFloatingPointRange<Double>.mid: Double
     get() = avgOf(start, endInclusive)
 
+fun ClosedFloatingPointRange<Double>.extend(
+    bleed: Double,
+): ClosedFloatingPointRange<Double> = copy(
+    start = start - bleed,
+    endInclusive = endInclusive + bleed,
+)
+
 fun ClosedFloatingPointRange<Double>.copy(
     start: Double = this.start,
     endInclusive: Double = this.endInclusive,
