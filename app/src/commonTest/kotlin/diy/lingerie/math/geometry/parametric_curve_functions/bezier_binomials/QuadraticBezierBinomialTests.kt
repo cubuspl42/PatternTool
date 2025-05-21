@@ -138,9 +138,7 @@ class QuadraticBezierBinomialTests {
         val locatedTValue = assertNotNull(
             quadraticBezierBinomial.locateArcLength(
                 arcLength = actualArcLength,
-                tolerance = NumericObject.Tolerance.Absolute(
-                    absoluteTolerance = 1e-2,
-                ),
+                tolerance = arcLengthLocationTolerance,
             ),
         )
 

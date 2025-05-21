@@ -64,9 +64,9 @@ class Tool : CliktCommand() {
 
         val quadraticItems = bezierCurve.lowerInRange(
             coordRange = OpenCurve.Coord.fullRange,
-        ).map { quadraticBezierBinomial ->
+        ).map { segment ->
             Playground.QuadraticBezierBinomialItem(
-                quadraticBezierBinomial = quadraticBezierBinomial,
+                quadraticBezierBinomial = segment.approximationCurve,
             )
         }.toList()
 

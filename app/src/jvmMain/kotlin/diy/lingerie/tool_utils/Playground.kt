@@ -156,7 +156,7 @@ data class Playground(
         private fun toPrimarySvgPath(): SvgPath = quadraticBezierBinomial.toSvgPath(
             stroke = SvgShape.Stroke(
                 color = color,
-                width = 0.5,
+                width = 0.4,
             ),
         ).copy(
             markerEndId = triangleMarkerId,
@@ -183,7 +183,7 @@ data class Playground(
             end = end,
             stroke = SvgShape.Stroke(
                 color = SimpleColor.Companion.lightGray,
-                width = 1.0,
+                width = 0.25,
             ),
         )
     }
@@ -234,7 +234,7 @@ data class Playground(
     companion object {
         internal const val triangleMarkerId = "triangle"
 
-        private const val triangleMarkerSize = 6.0
+        private const val triangleMarkerSize = 4.0
 
         private val triangleMarker = SvgMarker(
             id = triangleMarkerId,
