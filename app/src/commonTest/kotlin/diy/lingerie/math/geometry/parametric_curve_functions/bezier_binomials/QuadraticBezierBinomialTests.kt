@@ -4,6 +4,7 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Test
+import kotlin.test.assertNotNull
 
 class QuadraticBezierBinomialTests {
     @Test
@@ -113,10 +114,16 @@ class QuadraticBezierBinomialTests {
         )
     }
 
+    private val arcLengthLocationTolerance = NumericObject.Tolerance.Absolute(
+        absoluteTolerance = 1e-2,
+    )
+
     private fun testPrimaryArcLength(
         quadraticBezierBinomial: QuadraticBezierBinomial,
     ) {
         val expectedArcLength = quadraticBezierBinomial.primaryArcLengthNearlyExact
+
+        val actualArcLength = quadraticBezierBinomial.primaryArcLength
 
         assertEqualsWithTolerance(
             expected = expectedArcLength,
@@ -126,6 +133,21 @@ class QuadraticBezierBinomialTests {
         assertEqualsWithTolerance(
             expected = expectedArcLength,
             actual = quadraticBezierBinomial.calculateArcLengthUpTo(1.0),
+        )
+
+        val locatedTValue = assertNotNull(
+            quadraticBezierBinomial.locateArcLength(
+                arcLength = actualArcLength,
+                tolerance = NumericObject.Tolerance.Absolute(
+                    absoluteTolerance = 1e-2,
+                ),
+            ),
+        )
+
+        assertEqualsWithTolerance(
+            expected = 1.0,
+            actual = locatedTValue,
+            tolerance = arcLengthLocationTolerance,
         )
     }
 
@@ -137,14 +159,34 @@ class QuadraticBezierBinomialTests {
             range = 0.0..t,
         )
 
+        val actualArcLength = quadraticBezierBinomial.calculateArcLengthUpTo(t)
+
         assertEqualsWithTolerance(
             expected = expectedArcLength,
-            actual = quadraticBezierBinomial.calculateArcLengthUpTo(t),
+            actual = actualArcLength,
         )
 
         assertEqualsWithTolerance(
             expected = expectedArcLength,
             actual = quadraticBezierBinomial.trimTo(t = t).primaryArcLength,
+        )
+
+        assertEqualsWithTolerance(
+            expected = expectedArcLength,
+            actual = actualArcLength,
+        )
+
+        val locatedTValue = assertNotNull(
+            quadraticBezierBinomial.locateArcLength(
+                arcLength = actualArcLength,
+                tolerance = arcLengthLocationTolerance,
+            ),
+        )
+
+        assertEqualsWithTolerance(
+            expected = t,
+            actual = locatedTValue,
+            tolerance = arcLengthLocationTolerance,
         )
     }
 
