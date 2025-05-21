@@ -13,6 +13,8 @@ import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunc
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
 import diy.lingerie.utils.iterable.LinSpace
+import diy.lingerie.utils.iterable.mapCarrying
+import diy.lingerie.utils.linearlyInterpolate
 import diy.lingerie.utils.normalize
 import kotlin.math.roundToInt
 
@@ -399,14 +401,13 @@ data class BezierCurve private constructor(
         """.trimMargin()
     }
 
-    fun trimTo(coord: Coord): BezierCurve {
-        val (trimmedBasisFunction, _) = basisFunction.splitAt(t = coord.t)
+    fun trimTo(endCoord: Coord): BezierCurve {
+        val (trimmedBasisFunction, _) = basisFunction.splitAt(t = endCoord.t)
 
         return BezierCurve(
             basisFunction = trimmedBasisFunction,
         )
     }
-
 
     fun trimFrom(coord: Coord): BezierCurve {
         val (_, trimmedBasisFunction) = basisFunction.splitAt(t = coord.t)
@@ -438,7 +439,7 @@ data class BezierCurve private constructor(
 
         return when {
             startCoord == Coord.start && endCoord == Coord.end -> this
-            startCoord == Coord.start -> trimTo(coord = endCoord)
+            startCoord == Coord.start -> trimTo(endCoord = endCoord)
             endCoord == Coord.end -> trimFrom(coord = startCoord)
             else -> trimRange(coordRange = coordRange)
         }
@@ -459,15 +460,61 @@ data class BezierCurve private constructor(
         )
     }
 
-    fun findCoordAtArcLength(
+    private data class ArcSegment(
+        val startArcLength: Double,
+        private val approximationSegment: QuadraticApproximationSegment,
+    ) {
+        val endArcLength: Double = startArcLength + approximationCurve.primaryArcLength
+
+        private val approximationCurve: QuadraticBezierBinomial
+            get() = approximationSegment.approximationCurve
+
+        private val coordRange: ClosedRange<Coord>
+            get() = approximationSegment.coordRange
+
+        private val arcLengthRange: ClosedFloatingPointRange<Double>
+            get() = startArcLength..endArcLength
+
+        fun locateArcLength(
+            arcLength: Double,
+            tolerance: NumericObject.Tolerance.Absolute,
+        ): Coord? {
+            if (arcLength !in arcLengthRange) {
+                return null
+            }
+
+            // The t-value within the approximation curve
+            val localTValue = approximationCurve.locateArcLength(
+                arcLength = arcLength - startArcLength,
+                tolerance = tolerance,
+            ) ?: return null
+
+            // The t-value within the original cubic curve
+            val globalTValue = coordRange.tRange.linearlyInterpolate(localTValue)
+
+            return Coord.of(t = globalTValue)
+        }
+    }
+
+    fun locateArcLength(
         arcLength: Double,
-    ): Coord {
-        val t = arcLength / totalArcLength
-        val foo = lowerInRange(
-            Coord.start..Coord.ofSaturated(t = t + 0.1)
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): Coord? = lowerInRange(
+        coordRange = Coord.fullRange,
+    ).mapCarrying(
+        initialCarry = 0.0,
+    ) { accArcLength, quadraticBezierBinomial ->
+        val arcSegment = ArcSegment(
+            startArcLength = accArcLength,
+            approximationSegment = quadraticBezierBinomial,
         )
 
-        TODO()
+        Pair(
+            arcSegment,
+            arcSegment.endArcLength,
+        )
+    }.firstNotNullOfOrNull {
+        it.locateArcLength(arcLength, tolerance)
     }
 
     fun calculateArcLengthUpTo(
@@ -477,16 +524,21 @@ data class BezierCurve private constructor(
     )
 
     fun calculateArcLength(
-        coordRange: ClosedRange<OpenCurve.Coord>,
+        coordRange: ClosedRange<Coord>,
     ): Double = lowerInRange(
         coordRange = coordRange,
     ).sumOf {
-        it.primaryArcLength
+        it.approximationCurve.primaryArcLength
     }
 
+    internal data class QuadraticApproximationSegment(
+        val coordRange: ClosedRange<Coord>,
+        val approximationCurve: QuadraticBezierBinomial,
+    )
+
     internal fun lowerInRange(
-        coordRange: ClosedRange<OpenCurve.Coord>,
-    ): Sequence<QuadraticBezierBinomial> {
+        coordRange: ClosedRange<Coord>,
+    ): Sequence<QuadraticApproximationSegment> {
         val maxSampleCount = 12
 
         val sampleCount = (coordRange.coverage * maxSampleCount).roundToInt().coerceAtLeast(
@@ -498,7 +550,11 @@ data class BezierCurve private constructor(
             sampleCount = sampleCount,
         ).map { coordRange ->
             val trimmedCurve = trim(coordRange = coordRange)
-            trimmedCurve.basisFunction.lower()
+
+            QuadraticApproximationSegment(
+                coordRange = coordRange,
+                approximationCurve = trimmedCurve.basisFunction.lower(),
+            )
         }
     }
 }
