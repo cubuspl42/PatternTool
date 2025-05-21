@@ -1,6 +1,5 @@
 package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
-import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix3x2
@@ -11,7 +10,6 @@ import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.SubCubicParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
-import diy.lingerie.utils.normalize
 import diy.lingerie.utils.sq
 import kotlin.math.ln
 import kotlin.math.sqrt
@@ -159,39 +157,6 @@ data class QuadraticBezierBinomial(
     fun raise(): CubicBezierBinomial = CubicBezierBinomial(
         pointMatrix = CubicBezierBinomial.raiseMatrix * pointMatrix,
     )
-
-    fun trimTo(
-        t: Double,
-    ): QuadraticBezierBinomial {
-        require(t in 0.0..1.0)
-
-        val (trimmedBinomial, _) = splitAt(t = t)
-
-        return trimmedBinomial
-    }
-
-    fun splitAt(
-        t: Double,
-    ): Pair<QuadraticBezierBinomial, QuadraticBezierBinomial> {
-        require(t in 0.0..1.0)
-
-        val lineFunction = this.evaluatePartially(t = t)
-
-        val midPoint = lineFunction.apply(t)
-
-        return Pair(
-            QuadraticBezierBinomial(
-                point0 = point0,
-                point1 = lineFunction.point0,
-                point2 = midPoint,
-            ),
-            QuadraticBezierBinomial(
-                point0 = midPoint,
-                point1 = lineFunction.point1,
-                point2 = point2,
-            ),
-        )
-    }
 
     fun evaluatePartially(t: Double): ParametricLineFunction {
         val subPoint0 = point0 + delta0 * t

@@ -166,11 +166,6 @@ class QuadraticBezierBinomialTests {
 
         assertEqualsWithTolerance(
             expected = expectedArcLength,
-            actual = quadraticBezierBinomial.trimTo(t = t).primaryArcLength,
-        )
-
-        assertEqualsWithTolerance(
-            expected = expectedArcLength,
             actual = actualArcLength,
         )
 
