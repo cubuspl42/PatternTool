@@ -2,6 +2,7 @@ package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.equalsZeroWithTolerance
 
 data class LinearPolynomial internal constructor(
     override val a0: Double,
@@ -11,8 +12,9 @@ data class LinearPolynomial internal constructor(
         fun normalized(
             a0: Double,
             a1: Double,
-        ): SubQuadraticPolynomial = when (a1) {
-            0.0 -> ConstantPolynomial(
+            tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+        ): SubQuadraticPolynomial = when {
+            a1.equalsZeroWithTolerance(tolerance = tolerance) -> ConstantPolynomial(
                 a0 = a0,
             )
 

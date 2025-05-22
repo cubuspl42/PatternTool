@@ -2,6 +2,7 @@ package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.equalsZeroWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import kotlin.math.sqrt
 
@@ -15,10 +16,12 @@ data class QuadraticPolynomial internal constructor(
             a0: Double,
             a1: Double,
             a2: Double,
-        ): SubCubicPolynomial = when (a2) {
-            0.0 -> LinearPolynomial.normalized(
+            tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+        ): SubCubicPolynomial = when {
+            a2.equalsZeroWithTolerance(tolerance = tolerance) -> LinearPolynomial.normalized(
                 a0 = a0,
                 a1 = a1,
+                tolerance = tolerance,
             )
 
             else -> QuadraticPolynomial(

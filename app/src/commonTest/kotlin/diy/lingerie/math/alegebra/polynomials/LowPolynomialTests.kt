@@ -293,4 +293,14 @@ class LowPolynomialTests {
             ),
         )
     }
+
+    @Test
+    fun findRoots() {
+        val foo = CubicPolynomial(
+            a0 = -1.270525623545265E14,
+            a1 = 5.0792629340980425E14,
+            a2 = -5.0707442416598675E14,
+            a3 = -1.1358264710330945E12,
+        )
+    }
 }

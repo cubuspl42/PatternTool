@@ -2,6 +2,7 @@ package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.equalsZeroWithTolerance
 import kotlin.math.pow
 
 data class HighPolynomial internal constructor(
@@ -10,13 +11,14 @@ data class HighPolynomial internal constructor(
     companion object {
         fun normalized(
             coefficients: List<Double>,
+            tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
         ): Polynomial {
             require(coefficients.isNotEmpty())
 
             return when {
                 coefficients.size > 4 -> {
                     when {
-                        coefficients.last() != 0.0 -> HighPolynomial(
+                        !coefficients.last().equalsZeroWithTolerance(tolerance = tolerance) -> HighPolynomial(
                             coefficients = coefficients,
                         )
 

@@ -3,6 +3,7 @@ package diy.lingerie.math.algebra.polynomials
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
+import diy.lingerie.math.algebra.equalsZeroWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.linear.vectors.Vector4
 import kotlin.math.acos
@@ -33,8 +34,9 @@ data class CubicPolynomial internal constructor(
             a1: Double,
             a2: Double,
             a3: Double,
-        ): LowPolynomial = when (a3) {
-            0.0 -> QuadraticPolynomial.normalized(
+            tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+        ): LowPolynomial = when {
+            a3.equalsZeroWithTolerance(tolerance = tolerance) -> QuadraticPolynomial.normalized(
                 a0 = a0,
                 a1 = a1,
                 a2 = a2,
