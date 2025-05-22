@@ -68,7 +68,7 @@ data class ParametricLineFunction(
      */
     override fun locatePoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): Double? {
         val tx: Double? = (point.x - s.x).divideWithTolerance(
             d.x,
@@ -94,7 +94,7 @@ data class ParametricLineFunction(
 
     override fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance
+        tolerance: NumericObject.Tolerance.Absolute
     ): Double? {
         val sp = point - s
         return sp.findProjectionScale(d, tolerance = tolerance)
