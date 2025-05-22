@@ -4,7 +4,6 @@ import diy.lingerie.ReprObject
 import diy.lingerie.indentLater
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
-import diy.lingerie.toReprString
 
 /**
  * A ray in 2D Euclidean space, described by the equation p = s + td for t >= 0
@@ -12,7 +11,7 @@ import diy.lingerie.toReprString
 class Ray(
     internal val startingPoint: Point,
     internal val direction: Direction,
-): ReprObject {
+) : ReprObject {
     private val basisFunction = ParametricLineFunction(
         s = startingPoint.pointVector,
         d = direction.normalizedDirectionVector,
@@ -47,7 +46,7 @@ class Ray(
 
         val t1 = l1.locatePoint(
             potentialIntersectionPoint,
-            tolerance = NumericObject.Tolerance.Zero
+            tolerance = NumericObject.Tolerance.Default,
         ) ?: return null
 
         if (t1 < 0.0) return null

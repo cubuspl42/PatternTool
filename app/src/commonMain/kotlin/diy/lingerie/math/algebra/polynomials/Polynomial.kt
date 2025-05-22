@@ -2,6 +2,8 @@ package diy.lingerie.math.algebra.polynomials
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
+import diy.lingerie.math.algebra.complex_polynomials.ComplexPolynomial
+import diy.lingerie.math.algebra.toComplex
 import kotlin.math.max
 
 private fun areCloseNever(
@@ -97,7 +99,7 @@ sealed interface Polynomial : NumericObject, RealFunction<Double> {
     fun findRoots(
         maxDepth: Int = 20,
         guessedRoot: Double = 0.5,
-        tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
+        tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
         areClose: (x0: Double, x1: Double) -> Boolean = ::areCloseNever,
     ): List<Double>
 
@@ -134,6 +136,10 @@ sealed interface Polynomial : NumericObject, RealFunction<Double> {
 
 val Polynomial.degree: Int
     get() = coefficients.size - 1
+
+fun Polynomial.toComplexPolynomial() = ComplexPolynomial.normalized(
+    coefficients = coefficients.map { it.toComplex() },
+)
 
 fun Polynomial.getCoefficient(i: Int): Double? = coefficients.getOrNull(i)
 

@@ -53,7 +53,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
 
     protected fun Polynomial.findTValueRoots(
         guessedTValue: Double,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): List<Double> = this.findRoots(
         guessedRoot = guessedTValue,
         tolerance = tolerance,
@@ -93,7 +93,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
      */
     abstract fun locatePoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): Double?
 
     /**
@@ -104,7 +104,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
      */
     abstract fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): Double?
 
     /**

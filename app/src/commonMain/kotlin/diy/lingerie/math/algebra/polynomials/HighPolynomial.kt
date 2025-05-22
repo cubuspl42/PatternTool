@@ -70,7 +70,7 @@ data class HighPolynomial internal constructor(
     override fun findRoots(
         maxDepth: Int,
         guessedRoot: Double,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
         areClose: (Double, Double) -> Boolean,
     ): List<Double> = findRootsNumerically(
         maxDepth = maxDepth,

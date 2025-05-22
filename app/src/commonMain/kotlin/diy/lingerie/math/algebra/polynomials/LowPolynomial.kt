@@ -171,7 +171,7 @@ sealed class LowPolynomial : Polynomial {
     override fun findRoots(
         maxDepth: Int,
         guessedRoot: Double,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
         areClose: (Double, Double) -> Boolean,
     ): List<Double> = findRootsAnalytically()
 
@@ -267,10 +267,6 @@ sealed interface SuperConstantPolynomial : Polynomial {
     override fun divide(
         x0: Double,
     ): Pair<Polynomial, Double> {
-        if (degree == 1) {
-            return Pair(ConstantPolynomial.zero, a0)
-        }
-
         val (highestDegreeCoefficient, lowerDegreeCoefficients) = coefficients.reversed().uncons()!!
 
         val intermediateCoefficients = lowerDegreeCoefficients.scan(

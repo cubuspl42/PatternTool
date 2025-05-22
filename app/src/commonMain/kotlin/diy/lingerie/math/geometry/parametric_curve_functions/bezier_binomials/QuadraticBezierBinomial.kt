@@ -48,14 +48,14 @@ data class QuadraticBezierBinomial(
 
     override fun locatePoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): Double? {
         TODO("Not yet implemented")
     }
 
     override fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): Double? {
         TODO("Not yet implemented")
     }

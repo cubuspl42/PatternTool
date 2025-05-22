@@ -250,7 +250,7 @@ data class CubicBezierBinomial(
 
     override fun locatePoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): Double? {
         // TODO: Move the responsibility of hybrid approaches to a higher layer
         return locatePointByInversionWithControlCheck(
@@ -313,7 +313,7 @@ data class CubicBezierBinomial(
      */
     internal fun locatePointByProjection(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): Double? {
         // Find the t-values of all points on curve orthogonal to the given point
         // TODO: Some valid points aren't found because the polynomial root
@@ -409,7 +409,7 @@ data class CubicBezierBinomial(
 
     private fun projectPointAll(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): List<Double> {
         val projectionPolynomial = findPointProjectionPolynomial(point)
 
@@ -428,7 +428,7 @@ data class CubicBezierBinomial(
 
     fun projectPointClosest(
         point: Vector2,
-        tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
+        tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
     ): Double? {
         val tValues = projectPointAll(
             point = point,
@@ -504,7 +504,7 @@ data class CubicBezierBinomial(
     //  + return distance
     override fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): Double? = projectPointAll(
         point, tolerance,
     ).singleOrNull()

@@ -46,7 +46,7 @@ abstract class PrimitiveCurve : OpenCurve() {
         fun findIntersectionsByEquationSolving(
             simpleSubjectCurve: PrimitiveCurve,
             complexObjectCurve: PrimitiveCurve,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericObject.Tolerance.Absolute,
         ): Set<Intersection> {
             // Solve the intersection equation for the curves (for t ∈ ℝ)
             val tValues = simpleSubjectCurve.basisFunction.solveIntersectionEquation(
