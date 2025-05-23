@@ -20,7 +20,7 @@ internal fun <CurveT : OpenCurve> testIntersectionsSymmetric(
     firstCurve: CurveT,
     secondCurve: CurveT,
     findIntersections: (CurveT, CurveT) -> Set<OpenCurve.Intersection>,
-    expectedIntersection: List<ExpectedIntersection>,
+    expectedIntersections: List<ExpectedIntersection>,
     tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
 ) {
     val intersectionsOneWay = findIntersections(
@@ -29,7 +29,7 @@ internal fun <CurveT : OpenCurve> testIntersectionsSymmetric(
     )
 
     assertIntersectionsEqual(
-        expectedIntersections = expectedIntersection,
+        expectedIntersections = expectedIntersections,
         actualIntersections = intersectionsOneWay,
         tolerance = tolerance,
     )
@@ -40,7 +40,7 @@ internal fun <CurveT : OpenCurve> testIntersectionsSymmetric(
     )
 
     assertIntersectionsEqual(
-        expectedIntersections = expectedIntersection.map {
+        expectedIntersections = expectedIntersections.map {
             it.swap()
         },
         actualIntersections = intersectionsOtherWay,

@@ -37,6 +37,10 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         val thisParametric = this.toParametricPolynomial()
         val intersectionPolynomial = otherImplicit.substitute(thisParametric)
 
+        // If this curve and the other curve are _the same curve_ (curves
+        // sharing the counter-domain of points), the intersection polynomial
+        // is unreliable
+
         return intersectionPolynomial.findTValueRoots(
             guessedTValue = 0.5,
             tolerance = NumericObject.Tolerance.Default,

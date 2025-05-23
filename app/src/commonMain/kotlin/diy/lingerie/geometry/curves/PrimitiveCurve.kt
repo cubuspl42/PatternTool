@@ -117,9 +117,12 @@ abstract class PrimitiveCurve : OpenCurve() {
 
     final override fun findIntersectionsOpenSpline(
         subjectSpline: OpenSpline,
-    ): Set<Intersection> {
-        TODO("Not yet implemented")
-    }
+    ): Set<Intersection> = Intersection.swap(
+        OpenSpline.findIntersections(
+            subjectPrimitiveCurve = this,
+            objectOpenSpline = subjectSpline,
+        ),
+    )
 
     final override fun findIntersectionsLineSegment(
         subjectLineSegment: LineSegment,

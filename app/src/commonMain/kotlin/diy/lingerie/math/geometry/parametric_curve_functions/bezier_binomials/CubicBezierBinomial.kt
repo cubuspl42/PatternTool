@@ -500,7 +500,7 @@ data class CubicBezierBinomial(
         return subCurves
     }
 
-    // TODO: Implement a hybrid algorithm (equation / interation) on a given range
+    // TODO: Implement a hybrid algorithm (equation / iteration) on a given range
     //  + return distance
     override fun projectPoint(
         point: Vector2,
