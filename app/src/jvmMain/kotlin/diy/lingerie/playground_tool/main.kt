@@ -32,7 +32,7 @@ class MainCommand : CliktCommand() {
 
         val subCurves = LinSpace.generateSubRanges(
             range = primaryTRange,
-            sampleCount = 24,
+            sampleCount = 12,
         ).map { tRange ->
             bezierCurve.trim(coordRange = tRange.toCoordRange()!!)
         }.toList()
@@ -41,11 +41,20 @@ class MainCommand : CliktCommand() {
             it.basisFunction.lower()
         }
 
+        val point = Point(
+            256.60993714914935,
+            374.33410623067596,
+        )
+
         val playground = Playground(
             items = listOf(
                 Playground.BezierCurveItem(
                     color = SimpleColor.blue,
                     bezierCurve = bezierCurve,
+                ),
+                Playground.PointItem(
+                    color = SimpleColor.green,
+                    point = point,
                 ),
             ) + loweredCurves.map { loweredCurve ->
                 Playground.QuadraticBezierBinomialItem(
