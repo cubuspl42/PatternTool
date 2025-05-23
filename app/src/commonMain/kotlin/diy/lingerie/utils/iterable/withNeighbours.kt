@@ -28,6 +28,11 @@ fun <L, M, R> Sequence<M>.withNeighbours(
     yield(WithNeighbours(prev, current, buildOuterRight(current)))
 }
 
+fun <M : Any> Sequence<M>.withNeighboursOrNull(): Sequence<WithNeighbours<M?, M, M?>> = this.withNeighbours(
+    outerLeft = null,
+    outerRight = null,
+)
+
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
 fun <L, M, R> Sequence<M>.withNeighbours(
     outerLeft: L,
@@ -37,11 +42,10 @@ fun <L, M, R> Sequence<M>.withNeighbours(
     buildOuterRight = { outerRight },
 )
 
-fun <M> Sequence<M>.withNeighboursSaturated(): Sequence<WithNeighbours<M, M, M>> =
-    this.withNeighbours(
-        buildOuterLeft = { it },
-        buildOuterRight = { it },
-    )
+fun <M> Sequence<M>.withNeighboursSaturated(): Sequence<WithNeighbours<M, M, M>> = this.withNeighbours(
+    buildOuterLeft = { it },
+    buildOuterRight = { it },
+)
 
 @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
 fun <L, M, R> Iterable<M>.withNeighbours(

@@ -55,44 +55,62 @@ class BezierCurve:
                 t_sym ** 3 * p3
         )
 
+    def build_distance_squared_polynomial(self, point):
+        p_x, p_y = self.to_polynomial()
+        x, y = point
+        return (p_x - x) ** 2 + (p_y - y) ** 2
+
+    def build_distance_squared_polynomial_lambda(self, point):
+        return lambdify(t_sym, self.build_distance_squared_polynomial(point), 'numpy')
+
     def plot_traces_2d(
             self,
             curve_name,
             primary_color=blue,
     ):
-        primary_t_values = np.linspace(0, 1, 100)
-        primary_x_values, primary_y_values = self.evaluate_unwrapped(primary_t_values)
+        def build_traces(t0, t1, t2, t3):
+            def build_trace(ta, tb, color, trace_name):
+                t_values = np.linspace(ta, tb, 50)
 
-        primary_trace = go.Scatter(
-            x=primary_x_values,
-            y=primary_y_values,
-            mode='lines',
-            line=dict(color=primary_color),
-            name=f'{curve_name}: primary t-range (2D)'
-        )
+                x_values, y_values = self.evaluate_unwrapped(t_values)
 
-        extended_t_values = np.linspace(-0.2, 1.2, 100)
-        extended_x_values, extended_y_values = self.evaluate_unwrapped(extended_t_values)
+                formatted_text = [f"t = {t:.2f}" for t in t_values]
 
-        extended_trace = go.Scatter(
-            x=extended_x_values,
-            y=extended_y_values,
-            mode='lines',
-            line=dict(color=lightgray),
-            name=f'{curve_name}: extended t-range (2D)'
-        )
+                return go.Scatter(
+                    x=x_values,
+                    y=y_values,
+                    text = formatted_text,
+                    mode='lines',
+                    line=dict(color=color),
+                    name=trace_name,
+                )
 
-        # Create the figure and add traces
-        data = [extended_trace, primary_trace]
+            return [
+                build_trace(
+                    t0,
+                    t1,
+                    color=lightgray,
+                    trace_name=f'{curve_name}: extended t-range (2D, < 0)',
+                ),
+                build_trace(
+                    t1,
+                    t2,
+                    color=primary_color,
+                    trace_name=f'{curve_name}: primary t-range (2D)',
+                ),
+                build_trace(
+                    t2,
+                    t3,
+                    color=lightgray,
+                    trace_name=f'{curve_name}: extended t-range (2D, > 0)',
+                ),
+            ]
 
-        fig = go.Figure(data=data)
-
-        # Update layout for better visualization
-        fig.update_layout(
-            title='Bézier Curve',
-            xaxis_title='X',
-            yaxis_title='Y',
-            showlegend=True,
+        data = build_traces(
+            t0=-0.05,
+            t1=0.0,
+            t2=1.0,
+            t3=1.05,
         )
 
         return data

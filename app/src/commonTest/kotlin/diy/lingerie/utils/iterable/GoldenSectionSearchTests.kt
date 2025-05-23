@@ -1,7 +1,7 @@
 package diy.lingerie.utils.iterable
 
 import diy.lingerie.test_utils.assertEqualsWithTolerance
-import diy.lingerie.utils.minBy
+import diy.lingerie.utils.minByUnimodalWithSelectee
 import kotlin.math.PI
 import kotlin.math.sin
 import kotlin.test.Test
@@ -12,7 +12,7 @@ class GoldenSectionSearchTests {
         val xMin = 3.0 / 8.0 * PI
         val xMax = 7.0 / 8.0 * PI
 
-        val xFound = (xMin..xMax).minBy { x -> -sin(x) }
+        val (xFound, _) = (xMin..xMax).minByUnimodalWithSelectee { x -> -sin(x) }
 
         assertEqualsWithTolerance(
             expected = PI / 2.0,
@@ -25,7 +25,7 @@ class GoldenSectionSearchTests {
         val xMin = 3.0 / 8.0 * PI
         val xMax = 7.0 / 8.0 * PI
 
-        val xFound = (xMin..xMax).minBy { x -> sin(x) }
+        val (xFound, _) = (xMin..xMax).minByUnimodalWithSelectee { x -> sin(x) }
 
         assertEqualsWithTolerance(
             expected = xMax,
