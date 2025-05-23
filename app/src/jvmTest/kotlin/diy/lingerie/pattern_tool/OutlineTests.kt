@@ -526,7 +526,7 @@ class OutlineTests {
     }
 
     @Test
-    @Ignore
+    @Ignore // TODO: Implement spline intersections
     fun testCut() {
         val inputOutline = Outline.loadSvg(
             svgRoot = SvgRoot.parse(

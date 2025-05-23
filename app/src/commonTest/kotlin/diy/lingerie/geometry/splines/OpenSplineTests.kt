@@ -1,9 +1,12 @@
 package diy.lingerie.geometry.splines
 
 import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.OpenCurve
 import diy.lingerie.geometry.curves.BezierCurve
+import diy.lingerie.geometry.curves.ExpectedIntersection
+import diy.lingerie.geometry.curves.OpenCurve
+import diy.lingerie.geometry.curves.testIntersectionsSymmetric
 import diy.lingerie.test_utils.assertEqualsWithTolerance
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -118,6 +121,88 @@ class OpenSplineTests {
         assertEquals(
             expected = end,
             actual = openSpline.pathFunction.end,
+        )
+    }
+
+    @Test
+    @Ignore // TODO: Implement spline intersections
+    fun testFindIntersections() {
+        val firstSpline = OpenSpline(
+            firstCurve = BezierCurve(
+                start = Point(233.92449010844575, 500.813035986871),
+                firstControl = Point(343.26973984755205, 339.3318789926634),
+                secondControl = Point(364.86141567931736, 441.71541718852677),
+                end = Point(474.9262537955492, 476.6114032280002),
+            ),
+            trailingSequentialLinks = listOf(
+                Spline.Link(
+                    edge = BezierCurve.Edge(
+                        firstControl = Point(519.5884855585136, 490.77100026252083),
+                        secondControl = Point(494.16220097805854, 391.80245562403434),
+                    ),
+                    end = Point(575.6728757231976, 378.29095118203804),
+                ),
+                Spline.Link(
+                    edge = BezierCurve.Edge(
+                        firstControl = Point(649.6017351174123, 366.03533410416276),
+                        secondControl = Point(667.8388768639852, 466.4942731106785),
+                    ),
+                    end = Point(851.7185424238287, 456.1511196513238),
+                ),
+            ),
+        )
+
+        val secondSpline = OpenSpline(
+            firstCurve = BezierCurve(
+                start = Point(227.50050939555513, 441.366014502496),
+                firstControl = Point(336.8457591346614, 279.8848575082884),
+                secondControl = Point(302.16848767048214, 480.16296585374766),
+                end = Point(412.233325786714, 515.0589518932211),
+            ),
+            trailingSequentialLinks = listOf(
+                Spline.Link(
+                    edge = BezierCurve.Edge(
+                        firstControl = Point(456.8978870316896, 529.2204687698832),
+                        secondControl = Point(518.3551673235797, 228.38708781373862),
+                    ),
+                    end = Point(569.248895010307, 318.84392969766304),
+                ),
+                Spline.Link(
+                    edge = BezierCurve.Edge(
+                        firstControl = Point(616.1208679000192, 402.1519062370553),
+                        secondControl = Point(619.158747941794, 540.5259167604308),
+                    ),
+                    end = Point(845.2945617109381, 396.7040981669488),
+                ),
+            ),
+        )
+
+        testIntersectionsSymmetric(
+            firstCurve = firstSpline,
+            secondCurve = secondSpline,
+            findIntersections = { firstSpline, secondSpline ->
+                OpenSpline.findIntersections(
+                    subjectOpenSpline = firstSpline,
+                    objectOpenSpline = secondSpline,
+                )
+            },
+            expectedIntersections = listOf(
+                ExpectedIntersection(
+                    point = Point(324.0, 413.0),
+                    firstCoord = OpenCurve.Coord.start,
+                    secondCoord = OpenCurve.Coord.start,
+                ),
+                ExpectedIntersection(
+                    point = Point(453.0, 468.0),
+                    firstCoord = OpenCurve.Coord.start,
+                    secondCoord = OpenCurve.Coord.start,
+                ),
+                ExpectedIntersection(
+                    point = Point(596.0, 377.0),
+                    firstCoord = OpenCurve.Coord.start,
+                    secondCoord = OpenCurve.Coord.start,
+                ),
+            ),
         )
     }
 }

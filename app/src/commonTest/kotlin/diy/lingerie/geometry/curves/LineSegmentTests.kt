@@ -26,7 +26,7 @@ class LineSegmentTests {
                     objectLineSegment = secondLineSegment,
                 )
             },
-            expectedIntersection = emptyList(),
+            expectedIntersections = emptyList(),
         )
     }
 
@@ -51,7 +51,7 @@ class LineSegmentTests {
                     objectLineSegment = secondLineSegment,
                 )
             },
-            expectedIntersection = emptyList(),
+            expectedIntersections = emptyList(),
         )
     }
 
@@ -76,7 +76,7 @@ class LineSegmentTests {
                     objectLineSegment = secondLineSegment,
                 )
             },
-            expectedIntersection = emptyList(),
+            expectedIntersections = emptyList(),
         )
     }
 
@@ -101,7 +101,7 @@ class LineSegmentTests {
                     objectLineSegment = secondLineSegment,
                 )
             },
-            expectedIntersection = listOf(
+            expectedIntersections = listOf(
                 ExpectedIntersection(
                     point = Point(419.650273, 335.835867),
                     firstCoord = OpenCurve.Coord(t = 0.332281),

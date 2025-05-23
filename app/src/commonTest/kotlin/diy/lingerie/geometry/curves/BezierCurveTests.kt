@@ -809,7 +809,7 @@ private fun testBezierIntersectionsVariousSymmetric(
                 tolerance = spatialTolerance,
             )
         },
-        expectedIntersection = expectedDefaultIntersections,
+        expectedIntersections = expectedDefaultIntersections,
         tolerance = numericObjectToleranceAbsolute,
     )
 
@@ -822,7 +822,7 @@ private fun testBezierIntersectionsVariousSymmetric(
                 objectBezierCurve = secondBezierCurve,
             )
         },
-        expectedIntersection = expectedEquationSolvingIntersections,
+        expectedIntersections = expectedEquationSolvingIntersections,
         tolerance = numericObjectToleranceAbsolute,
     )
 
@@ -837,7 +837,7 @@ private fun testBezierIntersectionsVariousSymmetric(
                 tolerance = spatialTolerance,
             )
         },
-        expectedIntersection = expectedSubdivisionIntersections,
+        expectedIntersections = expectedSubdivisionIntersections,
         tolerance = numericObjectToleranceAbsolute,
     )
 }
@@ -856,7 +856,7 @@ private fun testBezierIntersectionsByEquationSolvingSymmetric(
                 objectBezierCurve = secondBezierCurve,
             )
         },
-        expectedIntersection = expectedIntersection,
+        expectedIntersections = expectedIntersection,
         tolerance = NumericObject.Tolerance.Absolute(
             absoluteTolerance = 1e-4,
         ),
@@ -880,7 +880,7 @@ private fun testBezierIntersectionsBySubdivisionSymmetric(
                 ),
             )
         },
-        expectedIntersection = expectedIntersection,
+        expectedIntersections = expectedIntersection,
         tolerance = NumericObject.Tolerance.Absolute(
             absoluteTolerance = 0.1,
         ),
