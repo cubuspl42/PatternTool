@@ -10,7 +10,7 @@ abstract class Cell<out V> {
         fun <V> switch(
             nestedCell: Cell<Cell<V>>,
         ): Cell<V> = SwitchCell(
-            outerCell = nestedCell,
+            nestedCell = nestedCell,
         )
 
         fun <V> of(value: V): Cell<V> = ConstCell(
