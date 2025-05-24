@@ -133,7 +133,7 @@ fun <E> MutableDomList<E>.bind(
         append(currentElement)
     }
 
-    source.onChange.subscribeBound(
+    source.onChange.subscribeSemiBound(
         listener = object : Listener<DynamicList.Change> {
             override fun handle(event: DynamicList.Change) {
 
