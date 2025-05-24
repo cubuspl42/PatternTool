@@ -1,10 +1,6 @@
 package diy.lingerie.frp
 
 internal object NeverEventStream : EventStream<Nothing>() {
-    override fun subscribe(
-        listener: Listener<Nothing>, strength: Notifier.ListenerStrength
-    ): Subscription = Subscription.Noop
-
     override fun <Er> map(
         transform: (Nothing) -> Er,
     ): EventStream<Er> = NeverEventStream

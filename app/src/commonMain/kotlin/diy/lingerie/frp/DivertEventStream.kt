@@ -21,13 +21,17 @@ internal class DivertEventStream<E>(
 
         private fun subscribeToInner(
             innerStream: EventStream<E>,
-        ): Subscription = innerStream.subscribe(
-            listener = object : Listener<E> {
-                override fun handle(event: E) {
-                    notify(event)
-                }
-            },
-        )
+        ): Subscription = when (innerStream) {
+            is ActiveEventStream<E> -> innerStream.vertex.subscribe(
+                listener = object : Listener<E> {
+                    override fun handle(event: E) {
+                        notify(event)
+                    }
+                },
+            )
+
+            NeverEventStream -> Subscription.Noop
+        }
 
         private fun resubscribeToInner(
             newInnerStream: EventStream<E>,

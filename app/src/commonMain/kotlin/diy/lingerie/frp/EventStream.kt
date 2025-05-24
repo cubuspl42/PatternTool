@@ -1,6 +1,6 @@
 package diy.lingerie.frp
 
-sealed class EventStream<out E> : Notifier<E> {
+sealed class EventStream<out E> {
     companion object {
         val Never: EventStream<Nothing> = NeverEventStream
 

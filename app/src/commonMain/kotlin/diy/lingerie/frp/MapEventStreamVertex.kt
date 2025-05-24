@@ -1,7 +1,7 @@
 package diy.lingerie.frp
 
 internal class MapEventStreamVertex<E, Er>(
-    source: EventStream<E>,
+    source: Vertex<E>,
     private val transform: (E) -> Er,
 ) : TransformingEventStreamVertex<E, Er>(
     source = source,

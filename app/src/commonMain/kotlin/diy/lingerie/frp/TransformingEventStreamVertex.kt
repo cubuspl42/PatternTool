@@ -1,7 +1,7 @@
 package diy.lingerie.frp
 
 abstract class TransformingEventStreamVertex<E, Er>(
-    private val source: EventStream<E>,
+    private val source: Vertex<E>,
 ) : EventStreamVertex<Er>() {
     protected abstract fun handleSourceEvent(event: E)
 
