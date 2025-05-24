@@ -1,5 +1,7 @@
 package diy.lingerie.frp
 
+import diy.lingerie.frp.subscribeSemiBound
+
 class EventStreamVerifier<E>(
     eventStream: EventStream<E>,
 ) {

@@ -1,7 +1,7 @@
 package diy.lingerie.frp
 
 internal class MapCell<V, Vr>(
-    source: Cell<V>,
+    private val source: Cell<V>,
     private val transform: (V) -> Vr,
 ) : ChangingCell<Vr>(
     initialValue = transform(source.currentValue),
