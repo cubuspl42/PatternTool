@@ -6,6 +6,7 @@ import diy.lingerie.frp.EventEmitter
 import diy.lingerie.frp.EventStream
 import diy.lingerie.frp.Listener
 import diy.lingerie.frp.applyTo
+import diy.lingerie.frp.hold
 import kotlinx.browser.document
 import org.w3c.dom.Element
 import org.w3c.dom.ItemArrayLike
@@ -298,7 +299,7 @@ class DynamicHtmlText(
         data = data.currentValue,
     ).also { textNode ->
         data.newValues.subscribeFullyBound(
-            target = this,
+            target = textNode,
             listener = object : Listener<String> {
                 override fun handle(newValue: String) {
                     textNode.data = newValue
@@ -320,15 +321,24 @@ fun main() {
     button.onClick.subscribe(
         listener = object : Listener<HtmlMouseEvent> {
             override fun handle(event: HtmlMouseEvent) {
-                println("Button clicked via event handler!")
+                println("Button clicked via event handler! ${event.position}")
             }
         },
     )
 
+    val position = button.onClick.map {
+        it.position
+    }.hold(initialValue = null)
+
     val root = DynamicDivElement(
         children = DynamicList.of(
             DynamicHtmlText(
-                data = Cell.of("Hello, world"),
+                data = position.map { positionNow ->
+                    when (positionNow) {
+                        null -> "(none)"
+                        else -> "$positionNow"
+                    }
+                },
             ),
             button,
             DynamicWrapperElement(

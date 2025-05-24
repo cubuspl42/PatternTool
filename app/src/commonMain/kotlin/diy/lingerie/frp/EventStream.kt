@@ -78,3 +78,10 @@ abstract class EventStream<out E> {
         predicate = predicate,
     )
 }
+
+fun <E> EventStream<E>.hold(
+    initialValue: E,
+): Cell<E> = HoldCell(
+    values = this,
+    initialValue = initialValue,
+)
