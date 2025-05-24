@@ -3,11 +3,7 @@ package diy.lingerie.web_tool
 import diy.lingerie.frp.Cell
 import diy.lingerie.frp.DynamicList
 import diy.lingerie.frp.EventEmitter
-import diy.lingerie.frp.EventStream
-import diy.lingerie.frp.Listener
-import diy.lingerie.frp.applyTo
 import diy.lingerie.frp.hold
-import diy.lingerie.frp.subscribeFullyBound
 import kotlinx.browser.document
 import org.w3c.dom.Element
 import org.w3c.dom.ItemArrayLike
@@ -15,7 +11,6 @@ import org.w3c.dom.Node
 import org.w3c.dom.Text
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
-import org.w3c.fetch.ResponseInit
 
 abstract class DynamicHtmlNode {
     abstract val rawNode: Node

@@ -1,9 +1,5 @@
 package diy.lingerie.frp
 
-import diy.lingerie.frp.Notifier.ListenerStrength
-
-private val finalizationRegistry = PlatformFinalizationRegistry()
-
 interface Notifier<out T> {
     sealed class ListenerStrength {
         data object Weak : ListenerStrength() {
@@ -65,51 +61,3 @@ interface Notifier<out T> {
         strength: ListenerStrength = ListenerStrength.Strong,
     ): Subscription
 }
-
-fun <T> Vertex<T>.subscribeFullyBound(
-    target: Any,
-    listener: Listener<T>,
-) {
-    // Ignore the cleanable, depend on the finalization register only
-
-    subscribeBound(
-        target = target,
-        listener = listener,
-    )
-}
-
-private fun <T> Vertex<T>.subscribeBound(
-    target: Any,
-    listener: Listener<T>,
-): PlatformCleanable {
-    val weakSubscription = subscribe(
-        listener = listener,
-        strength = ListenerStrength.Weak,
-    )
-
-    return finalizationRegistry.register(
-        target = target,
-    ) {
-        weakSubscription.cancel()
-    }
-}
-
-//fun <T> Vertex<T>.subscribeSemiBound(
-//    target: Any,
-//    listener: Listener<T>,
-//): Subscription {
-//    val cleanable = subscribeBound(
-//        target,
-//        listener,
-//    )
-//
-//    return object : Subscription {
-//        override fun cancel() {
-//            cleanable.clean()
-//        }
-//
-//        override fun change(strength: ListenerStrength) {
-//            TODO("Not yet implemented")
-//        }
-//    }
-//}
