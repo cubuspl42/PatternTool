@@ -9,13 +9,13 @@ abstract class DependentDynamicListVertex<E>(
 
     override fun onResumed() {
         subscription.change(
-            strength = Notifier.ListenerStrength.Strong,
+            strength = Vertex.ListenerStrength.Strong,
         )
     }
 
     override fun onPaused() {
         subscription.change(
-            strength = Notifier.ListenerStrength.Weak,
+            strength = Vertex.ListenerStrength.Weak,
         )
     }
 

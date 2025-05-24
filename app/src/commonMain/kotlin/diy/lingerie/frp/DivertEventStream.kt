@@ -45,7 +45,7 @@ internal class DivertEventStream<E>(
             innerSubscription.cancel()
         }
 
-        override fun change(strength: Notifier.ListenerStrength) {
+        override fun change(strength: Vertex.ListenerStrength) {
             outerSubscription.change(strength = strength)
             innerSubscription.change(strength = strength)
         }
