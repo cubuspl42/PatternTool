@@ -2,6 +2,7 @@ package diy.lingerie.web_tool
 
 import diy.lingerie.frp.Cell
 import diy.lingerie.frp.DynamicList
+import diy.lingerie.frp.EventEmitter
 import diy.lingerie.frp.EventStream
 import diy.lingerie.frp.Listener
 import diy.lingerie.frp.applyTo
@@ -12,6 +13,7 @@ import org.w3c.dom.Node
 import org.w3c.dom.Text
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
+import org.w3c.fetch.ResponseInit
 
 abstract class DynamicHtmlNode {
     abstract val rawNode: Node
@@ -38,7 +40,11 @@ sealed class HtmlEvent {
 
 }
 
-interface HtmlEventHandler<E : HtmlEvent> {
+interface HtmlEventHandler<in E : HtmlEvent> {
+    object Accepting : HtmlEventHandler<HtmlEvent> {
+        override fun handle(event: HtmlEvent): Resolution = Resolution.Accept
+    }
+
     enum class Resolution {
         Accept, PreventDefault,
     }
@@ -50,6 +56,7 @@ fun <E : HtmlEvent> HtmlEventHandler<E>.attach(
     target: EventTarget,
     eventName: String,
     wrapper: HtmlEvent.Wrapper<E>,
+    emitter: EventEmitter<E>,
 ) {
     target.addEventListener(
         type = eventName,
@@ -59,6 +66,8 @@ fun <E : HtmlEvent> HtmlEventHandler<E>.attach(
 
             if (resolution == HtmlEventHandler.Resolution.PreventDefault) {
                 rawEvent.preventDefault()
+            } else {
+                emitter.emit(wrappedEvent)
             }
         },
     )
@@ -186,11 +195,7 @@ class ChildNodesDomList(
         get() = node.childNodes
 }
 
-abstract class DynamicGenericDivElement(
-    val children: DynamicList<DynamicHtmlNode>,
-    val style: DynamicCssStyle? = null,
-    val handleMouseDown: HtmlEventHandler<HtmlMouseEvent>? = null,
-) : DynamicHtmlElement() {
+abstract class DynamicGenericHtmlElement() : DynamicHtmlElement() {
     companion object {
         private fun bindChildren(
             target: Node,
@@ -205,25 +210,29 @@ abstract class DynamicGenericDivElement(
         }
     }
 
-    val onMouseDown: EventStream<HtmlMouseEvent>
-        get() = EventStream.Never
 
-    override val rawElement: Element = document.createElement(
-        localName = elementName,
-    ).also { element ->
-        handleMouseDown?.attach(
-            target = element,
-            eventName = "mouseDown",
-            wrapper = HtmlMouseEvent,
-        )
+    override val rawElement: Element by lazy {
+        document.createElement(
+            localName = elementName,
+        ).also { element ->
+            attachEventHandlers(
+                target = element,
+            )
 
-        bindChildren(
-            target = element,
-            children = children,
-        )
+            bindChildren(
+                target = element,
+                children = children,
+            )
+        }
     }
 
     abstract val elementName: String
+
+    abstract val children: DynamicList<DynamicHtmlNode>
+
+    protected abstract fun attachEventHandlers(
+        target: EventTarget,
+    )
 }
 
 class DynamicWrapperElement(
@@ -231,27 +240,55 @@ class DynamicWrapperElement(
 ) : DynamicHtmlElement()
 
 class DynamicDivElement(
-    children: DynamicList<DynamicHtmlNode>,
-    style: DynamicCssStyle? = null,
-    handleMouseDown: HtmlEventHandler<HtmlMouseEvent>? = null,
-) : DynamicGenericDivElement(
-    children,
-    style,
-    handleMouseDown,
-) {
+    override val children: DynamicList<DynamicHtmlNode>,
+    private val handleMouseDown: HtmlEventHandler<HtmlMouseEvent> = HtmlEventHandler.Accepting,
+) : DynamicGenericHtmlElement() {
     override val elementName: String = "div"
+
+    private val onMouseDownEmitter = EventEmitter<HtmlMouseEvent>()
+
+    val onMouseDown: EventEmitter<HtmlMouseEvent>
+        get() = onMouseDownEmitter
+
+    override fun attachEventHandlers(
+        target: EventTarget,
+    ) {
+        handleMouseDown.attach(
+            target = target,
+            eventName = "mouseDown",
+            wrapper = HtmlMouseEvent,
+            emitter = onMouseDownEmitter,
+        )
+    }
+
+    init {
+        rawElement
+    }
 }
 
 class DynamicButtonElement(
-    children: DynamicList<DynamicHtmlNode>,
-    style: DynamicCssStyle? = null,
-    handleMouseDown: HtmlEventHandler<HtmlMouseEvent>? = null,
-) : DynamicGenericDivElement(
-    children,
-    style,
-    handleMouseDown,
-) {
+    override val children: DynamicList<DynamicHtmlNode>,
+    private val handleClick: HtmlEventHandler<HtmlMouseEvent> = HtmlEventHandler.Accepting,
+) : DynamicGenericHtmlElement() {
     override val elementName: String = "button"
+
+    private val onClickEmitter = EventEmitter<HtmlMouseEvent>()
+
+    val onClick: EventEmitter<HtmlMouseEvent>
+        get() = onClickEmitter
+
+    override fun attachEventHandlers(target: EventTarget) {
+        handleClick.attach(
+            target = target,
+            eventName = "click",
+            wrapper = HtmlMouseEvent,
+            emitter = onClickEmitter,
+        )
+    }
+
+    init {
+        rawElement
+    }
 }
 
 class DynamicHtmlText(
@@ -272,13 +309,28 @@ class DynamicHtmlText(
 }
 
 fun main() {
-    println("Hello!")
+    val button = DynamicButtonElement(
+        children = DynamicList.of(
+            DynamicHtmlText(
+                data = Cell.of("Click me!"),
+            ),
+        ),
+    )
+
+    button.onClick.subscribe(
+        listener = object : Listener<HtmlMouseEvent> {
+            override fun handle(event: HtmlMouseEvent) {
+                println("Button clicked via event handler!")
+            }
+        },
+    )
 
     val root = DynamicDivElement(
         children = DynamicList.of(
             DynamicHtmlText(
                 data = Cell.of("Hello, world"),
             ),
+            button,
             DynamicWrapperElement(
                 document.createElement("h1").apply {
                     textContent = "Hello, world!"
