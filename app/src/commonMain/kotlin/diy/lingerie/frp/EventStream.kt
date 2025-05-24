@@ -10,9 +10,9 @@ abstract class EventStream<out E> {
 
         fun <V> divert(
             nestedEventStream: Cell<EventStream<V>>,
-        ): EventStream<V> {
-            TODO()
-        }
+        ): EventStream<V> = DivertEventStream(
+            nestedEventStream = nestedEventStream,
+        )
     }
 
     abstract fun subscribe(
@@ -35,7 +35,6 @@ abstract class EventStream<out E> {
             }
         }
     }
-
 
     fun subscribeFullyBound(
         target: Any,

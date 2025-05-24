@@ -1,25 +1,25 @@
 package diy.lingerie.frp
 
 class SwitchCell<V>(
-    outerCell: Cell<Cell<V>>,
+    nestedCell: Cell<Cell<V>>,
 ) : ChangingCell<V>(
-    initialValue = outerCell.currentValue.currentValue,
+    initialValue = nestedCell.currentValue.currentValue,
 ) {
     init {
-        outerCell.newValues.subscribeFullyBound(
+        nestedCell.newValues.subscribeFullyBound(
             target = this,
             listener = object : Listener<Cell<V>> {
-                override fun handle(innerCell: Cell<V>) {
-                    update(innerCell.currentValue)
+                override fun handle(newInnerCell: Cell<V>) {
+                    update(newInnerCell.currentValue)
 
-                    resubscribeToInner(innerCell)
+                    resubscribeToInner(newInnerCell = newInnerCell)
                 }
             },
         )
     }
 
     private var innerSubscription: Subscription = subscribeToInner(
-        innerCell = outerCell.currentValue
+        innerCell = nestedCell.currentValue,
     )
 
     private fun subscribeToInner(
@@ -36,9 +36,9 @@ class SwitchCell<V>(
     )
 
     private fun resubscribeToInner(
-        innerCell: Cell<V>,
+        newInnerCell: Cell<V>,
     ) {
         innerSubscription.cancel()
-        innerSubscription = subscribeToInner(innerCell)
+        innerSubscription = subscribeToInner(innerCell = newInnerCell)
     }
 }
