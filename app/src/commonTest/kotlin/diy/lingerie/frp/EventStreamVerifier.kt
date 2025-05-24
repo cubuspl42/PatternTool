@@ -1,6 +1,5 @@
 package diy.lingerie.frp
 
-
 class EventStreamVerifier<E>(
     eventStream: EventStream<E>,
 ) {
@@ -22,5 +21,15 @@ class EventStreamVerifier<E>(
         mutableReceivedEvents.clear()
 
         return receivedEvents
+    }
+}
+
+private fun <E> EventStream<E>.subscribe(
+    listener: Listener<E>,
+) {
+    (this as? ActiveEventStream<E>)?.let {
+        this.vertex.subscribe(
+            listener = listener,
+        )
     }
 }

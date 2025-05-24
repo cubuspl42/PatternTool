@@ -4,7 +4,62 @@ import diy.lingerie.utils.iterable.append
 import diy.lingerie.utils.iterable.forEachRemoving
 
 abstract class Vertex<T>() {
-    private val listeners = mutableListOf<Notifier.ListenerReference<T>>()
+    sealed class ListenerStrength {
+        data object Weak : ListenerStrength() {
+            override fun <E> refer(
+                listener: Listener<E>,
+            ): ListenerReference<E> = ListenerReference.Weak(
+                weakListenerReference = PlatformWeakReference(value = listener),
+            )
+        }
+
+        data object Strong : ListenerStrength() {
+            override fun <E> refer(
+                listener: Listener<E>,
+            ): ListenerReference<E> = ListenerReference.Strong(listener = listener)
+        }
+
+        abstract fun <E> refer(
+            listener: Listener<E>,
+        ): ListenerReference<E>
+    }
+
+    sealed class ListenerReference<E> {
+        class Strong<E>(
+            val listener: Listener<E>,
+        ) : ListenerReference<E>() {
+            override fun handle(event: E): Boolean {
+                listener.handle(event)
+
+                return false
+            }
+        }
+
+        class Weak<E>(
+            val weakListenerReference: PlatformWeakReference<Listener<E>>,
+        ) : ListenerReference<E>() {
+            override fun handle(
+                event: E,
+            ): Boolean {
+                val listener = weakListenerReference.get() ?: return true
+
+                listener.handle(event)
+
+                return false
+            }
+        }
+
+        /**
+         * Handles the event.
+         *
+         * @return `true` if the listener is unreachable and should be removed
+         */
+        abstract fun handle(
+            event: E,
+        ): Boolean
+    }
+    
+    private val listeners = mutableListOf<Vertex.ListenerReference<T>>()
 
     fun notify(
         value: T,
@@ -16,7 +71,7 @@ abstract class Vertex<T>() {
 
     fun subscribe(
         listener: Listener<T>,
-        strength: Notifier.ListenerStrength = Notifier.ListenerStrength.Strong,
+        strength: Vertex.ListenerStrength = Vertex.ListenerStrength.Strong,
     ): Subscription {
         val listenerReference = strength.refer(listener)
 
@@ -28,6 +83,14 @@ abstract class Vertex<T>() {
 
         return object : Subscription {
             override fun cancel() {
+                // FIXME: This is wrong, the indices move!
+                //  Solution: set of _classic_ listeners, set of weak listeners, subscribe, subscribeWeak +
+                //  hybrid subscription on top of that that remembers current strength and can change modes
+
+                // Or good-old addListener(listener) / removeListener(listener) / addWeakListener(listener) / removeWeakListener(listener)
+                // + statically choose the right call in onPause / onResume
+                // + helper weakenListener(listener) [strong -> weak] / strengthenListener(listener) [weak -> strong] ?
+                // + PlatformWeakSet [of listeners] ? :)
                 listeners.removeAt(listenerIndex)
 
                 if (listeners.isEmpty()) {
@@ -36,12 +99,12 @@ abstract class Vertex<T>() {
             }
 
             override fun change(
-                strength: Notifier.ListenerStrength,
+                strength: Vertex.ListenerStrength,
             ) {
                 val listenerReference = listeners.getOrNull(listenerIndex)
                     ?: throw AssertionError("Listener with index $listenerIndex not found (???)")
 
-                val strongListener = listenerReference as? Notifier.ListenerReference.Strong<T> ?: throw AssertionError(
+                val strongListener = listenerReference as? Vertex.ListenerReference.Strong<T> ?: throw AssertionError(
                     "Listener reference is weak (???)"
                 )
 
