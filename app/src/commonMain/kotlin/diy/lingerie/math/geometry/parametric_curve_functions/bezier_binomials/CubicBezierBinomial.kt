@@ -25,8 +25,9 @@ import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitLineFunction
 import diy.lingerie.math.geometry.implicit_curve_functions.times
 import diy.lingerie.utils.iterable.LinSpace
 import diy.lingerie.utils.iterable.partitionAtCenter
-import diy.lingerie.utils.iterable.withNeighboursSaturated
-import diy.lingerie.utils.minBy
+import diy.lingerie.utils.iterable.withNeighboursOrNull
+import diy.lingerie.utils.minByUnimodalWithSelectee
+import diy.lingerie.utils.minByWithSelecteeOrNull
 
 data class CubicBezierBinomial(
     val point0: Vector2,
@@ -346,6 +347,11 @@ data class CubicBezierBinomial(
         return acceptableSamples.minOfOrNull { it.t }
     }
 
+    data class PointProjection(
+        val t: Double,
+        val distance: Double,
+    )
+
     /**
      * Project the [point] onto the curve within [range]
      *
@@ -353,57 +359,46 @@ data class CubicBezierBinomial(
      * the range start/end value if the true closest t-value is outside of [range]
      */
     fun projectPointIteratively(
-        range: ClosedFloatingPointRange<Double>, point: Vector2, tolerance: NumericObject.Tolerance.Absolute
-    ): Double {
-        val searchRange = findProjectionSearchRange(
-            range = range,
-            point = point,
-        )
-
-        return projectWithinRange(
-            searchRange = searchRange,
-            point = point,
-            tolerance = tolerance,
-        )
-    }
-
-    /**
-     * Find the search range by testing which triple of control t-values is the
-     * closest to [point].
-     *
-     * @return a t-value range that (with a high probability) contains the point
-     * on the curve closest to [point], small enough that (with a very high
-     * probability) the distance function is unimodal in that range
-     */
-    private fun findProjectionSearchRange(
         range: ClosedFloatingPointRange<Double>,
         point: Vector2,
-    ): ClosedFloatingPointRange<Double> {
-        val (tStart, _, tEnd) = LinSpace.generate(
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): PointProjection? {
+        val (tStart, tMid, tEnd) = LinSpace.generate(
             range = range,
-            sampleCount = 64,
-        ).withNeighboursSaturated().minBy { (_, tMid, _) ->
-            val midPoint = apply(tMid)
-
+            sampleCount = 12,
+        ).withNeighboursOrNull().minByOrNull { (_, tMid, _) ->
             Vector2.distanceSquared(
-                midPoint,
+                apply(tMid),
                 point,
             )
+        }!!
+
+        val (tFound, foundDistance) = when {
+            tStart == null || tEnd == null -> {
+                val tStartEffective = tStart ?: tMid
+                val tEndEffective = tEnd ?: tMid
+
+                (tStartEffective..tEndEffective).minByWithSelecteeOrNull { t ->
+                    Vector2.distanceSquared(
+                        apply(t),
+                        point,
+                    )
+                } ?: return null
+            }
+
+            else -> (tStart..tEnd).minByUnimodalWithSelectee(
+                tolerance = tolerance,
+            ) { t ->
+                Vector2.distance(
+                    apply(t),
+                    point,
+                )
+            }
         }
 
-        return tStart..tEnd
-    }
-
-    private fun projectWithinRange(
-        searchRange: ClosedFloatingPointRange<Double>,
-        point: Vector2,
-        tolerance: NumericObject.Tolerance.Absolute,
-    ): Double = searchRange.minBy(
-        tolerance = tolerance,
-    ) { t ->
-        Vector2.distanceSquared(
-            apply(t),
-            point,
+        return PointProjection(
+            t = tFound,
+            distance = foundDistance,
         )
     }
 

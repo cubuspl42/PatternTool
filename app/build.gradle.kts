@@ -16,8 +16,15 @@ kotlin {
     jvm()
 
     js(IR) {
-        browser()
+        browser {
+            webpackTask {
+                mainOutputFileName = "app.js"
+            }
+        }
+
         nodejs()
+
+        binaries.executable()
     }
 
     sourceSets {

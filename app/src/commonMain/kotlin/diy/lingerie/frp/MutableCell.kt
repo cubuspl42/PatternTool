@@ -1,0 +1,13 @@
+package diy.lingerie.frp
+
+class MutableCell<V>(
+    initialValue: V,
+) : ActiveCell<V>() {
+    override val vertex = MutableCellVertex(
+        initialValue = initialValue,
+    )
+
+    fun set(newValue: V) {
+        vertex.set(newValue)
+    }
+}
