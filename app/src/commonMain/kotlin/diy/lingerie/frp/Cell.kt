@@ -1,6 +1,6 @@
 package diy.lingerie.frp
 
-abstract class Cell<out V> : Notifier<Cell.Change<V>> {
+abstract class Cell<out V> {
     data class Change<out V>(
         val oldValue: V,
         val newValue: V,
@@ -18,8 +18,7 @@ abstract class Cell<out V> : Notifier<Cell.Change<V>> {
         )
     }
 
-    val newValues: EventStream<V>
-        get() = changes.map { it.newValue }
+    abstract val newValues: EventStream<V>
 
     abstract val currentValue: V
 

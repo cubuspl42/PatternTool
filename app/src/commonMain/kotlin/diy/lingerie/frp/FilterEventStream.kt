@@ -8,7 +8,7 @@ internal class FilterEventStream<E>(
 ) {
     override fun handleSourceEvent(event: E) {
         if (predicate(event)) {
-            notify(event)
+            send(event)
         }
     }
 }

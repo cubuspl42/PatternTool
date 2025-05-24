@@ -1,13 +1,9 @@
 package diy.lingerie.frp
 
-import diy.lingerie.frp.Notifier.ListenerStrength
-import diy.lingerie.utils.iterable.forEachRemoving
-
 abstract class ChangingCell<V>(
     initialValue: V,
-) : Cell<V>() {
-    private val changeListeners = mutableSetOf<Notifier.ListenerReference<Change<V>>>()
-
+    private val notifierBase: NotifierBase<Change<V>> = NotifierBase(),
+) : Cell<V>(), Notifier<Cell.Change<V>> by notifierBase {
     private var mutableValue: V = initialValue
 
     final override val currentValue: V
@@ -16,41 +12,17 @@ abstract class ChangingCell<V>(
     final override val changes: EventStream<Change<V>>
         get() = ProxyEventStream(source = this)
 
+    final override val newValues: EventStream<V>
+        get() = changes.map { it.newValue }
+
     protected fun update(newValue: V) {
         val oldValue = mutableValue
 
-        val change = Change(
-            oldValue = oldValue,
-            newValue = newValue,
+        notifierBase.notify(
+            Change(
+                oldValue = oldValue,
+                newValue = newValue,
+            )
         )
-
-        mutableValue = newValue
-
-        changeListeners.forEachRemoving { listenerReference ->
-            listenerReference.handle(change)
-        }
-    }
-
-    override fun subscribe(
-        listener: Listener<Change<V>>,
-        strength: ListenerStrength,
-    ): Subscription {
-        val listenerReference = strength.refer(listener)
-
-        val wasAdded = changeListeners.add(listenerReference)
-
-        if (!wasAdded) {
-            throw AssertionError("Value listener reference was already present (???)")
-        }
-
-        return object : Subscription {
-            override fun cancel() {
-                val wasRemoved = changeListeners.remove(listenerReference)
-
-                if (!wasRemoved) {
-                    throw IllegalStateException("New value listener was not found")
-                }
-            }
-        }
     }
 }

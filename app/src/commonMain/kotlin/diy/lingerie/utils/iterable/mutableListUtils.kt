@@ -23,3 +23,12 @@ fun <E> MutableList<E>.updateRange(
 
     addAll(indexRange.start, elements)
 }
+
+/**
+ * Appends the given [element] to the end of this mutable list and returns the
+ * index of the newly added element.
+ */
+fun <E> MutableList<E>.append(element: E): Int {
+    add(element)
+    return indices.last
+}
