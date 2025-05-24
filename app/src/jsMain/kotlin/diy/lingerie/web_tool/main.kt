@@ -4,7 +4,7 @@ import diy.lingerie.frp.Cell
 import diy.lingerie.frp.DynamicList
 import diy.lingerie.frp.EventStream
 import diy.lingerie.frp.Listener
-import diy.lingerie.geometry.Point
+import diy.lingerie.frp.applyTo
 import kotlinx.browser.document
 import org.w3c.dom.Element
 import org.w3c.dom.ItemArrayLike
@@ -12,7 +12,6 @@ import org.w3c.dom.Node
 import org.w3c.dom.Text
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
-
 
 abstract class DynamicHtmlNode {
     abstract val rawNode: Node
@@ -37,15 +36,6 @@ sealed class HtmlEvent {
         fun wrap(rawEvent: Event): E
     }
 
-    data class MouseEvent(
-        val position: Point,
-    ) : HtmlEvent() {
-        companion object : Wrapper<MouseEvent> {
-            override fun wrap(rawEvent: Event): MouseEvent {
-                TODO("Not yet implemented")
-            }
-        }
-    }
 }
 
 interface HtmlEventHandler<E : HtmlEvent> {
@@ -74,17 +64,20 @@ fun <E : HtmlEvent> HtmlEventHandler<E>.attach(
     )
 }
 
+interface DomList<out E> : BasicList<E> {
+    override val size: Int
 
-interface DomList<out E> {
-    val size: Int
-
-    fun isEmpty(): Boolean {
-        return size == 0
+    override fun isEmpty(): Boolean {
+        return !isNotEmpty()
     }
 
     fun isNotEmpty(): Boolean {
         return size > 0
     }
+
+    override fun get(index: Int): E = getOrNull(index = index) ?: throw IndexOutOfBoundsException(
+        "Index $index is out of bounds for size $size",
+    )
 
     fun getOrNull(index: Int): E?
 
@@ -92,36 +85,19 @@ interface DomList<out E> {
         get() = getOrNull(0)
 }
 
-interface DomSet<E> {
-    fun contains(element: E): Boolean
-}
 
-interface OrderedDomSet<E> : DomList<E>, DomSet<E>
-
-class ItemArrayLikeDomList<out E>(
-    private val itemArrayLike: ItemArrayLike<E>
-) : DomList<E> {
+interface ItemArrayLikeDomList<out E> : DomList<E> {
     override val size: Int
         get() = itemArrayLike.length
 
     override fun getOrNull(
         index: Int,
     ): E? = itemArrayLike.item(index)
+
+    val itemArrayLike: ItemArrayLike<E>
 }
 
-interface MutableDomList<E> : DomList<E> {
-    fun set(index: Int, value: E)
-
-    fun removeAt(index: Int)
-
-    fun append(element: E)
-
-    fun clear() {
-        while (!isEmpty()) {
-            removeAt(0)
-        }
-    }
-}
+interface MutableDomList<E> : BasicMutableList<E>, DomList<E>
 
 fun <E> MutableDomList<E>.bind(
     target: Any,
@@ -130,80 +106,90 @@ fun <E> MutableDomList<E>.bind(
     clear()
 
     source.currentElements.forEach { currentElement ->
-        append(currentElement)
+        add(currentElement)
     }
 
-    source.onChange.subscribeSemiBound(
-        listener = object : Listener<DynamicList.Change> {
-            override fun handle(event: DynamicList.Change) {
-
-
-                TODO("Not yet implemented")
+    source.changes.subscribeFullyBound(
+        target = target,
+        listener = object : Listener<DynamicList.Change<E>> {
+            override fun handle(change: DynamicList.Change<E>) {
+                change.applyTo(mutableList = this@bind)
             }
         },
-        target = target,
     )
 }
 
-interface MutableDomSet<E> : DomList<E> {
-    fun remove(value: E)
-
-    fun replace(oldValue: E, newValue: E)
-}
-
-interface MutableOrderedDomSet<E> : MutableDomList<E>, MutableDomSet<E> {
-    override fun clear() {
-        // Similar to Kotlin's extension `Node.clear()`
-        while (isNotEmpty()) {
-            remove(firstElement!!)
-        }
-    }
-}
-
-abstract class MutableOrderedDomSetBase<E>(
-    itemArrayLike: ItemArrayLike<E>,
-) : MutableOrderedDomSet<E>, DomList<E> by ItemArrayLikeDomList(itemArrayLike = itemArrayLike) {
-    override fun set(index: Int, value: E) {
-        val oldValue = getOrNull(index = index) ?: throw IllegalStateException()
-        replace(oldValue, value)
-    }
-
-    final override fun removeAt(index: Int) {
-        val element = getOrNull(index = index) ?: throw IllegalStateException()
-        remove(element)
-    }
-}
-
-
 class ChildNodesDomList(
     private val node: Node,
-) : MutableOrderedDomSetBase<Node>(
-    itemArrayLike = node.childNodes,
-) {
+) : MutableDomList<Node>, ItemArrayLikeDomList<Node> {
     override val firstElement: Node?
         get() = node.firstChild
 
     override fun isNotEmpty(): Boolean = node.hasChildNodes()
 
-    override fun isEmpty(): Boolean = !isNotEmpty()
+    override fun isEmpty(): Boolean = !node.hasChildNodes()
 
-    override fun remove(value: Node) {
-        node.removeChild(value)
+    override fun remove(value: Node): Boolean = when {
+        node.contains(value) -> {
+            node.removeChild(value)
+
+            true
+        }
+
+        else -> false
     }
 
-    override fun replace(oldValue: Node, newValue: Node) {
-        node.replaceChild(oldValue, newValue)
+    override fun set(
+        index: Int,
+        element: Node,
+    ): Node {
+        val oldNode =
+            getOrNull(index) ?: throw IndexOutOfBoundsException("Index $index is out of bounds for list of size $size")
+
+        node.replaceChild(
+            oldNode,
+            element,
+        )
+
+        return oldNode
     }
 
-    override fun append(element: Node) {
+    override fun add(index: Int, element: Node) {
+        val nextNode = getOrNull(index)
+
+        if (nextNode == null && index != size) {
+            throw IndexOutOfBoundsException("Index $index is out of bounds for list of size $size")
+        }
+
+        node.insertBefore(
+            element,
+            nextNode,
+        )
+    }
+
+    override fun removeAt(index: Int): Node {
+        val oldNode =
+            getOrNull(index) ?: throw IndexOutOfBoundsException("Index $index is out of bounds for list of size $size")
+
+        node.removeChild(oldNode)
+
+        return oldNode
+    }
+
+    override fun add(element: Node): Boolean {
         node.appendChild(element)
+
+        return true
     }
+
+    override val itemArrayLike: ItemArrayLike<Node>
+        get() = node.childNodes
 }
 
 abstract class DynamicGenericDivElement(
     val children: DynamicList<DynamicHtmlNode>,
     val style: DynamicCssStyle? = null,
-    val handleMouseDown: HtmlEventHandler<HtmlEvent.MouseEvent>? = null,
+    val handleMouseDown: HtmlEventHandler<HtmlMouseEvent>? = null,
 ) : DynamicHtmlElement() {
     companion object {
         private fun bindChildren(
@@ -219,8 +205,8 @@ abstract class DynamicGenericDivElement(
         }
     }
 
-    val onMouseDown: EventStream<HtmlEvent.MouseEvent>
-        get() = TODO()
+    val onMouseDown: EventStream<HtmlMouseEvent>
+        get() = EventStream.Never
 
     override val rawElement: Element = document.createElement(
         localName = elementName,
@@ -228,7 +214,7 @@ abstract class DynamicGenericDivElement(
         handleMouseDown?.attach(
             target = element,
             eventName = "mouseDown",
-            wrapper = HtmlEvent.MouseEvent,
+            wrapper = HtmlMouseEvent,
         )
 
         bindChildren(
@@ -240,10 +226,14 @@ abstract class DynamicGenericDivElement(
     abstract val elementName: String
 }
 
+class DynamicWrapperElement(
+    override val rawElement: Element,
+) : DynamicHtmlElement()
+
 class DynamicDivElement(
     children: DynamicList<DynamicHtmlNode>,
     style: DynamicCssStyle? = null,
-    handleMouseDown: HtmlEventHandler<HtmlEvent.MouseEvent>? = null,
+    handleMouseDown: HtmlEventHandler<HtmlMouseEvent>? = null,
 ) : DynamicGenericDivElement(
     children,
     style,
@@ -252,30 +242,52 @@ class DynamicDivElement(
     override val elementName: String = "div"
 }
 
+class DynamicButtonElement(
+    children: DynamicList<DynamicHtmlNode>,
+    style: DynamicCssStyle? = null,
+    handleMouseDown: HtmlEventHandler<HtmlMouseEvent>? = null,
+) : DynamicGenericDivElement(
+    children,
+    style,
+    handleMouseDown,
+) {
+    override val elementName: String = "button"
+}
+
 class DynamicHtmlText(
     val data: Cell<String>,
 ) : DynamicHtmlNode() {
     override val rawNode: Text = document.createTextNode(
         data = data.currentValue,
     ).also { textNode ->
-        TODO()
+        data.newValues.subscribeFullyBound(
+            target = this,
+            listener = object : Listener<String> {
+                override fun handle(newValue: String) {
+                    textNode.data = newValue
+                }
+            },
+        )
     }
 }
 
 fun main() {
+    println("Hello!")
+
     val root = DynamicDivElement(
         children = DynamicList.of(
             DynamicHtmlText(
                 data = Cell.of("Hello, world"),
             ),
+            DynamicWrapperElement(
+                document.createElement("h1").apply {
+                    textContent = "Hello, world!"
+                },
+            ),
         ),
     )
 
-    println("Hello, world")
-
     document.body!!.appendChild(
-        document.createElement("h1").apply {
-            textContent = "Hello, world!"
-        },
+        root.rawNode,
     )
 }
