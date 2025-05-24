@@ -56,28 +56,28 @@ abstract class DynamicList<out E> {
     companion object {
         fun <E> of(
             vararg children: E,
-        ): DynamicList<E> {
-            TODO()
-        }
+        ): DynamicList<E> = ConstDynamicList(
+            constElements = children.toList(),
+        )
     }
 
     abstract val currentElements: List<E>
 
-    val onChange: EventStream<Change<E>>
-        get() = TODO()
+    abstract val changes: EventStream<Change<E>>
 
     fun <Er> map(
         transform: (E) -> Er,
-    ): DynamicList<Er> {
-        TODO()
-    }
+    ): DynamicList<Er> = MapDynamicList(
+        source = this,
+        transform = transform,
+    )
 
     fun get(inex: Int): Cell<E?> {
         TODO()
     }
 }
 
-fun <E> DynamicList.Change.Update<E>.apply(
+fun <E> DynamicList.Change.Update<E>.applyTo(
     mutableList: MutableList<E>,
 ) {
     mutableList.updateRange(
@@ -90,6 +90,7 @@ fun <E> DynamicList.Change<E>.applyTo(
     mutableList: MutableList<E>,
 ) {
     updatesInOrder.reversed().forEach { update ->
-        update.apply(mutableList = mutableList)
+        update.applyTo(mutableList = mutableList)
     }
 }
+
