@@ -17,10 +17,14 @@ kotlin {
 
     js(IR) {
         browser {
-            binaries.executable()
+            webpackTask {
+                mainOutputFileName = "app.js"
+            }
         }
 
         nodejs()
+
+        binaries.executable()
     }
 
     sourceSets {

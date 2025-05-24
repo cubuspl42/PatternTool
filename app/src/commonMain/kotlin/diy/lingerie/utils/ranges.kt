@@ -63,3 +63,9 @@ fun ClosedFloatingPointRange<Double>.copy(
     start: Double = this.start,
     endInclusive: Double = this.endInclusive,
 ): ClosedFloatingPointRange<Double> = start..endInclusive
+
+fun OpenEndRange<Int>.overlaps(other: OpenEndRange<Int>): Boolean {
+    return start < other.endExclusive && endExclusive > other.start
+}
+
+fun IntRange.Companion.empty(value: Int): IntRange = value until value
