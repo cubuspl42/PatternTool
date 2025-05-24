@@ -1,14 +1,14 @@
 package diy.lingerie.frp
 
-internal class FilterEventStream<E>(
+internal class FilterEventStreamVertex<E>(
     source: EventStream<E>,
     private val predicate: (E) -> Boolean,
-) : TransformingEventStream<E, E>(
+) : TransformingEventStreamVertex<E, E>(
     source = source,
 ) {
     override fun handleSourceEvent(event: E) {
         if (predicate(event)) {
-            send(event)
+            notify(event)
         }
     }
 }

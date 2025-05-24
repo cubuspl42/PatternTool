@@ -1,34 +1,47 @@
 package diy.lingerie.frp
 
-abstract class EventStream<out E> : Notifier<E> {
+sealed class EventStream<out E> : Notifier<E> {
     companion object {
         val Never: EventStream<Nothing> = NeverEventStream
 
         fun <V> divert(
             nestedEventStream: Cell<EventStream<V>>,
-        ): EventStream<V> = DivertEventStream(
-            nestedEventStream = nestedEventStream,
-        )
+        ): EventStream<V> = when (nestedEventStream) {
+            is ActiveCell<EventStream<V>> -> DependentEventStream(
+                vertex = DivertEventStream(
+                    nestedEventStream = nestedEventStream.vertex,
+                ),
+            )
+
+            is ConstCell<EventStream<V>> -> nestedEventStream.constValue
+        }
     }
 
-    fun <Er> map(
+    abstract fun <Er> map(
         transform: (E) -> Er,
-    ): EventStream<Er> = MapEventStream(
-        source = this,
-        transform = transform,
-    )
+    ): EventStream<Er>
 
-    fun filter(
+    abstract fun filter(
         predicate: (E) -> Boolean,
-    ): EventStream<E> = FilterEventStream(
-        source = this,
-        predicate = predicate,
+    ): EventStream<E>
+
+    abstract fun <T : Any> pipe(
+        target: T,
+        consume: (E) -> Unit,
     )
 }
 
 fun <E> EventStream<E>.hold(
     initialValue: E,
-): Cell<E> = HoldCell(
-    values = this,
-    initialValue = initialValue,
-)
+): Cell<E> = when (this) {
+    is ActiveEventStream<E> -> DependentCell(
+        HoldCellVertex(
+            values = this.vertex,
+            initialValue = initialValue,
+        )
+    )
+
+    NeverEventStream -> ConstCell(
+        constValue = initialValue,
+    )
+}

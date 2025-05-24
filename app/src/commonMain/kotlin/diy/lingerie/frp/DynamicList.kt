@@ -38,9 +38,21 @@ abstract class DynamicList<out E> {
                 )
             }
 
+            fun toChange(): Change<E> = Change(
+                updates = setOf(this),
+            )
+
             init {
                 require(!indexRange.isEmpty() || updatedElements.isNotEmpty())
             }
+        }
+
+        companion object {
+            fun <E> single(
+                update: Update<E>,
+            ): Change<E> = Change(
+                updates = setOf(update),
+            )
         }
 
         val updatesInOrder: List<Update<E>>
@@ -57,10 +69,20 @@ abstract class DynamicList<out E> {
         override val currentElements: List<Nothing> = emptyList()
 
         override val changes: EventStream<Change<Nothing>> = EventStream.Never
+
+        override fun <Er> map(
+            transform: (Nothing) -> Er,
+        ): DynamicList<Er> = Empty
+
+        override fun <T : Any> pipe(
+            target: T,
+            mutableList: MutableList<*>,
+        ) {
+            mutableList.clear()
+        }
     }
 
     companion object {
-
         fun <E> of(
             vararg children: E,
         ): DynamicList<E> = ConstDynamicList(
@@ -72,16 +94,25 @@ abstract class DynamicList<out E> {
 
     abstract val changes: EventStream<Change<E>>
 
-    fun <Er> map(
+    abstract fun <Er> map(
         transform: (E) -> Er,
-    ): DynamicList<Er> = MapDynamicList(
-        source = this,
-        transform = transform,
-    )
+    ): DynamicList<Er>
 
     fun get(inex: Int): Cell<E?> {
         TODO()
     }
+
+    abstract fun <T : Any> pipe(
+        target: T,
+        mutableList: MutableList<in E>,
+    )
+}
+
+internal fun <E> DynamicList<E>.copyNow(
+    mutableList: MutableList<E>,
+) {
+    mutableList.clear()
+    mutableList.addAll(currentElements)
 }
 
 fun <E> DynamicList.Change.Update<E>.applyTo(

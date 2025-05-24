@@ -1,6 +1,6 @@
 package diy.lingerie.frp
 
-abstract class Cell<out V> {
+sealed class Cell<out V> {
     data class Change<out V>(
         val oldValue: V,
         val newValue: V,
@@ -9,9 +9,15 @@ abstract class Cell<out V> {
     companion object {
         fun <V> switch(
             nestedCell: Cell<Cell<V>>,
-        ): Cell<V> = SwitchCell(
-            nestedCell = nestedCell,
-        )
+        ): Cell<V> = when (nestedCell) {
+            is ConstCell<Cell<V>> -> nestedCell.constValue
+
+            is ActiveCell<Cell<V>> -> DependentCell(
+                vertex = SwitchCellVertex(
+                    nestedCell = nestedCell.vertex,
+                ),
+            )
+        }
 
         fun <V> of(value: V): Cell<V> = ConstCell(
             constValue = value,
@@ -24,12 +30,14 @@ abstract class Cell<out V> {
 
     abstract val changes: EventStream<Change<V>>
 
-    fun <Vr> map(
+    abstract fun <Vr> map(
         transform: (V) -> Vr,
-    ): Cell<Vr> = MapCell(
-        source = this,
-        transform = transform,
-    )
+    ): Cell<Vr>
+
+    abstract fun <T : Any> form(
+        create: (V) -> T,
+        update: (T, V) -> Unit,
+    ): T
 
     fun <Vr> switchOf(
         transform: (V) -> Cell<Vr>,

@@ -1,6 +1,5 @@
 package diy.lingerie.frp
 
-import diy.lingerie.frp.subscribeSemiBound
 
 class EventStreamVerifier<E>(
     eventStream: EventStream<E>,
@@ -8,8 +7,7 @@ class EventStreamVerifier<E>(
     private val mutableReceivedEvents = mutableListOf<E>()
 
     init {
-        eventStream.subscribeSemiBound(
-            target = this,
+        eventStream.subscribe(
             listener = object : Listener<E> {
                 override fun handle(event: E) {
                     mutableReceivedEvents.add(event)

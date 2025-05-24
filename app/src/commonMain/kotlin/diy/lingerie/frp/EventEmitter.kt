@@ -1,7 +1,9 @@
 package diy.lingerie.frp
 
-class EventEmitter<E> : NotifyingEventStream<E>() {
+class EventEmitter<E> : ActiveEventStream<E>() {
+    override val vertex: Vertex<E> = EmitterVertex()
+
     fun emit(event: E) {
-        send(event)
+        vertex.notify(event)
     }
 }

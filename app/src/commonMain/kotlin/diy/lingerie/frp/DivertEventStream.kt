@@ -1,12 +1,15 @@
 package diy.lingerie.frp
 
+
 internal class DivertEventStream<E>(
-    private val nestedEventStream: Cell<EventStream<E>>,
-) : ObservingEventStream<E>() {
+    private val nestedEventStream: CellVertex<EventStream<E>>,
+) : EventStreamVertex<E>() {
     override fun observe(): Subscription = object : Subscription {
-        val outerSubscription = nestedEventStream.newValues.subscribe(
-            listener = object : Listener<EventStream<E>> {
-                override fun handle(newInnerStream: EventStream<E>) {
+        private val outerSubscription = nestedEventStream.subscribe(
+            listener = object : Listener<Cell.Change<EventStream<E>>> {
+                override fun handle(change: Cell.Change<EventStream<E>>) {
+                    val newInnerStream = change.newValue
+
                     resubscribeToInner(newInnerStream = newInnerStream)
                 }
             },
@@ -21,7 +24,7 @@ internal class DivertEventStream<E>(
         ): Subscription = innerStream.subscribe(
             listener = object : Listener<E> {
                 override fun handle(event: E) {
-                    send(event)
+                    notify(event)
                 }
             },
         )
@@ -36,6 +39,11 @@ internal class DivertEventStream<E>(
         override fun cancel() {
             outerSubscription.cancel()
             innerSubscription.cancel()
+        }
+
+        override fun change(strength: Notifier.ListenerStrength) {
+            outerSubscription.change(strength = strength)
+            innerSubscription.change(strength = strength)
         }
     }
 }

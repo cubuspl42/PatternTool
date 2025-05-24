@@ -1,8 +1,8 @@
 package diy.lingerie.frp
 
-abstract class TransformingEventStream<E, Er>(
+abstract class TransformingEventStreamVertex<E, Er>(
     private val source: EventStream<E>,
-) : ObservingEventStream<Er>() {
+) : EventStreamVertex<Er>() {
     protected abstract fun handleSourceEvent(event: E)
 
     override fun observe(): Subscription = source.subscribe(
