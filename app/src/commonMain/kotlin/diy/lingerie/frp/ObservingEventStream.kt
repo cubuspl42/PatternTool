@@ -1,6 +1,6 @@
 package diy.lingerie.frp
 
-abstract class ObservingEventStream<E> : NotifyingStream<E>() {
+abstract class ObservingEventStream<E> : NotifyingEventStream<E>() {
     private var observationSubscription: Subscription? = null
 
     final override fun onResumed() {

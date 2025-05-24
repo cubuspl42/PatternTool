@@ -21,7 +21,7 @@ internal class DivertEventStream<E>(
         ): Subscription = innerStream.subscribe(
             listener = object : Listener<E> {
                 override fun handle(event: E) {
-                    notify(event)
+                    send(event)
                 }
             },
         )

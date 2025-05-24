@@ -7,6 +7,6 @@ internal class MapEventStream<E, Er>(
     source = source,
 ) {
     override fun handleSourceEvent(event: E) {
-        notify(transform(event))
+        send(transform(event))
     }
 }

@@ -2,7 +2,6 @@ package diy.lingerie.frp
 
 abstract class EventStream<out E> : Notifier<E> {
     companion object {
-
         val Never: EventStream<Nothing> = NeverEventStream
 
         fun <V> divert(
@@ -26,7 +25,6 @@ abstract class EventStream<out E> : Notifier<E> {
         predicate = predicate,
     )
 }
-
 
 fun <E> EventStream<E>.hold(
     initialValue: E,

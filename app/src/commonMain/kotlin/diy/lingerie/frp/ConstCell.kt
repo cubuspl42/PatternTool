@@ -5,10 +5,7 @@ internal class ConstCell<V>(
 ) : Cell<V>() {
     override val currentValue: V = constValue
 
-    override val changes: EventStream<Nothing> = EventStream.Never
+    override val newValues: EventStream<V> = EventStream.Never
 
-    override fun subscribe(
-        listener: Listener<Change<V>>,
-        strength: Notifier.ListenerStrength
-    ): Subscription = Subscription.Noop
+    override val changes: EventStream<Nothing> = EventStream.Never
 }

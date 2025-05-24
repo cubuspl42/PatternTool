@@ -6,7 +6,7 @@ internal class ProxyEventStream<E>(
     override fun observe(): Subscription = source.subscribe(
         listener = object : Listener<E> {
             override fun handle(event: E) {
-                notify(event)
+                send(event)
             }
         },
     )

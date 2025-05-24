@@ -1,7 +1,7 @@
 package diy.lingerie.frp
 
-class EventEmitter<E> : NotifyingStream<E>() {
+class EventEmitter<E> : NotifyingEventStream<E>() {
     fun emit(event: E) {
-        notify(event)
+        send(event)
     }
 }
