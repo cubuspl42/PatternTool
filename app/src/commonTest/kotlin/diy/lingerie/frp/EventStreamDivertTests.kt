@@ -13,7 +13,9 @@ class EventStreamDivertTests {
             initialValue = eventEmitter1,
         )
 
-        val divertedStream = EventStream.divert(nestedEventStream = mutableStreamCell)
+        val divertedStream = EventStream.divert(
+            nestedEventStream = mutableStreamCell,
+        )
 
         val changesVerifier = EventStreamVerifier(
             eventStream = divertedStream,

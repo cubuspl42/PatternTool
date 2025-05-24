@@ -110,26 +110,6 @@ interface ItemArrayLikeDomList<out E> : DomList<E> {
 
 interface MutableDomList<E> : BasicMutableList<E>, DomList<E>
 
-fun <E> MutableDomList<E>.bind(
-    target: Any,
-    source: DynamicList<E>,
-) {
-    clear()
-
-    source.currentElements.forEach { currentElement ->
-        add(currentElement)
-    }
-
-    source.changes.subscribeFullyBound(
-        target = target,
-        listener = object : Listener<DynamicList.Change<E>> {
-            override fun handle(change: DynamicList.Change<E>) {
-                change.applyTo(mutableList = this@bind)
-            }
-        },
-    )
-}
-
 class ChildNodesDomList(
     private val node: Node,
 ) : MutableDomList<Node>, ItemArrayLikeDomList<Node> {
@@ -203,11 +183,11 @@ abstract class DynamicGenericHtmlElement() : DynamicHtmlElement() {
             target: Node,
             children: DynamicList<DynamicHtmlNode>,
         ) {
-            val childNodesDomList = ChildNodesDomList(node = target)
-
-            childNodesDomList.bind(
+            children.map {
+                it.rawNode
+            }.pipe(
                 target = target,
-                source = children.map { it.rawNode },
+                mutableList = ChildNodesDomList(node = target),
             )
         }
     }
@@ -296,18 +276,16 @@ class DynamicButtonElement(
 class DynamicHtmlText(
     val data: Cell<String>,
 ) : DynamicHtmlNode() {
-    override val rawNode: Text = document.createTextNode(
-        data = data.currentValue,
-    ).also { textNode ->
-        data.newValues.subscribeFullyBound(
-            target = textNode,
-            listener = object : Listener<String> {
-                override fun handle(newValue: String) {
-                    textNode.data = newValue
-                }
-            },
-        )
-    }
+    override val rawNode: Text = data.form(
+        create = { initialValue: String ->
+            document.createTextNode(
+                data = initialValue,
+            )
+        },
+        update = { textNode: Text, newValue: String ->
+            textNode.data = newValue
+        },
+    )
 }
 
 fun main() {

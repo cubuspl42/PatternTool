@@ -1,12 +1,12 @@
 package diy.lingerie.frp
 
-internal class MapEventStream<E, Er>(
+internal class MapEventStreamVertex<E, Er>(
     source: EventStream<E>,
     private val transform: (E) -> Er,
-) : TransformingEventStream<E, Er>(
+) : TransformingEventStreamVertex<E, Er>(
     source = source,
 ) {
     override fun handleSourceEvent(event: E) {
-        send(transform(event))
+        notify(transform(event))
     }
 }

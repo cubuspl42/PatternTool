@@ -1,20 +1,29 @@
 package diy.lingerie.frp
 
-class MapDynamicList<E, Er>(
-    private val source: DynamicList<E>,
+class MapDynamicListVertex<E, Er>(
+    private val source: DynamicListVertex<E>,
     private val transform: (E) -> Er,
-) : DynamicList<Er>() {
-    override val currentElements: List<Er>
-        get() = source.currentElements.map(transform)
-
-    override val changes: EventStream<Change<Er>> = source.changes.map { change ->
-        Change(
-            updates = change.updates.map { update ->
-                Change.Update(
-                    indexRange = update.indexRange,
-                    updatedElements = update.updatedElements.map(transform),
+) : DependentDynamicListVertex<Er>(
+    initialElements = source.currentElements.map(transform),
+) {
+    override fun buildInitialSubscription(): Subscription = source.subscribe(
+        listener = object : Listener<DynamicList.Change<E>> {
+            override fun handle(change: DynamicList.Change<E>) {
+                update(
+                    change = DynamicList.Change(
+                        updates = change.updates.map { update ->
+                            DynamicList.Change.Update(
+                                indexRange = update.indexRange,
+                                updatedElements = update.updatedElements.map(transform),
+                            )
+                        }.toSet(),
+                    ),
                 )
-            }.toSet(),
-        )
+            }
+        },
+    )
+
+    init {
+        init()
     }
 }

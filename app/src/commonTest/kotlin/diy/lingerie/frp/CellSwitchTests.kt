@@ -18,7 +18,9 @@ class CellSwitchTests {
             initialValue = mutableCell1,
         )
 
-        val switchedCell = Cell.switch(nestedCell = mutableNestedCell)
+        val switchedCell = Cell.switch(
+            nestedCell = mutableNestedCell,
+        )
 
         val changesVerifier = EventStreamVerifier(
             eventStream = switchedCell.changes,

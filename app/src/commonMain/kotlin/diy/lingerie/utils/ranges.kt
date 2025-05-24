@@ -69,3 +69,5 @@ fun OpenEndRange<Int>.overlaps(other: OpenEndRange<Int>): Boolean {
 }
 
 fun IntRange.Companion.empty(value: Int): IntRange = value until value
+
+fun IntRange.Companion.single(value: Int): IntRange = value..value

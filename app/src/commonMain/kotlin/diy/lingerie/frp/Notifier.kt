@@ -27,7 +27,7 @@ interface Notifier<out T> {
 
     sealed class ListenerReference<E> {
         class Strong<E>(
-            private val listener: Listener<E>,
+            val listener: Listener<E>,
         ) : ListenerReference<E>() {
             override fun handle(event: E): Boolean {
                 listener.handle(event)
@@ -66,9 +66,9 @@ interface Notifier<out T> {
     ): Subscription
 }
 
-fun <E> Notifier<E>.subscribeFullyBound(
+fun <T> Vertex<T>.subscribeFullyBound(
     target: Any,
-    listener: Listener<E>,
+    listener: Listener<T>,
 ) {
     // Ignore the cleanable, depend on the finalization register only
 
@@ -78,9 +78,9 @@ fun <E> Notifier<E>.subscribeFullyBound(
     )
 }
 
-private fun <E> Notifier<E>.subscribeBound(
+private fun <T> Vertex<T>.subscribeBound(
     target: Any,
-    listener: Listener<E>,
+    listener: Listener<T>,
 ): PlatformCleanable {
     val weakSubscription = subscribe(
         listener = listener,
@@ -94,18 +94,22 @@ private fun <E> Notifier<E>.subscribeBound(
     }
 }
 
-fun <E> Notifier<E>.subscribeSemiBound(
-    target: Any,
-    listener: Listener<E>,
-): Subscription {
-    val cleanable = subscribeBound(
-        target,
-        listener,
-    )
-
-    return object : Subscription {
-        override fun cancel() {
-            cleanable.clean()
-        }
-    }
-}
+//fun <T> Vertex<T>.subscribeSemiBound(
+//    target: Any,
+//    listener: Listener<T>,
+//): Subscription {
+//    val cleanable = subscribeBound(
+//        target,
+//        listener,
+//    )
+//
+//    return object : Subscription {
+//        override fun cancel() {
+//            cleanable.clean()
+//        }
+//
+//        override fun change(strength: ListenerStrength) {
+//            TODO("Not yet implemented")
+//        }
+//    }
+//}
