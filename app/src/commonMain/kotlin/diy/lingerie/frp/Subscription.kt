@@ -5,11 +5,11 @@ interface Subscription {
         override fun cancel() {
         }
 
-        override fun change(strength: Notifier.ListenerStrength) {
+        override fun change(strength: Vertex.ListenerStrength) {
         }
     }
 
     fun cancel()
 
-    fun change(strength: Notifier.ListenerStrength)
+    fun change(strength: Vertex.ListenerStrength)
 }
