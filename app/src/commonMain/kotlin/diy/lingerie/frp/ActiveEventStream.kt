@@ -3,18 +3,11 @@ package diy.lingerie.frp
 private val finalizationRegistry = PlatformFinalizationRegistry()
 
 abstract class ActiveEventStream<E>() : EventStream<E>() {
-    final override fun subscribe(
-        listener: Listener<E>, strength: Notifier.ListenerStrength
-    ): Subscription = vertex.subscribe(
-        listener = listener,
-        strength = strength,
-    )
-
     final override fun <Er> map(
         transform: (E) -> Er,
     ): EventStream<Er> = DependentEventStream(
         vertex = MapEventStreamVertex(
-            source = this,
+            source = this.vertex,
             transform = transform,
         ),
     )
@@ -23,7 +16,7 @@ abstract class ActiveEventStream<E>() : EventStream<E>() {
         predicate: (E) -> Boolean,
     ): EventStream<E> = DependentEventStream(
         vertex = FilterEventStreamVertex(
-            source = this,
+            source = this.vertex,
             predicate = predicate,
         ),
     )

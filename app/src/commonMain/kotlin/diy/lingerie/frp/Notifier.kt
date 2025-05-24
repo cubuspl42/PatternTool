@@ -1,6 +1,6 @@
 package diy.lingerie.frp
 
-interface Notifier<out T> {
+object Notifier {
     sealed class ListenerStrength {
         data object Weak : ListenerStrength() {
             override fun <E> refer(
@@ -55,9 +55,4 @@ interface Notifier<out T> {
             event: E,
         ): Boolean
     }
-
-    fun subscribe(
-        listener: Listener<T>,
-        strength: ListenerStrength = ListenerStrength.Strong,
-    ): Subscription
 }
