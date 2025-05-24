@@ -7,6 +7,7 @@ import diy.lingerie.frp.EventStream
 import diy.lingerie.frp.Listener
 import diy.lingerie.frp.applyTo
 import diy.lingerie.frp.hold
+import diy.lingerie.frp.subscribeFullyBound
 import kotlinx.browser.document
 import org.w3c.dom.Element
 import org.w3c.dom.ItemArrayLike
@@ -316,14 +317,6 @@ fun main() {
                 data = Cell.of("Click me!"),
             ),
         ),
-    )
-
-    button.onClick.subscribe(
-        listener = object : Listener<HtmlMouseEvent> {
-            override fun handle(event: HtmlMouseEvent) {
-                println("Button clicked via event handler! ${event.position}")
-            }
-        },
     )
 
     val position = button.onClick.map {

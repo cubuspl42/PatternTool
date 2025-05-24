@@ -1,6 +1,6 @@
 package diy.lingerie.frp
 
-abstract class Cell<out V> {
+abstract class Cell<out V> : Notifier<Cell.Change<V>> {
     data class Change<out V>(
         val oldValue: V,
         val newValue: V,

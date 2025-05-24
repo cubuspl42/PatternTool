@@ -1,10 +1,7 @@
 package diy.lingerie.frp
 
-import diy.lingerie.frp.NotifyingStream.ListenerStrength
-
-abstract class EventStream<out E> {
+abstract class EventStream<out E> : Notifier<E> {
     companion object {
-        private val finalizationRegistry = PlatformFinalizationRegistry()
 
         val Never: EventStream<Nothing> = NeverEventStream
 
@@ -13,55 +10,6 @@ abstract class EventStream<out E> {
         ): EventStream<V> = DivertEventStream(
             nestedEventStream = nestedEventStream,
         )
-    }
-
-    abstract fun subscribe(
-        listener: Listener<E>,
-        strength: ListenerStrength = ListenerStrength.Strong,
-    ): Subscription
-
-    fun subscribeSemiBound(
-        target: Any,
-        listener: Listener<E>,
-    ): Subscription {
-        val cleanable = subscribeBound(
-            target,
-            listener,
-        )
-
-        return object : Subscription {
-            override fun cancel() {
-                cleanable.clean()
-            }
-        }
-    }
-
-    fun subscribeFullyBound(
-        target: Any,
-        listener: Listener<E>,
-    ) {
-        // Ignore the cleanable, depend on the finalization register only
-
-        subscribeBound(
-            target = target,
-            listener = listener,
-        )
-    }
-
-    private fun subscribeBound(
-        target: Any,
-        listener: Listener<E>,
-    ): PlatformCleanable {
-        val weakSubscription = subscribe(
-            listener = listener,
-            strength = ListenerStrength.Weak,
-        )
-
-        return finalizationRegistry.register(
-            target = target,
-        ) {
-            weakSubscription.cancel()
-        }
     }
 
     fun <Er> map(
@@ -78,6 +26,7 @@ abstract class EventStream<out E> {
         predicate = predicate,
     )
 }
+
 
 fun <E> EventStream<E>.hold(
     initialValue: E,

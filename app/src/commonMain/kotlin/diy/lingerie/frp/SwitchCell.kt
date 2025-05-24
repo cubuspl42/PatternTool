@@ -1,5 +1,8 @@
 package diy.lingerie.frp
 
+import diy.lingerie.frp.subscribeFullyBound
+import diy.lingerie.frp.subscribeSemiBound
+
 class SwitchCell<V>(
     nestedCell: Cell<Cell<V>>,
 ) : ChangingCell<V>(
