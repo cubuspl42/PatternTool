@@ -53,7 +53,14 @@ abstract class DynamicList<out E> {
         }
     }
 
+    object Empty : DynamicList<Nothing>() {
+        override val currentElements: List<Nothing> = emptyList()
+
+        override val changes: EventStream<Change<Nothing>> = EventStream.Never
+    }
+
     companion object {
+
         fun <E> of(
             vararg children: E,
         ): DynamicList<E> = ConstDynamicList(
