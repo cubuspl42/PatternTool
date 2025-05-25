@@ -12,7 +12,7 @@ internal class DivertEventStreamVertex<E>(
     private val nestedEventStream: CellVertex<EventStream<E>>,
 ) : EventStreamVertex<E>() {
     override fun observe(): Subscription = object : Subscription {
-        private val outerSubscription = nestedEventStream.subscribe(
+        private val outerSubscription = nestedEventStream.subscribeStrong(
             listener = object : Listener<Cell.Change<EventStream<E>>> {
                 override fun handle(change: Cell.Change<EventStream<E>>) {
                     val newInnerStream = change.newValue
@@ -29,7 +29,7 @@ internal class DivertEventStreamVertex<E>(
         private fun subscribeToInner(
             innerStream: EventStream<E>,
         ): Subscription = when (innerStream) {
-            is ActiveEventStream<E> -> innerStream.vertex.subscribe(
+            is ActiveEventStream<E> -> innerStream.vertex.subscribeStrong(
                 listener = object : Listener<E> {
                     override fun handle(event: E) {
                         notify(event)
@@ -52,9 +52,5 @@ internal class DivertEventStreamVertex<E>(
             innerSubscription.cancel()
         }
 
-        override fun change(strength: ListenerStrength) {
-            outerSubscription.change(strength = strength)
-            innerSubscription.change(strength = strength)
-        }
     }
 }

@@ -1,5 +1,6 @@
 package diy.lingerie.frp.vertices.cell
 
+import diy.lingerie.frp.HybridSubscription
 import diy.lingerie.frp.Listener
 import diy.lingerie.frp.Subscription
 import diy.lingerie.frp.cell.ActiveCell
@@ -11,8 +12,8 @@ class SwitchCellVertex<V>(
 ) : DependentCellVertex<V>(
     initialValue = nestedCell.currentValue.currentValue,
 ) {
-    override fun buildInitialSubscription(): Subscription = object : Subscription {
-        val outerSubscription = nestedCell.subscribe(
+    override fun buildHybridSubscription() = object : HybridSubscription {
+        private val outerSubscription = nestedCell.subscribeHybrid(
             listener = object : Listener<Cell.Change<Cell<V>>> {
                 override fun handle(change: Cell.Change<Cell<V>>) {
                     val newInnerCell = change.newValue
@@ -24,15 +25,15 @@ class SwitchCellVertex<V>(
             },
         )
 
-        private var innerSubscription: Subscription = subscribeToInner(
+        private var innerSubscription = subscribeToInner(
             innerCell = nestedCell.currentValue,
         )
 
         private fun subscribeToInner(
             innerCell: Cell<V>,
-        ): Subscription = when (innerCell) {
+        ): HybridSubscription = when (innerCell) {
             is ActiveCell<V> -> {
-                innerCell.vertex.subscribe(
+                innerCell.vertex.subscribeHybrid(
                     listener = object : Listener<Cell.Change<V>> {
                         override fun handle(change: Cell.Change<V>) {
                             val newValue = change.newValue
@@ -43,7 +44,7 @@ class SwitchCellVertex<V>(
                 )
             }
 
-            is ConstCell<V> -> Subscription.Noop
+            is ConstCell<V> -> HybridSubscription.Noop
         }
 
         private fun resubscribeToInner(
@@ -53,15 +54,19 @@ class SwitchCellVertex<V>(
             innerSubscription = subscribeToInner(innerCell = newInnerCell)
         }
 
-
         override fun cancel() {
             outerSubscription.cancel()
             innerSubscription.cancel()
         }
 
-        override fun change(strength: ListenerStrength) {
-            outerSubscription.change(strength = strength)
-            innerSubscription.change(strength = strength)
+        override fun weaken() {
+            outerSubscription.weaken()
+            innerSubscription.weaken()
+        }
+
+        override fun strengthen() {
+            outerSubscription.strengthen()
+            innerSubscription.strengthen()
         }
     }
 

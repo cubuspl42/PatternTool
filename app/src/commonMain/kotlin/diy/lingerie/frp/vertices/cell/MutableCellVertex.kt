@@ -1,7 +1,5 @@
 package diy.lingerie.frp.vertices.cell
 
-import diy.lingerie.frp.vertices.cell.CellVertex
-
 class MutableCellVertex<V>(
     initialValue: V,
 ) : CellVertex<V>(
@@ -11,4 +9,3 @@ class MutableCellVertex<V>(
         update(newValue)
     }
 }
-

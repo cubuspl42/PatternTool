@@ -10,7 +10,7 @@ internal class MapCellVertex<V, Vr>(
 ) : DependentCellVertex<Vr>(
     initialValue = transform(source.currentValue),
 ) {
-    override fun buildInitialSubscription(): Subscription = source.subscribe(
+    override fun buildHybridSubscription() = source.subscribeHybrid(
          listener = object : Listener<Cell.Change<V>> {
              override fun handle(change: Cell.Change<V>) {
                  val newValue = change.newValue
