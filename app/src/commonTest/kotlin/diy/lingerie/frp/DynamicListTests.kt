@@ -1,5 +1,7 @@
 package diy.lingerie.frp
 
+import diy.lingerie.frp.dynamic_list.DynamicList
+import diy.lingerie.frp.dynamic_list.applyTo
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

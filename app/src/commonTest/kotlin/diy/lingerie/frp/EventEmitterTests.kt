@@ -1,5 +1,6 @@
 package diy.lingerie.frp
 
+import diy.lingerie.frp.event_stream.EventEmitter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

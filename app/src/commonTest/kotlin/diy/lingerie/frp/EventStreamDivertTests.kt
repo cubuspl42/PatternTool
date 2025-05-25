@@ -1,5 +1,8 @@
 package diy.lingerie.frp
 
+import diy.lingerie.frp.cell.MutableCell
+import diy.lingerie.frp.event_stream.EventEmitter
+import diy.lingerie.frp.event_stream.EventStream
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
