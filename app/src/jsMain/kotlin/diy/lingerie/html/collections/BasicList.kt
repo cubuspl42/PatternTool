@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool
+package diy.lingerie.html.collections
 
 interface BasicList<out E> : List<E> {
     override fun isEmpty(): Boolean = size == 0
