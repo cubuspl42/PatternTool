@@ -1,5 +1,8 @@
 package diy.lingerie.frp
 
+import diy.lingerie.frp.event_stream.ActiveEventStream
+import diy.lingerie.frp.event_stream.EventStream
+
 class EventStreamVerifier<E>(
     eventStream: EventStream<E>,
 ) {
