@@ -21,6 +21,18 @@ actual class PlatformWeakSet<T : Any> : AbstractMutableSet<T>() {
         }
     }
 
+    override fun remove(
+        element: T,
+    ): Boolean = weakRefSet.removeAll { weakRef ->
+        weakRef.deref() == element
+    }
+
+    override fun removeAll(
+        elements: Collection<T>,
+    ): Boolean = weakRefSet.removeAll { weakRef ->
+        weakRef.deref() in elements
+    }
+
     actual override fun iterator(): MutableIterator<T> = PurgingWeakSetIterator(
         weakRefIterator = weakRefSet.iterator(),
     )
@@ -39,8 +51,7 @@ private class PurgingWeakSetIterator<T : Any>(
     private var peekedElement: T? = null
 
     override fun next(): T = when (val peekedElement = this.peekedElement) {
-        // A blind call to `next()` is unsupported
-        null -> throw UnsupportedOperationException()
+        null -> throw UnsupportedOperationException("Calling next() without preceding hasNext() is not supported")
 
         else -> {
             this.peekedElement = null
@@ -67,9 +78,7 @@ private class PurgingWeakSetIterator<T : Any>(
     }
 
     override fun remove() {
-        // Actual mutation during iteration is not an important use case, and
-        // it's tricky to support
-        throw UnsupportedOperationException()
+        throw UnsupportedOperationException("Removal during iteration is not supported")
     }
 
     /**

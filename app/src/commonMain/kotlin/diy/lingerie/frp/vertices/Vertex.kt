@@ -72,6 +72,18 @@ abstract class Vertex<T>() {
         ): Boolean
     }
 
+    companion object {
+        private var nextId = 0
+    }
+
+    @Suppress("unused")
+    private val id: Int = nextId++
+
+    protected abstract val kind: String
+
+    protected val name: String
+        get() = "$kind#$id"
+
     private var state = State.Paused
 
     private val strongListeners = mutableSetOf<Listener<T>>()
@@ -92,7 +104,9 @@ abstract class Vertex<T>() {
         }
 
         // Touching the weak listeners set could purge all (unreachable) listeners
-        pauseIfLostListeners()
+        pauseIfLostListeners(
+            phase = "post-notify",
+        )
     }
 
     fun subscribeStrong(
@@ -102,7 +116,9 @@ abstract class Vertex<T>() {
 
         if (!wasAdded) throw AssertionError("Listener is already strongly-subscribed (???)")
 
-        resumeIfPaused()
+        resumeIfPaused(
+            phase = "subscribe-strong",
+        )
 
         return object : Subscription {
             override fun cancel() {
@@ -110,7 +126,9 @@ abstract class Vertex<T>() {
 
                 if (!wasRemoved) throw AssertionError("Listener is not strongly-subscribed (???)")
 
-                pauseIfLostListeners()
+                pauseIfLostListeners(
+                    phase = "post-strong-cancel",
+                )
             }
         }
     }
@@ -122,7 +140,9 @@ abstract class Vertex<T>() {
 
         if (!wasAdded) throw AssertionError("Listener is already weakly-subscribed (???)")
 
-        resumeIfPaused()
+        resumeIfPaused(
+            phase = "subscribe-weak",
+        )
 
         return object : Subscription {
             override fun cancel() {
@@ -130,7 +150,9 @@ abstract class Vertex<T>() {
 
                 if (!wasRemoved) throw AssertionError("Listener is not weakly-subscribed (???)")
 
-                pauseIfLostListeners()
+                pauseIfLostListeners(
+                    phase = "post-weak-cancel",
+                )
             }
         }
     }
@@ -159,16 +181,24 @@ abstract class Vertex<T>() {
         }
     }
 
-    private fun resumeIfPaused() {
+    private fun resumeIfPaused(
+        phase: String,
+    ) {
         if (state == State.Paused) {
+            println("Resuming vertex $name [$phase]...")
+
             onResumed()
 
             state = State.Resumed
         }
     }
 
-    private fun pauseIfLostListeners() {
+    private fun pauseIfLostListeners(
+        phase: String,
+    ) {
         if (!hasListeners() && state == State.Resumed) {
+            println("Pausing vertex $name [$phase]...")
+
             onPaused()
 
             state = State.Paused

@@ -11,6 +11,8 @@ import diy.lingerie.frp.vertices.cell.CellVertex
 internal class DivertEventStreamVertex<E>(
     private val nestedEventStream: CellVertex<EventStream<E>>,
 ) : EventStreamVertex<E>() {
+    override val kind: String = "Divert"
+
     override fun observe(): Subscription = object : Subscription {
         private val outerSubscription = nestedEventStream.subscribeStrong(
             listener = object : Listener<Cell.Change<EventStream<E>>> {
