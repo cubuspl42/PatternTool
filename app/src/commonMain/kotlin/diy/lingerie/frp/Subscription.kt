@@ -1,5 +1,7 @@
 package diy.lingerie.frp
 
+import diy.lingerie.frp.vertices.Vertex.ListenerStrength
+
 interface Subscription {
     object Noop : Subscription {
         override fun cancel() {
@@ -14,14 +16,23 @@ interface HybridSubscription : Subscription {
         override fun cancel() {
         }
 
-        override fun weaken() {
-        }
-
-        override fun strengthen() {
+        override fun updateStrength(newStrength: ListenerStrength) {
         }
     }
 
-    fun weaken()
+    fun updateStrength(
+        newStrength: ListenerStrength,
+    )
+}
 
-    fun strengthen()
+fun HybridSubscription.strengthen() {
+    updateStrength(
+        newStrength = ListenerStrength.Strong,
+    )
+}
+
+fun HybridSubscription.weaken() {
+    updateStrength(
+        newStrength = ListenerStrength.Weak,
+    )
 }

@@ -1,6 +1,8 @@
 package diy.lingerie.frp.vertices.cell
 
 import diy.lingerie.frp.HybridSubscription
+import diy.lingerie.frp.strengthen
+import diy.lingerie.frp.weaken
 
 /**
  * A vertex of a cell that depends on another vertices (cells and/or streams),
