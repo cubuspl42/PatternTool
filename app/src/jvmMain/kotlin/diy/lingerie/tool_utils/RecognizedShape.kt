@@ -13,6 +13,7 @@ import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRectangle
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.simple_dom.svg.SvgShape
+import diy.lingerie.simple_dom.toHexString
 
 sealed class RecognizedShape {
     companion object {
