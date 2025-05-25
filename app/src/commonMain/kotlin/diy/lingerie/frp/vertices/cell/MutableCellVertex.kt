@@ -5,6 +5,8 @@ class MutableCellVertex<V>(
 ) : CellVertex<V>(
     initialValue,
 ) {
+    override val kind: String = "MutableC"
+
     fun set(newValue: V) {
         update(newValue)
     }

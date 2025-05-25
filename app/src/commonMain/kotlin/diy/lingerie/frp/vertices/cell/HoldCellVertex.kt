@@ -10,6 +10,8 @@ internal class HoldCellVertex<V>(
 ) : DependentCellVertex<V>(
     initialValue = initialValue,
 ) {
+    override val kind: String = "Hold"
+
     override fun buildHybridSubscription() = values.subscribeHybrid(
         listener = object : Listener<V> {
             override fun handle(value: V) {

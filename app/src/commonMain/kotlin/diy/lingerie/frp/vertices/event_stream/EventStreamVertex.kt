@@ -8,7 +8,7 @@ abstract class EventStreamVertex<E> : Vertex<E>() {
 
     final override fun onResumed() {
         if (subscription != null) {
-            throw AssertionError("The stream is already resumed (???)")
+            throw AssertionError("The stream $name is already resumed (???)")
         }
 
         subscription = observe()
@@ -16,9 +16,10 @@ abstract class EventStreamVertex<E> : Vertex<E>() {
 
     final override fun onPaused() {
         val sourceSubscription =
-            this.subscription ?: throw AssertionError("The stream is already paused (???)")
+            this.subscription ?: throw AssertionError("The stream $name is already paused (???)")
 
         sourceSubscription.cancel()
+        subscription = null
     }
 
     protected abstract fun observe(): Subscription
