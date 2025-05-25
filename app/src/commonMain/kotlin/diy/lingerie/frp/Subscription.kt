@@ -1,5 +1,7 @@
 package diy.lingerie.frp
 
+import diy.lingerie.frp.vertices.Vertex
+
 interface Subscription {
     object Noop : Subscription {
         override fun cancel() {

@@ -1,5 +1,7 @@
 package diy.lingerie.frp
 
+import diy.lingerie.frp.cell.Cell
+import diy.lingerie.frp.cell.MutableCell
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

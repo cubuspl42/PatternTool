@@ -1,9 +1,9 @@
 package diy.lingerie.web_tool
 
-import diy.lingerie.frp.Cell
-import diy.lingerie.frp.DynamicList
-import diy.lingerie.frp.EventEmitter
-import diy.lingerie.frp.hold
+import diy.lingerie.frp.cell.Cell
+import diy.lingerie.frp.dynamic_list.DynamicList
+import diy.lingerie.frp.event_stream.EventEmitter
+import diy.lingerie.frp.event_stream.hold
 import kotlinx.browser.document
 import org.w3c.dom.Element
 import org.w3c.dom.ItemArrayLike
