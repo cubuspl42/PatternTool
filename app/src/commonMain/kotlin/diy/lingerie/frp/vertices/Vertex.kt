@@ -2,7 +2,6 @@ package diy.lingerie.frp.vertices
 
 import diy.lingerie.frp.HybridSubscription
 import diy.lingerie.frp.Listener
-import diy.lingerie.frp.PlatformWeakReference
 import diy.lingerie.frp.Subscription
 import diy.lingerie.frp.mutableWeakSetOf
 
@@ -19,57 +18,43 @@ abstract class Vertex<T>() {
 
     sealed class ListenerStrength {
         data object Weak : ListenerStrength() {
-            override fun <E> refer(
-                listener: Listener<E>,
-            ): ListenerReference<E> = ListenerReference.Weak(
-                weakListenerReference = PlatformWeakReference(value = listener),
-            )
+            override fun <T> addListener(
+                vertex: Vertex<T>, listener: Listener<T>
+            ) {
+                vertex.addStrongListener(listener = listener)
+            }
+
+            override fun <T> removeListener(
+                vertex: Vertex<T>, listener: Listener<T>
+            ) {
+                vertex.removeStrongListener(listener = listener)
+            }
+
         }
 
         data object Strong : ListenerStrength() {
-            override fun <E> refer(
-                listener: Listener<E>,
-            ): ListenerReference<E> = ListenerReference.Strong(listener = listener)
-        }
+            override fun <T> addListener(
+                vertex: Vertex<T>, listener: Listener<T>
+            ) {
+                vertex.addWeakListener(listener = listener)
+            }
 
-        abstract fun <E> refer(
-            listener: Listener<E>,
-        ): ListenerReference<E>
-    }
-
-    sealed class ListenerReference<E> {
-        class Strong<E>(
-            val listener: Listener<E>,
-        ) : ListenerReference<E>() {
-            override fun handle(event: E): Boolean {
-                listener.handle(event)
-
-                return false
+            override fun <T> removeListener(
+                vertex: Vertex<T>, listener: Listener<T>
+            ) {
+                vertex.removeWeakListener(listener = listener)
             }
         }
 
-        class Weak<E>(
-            val weakListenerReference: PlatformWeakReference<Listener<E>>,
-        ) : ListenerReference<E>() {
-            override fun handle(
-                event: E,
-            ): Boolean {
-                val listener = weakListenerReference.get() ?: return true
+        abstract fun <T> addListener(
+            vertex: Vertex<T>,
+            listener: Listener<T>,
+        )
 
-                listener.handle(event)
-
-                return false
-            }
-        }
-
-        /**
-         * Handles the event.
-         *
-         * @return `true` if the listener is unreachable and should be removed
-         */
-        abstract fun handle(
-            event: E,
-        ): Boolean
+        abstract fun <T> removeListener(
+            vertex: Vertex<T>,
+            listener: Listener<T>,
+        )
     }
 
     companion object {
@@ -109,6 +94,61 @@ abstract class Vertex<T>() {
         )
     }
 
+    /**
+     * Add a strong listener to the vertex. This is a low-level operation.
+     */
+    internal fun addStrongListener(
+        listener: Listener<T>,
+    ) {
+        val wasAdded = strongListeners.add(listener)
+
+        if (!wasAdded) throw AssertionError("Listener is already strongly-subscribed (???)")
+
+        resumeIfPaused(
+            phase = "subscribe-strong",
+        )
+    }
+
+    internal fun removeStrongListener(
+        listener: Listener<T>,
+    ) {
+        val wasRemoved = strongListeners.remove(listener)
+
+        if (!wasRemoved) throw AssertionError("Listener is not strongly-subscribed (???)")
+
+        pauseIfLostListeners(
+            phase = "post-strong-cancel",
+        )
+    }
+
+    /**
+     * Add a weak listener to the vertex. This is a low-level operation.
+     */
+    internal fun addWeakListener(
+        listener: Listener<T>,
+    ) {
+        val wasAdded = weakListeners.add(listener)
+
+        if (!wasAdded) throw AssertionError("Listener is already weakly-subscribed (???)")
+
+        resumeIfPaused(
+            phase = "subscribe-weak",
+        )
+    }
+
+    internal fun removeWeakListener(
+        listener: Listener<T>,
+    ) {
+        val wasRemoved = weakListeners.remove(listener)
+
+        if (!wasRemoved) throw AssertionError("Listener is not weakly-subscribed (???)")
+
+        pauseIfLostListeners(
+            phase = "post-weak-cancel",
+        )
+    }
+
+
     fun subscribeStrong(
         listener: Listener<T>,
     ): Subscription {
@@ -132,6 +172,7 @@ abstract class Vertex<T>() {
             }
         }
     }
+
 
     fun subscribeWeak(
         listener: Listener<T>,
@@ -163,21 +204,40 @@ abstract class Vertex<T>() {
      */
     fun subscribeHybrid(
         listener: Listener<T>,
-    ): HybridSubscription = object : HybridSubscription {
-        private var currentSubscription = subscribeWeak(listener = listener)
+        initialStrength: ListenerStrength = ListenerStrength.Weak,
+    ): HybridSubscription {
+        initialStrength.addListener(
+            vertex = this,
+            listener = listener,
+        )
 
-        override fun weaken() {
-            currentSubscription.cancel()
-            currentSubscription = subscribeWeak(listener = listener)
-        }
+        return object : HybridSubscription {
+            private var currentStrength = initialStrength
 
-        override fun strengthen() {
-            currentSubscription.cancel()
-            currentSubscription = subscribeStrong(listener = listener)
-        }
+            override fun cancel() {
+                currentStrength.removeListener(
+                    vertex = this@Vertex,
+                    listener = listener,
+                )
+            }
 
-        override fun cancel() {
-            currentSubscription.cancel()
+            override fun updateStrength(
+                newStrength: ListenerStrength,
+            ) {
+                if (currentStrength == newStrength) return
+
+                currentStrength.removeListener(
+                    vertex = this@Vertex,
+                    listener = listener,
+                )
+
+                newStrength.addListener(
+                    vertex = this@Vertex,
+                    listener = listener,
+                )
+
+                currentStrength = newStrength
+            }
         }
     }
 

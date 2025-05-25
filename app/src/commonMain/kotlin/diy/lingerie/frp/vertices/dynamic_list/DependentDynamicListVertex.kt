@@ -1,6 +1,8 @@
 package diy.lingerie.frp.vertices.dynamic_list
 
 import diy.lingerie.frp.HybridSubscription
+import diy.lingerie.frp.strengthen
+import diy.lingerie.frp.weaken
 
 /**
  * A vertex of a dynamic list that depends on another vertices (dynamic lists,
