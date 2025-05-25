@@ -300,8 +300,6 @@ fun main() {
         children = DynamicList.of(
             DynamicHtmlText(
                 data = position.map { positionNow ->
-                    println("Mapping position: $positionNow...")
-
                     when (positionNow) {
                         null -> "(none)"
                         else -> "$positionNow"
