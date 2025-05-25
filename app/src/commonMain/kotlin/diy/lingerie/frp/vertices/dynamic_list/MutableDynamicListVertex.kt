@@ -10,6 +10,12 @@ class MutableDynamicListVertex<E>(
 ) {
     override val kind: String = "MutableL"
 
+    override fun onResumed() {
+    }
+
+    override fun onPaused() {
+    }
+
     fun set(
         index: Int,
         element: E,
