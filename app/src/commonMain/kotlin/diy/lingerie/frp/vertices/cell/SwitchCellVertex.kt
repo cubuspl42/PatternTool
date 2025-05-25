@@ -61,14 +61,9 @@ class SwitchCellVertex<V>(
             innerSubscription.cancel()
         }
 
-        override fun weaken() {
-            outerSubscription.weaken()
-            innerSubscription.weaken()
-        }
-
-        override fun strengthen() {
-            outerSubscription.strengthen()
-            innerSubscription.strengthen()
+        override fun updateStrength(newStrength: ListenerStrength) {
+            outerSubscription.updateStrength(newStrength = newStrength)
+            innerSubscription.updateStrength(newStrength = newStrength)
         }
     }
 
