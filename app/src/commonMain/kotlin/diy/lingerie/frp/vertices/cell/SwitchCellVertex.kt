@@ -12,6 +12,8 @@ class SwitchCellVertex<V>(
 ) : DependentCellVertex<V>(
     initialValue = nestedCell.currentValue.currentValue,
 ) {
+    override val kind: String = "Switch"
+
     override fun buildHybridSubscription() = object : HybridSubscription {
         private val outerSubscription = nestedCell.subscribeHybrid(
             listener = object : Listener<Cell.Change<Cell<V>>> {

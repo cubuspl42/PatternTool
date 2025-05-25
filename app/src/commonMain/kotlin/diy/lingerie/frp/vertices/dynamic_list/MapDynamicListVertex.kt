@@ -10,6 +10,8 @@ class MapDynamicListVertex<E, Er>(
 ) : DependentDynamicListVertex<Er>(
     initialElements = source.currentElements.map(transform),
 ) {
+    override val kind: String = "MapL"
+
     override fun buildHybridSubscription() = source.subscribeHybrid(
         listener = object : Listener<DynamicList.Change<E>> {
             override fun handle(change: DynamicList.Change<E>) {

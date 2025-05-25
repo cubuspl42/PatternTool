@@ -8,6 +8,8 @@ internal class FilterEventStreamVertex<E>(
 ) : TransformingEventStreamVertex<E, E>(
     source = source,
 ) {
+    override val kind: String = "Filter"
+
     override fun handleSourceEvent(event: E) {
         if (predicate(event)) {
             notify(event)

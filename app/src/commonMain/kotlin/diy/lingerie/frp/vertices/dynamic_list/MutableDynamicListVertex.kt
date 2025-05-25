@@ -8,6 +8,8 @@ class MutableDynamicListVertex<E>(
 ) : DynamicListVertex<E>(
     initialElements = initialElements,
 ) {
+    override val kind: String = "MutableL"
+
     fun set(
         index: Int,
         element: E,

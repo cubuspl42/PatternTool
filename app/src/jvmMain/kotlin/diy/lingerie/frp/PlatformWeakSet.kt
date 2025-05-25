@@ -4,7 +4,6 @@ package diy.lingerie.frp
 
 import diy.lingerie.utils.collection.CollectionUtils
 
-
 actual class PlatformWeakSet<T : Any> : AbstractMutableSet<T>() {
     private val weakHashSet: MutableSet<T> = CollectionUtils.newWeakSet()
 
