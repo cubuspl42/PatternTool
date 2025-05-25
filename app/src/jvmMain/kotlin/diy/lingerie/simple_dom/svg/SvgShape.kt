@@ -5,6 +5,7 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.equalsWithToleranceOrNull
 import diy.lingerie.simple_dom.SimpleColor
+import diy.lingerie.simple_dom.toHexString
 import org.w3c.dom.Element
 
 abstract class SvgShape : SvgGraphicsElements() {
