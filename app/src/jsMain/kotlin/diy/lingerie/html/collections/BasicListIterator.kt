@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool
+package diy.lingerie.html.collections
 
 abstract class BasicListIterator<out E>(
     protected var index: Int,
