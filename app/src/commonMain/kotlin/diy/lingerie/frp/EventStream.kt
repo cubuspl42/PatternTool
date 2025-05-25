@@ -8,7 +8,7 @@ sealed class EventStream<out E> {
             nestedEventStream: Cell<EventStream<V>>,
         ): EventStream<V> = when (nestedEventStream) {
             is ActiveCell<EventStream<V>> -> DependentEventStream(
-                vertex = DivertEventStream(
+                vertex = DivertEventStreamVertex(
                     nestedEventStream = nestedEventStream.vertex,
                 ),
             )
