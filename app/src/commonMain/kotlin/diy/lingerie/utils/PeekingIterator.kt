@@ -5,24 +5,24 @@ class PeekingIterator<T : Any>(
 ) : Iterator<T> {
     private var peekedElement: T? = null
 
-    fun peekOrNull(): T? = when (val oldPeekedElement = peekedElement) {
+    fun peekOrNull(): T? = when (val currentPeekedElement = peekedElement) {
         null -> {
-            val newPeekedElement = iterator.nextOrNull()
-            peekedElement = newPeekedElement
-            newPeekedElement
+            val freshlyPeekedElement = iterator.nextOrNull()
+            peekedElement = freshlyPeekedElement
+            freshlyPeekedElement
         }
 
-        else -> oldPeekedElement
+        else -> currentPeekedElement
     }
 
     fun peek(): T = peekOrNull() ?: throw NoSuchElementException()
 
-    override fun next(): T = when (val oldPeekedElement = peekedElement) {
+    override fun next(): T = when (val currentPeekedElement = peekedElement) {
         null -> iterator.next()
 
         else -> {
             peekedElement = null
-            oldPeekedElement
+            currentPeekedElement
         }
     }
 

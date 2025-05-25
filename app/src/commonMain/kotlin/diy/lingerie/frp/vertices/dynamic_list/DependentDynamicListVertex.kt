@@ -1,30 +1,30 @@
 package diy.lingerie.frp.vertices.dynamic_list
 
-import diy.lingerie.frp.vertices.dynamic_list.DynamicListVertex
-import diy.lingerie.frp.Subscription
+import diy.lingerie.frp.HybridSubscription
 
+/**
+ * A vertex of a dynamic list that depends on another vertices (dynamic lists,
+ * cells and/or streams), installing a hybrid (weak/strong) subscription to
+ * the dependencies. Analogical to [diy.lingerie.frp.vertices.cell.DependentCellVertex].
+ */
 abstract class DependentDynamicListVertex<E>(
     initialElements: List<E>,
 ) : DynamicListVertex<E>(
     initialElements = initialElements,
 ) {
-    lateinit var subscription: Subscription
+    lateinit var subscription: HybridSubscription
 
-    override fun onResumed() {
-        subscription.change(
-            strength = ListenerStrength.Strong,
-        )
+    final override fun onResumed() {
+        subscription.strengthen()
     }
 
-    override fun onPaused() {
-        subscription.change(
-            strength = ListenerStrength.Weak,
-        )
+    final override fun onPaused() {
+        subscription.weaken()
     }
 
     protected fun init() {
-        subscription = buildInitialSubscription()
+        subscription = buildHybridSubscription()
     }
 
-    protected abstract fun buildInitialSubscription(): Subscription
+    protected abstract fun buildHybridSubscription(): HybridSubscription
 }

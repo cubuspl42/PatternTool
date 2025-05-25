@@ -31,7 +31,7 @@ private fun <E> EventStream<E>.subscribe(
     listener: Listener<E>,
 ) {
     (this as? ActiveEventStream<E>)?.let {
-        this.vertex.subscribe(
+        this.vertex.subscribeStrong(
             listener = listener,
         )
     }
