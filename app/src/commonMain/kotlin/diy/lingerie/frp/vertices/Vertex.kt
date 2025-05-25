@@ -19,28 +19,31 @@ abstract class Vertex<T>() {
     sealed class ListenerStrength {
         data object Weak : ListenerStrength() {
             override fun <T> addListener(
-                vertex: Vertex<T>, listener: Listener<T>
+                vertex: Vertex<T>,
+                listener: Listener<T>,
             ) {
                 vertex.addStrongListener(listener = listener)
             }
 
             override fun <T> removeListener(
-                vertex: Vertex<T>, listener: Listener<T>
+                vertex: Vertex<T>,
+                listener: Listener<T>,
             ) {
                 vertex.removeStrongListener(listener = listener)
             }
-
         }
 
         data object Strong : ListenerStrength() {
             override fun <T> addListener(
-                vertex: Vertex<T>, listener: Listener<T>
+                vertex: Vertex<T>,
+                listener: Listener<T>,
             ) {
                 vertex.addWeakListener(listener = listener)
             }
 
             override fun <T> removeListener(
-                vertex: Vertex<T>, listener: Listener<T>
+                vertex: Vertex<T>,
+                listener: Listener<T>,
             ) {
                 vertex.removeWeakListener(listener = listener)
             }
@@ -66,7 +69,7 @@ abstract class Vertex<T>() {
 
     protected abstract val kind: String
 
-    protected val name: String
+    protected val tag: String
         get() = "$kind#$id"
 
     private var state = State.Paused
@@ -94,67 +97,42 @@ abstract class Vertex<T>() {
         )
     }
 
-    /**
-     * Add a strong listener to the vertex. This is a low-level operation.
-     */
-    internal fun addStrongListener(
+    private fun addStrongListener(
         listener: Listener<T>,
     ) {
         val wasAdded = strongListeners.add(listener)
 
         if (!wasAdded) throw AssertionError("Listener is already strongly-subscribed (???)")
-
-        resumeIfPaused(
-            phase = "subscribe-strong",
-        )
     }
 
-    internal fun removeStrongListener(
+    private fun removeStrongListener(
         listener: Listener<T>,
     ) {
         val wasRemoved = strongListeners.remove(listener)
 
         if (!wasRemoved) throw AssertionError("Listener is not strongly-subscribed (???)")
-
-        pauseIfLostListeners(
-            phase = "post-strong-cancel",
-        )
     }
 
-    /**
-     * Add a weak listener to the vertex. This is a low-level operation.
-     */
-    internal fun addWeakListener(
+    private fun addWeakListener(
         listener: Listener<T>,
     ) {
         val wasAdded = weakListeners.add(listener)
 
         if (!wasAdded) throw AssertionError("Listener is already weakly-subscribed (???)")
-
-        resumeIfPaused(
-            phase = "subscribe-weak",
-        )
     }
 
-    internal fun removeWeakListener(
+    private fun removeWeakListener(
         listener: Listener<T>,
     ) {
         val wasRemoved = weakListeners.remove(listener)
 
         if (!wasRemoved) throw AssertionError("Listener is not weakly-subscribed (???)")
-
-        pauseIfLostListeners(
-            phase = "post-weak-cancel",
-        )
     }
-
 
     fun subscribeStrong(
         listener: Listener<T>,
     ): Subscription {
-        val wasAdded = strongListeners.add(listener)
-
-        if (!wasAdded) throw AssertionError("Listener is already strongly-subscribed (???)")
+        addStrongListener(listener = listener)
 
         resumeIfPaused(
             phase = "subscribe-strong",
@@ -162,37 +140,10 @@ abstract class Vertex<T>() {
 
         return object : Subscription {
             override fun cancel() {
-                val wasRemoved = strongListeners.remove(listener)
-
-                if (!wasRemoved) throw AssertionError("Listener is not strongly-subscribed (???)")
+                removeStrongListener(listener = listener)
 
                 pauseIfLostListeners(
                     phase = "post-strong-cancel",
-                )
-            }
-        }
-    }
-
-
-    fun subscribeWeak(
-        listener: Listener<T>,
-    ): Subscription {
-        val wasAdded = weakListeners.add(listener)
-
-        if (!wasAdded) throw AssertionError("Listener is already weakly-subscribed (???)")
-
-        resumeIfPaused(
-            phase = "subscribe-weak",
-        )
-
-        return object : Subscription {
-            override fun cancel() {
-                val wasRemoved = weakListeners.remove(listener)
-
-                if (!wasRemoved) throw AssertionError("Listener is not weakly-subscribed (???)")
-
-                pauseIfLostListeners(
-                    phase = "post-weak-cancel",
                 )
             }
         }
@@ -211,6 +162,10 @@ abstract class Vertex<T>() {
             listener = listener,
         )
 
+        resumeIfPaused(
+            phase = "subscribe-hybrid",
+        )
+
         return object : HybridSubscription {
             private var currentStrength = initialStrength
 
@@ -219,12 +174,18 @@ abstract class Vertex<T>() {
                     vertex = this@Vertex,
                     listener = listener,
                 )
+
+                pauseIfLostListeners(
+                    phase = "post-hybrid-cancel",
+                )
             }
 
             override fun updateStrength(
                 newStrength: ListenerStrength,
             ) {
-                if (currentStrength == newStrength) return
+                if (currentStrength == newStrength) {
+                    throw AssertionError("The strength is already set to $newStrength (???)")
+                }
 
                 currentStrength.removeListener(
                     vertex = this@Vertex,
@@ -245,7 +206,7 @@ abstract class Vertex<T>() {
         phase: String,
     ) {
         if (state == State.Paused) {
-            println("Resuming vertex $name [$phase]...")
+//            println("Resuming vertex $tag [$phase]...")
 
             onResumed()
 
@@ -257,7 +218,7 @@ abstract class Vertex<T>() {
         phase: String,
     ) {
         if (!hasListeners() && state == State.Resumed) {
-            println("Pausing vertex $name [$phase]...")
+//            println("Pausing vertex $tag [$phase]...")
 
             onPaused()
 
