@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool
+package diy.lingerie.html
 
 import diy.lingerie.geometry.Point
 import org.w3c.dom.events.Event
