@@ -31,7 +31,7 @@ abstract class ActiveEventStream<E>() : EventStream<E>() {
         target: T,
         consume: (E) -> Unit,
     ) {
-        val subscription = vertex.subscribe(
+        val subscription = vertex.subscribeStrong(
             listener = object : Listener<E> {
                 override fun handle(event: E) {
                     consume(event)

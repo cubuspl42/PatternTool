@@ -9,7 +9,7 @@ abstract class TransformingEventStreamVertex<E, Er>(
 ) : EventStreamVertex<Er>() {
     protected abstract fun handleSourceEvent(event: E)
 
-    override fun observe(): Subscription = source.subscribe(
+    override fun observe(): Subscription = source.subscribeStrong(
         listener = object : Listener<E> {
             override fun handle(event: E) {
                 handleSourceEvent(event)

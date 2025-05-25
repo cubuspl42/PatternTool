@@ -1,12 +1,22 @@
 package diy.lingerie.frp.vertices
 
+import diy.lingerie.frp.HybridSubscription
 import diy.lingerie.frp.Listener
 import diy.lingerie.frp.PlatformWeakReference
 import diy.lingerie.frp.Subscription
-import diy.lingerie.utils.iterable.append
-import diy.lingerie.utils.iterable.forEachRemoving
+import diy.lingerie.frp.mutableWeakSetOf
 
+/**
+ * A vertex in the functional-reactive dependency graph. Allows abstracting the
+ * implementation details from the public interface and sharing common behavior
+ * between cells, event stream and dynamic collections internals, though from
+ * the public interface perspective these entities are strongly distinct.
+ */
 abstract class Vertex<T>() {
+    enum class State {
+        Paused, Resumed,
+    }
+
     sealed class ListenerStrength {
         data object Weak : ListenerStrength() {
             override fun <E> refer(
@@ -62,61 +72,106 @@ abstract class Vertex<T>() {
         ): Boolean
     }
 
-    private val listeners = mutableListOf<ListenerReference<T>>()
+    private var state = State.Paused
+
+    private val strongListeners = mutableSetOf<Listener<T>>()
+
+    private val weakListeners = mutableWeakSetOf<Listener<T>>()
+
+    private fun hasListeners() = strongListeners.isNotEmpty() || weakListeners.isNotEmpty()
 
     fun notify(
         value: T,
     ) {
-        listeners.forEachRemoving { listenerReference ->
-            listenerReference.handle(value)
+        strongListeners.forEach {
+            it.handle(value)
         }
+
+        weakListeners.forEach {
+            it.handle(value)
+        }
+
+        // Touching the weak listeners set could purge all (unreachable) listeners
+        pauseIfLostListeners()
     }
 
-    fun subscribe(
+    fun subscribeStrong(
         listener: Listener<T>,
-        strength: ListenerStrength = ListenerStrength.Strong,
     ): Subscription {
-        val listenerReference = strength.refer(listener)
+        val wasAdded = strongListeners.add(listener)
 
-        val listenerIndex = listeners.append(listenerReference)
+        if (!wasAdded) throw AssertionError("Listener is already strongly-subscribed (???)")
 
-        if (listeners.size == 1) {
-            onResumed()
-        }
+        resumeIfPaused()
 
         return object : Subscription {
             override fun cancel() {
-                // FIXME: This is wrong, the indices move!
-                //  Solution: set of _classic_ listeners, set of weak listeners, subscribe, subscribeWeak +
-                //  hybrid subscription on top of that that remembers current strength and can change modes
+                val wasRemoved = strongListeners.remove(listener)
 
-                // Or good-old addListener(listener) / removeListener(listener) / addWeakListener(listener) / removeWeakListener(listener)
-                // + statically choose the right call in onPause / onResume
-                // + helper weakenListener(listener) [strong -> weak] / strengthenListener(listener) [weak -> strong] ?
-                // + PlatformWeakSet [of listeners] ? :)
-                listeners.removeAt(listenerIndex)
+                if (!wasRemoved) throw AssertionError("Listener is not strongly-subscribed (???)")
 
-                if (listeners.isEmpty()) {
-                    onPaused()
-                }
+                pauseIfLostListeners()
             }
+        }
+    }
 
-            override fun change(
-                strength: ListenerStrength,
-            ) {
-                val listenerReference = listeners.getOrNull(listenerIndex)
-                    ?: throw AssertionError("Listener with index $listenerIndex not found (???)")
+    fun subscribeWeak(
+        listener: Listener<T>,
+    ): Subscription {
+        val wasAdded = weakListeners.add(listener)
 
-                val strongListener = listenerReference as? ListenerReference.Strong<T> ?: throw AssertionError(
-                    "Listener reference is weak (???)"
-                )
+        if (!wasAdded) throw AssertionError("Listener is already weakly-subscribed (???)")
 
-                val listener = strongListener.listener
+        resumeIfPaused()
 
-                val newReference = strength.refer(listener)
+        return object : Subscription {
+            override fun cancel() {
+                val wasRemoved = weakListeners.remove(listener)
 
-                listeners[listenerIndex] = newReference
+                if (!wasRemoved) throw AssertionError("Listener is not weakly-subscribed (???)")
+
+                pauseIfLostListeners()
             }
+        }
+    }
+
+    /**
+     * Subscribes a listener that can switch between strong and weak. The initial
+     * subscription is weak.
+     */
+    fun subscribeHybrid(
+        listener: Listener<T>,
+    ): HybridSubscription = object : HybridSubscription {
+        private var currentSubscription = subscribeWeak(listener = listener)
+
+        override fun weaken() {
+            currentSubscription.cancel()
+            currentSubscription = subscribeWeak(listener = listener)
+        }
+
+        override fun strengthen() {
+            currentSubscription.cancel()
+            currentSubscription = subscribeStrong(listener = listener)
+        }
+
+        override fun cancel() {
+            currentSubscription.cancel()
+        }
+    }
+
+    private fun resumeIfPaused() {
+        if (state == State.Paused) {
+            onResumed()
+
+            state = State.Resumed
+        }
+    }
+
+    private fun pauseIfLostListeners() {
+        if (!hasListeners() && state == State.Resumed) {
+            onPaused()
+
+            state = State.Paused
         }
     }
 
