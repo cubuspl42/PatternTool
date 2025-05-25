@@ -7,6 +7,12 @@ class MutableCellVertex<V>(
 ) {
     override val kind: String = "MutableC"
 
+    override fun onResumed() {
+    }
+
+    override fun onPaused() {
+    }
+
     fun set(newValue: V) {
         update(newValue)
     }

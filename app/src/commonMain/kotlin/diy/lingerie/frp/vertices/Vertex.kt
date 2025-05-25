@@ -226,7 +226,7 @@ abstract class Vertex<T>() {
         }
     }
 
-    protected open fun onResumed() {}
+    protected abstract fun onResumed()
 
-    protected open fun onPaused() {}
+    protected abstract fun onPaused()
 }
