@@ -1,7 +1,6 @@
 package diy.lingerie.frp
 
-
-internal class DivertEventStream<E>(
+internal class DivertEventStreamVertex<E>(
     private val nestedEventStream: CellVertex<EventStream<E>>,
 ) : EventStreamVertex<E>() {
     override fun observe(): Subscription = object : Subscription {
