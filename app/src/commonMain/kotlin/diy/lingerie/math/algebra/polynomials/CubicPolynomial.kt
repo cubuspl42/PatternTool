@@ -1,9 +1,9 @@
 package diy.lingerie.math.algebra.polynomials
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.RealFunction
-import diy.lingerie.math.algebra.equalsWithTolerance
-import diy.lingerie.math.algebra.equalsZeroWithTolerance
+import dev.toolkt.core.numeric.equalsWithTolerance
+import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.linear.vectors.Vector4
 import kotlin.math.acos

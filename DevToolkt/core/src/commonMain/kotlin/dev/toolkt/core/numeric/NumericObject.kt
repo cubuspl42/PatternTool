@@ -1,6 +1,6 @@
-package diy.lingerie.math.algebra
+package dev.toolkt.core.numeric
 
-import diy.lingerie.math.algebra.NumericObject.Tolerance
+import dev.toolkt.core.numeric.NumericObject.Tolerance
 import kotlin.jvm.JvmName
 import kotlin.math.abs
 

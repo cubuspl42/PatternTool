@@ -1,12 +1,10 @@
 package diy.lingerie.math.algebra.linear.matrices.matrix4
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.linear.matrices.matrix2.Matrix4x2
 import diy.lingerie.math.algebra.linear.matrices.matrix3.Matrix3x3
 import diy.lingerie.math.algebra.linear.vectors.Vector3
 import diy.lingerie.math.algebra.linear.vectors.Vector4
-import dev.toolkt.core.iterable.indexOfMaxBy
-import kotlin.math.absoluteValue
 
 data class Matrix3x4(
     val column0: Vector3,

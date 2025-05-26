@@ -1,6 +1,6 @@
 package diy.lingerie.math.algebra.linear.matrices.matrix4
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector4
 
 internal class RowMajorMatrix4x4(

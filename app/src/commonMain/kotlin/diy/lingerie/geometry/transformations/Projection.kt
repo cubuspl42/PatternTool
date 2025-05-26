@@ -1,6 +1,6 @@
 package diy.lingerie.geometry.transformations
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 
 data class Projection(
     val scaling: PrimitiveTransformation.Scaling,

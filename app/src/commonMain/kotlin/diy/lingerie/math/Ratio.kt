@@ -1,8 +1,8 @@
 package diy.lingerie.math
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.divideWithTolerance
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.divideWithTolerance
+import dev.toolkt.core.numeric.equalsWithTolerance
 
 data class Ratio(
     val nominator: Double,

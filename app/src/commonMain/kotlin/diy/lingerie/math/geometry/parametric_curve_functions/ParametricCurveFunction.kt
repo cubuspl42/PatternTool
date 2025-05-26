@@ -1,8 +1,8 @@
 package diy.lingerie.math.geometry.parametric_curve_functions
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.RealFunction
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.polynomials.Polynomial
 import diy.lingerie.math.algebra.sample

@@ -3,7 +3,7 @@ package diy.lingerie.math.geometry
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
 import diy.lingerie.math.Ratio
 import diy.lingerie.math.algebra.Function
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 
 data class RationalImplicitPolynomial(

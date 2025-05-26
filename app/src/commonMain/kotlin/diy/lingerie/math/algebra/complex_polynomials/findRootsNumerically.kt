@@ -1,7 +1,7 @@
 package diy.lingerie.math.algebra.complex_polynomials
 
 import diy.lingerie.math.algebra.Complex
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.div
 import diy.lingerie.math.algebra.sqrt
 import diy.lingerie.math.algebra.times

@@ -1,9 +1,8 @@
 package diy.lingerie.math.algebra.polynomials
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
-import diy.lingerie.math.algebra.equalsZeroWithTolerance
-import diy.lingerie.math.algebra.linear.vectors.Vector2
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
+import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import kotlin.math.sqrt
 
 data class QuadraticPolynomial internal constructor(

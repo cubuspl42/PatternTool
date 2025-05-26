@@ -2,7 +2,7 @@ package diy.lingerie.geometry
 
 import diy.lingerie.ReprObject
 import diy.lingerie.indentLater
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
 
 /**

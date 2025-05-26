@@ -1,11 +1,11 @@
 package diy.lingerie.simple_dom.svg
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.math.algebra.equalsWithToleranceOrNull
+import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.toList
 import diy.lingerie.simple_dom.toSimpleColor

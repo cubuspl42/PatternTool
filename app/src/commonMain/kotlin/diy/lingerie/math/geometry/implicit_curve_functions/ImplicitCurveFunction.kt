@@ -1,7 +1,7 @@
 package diy.lingerie.math.geometry.implicit_curve_functions
 
 import diy.lingerie.math.algebra.Function
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.polynomials.ConstantPolynomial
 import diy.lingerie.math.algebra.polynomials.Polynomial

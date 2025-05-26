@@ -1,6 +1,6 @@
 package diy.lingerie.simple_dom.fo
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.simple_dom.svg.SvgRoot
 import org.w3c.dom.Document
 import org.w3c.dom.Element

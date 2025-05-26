@@ -2,8 +2,8 @@ package diy.lingerie.math.algebra.complex_polynomials
 
 import diy.lingerie.math.algebra.Complex
 import diy.lingerie.math.algebra.Function
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
 import diy.lingerie.math.algebra.sumOf
 import diy.lingerie.math.algebra.times
 import diy.lingerie.math.algebra.toComplex

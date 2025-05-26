@@ -1,7 +1,7 @@
 package diy.lingerie.geometry.splines
 
 import diy.lingerie.ReprObject
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation

@@ -1,9 +1,9 @@
 package diy.lingerie.simple_dom.svg
 
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
-import diy.lingerie.math.algebra.equalsWithToleranceOrNull
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
+import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.toHexString
 import org.w3c.dom.Element

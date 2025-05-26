@@ -1,5 +1,8 @@
 package diy.lingerie.math.algebra
 
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
+import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import kotlin.math.sqrt
 import kotlin.math.hypot
 import kotlin.math.atan2

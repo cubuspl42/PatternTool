@@ -1,7 +1,5 @@
-package diy.lingerie.test_utils
+package dev.toolkt.core.numeric
 
-import dev.toolkt.core.numeric.NumericObject
-import dev.toolkt.core.numeric.equalsWithTolerance
 import kotlin.jvm.JvmName
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -9,7 +7,7 @@ import kotlin.test.assertTrue
 fun assertEqualsWithTolerance(
     expected: Double,
     actual: Double,
-    tolerance: NumericObject.Tolerance = TestTolerances.defaultTolerance,
+    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
 ) {
     assertTrue(
         actual = expected.equalsWithTolerance(actual, tolerance = tolerance),
@@ -20,7 +18,7 @@ fun assertEqualsWithTolerance(
 fun <T : NumericObject> assertEqualsWithTolerance(
     expected: T,
     actual: T,
-    tolerance: NumericObject.Tolerance = TestTolerances.defaultTolerance,
+    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
     message: String = "Expected $expected, but got $actual (tolerance: $tolerance)",
 ) {
     assertTrue(
@@ -33,7 +31,7 @@ fun <T : NumericObject> assertEqualsWithTolerance(
 fun <T : NumericObject> assertEqualsWithTolerance(
     expected: List<T>,
     actual: List<T>,
-    tolerance: NumericObject.Tolerance = TestTolerances.defaultTolerance,
+    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
 ) {
     assertEquals(
         expected = expected.size,
@@ -55,7 +53,7 @@ fun <T : NumericObject> assertEqualsWithTolerance(
 fun assertEqualsWithTolerance(
     expected: List<Double>,
     actual: List<Double>,
-    tolerance: NumericObject.Tolerance = TestTolerances.defaultTolerance,
+    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
 ) {
     assertEquals(
         expected = expected.size,

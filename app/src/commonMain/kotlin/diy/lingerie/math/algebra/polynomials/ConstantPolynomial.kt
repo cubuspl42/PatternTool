@@ -1,7 +1,7 @@
 package diy.lingerie.math.algebra.polynomials
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
 
 data class ConstantPolynomial(
     override val a0: Double,

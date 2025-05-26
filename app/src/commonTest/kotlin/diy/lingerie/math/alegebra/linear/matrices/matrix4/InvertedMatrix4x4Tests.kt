@@ -1,6 +1,6 @@
 package diy.lingerie.math.alegebra.linear.matrices.matrix4
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.linear.matrices.matrix4.InvertedMatrix4x4
 import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix4x4
 import diy.lingerie.math.algebra.linear.vectors.Vector4
