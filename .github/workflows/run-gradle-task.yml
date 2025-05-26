@@ -14,7 +14,7 @@ on:
         default: '.'
 
 jobs:
-  test:
+  task:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
