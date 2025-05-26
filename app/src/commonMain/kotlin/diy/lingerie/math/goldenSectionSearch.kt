@@ -1,4 +1,4 @@
-package diy.lingerie.utils
+package diy.lingerie.math
 
 import dev.toolkt.core.Sample
 import dev.toolkt.core.invokeSampling
