@@ -2,7 +2,7 @@
 
 package diy.lingerie.frp
 
-import diy.lingerie.utils.nextOrNull
+import dev.toolkt.core.iterator.nextOrNull
 
 actual class PlatformWeakSet<T : Any> : AbstractMutableSet<T>() {
     private val weakRefSet = mutableSetOf<WeakRef<T>>()
