@@ -1,7 +1,7 @@
 package diy.lingerie.frp.vertices.dynamic_list
 
 import diy.lingerie.frp.dynamic_list.DynamicList
-import diy.lingerie.utils.single
+import dev.toolkt.core.range.single
 
 class MutableDynamicListVertex<E>(
     initialElements: List<E>,

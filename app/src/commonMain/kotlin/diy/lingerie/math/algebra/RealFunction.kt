@@ -1,10 +1,10 @@
 package diy.lingerie.math.algebra
 
-import diy.lingerie.utils.copy
-import diy.lingerie.utils.extend
+import dev.toolkt.core.range.copy
+import dev.toolkt.core.range.extend
 import dev.toolkt.core.iterable.LinSpace
-import diy.lingerie.utils.mid
-import diy.lingerie.utils.width
+import dev.toolkt.core.range.mid
+import dev.toolkt.core.range.width
 
 interface RealFunction<out B> : Function<Double, B> {
     data class Sample<out B>(

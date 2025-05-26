@@ -1,4 +1,7 @@
-package diy.lingerie.utils
+package dev.toolkt.core.range
+
+import dev.toolkt.core.math.avgOf
+import dev.toolkt.core.math.linearlyInterpolate
 
 /**
  * Normalizes the value to the range [start, end].
@@ -12,20 +15,6 @@ fun ClosedFloatingPointRange<Double>.normalize(x: Double): Double {
     require(x0 != x1) { "x0 and x1 must be different to avoid division by zero." }
 
     return (x - x0) / (x1 - x0)
-}
-
-/**
- * @param t The value 0..1
- * @return The interpolated value in the range [[x0], [x1]].
- */
-fun linearlyInterpolate(
-    t: Double,
-    x0: Double,
-    x1: Double,
-): Double {
-    require(x0 != x1) { "x0 and x1 must be different to avoid division by zero." }
-
-    return x0 + (t * (x1 - x0))
 }
 
 /**
@@ -64,10 +53,3 @@ fun ClosedFloatingPointRange<Double>.copy(
     endInclusive: Double = this.endInclusive,
 ): ClosedFloatingPointRange<Double> = start..endInclusive
 
-fun OpenEndRange<Int>.overlaps(other: OpenEndRange<Int>): Boolean {
-    return start < other.endExclusive && endExclusive > other.start
-}
-
-fun IntRange.Companion.empty(value: Int): IntRange = value until value
-
-fun IntRange.Companion.single(value: Int): IntRange = value..value

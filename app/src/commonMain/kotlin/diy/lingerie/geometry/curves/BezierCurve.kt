@@ -14,8 +14,8 @@ import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.Cu
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.iterable.mapCarrying
-import diy.lingerie.utils.linearlyInterpolate
-import diy.lingerie.utils.normalize
+import dev.toolkt.core.range.linearlyInterpolate
+import dev.toolkt.core.range.normalize
 import kotlin.math.roundToInt
 
 

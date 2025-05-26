@@ -1,5 +1,6 @@
 package diy.lingerie.utils
 
+import dev.toolkt.core.math.split
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Test
 import kotlin.test.assertEquals

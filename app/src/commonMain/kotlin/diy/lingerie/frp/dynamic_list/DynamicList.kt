@@ -3,9 +3,9 @@ package diy.lingerie.frp.dynamic_list
 import dev.toolkt.core.iterable.allUniquePairs
 import diy.lingerie.frp.cell.Cell
 import diy.lingerie.frp.event_stream.EventStream
-import diy.lingerie.utils.empty
+import dev.toolkt.core.range.empty
 import dev.toolkt.core.iterable.updateRange
-import diy.lingerie.utils.overlaps
+import dev.toolkt.core.range.overlaps
 
 abstract class DynamicList<out E> {
     data class Change<out E>(

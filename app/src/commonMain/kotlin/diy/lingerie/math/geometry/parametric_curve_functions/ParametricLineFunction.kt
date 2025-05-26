@@ -8,7 +8,7 @@ import diy.lingerie.math.algebra.divideWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitLineFunction
-import diy.lingerie.utils.avgOf
+import dev.toolkt.core.math.avgOf
 
 /**
  * Represents a line in 2D space in parametric form: p = s + d * t

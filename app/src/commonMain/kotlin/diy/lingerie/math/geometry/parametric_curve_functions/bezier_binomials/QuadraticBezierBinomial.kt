@@ -10,7 +10,7 @@ import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.SubCubicParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
-import diy.lingerie.utils.sq
+import dev.toolkt.core.math.sq
 import kotlin.math.ln
 import kotlin.math.sqrt
 
