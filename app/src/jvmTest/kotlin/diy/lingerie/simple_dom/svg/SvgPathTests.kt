@@ -1,8 +1,8 @@
 package diy.lingerie.simple_dom.svg
 
-import diy.lingerie.geometry.Point
+import dev.toolkt.geometry.Point
 import diy.lingerie.simple_dom.SimpleColor
-import diy.lingerie.test_utils.assertEqualsWithTolerance
+import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import diy.lingerie.utils.xml.childElements
 import diy.lingerie.utils.xml.svg.SVGDOMImplementationUtils
 import diy.lingerie.utils.xml.svg.documentSvgElement

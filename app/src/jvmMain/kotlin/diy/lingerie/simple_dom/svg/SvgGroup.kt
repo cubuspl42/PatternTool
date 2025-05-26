@@ -1,7 +1,7 @@
 package diy.lingerie.simple_dom.svg
 
-import diy.lingerie.geometry.transformations.PrimitiveTransformation
-import diy.lingerie.geometry.transformations.Transformation
+import dev.toolkt.geometry.transformations.PrimitiveTransformation
+import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import diy.lingerie.utils.xml.childElements

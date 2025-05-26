@@ -1,6 +1,6 @@
 package diy.lingerie.html
 
-import diy.lingerie.geometry.Point
+import dev.toolkt.geometry.Point
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
 

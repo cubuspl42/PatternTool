@@ -5,9 +5,9 @@ import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.types.path
-import diy.lingerie.geometry.curves.BezierCurve
-import diy.lingerie.geometry.curves.OpenCurve
-import diy.lingerie.geometry.splines.OpenSpline
+import dev.toolkt.geometry.curves.BezierCurve
+import dev.toolkt.geometry.curves.OpenCurve
+import dev.toolkt.geometry.splines.OpenSpline
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.tool_utils.Playground

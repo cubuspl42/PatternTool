@@ -1,7 +1,7 @@
 package diy.lingerie.simple_dom.svg
 
-import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.Size
+import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Size
 import dev.toolkt.core.numeric.NumericObject
 import org.w3c.dom.Document
 import org.w3c.dom.Element

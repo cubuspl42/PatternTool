@@ -1,4 +1,4 @@
-package diy.lingerie.geometry
+package dev.toolkt.geometry
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException

@@ -1,13 +1,13 @@
 package diy.lingerie.tool_utils
 
-import diy.lingerie.geometry.Line
-import diy.lingerie.geometry.LineSegment
-import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.Ray
-import diy.lingerie.geometry.splines.OpenSpline
-import diy.lingerie.geometry.splines.Spline
-import diy.lingerie.geometry.svg.importSvgPath
-import diy.lingerie.geometry.transformations.Transformation
+import dev.toolkt.geometry.Line
+import dev.toolkt.geometry.LineSegment
+import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Ray
+import dev.toolkt.geometry.splines.OpenSpline
+import dev.toolkt.geometry.splines.Spline
+import dev.toolkt.geometry.svg.importSvgPath
+import dev.toolkt.geometry.transformations.Transformation
 import diy.lingerie.simple_dom.svg.SvgLine
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRectangle
