@@ -26,8 +26,8 @@ import diy.lingerie.math.geometry.implicit_curve_functions.times
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.iterable.partitionAtCenter
 import dev.toolkt.core.iterable.withNeighboursOrNull
-import diy.lingerie.utils.minByUnimodalWithSelectee
-import diy.lingerie.utils.minByWithSelecteeOrNull
+import diy.lingerie.math.minByUnimodalWithSelectee
+import diy.lingerie.math.minByWithSelecteeOrNull
 
 data class CubicBezierBinomial(
     val point0: Vector2,
