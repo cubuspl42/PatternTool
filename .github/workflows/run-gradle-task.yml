@@ -1,0 +1,34 @@
+name: Run Gradle task
+
+on:
+  workflow_call:
+    inputs:
+      task:
+        description: 'The Gradle task to run'
+        required: true
+        type: string
+      working-dir:
+        description: 'The working directory'
+        required: false
+        type: string
+        default: '.'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.7.1
+        with:
+          java-version: "23"
+          distribution: "temurin"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run task ${{ inputs.task }} in ${{ inputs.working-dir }}
+        run: ./gradlew ${{ inputs.task }}
+        working-directory: ${{ inputs.working-dir }}

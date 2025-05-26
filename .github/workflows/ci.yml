@@ -31,6 +31,29 @@ jobs:
           checkAllCommitMessages: "true"
           accessToken: ${{ secrets.GITHUB_TOKEN }}
 
+  rootTests:
+    uses: ./.github/workflows/run-gradle-task.yml
+    with:
+      task: 'allTests'
+
+  coreTests:
+    uses: ./.github/workflows/run-gradle-task.yml
+    with:
+      task: ':core:allTests'
+      working-dir: './DevToolkt'
+
+  mathTests:
+    uses: ./.github/workflows/run-gradle-task.yml
+    with:
+      task: ':math:allTests'
+      working-dir: './DevToolkt'
+
+  geometryTests:
+    uses: ./.github/workflows/run-gradle-task.yml
+    with:
+      task: ':geometry:allTests'
+      working-dir: './DevToolkt'
+
   test:
     runs-on: ubuntu-latest
 
