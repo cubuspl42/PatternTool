@@ -31,25 +31,25 @@ jobs:
           checkAllCommitMessages: "true"
           accessToken: ${{ secrets.GITHUB_TOKEN }}
 
-  test:
-    runs-on: ubuntu-latest
+  rootTests:
+    uses: ./.github/workflows/run-gradle-task.yml
+    with:
+      task: 'allTests'
 
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v4
+  coreTests:
+    uses: ./.github/workflows/run-gradle-task.yml
+    with:
+      task: ':core:allTests'
+      working-dir: './DevToolkt'
 
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4.7.1
-        with:
-          java-version: "23"
-          distribution: "temurin"
+  mathTests:
+    uses: ./.github/workflows/run-gradle-task.yml
+    with:
+      task: ':math:allTests'
+      working-dir: './DevToolkt'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Build & test the Gradle project
-        run: ./gradlew allTests
-
-      - name: Build & test the Gradle project
-        run: ./gradlew :core:allTests :math:allTests :geometry:allTests
-        working-directory: ./DevToolkt
+  geometryTests:
+    uses: ./.github/workflows/run-gradle-task.yml
+    with:
+      task: ':geometry:allTests'
+      working-dir: './DevToolkt'
