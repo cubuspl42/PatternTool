@@ -6,7 +6,7 @@
 [subrepo]
 	remote = git@github.com:dev-toolkt/DevToolkt.git
 	branch = dev
-	commit = 5116a487f1168d8bda6c7bbfa9061e145db7e4d9
-	parent = ff2f2079ef8a2d50e0a12182974ecbe2197618df
+	commit = 8b391937dcc1b83a3db6874a8b9169b7cb533c5f
+	parent = 32d9534243a1d2df523cd8ca990e3d74ac4dc85d
 	method = rebase
 	cmdver = 0.4.9
