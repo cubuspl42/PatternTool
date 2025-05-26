@@ -31,11 +31,12 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.kotlinx.benchmark.runtime)
             implementation(libs.kotlinx.serialization.json)
-            implementation(project(":DevToolkt:core"))
+            implementation("dev.toolkt:core")
         }
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation("dev.toolkt:coreTestUtils")
         }
 
         jvmMain.dependencies {
