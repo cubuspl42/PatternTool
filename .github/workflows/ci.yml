@@ -14,18 +14,12 @@ permissions:
   pull-requests: read
 
 jobs:
-  test:
+  checkCommits:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
-
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4.7.1
-        with:
-          java-version: "21"
-          distribution: "temurin"
 
       - name: Check commit messages
         uses: GsActions/commit-message-checker@v2
@@ -37,7 +31,25 @@ jobs:
           checkAllCommitMessages: "true"
           accessToken: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & test the Gradle project
-        uses: gradle/gradle-build-action@v3.5.0
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.7.1
         with:
-          arguments: allTests
+          java-version: "23"
+          distribution: "temurin"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build & test the Gradle project
+        run: ./gradlew allTests
+
+      - name: Build & test the Gradle project
+        run: ./gradlew :core:allTests :math:allTests :geometry:allTests
+        working-directory: ./DevToolkt
