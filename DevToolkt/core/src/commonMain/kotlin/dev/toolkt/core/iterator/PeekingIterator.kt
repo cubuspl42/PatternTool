@@ -1,4 +1,4 @@
-package diy.lingerie.utils
+package dev.toolkt.core.iterator
 
 class PeekingIterator<T : Any>(
     private val iterator: Iterator<T>,
