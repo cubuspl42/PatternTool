@@ -13,11 +13,11 @@ import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
-import diy.lingerie.utils.avgOf
+import dev.toolkt.core.math.avgOf
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.iterable.clusterSimilar
-import diy.lingerie.utils.split
-import diy.lingerie.utils.width
+import dev.toolkt.core.math.split
+import dev.toolkt.core.range.width
 import kotlin.jvm.JvmInline
 
 /**

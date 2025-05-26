@@ -1,4 +1,4 @@
-package diy.lingerie.utils
+package dev.toolkt.core.math
 
 fun avgOf(
     a: Double,
@@ -26,4 +26,18 @@ fun Double.divideWithRemainder(denominator: Int): Pair<Int, Double> {
     val remainder = this % denominator
 
     return Pair(quotient.toInt(), remainder)
+}
+
+/**
+ * @param t The value 0..1
+ * @return The interpolated value in the range [[x0], [x1]].
+ */
+fun linearlyInterpolate(
+    t: Double,
+    x0: Double,
+    x1: Double,
+): Double {
+    require(x0 != x1) { "x0 and x1 must be different to avoid division by zero." }
+
+    return x0 + (t * (x1 - x0))
 }
