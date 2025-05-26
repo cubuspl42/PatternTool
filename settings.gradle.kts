@@ -11,7 +11,10 @@ plugins {
 
 rootProject.name = "PatternTool"
 
+includeBuild(
+    "DevToolkt",
+)
+
 include(
-    "DevToolkt:core",
     "app",
 )
