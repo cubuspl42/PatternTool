@@ -8,10 +8,10 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
-import diy.lingerie.geometry.LineSegment
-import diy.lingerie.geometry.Ray
-import diy.lingerie.geometry.curves.PrimitiveCurve
-import diy.lingerie.geometry.splines.Spline
+import dev.toolkt.geometry.LineSegment
+import dev.toolkt.geometry.Ray
+import dev.toolkt.geometry.curves.PrimitiveCurve
+import dev.toolkt.geometry.splines.Spline
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.tool_utils.RecognizedShape
 import java.nio.file.Path

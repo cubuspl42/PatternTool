@@ -5,12 +5,11 @@ import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.types.path
-import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.BezierCurve
-import diy.lingerie.geometry.curves.toCoordRange
+import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.curves.BezierCurve
+import dev.toolkt.geometry.curves.toCoordRange
 import diy.lingerie.tool_utils.Playground
-import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
-import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import diy.lingerie.simple_dom.SimpleColor
 import dev.toolkt.core.iterable.LinSpace
 import java.nio.file.Path

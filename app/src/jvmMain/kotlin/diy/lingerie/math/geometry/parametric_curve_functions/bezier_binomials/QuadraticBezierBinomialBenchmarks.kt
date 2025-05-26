@@ -1,6 +1,7 @@
-package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
+package dev.toolkt.math.geometry.parametric_curve_functions.bezier_binomials
 
-import diy.lingerie.math.algebra.linear.vectors.Vector2
+import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
+import dev.toolkt.math.algebra.linear.vectors.Vector2
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State

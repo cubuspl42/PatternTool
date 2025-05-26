@@ -1,12 +1,12 @@
-package diy.lingerie.geometry.svg
+package dev.toolkt.geometry.svg
 
-import diy.lingerie.geometry.LineSegment
-import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.curves.PrimitiveCurve
-import diy.lingerie.geometry.curves.BezierCurve
-import diy.lingerie.geometry.curves.BezierCurve.Edge
-import diy.lingerie.geometry.splines.Spline
-import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
+import dev.toolkt.geometry.LineSegment
+import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.curves.PrimitiveCurve
+import dev.toolkt.geometry.curves.BezierCurve
+import dev.toolkt.geometry.curves.BezierCurve.Edge
+import dev.toolkt.geometry.splines.Spline
+import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgPath.Segment
 import diy.lingerie.simple_dom.svg.SvgShape

@@ -1,8 +1,8 @@
-package diy.lingerie.geometry.svg
+package dev.toolkt.geometry.svg
 
-import diy.lingerie.geometry.splines.ClosedSpline
-import diy.lingerie.geometry.splines.OpenSpline
-import diy.lingerie.geometry.splines.Spline
+import dev.toolkt.geometry.splines.ClosedSpline
+import dev.toolkt.geometry.splines.OpenSpline
+import dev.toolkt.geometry.splines.Spline
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgPath.Segment
 import diy.lingerie.simple_dom.svg.SvgShape

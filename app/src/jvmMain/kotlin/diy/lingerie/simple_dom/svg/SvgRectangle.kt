@@ -1,8 +1,8 @@
 package diy.lingerie.simple_dom.svg
 
-import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.Size
-import diy.lingerie.geometry.transformations.Transformation
+import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Size
+import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import org.w3c.dom.Document

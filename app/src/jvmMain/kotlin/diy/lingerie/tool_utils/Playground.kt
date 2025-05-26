@@ -1,14 +1,14 @@
 package diy.lingerie.tool_utils
 
-import diy.lingerie.geometry.BoundingBox
-import diy.lingerie.geometry.LineSegment
-import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.Size
-import diy.lingerie.geometry.curves.BezierCurve
-import diy.lingerie.geometry.curves.OpenCurve
-import diy.lingerie.geometry.svg.toSvgPath
-import diy.lingerie.math.algebra.sample
-import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
+import dev.toolkt.geometry.BoundingBox
+import dev.toolkt.geometry.LineSegment
+import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Size
+import dev.toolkt.geometry.curves.BezierCurve
+import dev.toolkt.geometry.curves.OpenCurve
+import dev.toolkt.geometry.svg.toSvgPath
+import dev.toolkt.math.algebra.sample
+import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.px
 import diy.lingerie.simple_dom.svg.SvgCircle

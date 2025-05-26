@@ -1,6 +1,6 @@
 package diy.lingerie.utils.xml.svg
 
-import diy.lingerie.geometry.Point
+import dev.toolkt.geometry.Point
 import org.w3c.dom.svg.SVGPathSeg
 import org.w3c.dom.svg.SVGPathSegCurvetoCubicAbs
 import org.w3c.dom.svg.SVGPathSegLinetoAbs

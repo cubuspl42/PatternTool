@@ -1,12 +1,12 @@
 package diy.lingerie.pattern_tool.layout
 
-import diy.lingerie.geometry.AngleSerializer
-import diy.lingerie.geometry.Point
-import diy.lingerie.geometry.PointSerializer
-import diy.lingerie.geometry.RelativeAngle
-import diy.lingerie.geometry.svg.toSvgPath
-import diy.lingerie.geometry.transformations.CombinedTransformation
-import diy.lingerie.geometry.transformations.PrimitiveTransformation
+import dev.toolkt.geometry.AngleSerializer
+import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.PointSerializer
+import dev.toolkt.geometry.RelativeAngle
+import dev.toolkt.geometry.svg.toSvgPath
+import dev.toolkt.geometry.transformations.CombinedTransformation
+import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
 import diy.lingerie.simple_dom.SimpleColor

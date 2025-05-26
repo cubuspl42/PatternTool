@@ -32,6 +32,8 @@ kotlin {
             implementation(libs.kotlinx.benchmark.runtime)
             implementation(libs.kotlinx.serialization.json)
             implementation("dev.toolkt:core")
+            implementation("dev.toolkt:math")
+            implementation("dev.toolkt:geometry")
         }
 
         commonTest.dependencies {

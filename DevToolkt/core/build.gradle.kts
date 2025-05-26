@@ -38,7 +38,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-//            implementation(project("coreTestUtils"))
+            implementation(project(":coreTestUtils"))
         }
 
         jvmMain.dependencies {}

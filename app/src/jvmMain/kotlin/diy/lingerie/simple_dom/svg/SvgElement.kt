@@ -1,6 +1,6 @@
 package diy.lingerie.simple_dom.svg
 
-import diy.lingerie.geometry.transformations.Transformation
+import dev.toolkt.geometry.transformations.Transformation
 import diy.lingerie.simple_dom.SimpleElement
 import org.apache.batik.anim.dom.SVGDOMImplementation
 import org.w3c.dom.Document
