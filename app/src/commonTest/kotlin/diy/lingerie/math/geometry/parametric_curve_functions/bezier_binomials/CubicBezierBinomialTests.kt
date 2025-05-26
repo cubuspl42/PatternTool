@@ -6,7 +6,7 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.test_utils.assertEqualsWithTolerance
-import diy.lingerie.utils.iterable.LinSpace
+import dev.toolkt.core.iterable.LinSpace
 import kotlin.random.Random
 import kotlin.test.Ignore
 import kotlin.test.Test

@@ -2,7 +2,7 @@ package diy.lingerie.geometry
 
 import diy.lingerie.ReprObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
-import diy.lingerie.utils.iterable.LinSpace
+import dev.toolkt.core.iterable.LinSpace
 import kotlin.jvm.JvmInline
 
 /**

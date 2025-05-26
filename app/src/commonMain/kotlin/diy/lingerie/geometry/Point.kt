@@ -5,7 +5,7 @@ import diy.lingerie.math.algebra.NumericObject.Tolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.geometry.transformations.PrimitiveTransformation.Translation
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.utils.iterable.clusterSimilar
+import dev.toolkt.core.iterable.clusterSimilar
 
 data class Point(
     val pointVector: Vector2,

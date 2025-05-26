@@ -6,9 +6,9 @@ import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgPath.Segment
 import diy.lingerie.simple_dom.svg.SvgShape
-import diy.lingerie.utils.iterable.mapCarrying
-import diy.lingerie.utils.iterable.takeWhileIsInstanceWithReminder
-import diy.lingerie.utils.iterable.uncons
+import dev.toolkt.core.iterable.mapCarrying
+import dev.toolkt.core.iterable.takeWhileIsInstanceWithReminder
+import dev.toolkt.core.iterable.uncons
 
 fun ClosedSpline.toSvgPath(
     stroke: SvgShape.Stroke = SvgShape.Stroke.default,

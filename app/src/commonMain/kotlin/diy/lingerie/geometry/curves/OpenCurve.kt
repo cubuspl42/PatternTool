@@ -14,8 +14,8 @@ import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.utils.avgOf
-import diy.lingerie.utils.iterable.LinSpace
-import diy.lingerie.utils.iterable.clusterSimilar
+import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.core.iterable.clusterSimilar
 import diy.lingerie.utils.split
 import diy.lingerie.utils.width
 import kotlin.jvm.JvmInline

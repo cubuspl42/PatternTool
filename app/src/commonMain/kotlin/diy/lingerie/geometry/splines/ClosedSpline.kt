@@ -8,9 +8,9 @@ import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.indentLater
 import diy.lingerie.toReprString
-import diy.lingerie.utils.iterable.clusterSimilarConsecutive
-import diy.lingerie.utils.iterable.withNextCyclic
-import diy.lingerie.utils.iterable.withPreviousCyclic
+import dev.toolkt.core.iterable.clusterSimilarConsecutive
+import dev.toolkt.core.iterable.withNextCyclic
+import dev.toolkt.core.iterable.withPreviousCyclic
 
 /**
  * A composite closed curve guaranteed only to be positionally-continuous (C0).

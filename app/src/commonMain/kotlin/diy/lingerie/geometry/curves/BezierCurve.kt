@@ -12,8 +12,8 @@ import diy.lingerie.math.geometry.RationalImplicitPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
-import diy.lingerie.utils.iterable.LinSpace
-import diy.lingerie.utils.iterable.mapCarrying
+import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.core.iterable.mapCarrying
 import diy.lingerie.utils.linearlyInterpolate
 import diy.lingerie.utils.normalize
 import kotlin.math.roundToInt

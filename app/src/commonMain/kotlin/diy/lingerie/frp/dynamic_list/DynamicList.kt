@@ -1,10 +1,10 @@
 package diy.lingerie.frp.dynamic_list
 
-import diy.lingerie.frp.event_stream.EventStream
+import dev.toolkt.core.iterable.allUniquePairs
 import diy.lingerie.frp.cell.Cell
+import diy.lingerie.frp.event_stream.EventStream
 import diy.lingerie.utils.empty
-import diy.lingerie.utils.iterable.allUniquePairs
-import diy.lingerie.utils.iterable.updateRange
+import dev.toolkt.core.iterable.updateRange
 import diy.lingerie.utils.overlaps
 
 abstract class DynamicList<out E> {

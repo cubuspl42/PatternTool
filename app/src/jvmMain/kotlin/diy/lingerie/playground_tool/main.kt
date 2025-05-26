@@ -12,7 +12,7 @@ import diy.lingerie.tool_utils.Playground
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import diy.lingerie.simple_dom.SimpleColor
-import diy.lingerie.utils.iterable.LinSpace
+import dev.toolkt.core.iterable.LinSpace
 import java.nio.file.Path
 
 class MainCommand : CliktCommand() {

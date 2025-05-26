@@ -1,6 +1,6 @@
 package diy.lingerie
 
-import dev.toolkt.Core
+import dev.toolkt.core.Core
 import kotlin.test.Test
 import kotlin.test.assertTrue
 

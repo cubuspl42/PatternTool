@@ -13,13 +13,13 @@ import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.ReflectionOverLine
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.utils.iterable.crackAt
-import diy.lingerie.utils.iterable.mapCarrying
-import diy.lingerie.utils.iterable.shiftLeft
-import diy.lingerie.utils.iterable.uncons
-import diy.lingerie.utils.iterable.withNextBy
-import diy.lingerie.utils.iterable.withNextCyclic
-import diy.lingerie.utils.iterable.withPreviousCyclic
+import dev.toolkt.core.iterable.crackAt
+import dev.toolkt.core.iterable.mapCarrying
+import dev.toolkt.core.iterable.shiftLeft
+import dev.toolkt.core.iterable.uncons
+import dev.toolkt.core.iterable.withNextBy
+import dev.toolkt.core.iterable.withNextCyclic
+import dev.toolkt.core.iterable.withPreviousCyclic
 import kotlin.jvm.JvmInline
 
 /**

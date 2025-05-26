@@ -12,9 +12,9 @@ import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.transformations.Transformation
 import diy.lingerie.indentLater
 import diy.lingerie.toReprString
-import diy.lingerie.utils.iterable.mapCarrying
-import diy.lingerie.utils.iterable.uncons
-import diy.lingerie.utils.iterable.withPrevious
+import dev.toolkt.core.iterable.mapCarrying
+import dev.toolkt.core.iterable.uncons
+import dev.toolkt.core.iterable.withPrevious
 
 /**
  * A composite open curve assumed to be tangent-continuous (G1).

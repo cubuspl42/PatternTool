@@ -9,8 +9,8 @@ import diy.lingerie.math.algebra.equalsWithToleranceOrNull
 import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.toList
 import diy.lingerie.simple_dom.toSimpleColor
-import diy.lingerie.utils.iterable.mapCarrying
-import diy.lingerie.utils.iterable.uncons
+import dev.toolkt.core.iterable.mapCarrying
+import dev.toolkt.core.iterable.uncons
 import diy.lingerie.utils.xml.svg.asList
 import diy.lingerie.utils.xml.svg.getComputedStyle
 import org.apache.batik.css.engine.SVGCSSEngine
