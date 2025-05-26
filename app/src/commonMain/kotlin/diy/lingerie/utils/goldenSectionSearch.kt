@@ -1,5 +1,7 @@
 package diy.lingerie.utils
 
+import dev.toolkt.core.Sample
+import dev.toolkt.core.invokeSampling
 import dev.toolkt.core.range.copy
 import dev.toolkt.core.range.linearlyInterpolate
 import dev.toolkt.core.range.mid

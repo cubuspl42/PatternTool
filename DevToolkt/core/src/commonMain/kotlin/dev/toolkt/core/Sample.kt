@@ -1,4 +1,4 @@
-package diy.lingerie.utils
+package dev.toolkt.core
 
 data class Sample<A, B>(
     val argument: A,
