@@ -2,7 +2,7 @@ package diy.lingerie.math.algebra
 
 import diy.lingerie.utils.copy
 import diy.lingerie.utils.extend
-import diy.lingerie.utils.iterable.LinSpace
+import dev.toolkt.core.iterable.LinSpace
 import diy.lingerie.utils.mid
 import diy.lingerie.utils.width
 

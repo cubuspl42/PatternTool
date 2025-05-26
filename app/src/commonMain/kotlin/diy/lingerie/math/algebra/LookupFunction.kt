@@ -1,7 +1,7 @@
 package diy.lingerie.math.algebra
 
-import diy.lingerie.utils.iterable.LinSpace
-import diy.lingerie.utils.iterable.mapCarrying
+import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.core.iterable.mapCarrying
 import diy.lingerie.utils.rescaleTo
 
 data class LookupFunction(

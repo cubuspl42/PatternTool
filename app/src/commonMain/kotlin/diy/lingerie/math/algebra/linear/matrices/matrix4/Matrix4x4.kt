@@ -2,7 +2,7 @@ package diy.lingerie.math.algebra.linear.matrices.matrix4
 
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector4
-import diy.lingerie.utils.iterable.indexOfMaxBy
+import dev.toolkt.core.iterable.indexOfMaxBy
 import kotlin.jvm.JvmName
 import kotlin.math.absoluteValue
 

@@ -23,9 +23,9 @@ import diy.lingerie.math.geometry.RationalImplicitPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCubicCurveFunction
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitLineFunction
 import diy.lingerie.math.geometry.implicit_curve_functions.times
-import diy.lingerie.utils.iterable.LinSpace
-import diy.lingerie.utils.iterable.partitionAtCenter
-import diy.lingerie.utils.iterable.withNeighboursOrNull
+import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.core.iterable.partitionAtCenter
+import dev.toolkt.core.iterable.withNeighboursOrNull
 import diy.lingerie.utils.minByUnimodalWithSelectee
 import diy.lingerie.utils.minByWithSelecteeOrNull
 

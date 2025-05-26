@@ -8,7 +8,7 @@ import diy.lingerie.math.algebra.polynomials.Polynomial
 import diy.lingerie.math.algebra.sample
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.implicit_curve_functions.ImplicitCurveFunction
-import diy.lingerie.utils.iterable.LinSpace
+import dev.toolkt.core.iterable.LinSpace
 
 abstract class ParametricCurveFunction : RealFunction<Vector2> {
     companion object {

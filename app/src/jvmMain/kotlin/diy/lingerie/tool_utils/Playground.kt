@@ -19,7 +19,7 @@ import diy.lingerie.simple_dom.svg.SvgMarker
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.simple_dom.svg.SvgShape
-import diy.lingerie.utils.iterable.LinSpace
+import dev.toolkt.core.iterable.LinSpace
 import java.nio.file.Files
 import java.nio.file.Path
 

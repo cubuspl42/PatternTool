@@ -3,8 +3,8 @@ package diy.lingerie.math.algebra.polynomials
 import diy.lingerie.math.algebra.NumericObject
 import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.polynomials.LowPolynomial.Modulation
-import diy.lingerie.utils.iterable.uncons
-import diy.lingerie.utils.iterable.untrail
+import dev.toolkt.core.iterable.uncons
+import dev.toolkt.core.iterable.untrail
 
 /**
  * A polynomial of a low degree (at most cubic)

@@ -7,8 +7,8 @@ import diy.lingerie.math.algebra.equalsWithTolerance
 import diy.lingerie.math.algebra.sumOf
 import diy.lingerie.math.algebra.times
 import diy.lingerie.math.algebra.toComplex
-import diy.lingerie.utils.iterable.uncons
-import diy.lingerie.utils.iterable.untrail
+import dev.toolkt.core.iterable.uncons
+import dev.toolkt.core.iterable.untrail
 
 data class ComplexPolynomial internal constructor(
     val coefficients: List<Complex>,
