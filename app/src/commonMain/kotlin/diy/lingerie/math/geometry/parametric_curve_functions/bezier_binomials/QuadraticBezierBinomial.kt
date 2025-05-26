@@ -1,6 +1,6 @@
 package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.linear.matrices.matrix4.Matrix3x2
 import diy.lingerie.math.algebra.linear.vectors.Vector2

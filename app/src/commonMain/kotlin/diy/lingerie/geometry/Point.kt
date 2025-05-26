@@ -1,7 +1,7 @@
 package diy.lingerie.geometry
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.NumericObject.Tolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericObject.Tolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.geometry.transformations.PrimitiveTransformation.Translation
 import diy.lingerie.geometry.transformations.Transformation

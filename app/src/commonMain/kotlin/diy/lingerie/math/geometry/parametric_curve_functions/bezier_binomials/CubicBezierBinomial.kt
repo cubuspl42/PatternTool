@@ -2,8 +2,8 @@ package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.matrices.matrix2.Matrix4x2
 import diy.lingerie.math.algebra.linear.matrices.matrix2.MatrixNx2
 import diy.lingerie.math.algebra.linear.matrices.matrix3.Matrix3x3

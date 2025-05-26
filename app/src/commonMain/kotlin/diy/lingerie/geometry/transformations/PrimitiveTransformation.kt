@@ -8,8 +8,8 @@ import diy.lingerie.geometry.Vector2
 import diy.lingerie.geometry.rotate
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 
 sealed class PrimitiveTransformation : StandaloneTransformation() {

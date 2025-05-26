@@ -1,7 +1,7 @@
 package diy.lingerie.geometry.curves
 
 import diy.lingerie.geometry.Point
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 
 internal data class ExpectedIntersection(

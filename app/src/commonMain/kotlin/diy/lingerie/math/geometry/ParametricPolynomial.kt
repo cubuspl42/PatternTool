@@ -3,7 +3,7 @@ package diy.lingerie.math.geometry
 import diy.lingerie.geometry.Vector2
 import diy.lingerie.geometry.x
 import diy.lingerie.geometry.y
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.RealFunction
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.math.algebra.polynomials.ConstantPolynomial

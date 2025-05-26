@@ -5,8 +5,8 @@ import diy.lingerie.geometry.curves.PrimitiveCurve
 import diy.lingerie.geometry.curves.BezierCurve
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.NumericObject.Tolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericObject.Tolerance
 import diy.lingerie.math.algebra.linear.vectors.times
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricLineFunction
 
@@ -115,7 +115,7 @@ data class LineSegment(
     override fun locatePoint(point: Point): Coord? {
         val tValue = basisFunction.locatePoint(
             point.pointVector,
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = Tolerance.Default,
         ) ?: return when {
             // If a line is degenerated, _all_ t-values are a good answer, but
             // we don't want to say that the point is not on the curve when it

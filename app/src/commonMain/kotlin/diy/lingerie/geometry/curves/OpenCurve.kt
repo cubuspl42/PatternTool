@@ -10,9 +10,9 @@ import diy.lingerie.geometry.Ray
 import diy.lingerie.geometry.SpatialObject
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.RealFunction
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.math.avgOf
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.iterable.clusterSimilar

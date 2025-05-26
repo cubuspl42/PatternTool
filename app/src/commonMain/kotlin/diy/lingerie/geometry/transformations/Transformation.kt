@@ -2,8 +2,8 @@ package diy.lingerie.geometry.transformations
 
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.transformations.PrimitiveTransformation.Universal
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
 
 sealed class Transformation : NumericObject {
     object Identity : Transformation() {

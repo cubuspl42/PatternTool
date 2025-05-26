@@ -1,8 +1,8 @@
 package diy.lingerie.math.algebra.polynomials
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
-import diy.lingerie.math.algebra.equalsZeroWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
+import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import kotlin.math.pow
 
 data class HighPolynomial internal constructor(

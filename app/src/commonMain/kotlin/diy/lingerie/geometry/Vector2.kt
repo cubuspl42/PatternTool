@@ -5,8 +5,8 @@
  */
 package diy.lingerie.geometry
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.divideWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.divideWithTolerance
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 
 fun Vector2(

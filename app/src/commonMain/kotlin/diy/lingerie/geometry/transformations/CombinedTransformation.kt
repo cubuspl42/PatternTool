@@ -1,7 +1,7 @@
 package diy.lingerie.geometry.transformations
 
 import diy.lingerie.geometry.Point
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 
 data class CombinedTransformation(
     override val standaloneTransformations: List<StandaloneTransformation>,

@@ -1,6 +1,6 @@
 package diy.lingerie.geometry.transformations
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 
 data class Movement(
     val rotation: PrimitiveTransformation.Rotation,

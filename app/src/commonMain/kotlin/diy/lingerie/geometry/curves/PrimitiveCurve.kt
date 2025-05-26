@@ -7,8 +7,8 @@ import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.splines.OpenSpline
 import diy.lingerie.geometry.splines.Spline
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.NumericObject.Tolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericObject.Tolerance
 import diy.lingerie.math.geometry.ParametricPolynomial
 import diy.lingerie.math.geometry.parametric_curve_functions.ParametricCurveFunction
 
@@ -46,7 +46,7 @@ abstract class PrimitiveCurve : OpenCurve() {
         fun findIntersectionsByEquationSolving(
             simpleSubjectCurve: PrimitiveCurve,
             complexObjectCurve: PrimitiveCurve,
-            tolerance: NumericObject.Tolerance.Absolute,
+            tolerance: Tolerance.Absolute,
         ): Set<Intersection> {
             // Solve the intersection equation for the curves (for t ∈ ℝ)
             val tValues = simpleSubjectCurve.basisFunction.solveIntersectionEquation(

@@ -1,6 +1,6 @@
 package diy.lingerie.math.algebra.linear.matrices.matrix3
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector3
 
 internal data class ColumnMajorMatrix3x3(

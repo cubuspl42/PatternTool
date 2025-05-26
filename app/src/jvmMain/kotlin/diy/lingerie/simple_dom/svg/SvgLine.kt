@@ -2,7 +2,7 @@ package diy.lingerie.simple_dom.svg
 
 import diy.lingerie.geometry.Point
 import diy.lingerie.geometry.transformations.Transformation
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 

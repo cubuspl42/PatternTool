@@ -1,7 +1,7 @@
 package diy.lingerie.math.algebra.complex_polynomials
 
 import diy.lingerie.math.algebra.Complex
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.toComplex
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Test

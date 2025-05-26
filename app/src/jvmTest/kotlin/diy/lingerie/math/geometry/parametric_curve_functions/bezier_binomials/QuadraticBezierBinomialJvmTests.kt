@@ -1,6 +1,6 @@
 package diy.lingerie.math.geometry.parametric_curve_functions.bezier_binomials
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.linear.vectors.Vector2
 import diy.lingerie.test_utils.assertEqualsWithTolerance
 import kotlin.test.Test

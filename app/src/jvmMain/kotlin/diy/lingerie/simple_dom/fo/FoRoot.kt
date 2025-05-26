@@ -1,7 +1,7 @@
 package diy.lingerie.simple_dom.fo
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
 import diy.lingerie.simple_dom.SimpleDimension
 import diy.lingerie.simple_dom.svg.SvgElement
 import org.apache.fop.apps.FopFactory

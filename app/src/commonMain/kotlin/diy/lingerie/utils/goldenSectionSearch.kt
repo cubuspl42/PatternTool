@@ -4,8 +4,8 @@ import dev.toolkt.core.range.copy
 import dev.toolkt.core.range.linearlyInterpolate
 import dev.toolkt.core.range.mid
 import dev.toolkt.core.range.width
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
 import kotlin.math.sqrt
 
 private val invPhi = (sqrt(5.0) - 1.0) / 2.0  //  1 / phi

@@ -1,8 +1,8 @@
 package diy.lingerie.math.algebra.linear.vectors
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.NumericObject.Tolerance
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericObject.Tolerance
+import dev.toolkt.core.numeric.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.matrices.matrix2.MatrixNx2
 import kotlin.math.sqrt
 

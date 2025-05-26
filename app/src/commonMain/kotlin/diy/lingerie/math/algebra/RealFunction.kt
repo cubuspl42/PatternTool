@@ -1,5 +1,7 @@
 package diy.lingerie.math.algebra
 
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import dev.toolkt.core.range.copy
 import dev.toolkt.core.range.extend
 import dev.toolkt.core.iterable.LinSpace

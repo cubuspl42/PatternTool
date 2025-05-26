@@ -1,6 +1,6 @@
 package diy.lingerie.test_utils
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 
 object TestTolerances {
     val defaultTolerance = NumericObject.Tolerance.Absolute(

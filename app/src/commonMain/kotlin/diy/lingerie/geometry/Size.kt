@@ -1,7 +1,7 @@
 package diy.lingerie.geometry
 
 import diy.lingerie.geometry.transformations.PrimitiveTransformation
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 
 /**
  * Size of a two-dimensional object

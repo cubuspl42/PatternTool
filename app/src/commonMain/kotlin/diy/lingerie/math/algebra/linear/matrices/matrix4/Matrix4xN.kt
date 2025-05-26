@@ -1,7 +1,7 @@
 package diy.lingerie.math.algebra.linear.matrices.matrix4
 
-import diy.lingerie.math.algebra.NumericObject
-import diy.lingerie.math.algebra.equalsWithTolerance
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsWithTolerance
 import diy.lingerie.math.algebra.linear.matrices.matrix2.Matrix4x2
 import diy.lingerie.math.algebra.linear.matrices.matrix2.MatrixNx2
 import diy.lingerie.math.algebra.linear.vectors.Vector4

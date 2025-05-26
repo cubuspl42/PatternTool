@@ -1,6 +1,6 @@
 package diy.lingerie.math.geometry
 
-import diy.lingerie.math.algebra.NumericObject
+import dev.toolkt.core.numeric.NumericObject
 import diy.lingerie.math.algebra.polynomials.CubicPolynomial
 import diy.lingerie.math.algebra.polynomials.LowPolynomial
 import diy.lingerie.math.algebra.polynomials.modulate
