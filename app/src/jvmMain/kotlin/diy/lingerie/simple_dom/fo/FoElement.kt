@@ -1,6 +1,6 @@
 package diy.lingerie.simple_dom.fo
 
-import diy.lingerie.simple_dom.PureElement
+import dev.toolkt.dom.pure.PureElement
 import org.apache.fop.fo.FOElementMapping
 import org.w3c.dom.Document
 import org.w3c.dom.Element
