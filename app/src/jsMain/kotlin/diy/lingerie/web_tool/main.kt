@@ -1,8 +1,12 @@
 package diy.lingerie.web_tool
 
+import dev.toolkt.dom.pure.style.PureFlexAlignItems
+import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.reactive.ReactiveButtonElement
 import dev.toolkt.dom.reactive.ReactiveCheckboxElement
 import dev.toolkt.dom.reactive.ReactiveDivElement
+import dev.toolkt.dom.reactive.ReactiveFlexStyle
+import dev.toolkt.dom.reactive.ReactiveStyle
 import dev.toolkt.dom.reactive.ReactiveTextNode
 import dev.toolkt.dom.reactive.ReactiveWrapperElement
 import dev.toolkt.reactive.cell.Cell
@@ -26,6 +30,14 @@ fun main() {
     }.hold(initialValue = null)
 
     val root = ReactiveDivElement(
+        style = ReactiveStyle(
+            displayStyle = Cell.of(
+                ReactiveFlexStyle(
+                    direction = PureFlexDirection.Column,
+                    alignItems = PureFlexAlignItems.Start,
+                ),
+            ),
+        ),
         children = ReactiveList.of(
             ReactiveTextNode(
                 data = position.map { positionNow ->
