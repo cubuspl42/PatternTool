@@ -2,17 +2,17 @@ package diy.lingerie.web_tool
 
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
-import dev.toolkt.dom.reactive.ReactiveButtonElement
-import dev.toolkt.dom.reactive.ReactiveCheckboxElement
-import dev.toolkt.dom.reactive.ReactiveDivElement
-import dev.toolkt.dom.reactive.ReactiveFlexStyle
-import dev.toolkt.dom.reactive.ReactiveSpanElement
-import dev.toolkt.dom.reactive.ReactiveStyle
-import dev.toolkt.dom.reactive.ReactiveTextNode
-import dev.toolkt.dom.reactive.ReactiveWrapperElement
+import dev.toolkt.dom.reactive.node.ReactiveTextNode
+import dev.toolkt.dom.reactive.node.element.ReactiveButtonElement
+import dev.toolkt.dom.reactive.node.element.ReactiveCheckboxElement
+import dev.toolkt.dom.reactive.node.element.ReactiveDivElement
+import dev.toolkt.dom.reactive.node.element.ReactiveSpanElement
+import dev.toolkt.dom.reactive.node.element.ReactiveWrapperElement
+import dev.toolkt.dom.reactive.style.ReactiveFlexStyle
+import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.reactive_list.ReactiveList
 import dev.toolkt.reactive.event_stream.hold
+import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 
 fun main() {
