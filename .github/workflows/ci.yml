@@ -53,3 +53,9 @@ jobs:
     with:
       task: ':geometry:allTests'
       working-dir: './DevToolkt'
+
+  pureDomTests:
+    uses: ./.github/workflows/run-gradle-task.yml
+    with:
+      task: ':pureDom:allTests'
+      working-dir: './DevToolkt'
