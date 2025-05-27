@@ -1,4 +1,4 @@
-package diy.lingerie.reactive.dynamic_list
+package diy.lingerie.reactive.reactive_list
 
 import dev.toolkt.core.iterable.allUniquePairs
 import diy.lingerie.reactive.cell.Cell
@@ -7,7 +7,7 @@ import dev.toolkt.core.range.empty
 import dev.toolkt.core.iterable.updateRange
 import dev.toolkt.core.range.overlaps
 
-abstract class DynamicList<out E> {
+abstract class ReactiveList<out E> {
     data class Change<out E>(
         val updates: Set<Update<E>>,
     ) {
@@ -67,14 +67,14 @@ abstract class DynamicList<out E> {
         }
     }
 
-    object Empty : DynamicList<Nothing>() {
+    object Empty : ReactiveList<Nothing>() {
         override val currentElements: List<Nothing> = emptyList()
 
         override val changes: EventStream<Change<Nothing>> = EventStream.Never
 
         override fun <Er> map(
             transform: (Nothing) -> Er,
-        ): DynamicList<Er> = Empty
+        ): ReactiveList<Er> = Empty
 
         override fun <T : Any> pipe(
             target: T,
@@ -87,7 +87,7 @@ abstract class DynamicList<out E> {
     companion object {
         fun <E> of(
             vararg children: E,
-        ): DynamicList<E> = ConstDynamicList(
+        ): ReactiveList<E> = ConstReactiveList(
             constElements = children.toList(),
         )
     }
@@ -98,7 +98,7 @@ abstract class DynamicList<out E> {
 
     abstract fun <Er> map(
         transform: (E) -> Er,
-    ): DynamicList<Er>
+    ): ReactiveList<Er>
 
     fun get(inex: Int): Cell<E?> {
         TODO()
@@ -110,14 +110,14 @@ abstract class DynamicList<out E> {
     )
 }
 
-internal fun <E> DynamicList<E>.copyNow(
+internal fun <E> ReactiveList<E>.copyNow(
     mutableList: MutableList<E>,
 ) {
     mutableList.clear()
     mutableList.addAll(currentElements)
 }
 
-fun <E> DynamicList.Change.Update<E>.applyTo(
+fun <E> ReactiveList.Change.Update<E>.applyTo(
     mutableList: MutableList<E>,
 ) {
     mutableList.updateRange(
@@ -126,7 +126,7 @@ fun <E> DynamicList.Change.Update<E>.applyTo(
     )
 }
 
-fun <E> DynamicList.Change<E>.applyTo(
+fun <E> ReactiveList.Change<E>.applyTo(
     mutableList: MutableList<E>,
 ) {
     updatesInOrder.reversed().forEach { update ->

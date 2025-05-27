@@ -1,6 +1,6 @@
 package diy.lingerie.reactive.vertices.dynamic_list
 
-import diy.lingerie.reactive.dynamic_list.DynamicList
+import diy.lingerie.reactive.reactive_list.ReactiveList
 import dev.toolkt.core.range.single
 
 class MutableDynamicListVertex<E>(
@@ -21,7 +21,7 @@ class MutableDynamicListVertex<E>(
         element: E,
     ) {
         this.update(
-            change = DynamicList.Change.Update(
+            change = ReactiveList.Change.Update(
                 indexRange = IntRange.single(index),
                 updatedElements = listOf(element),
             ).toChange(),

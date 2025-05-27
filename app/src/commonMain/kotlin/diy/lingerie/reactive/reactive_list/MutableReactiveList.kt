@@ -1,10 +1,10 @@
-package diy.lingerie.reactive.dynamic_list
+package diy.lingerie.reactive.reactive_list
 
 import diy.lingerie.reactive.vertices.dynamic_list.MutableDynamicListVertex
 
-class MutableDynamicList<E>(
+class MutableReactiveList<E>(
     initialElements: List<E>,
-) : ActiveDynamicList<E>() {
+) : ActiveReactiveList<E>() {
     override val vertex = MutableDynamicListVertex(
         initialElements = initialElements,
     )

@@ -5,13 +5,13 @@ import diy.lingerie.dynamic_html.DynamicDivElement
 import diy.lingerie.dynamic_html.DynamicHtmlText
 import diy.lingerie.dynamic_html.DynamicWrapperElement
 import diy.lingerie.reactive.cell.Cell
-import diy.lingerie.reactive.dynamic_list.DynamicList
+import diy.lingerie.reactive.reactive_list.ReactiveList
 import diy.lingerie.reactive.event_stream.hold
 import kotlinx.browser.document
 
 fun main() {
     val button = DynamicButtonElement(
-        children = DynamicList.of(
+        children = ReactiveList.of(
             DynamicHtmlText(
                 data = Cell.of("Click me!"),
             ),
@@ -23,7 +23,7 @@ fun main() {
     }.hold(initialValue = null)
 
     val root = DynamicDivElement(
-        children = DynamicList.of(
+        children = ReactiveList.of(
             DynamicHtmlText(
                 data = position.map { positionNow ->
                     when (positionNow) {

@@ -1,7 +1,7 @@
 package diy.lingerie.reactive
 
-import diy.lingerie.reactive.dynamic_list.DynamicList
-import diy.lingerie.reactive.dynamic_list.applyTo
+import diy.lingerie.reactive.reactive_list.ReactiveList
+import diy.lingerie.reactive.reactive_list.applyTo
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -23,16 +23,16 @@ class DynamicListTests {
 
         val mutableList = originalList.toMutableList()
 
-        val change = DynamicList.Change(
+        val change = ReactiveList.Change(
             updates = setOf(
-                DynamicList.Change.Update.change(
+                ReactiveList.Change.Update.change(
                     indexRange = 2..3,
                     changedElements = listOf(21, 31),
                 ),
-                DynamicList.Change.Update.remove(
+                ReactiveList.Change.Update.remove(
                     indexRange = 5..6,
                 ),
-                DynamicList.Change.Update.insert(
+                ReactiveList.Change.Update.insert(
                     index = 9,
                     newElements = listOf(81, 82, 83),
                 ),
