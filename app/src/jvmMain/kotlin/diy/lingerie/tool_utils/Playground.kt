@@ -9,7 +9,6 @@ import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.svg.toSvgPath
 import dev.toolkt.math.algebra.sample
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
-import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.px
 import diy.lingerie.simple_dom.svg.SvgCircle
 import diy.lingerie.simple_dom.svg.SvgGraphicsElements
@@ -20,6 +19,7 @@ import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.simple_dom.svg.SvgShape
 import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.dom.pure.PureColor
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -27,7 +27,7 @@ data class Playground(
     val items: List<Item>,
 ) {
     sealed class Item {
-        abstract val color: SimpleColor
+        abstract val color: PureColor
 
         abstract fun toSvgElement(): SvgGraphicsElements
 
@@ -41,7 +41,7 @@ data class Playground(
     }
 
     data class BezierCurveItem(
-        override val color: SimpleColor = SimpleColor.Companion.red,
+        override val color: PureColor = PureColor.Companion.red,
         val bezierCurve: BezierCurve,
     ) : OpenCurveItem() {
         companion object {
@@ -88,7 +88,7 @@ data class Playground(
 
             return SvgPath.Companion.polyline(
                 stroke = SvgShape.Stroke(
-                    color = SimpleColor.Companion.lightGray,
+                    color = PureColor.Companion.lightGray,
                     width = 0.25,
                 ),
                 points = points,
@@ -116,7 +116,7 @@ data class Playground(
             radius = 1.0,
             stroke = null,
             fill = SvgShape.Fill.Specified(
-                color = SimpleColor.Companion.lightGray,
+                color = PureColor.Companion.lightGray,
             ),
         )
 
@@ -127,14 +127,14 @@ data class Playground(
             start = start,
             end = end,
             stroke = SvgShape.Stroke(
-                color = SimpleColor.Companion.lightGray,
+                color = PureColor.Companion.lightGray,
                 width = 1.0,
             ),
         )
     }
 
     data class QuadraticBezierBinomialItem(
-        override val color: SimpleColor = SimpleColor.Companion.red,
+        override val color: PureColor = PureColor.Companion.red,
         val quadraticBezierBinomial: QuadraticBezierBinomial,
     ) : Item() {
         companion object {
@@ -182,14 +182,14 @@ data class Playground(
             start = start,
             end = end,
             stroke = SvgShape.Stroke(
-                color = SimpleColor.Companion.lightGray,
+                color = PureColor.Companion.lightGray,
                 width = 0.25,
             ),
         )
     }
 
     data class LineSegmentItem(
-        override val color: SimpleColor = SimpleColor.Companion.red,
+        override val color: PureColor = PureColor.Companion.red,
         val lineSegment: LineSegment,
     ) : OpenCurveItem() {
         companion object {
@@ -213,7 +213,7 @@ data class Playground(
     }
 
     data class PointItem(
-        override val color: SimpleColor = SimpleColor.Companion.black,
+        override val color: PureColor = PureColor.Companion.black,
         val point: Point,
     ) : Item() {
         override fun toSvgElement(): SvgCircle = SvgCircle(

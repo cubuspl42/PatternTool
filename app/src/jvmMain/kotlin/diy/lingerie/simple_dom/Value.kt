@@ -1,5 +1,6 @@
 package diy.lingerie.simple_dom
 
+import dev.toolkt.dom.pure.PureColor
 import org.apache.batik.css.engine.value.Value
 import org.w3c.dom.DOMException
 import org.w3c.dom.css.CSSPrimitiveValue
@@ -12,12 +13,12 @@ val Value.primitiveTypeOrNull: Short?
         else -> null
     }
 
-fun Value.toSimpleColor(): SimpleColor? {
+fun Value.toSimpleColor(): PureColor? {
     if (primitiveTypeOrNull != CSSPrimitiveValue.CSS_RGBCOLOR) {
         return null
     }
 
-    return SimpleColor(
+    return PureColor(
         red = red.floatValue.roundToInt(),
         green = green.floatValue.roundToInt(),
         blue = blue.floatValue.roundToInt(),

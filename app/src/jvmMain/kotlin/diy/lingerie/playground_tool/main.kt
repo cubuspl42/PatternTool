@@ -10,8 +10,8 @@ import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.toCoordRange
 import diy.lingerie.tool_utils.Playground
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
-import diy.lingerie.simple_dom.SimpleColor
 import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.dom.pure.PureColor
 import java.nio.file.Path
 
 class MainCommand : CliktCommand() {
@@ -48,16 +48,16 @@ class MainCommand : CliktCommand() {
         val playground = Playground(
             items = listOf(
                 Playground.BezierCurveItem(
-                    color = SimpleColor.blue,
+                    color = PureColor.blue,
                     bezierCurve = bezierCurve,
                 ),
                 Playground.PointItem(
-                    color = SimpleColor.green,
+                    color = PureColor.green,
                     point = point,
                 ),
             ) + loweredCurves.map { loweredCurve ->
                 Playground.QuadraticBezierBinomialItem(
-                    color = SimpleColor.red,
+                    color = PureColor.red,
                     quadraticBezierBinomial = loweredCurve,
                 )
             },
