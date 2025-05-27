@@ -1,20 +1,12 @@
-package diy.lingerie.simple_dom
+package dev.toolkt.dom.pure
 
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
-import dev.toolkt.dom.pure.PureDimension
-import dev.toolkt.dom.pure.PureUnit
-import dev.toolkt.dom.pure.inUnit
-import dev.toolkt.dom.pure.inch
-import dev.toolkt.dom.pure.mm
-import dev.toolkt.dom.pure.percent
-import dev.toolkt.dom.pure.pt
-import dev.toolkt.dom.pure.px
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertIs
 
-class SimpleDimensionTests {
+class PureDimensionTests {
     @Test
     fun testParse() {
         assertEquals(
