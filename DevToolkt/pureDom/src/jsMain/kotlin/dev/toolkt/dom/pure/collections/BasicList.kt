@@ -1,4 +1,4 @@
-package diy.lingerie.html.collections
+package dev.toolkt.dom.pure.collections
 
 interface BasicList<out E> : List<E> {
     override fun isEmpty(): Boolean = size == 0

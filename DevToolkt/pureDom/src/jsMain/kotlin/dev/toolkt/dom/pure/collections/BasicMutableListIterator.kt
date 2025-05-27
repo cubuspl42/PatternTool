@@ -1,4 +1,4 @@
-package diy.lingerie.html.collections
+package dev.toolkt.dom.pure.collections
 
 class BasicMutableListIterator<E>(
     override val list: MutableList<E>,

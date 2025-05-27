@@ -1,4 +1,4 @@
-package diy.lingerie.html.collections
+package dev.toolkt.dom.pure.collections
 
 import org.w3c.dom.ItemArrayLike
 import org.w3c.dom.Node

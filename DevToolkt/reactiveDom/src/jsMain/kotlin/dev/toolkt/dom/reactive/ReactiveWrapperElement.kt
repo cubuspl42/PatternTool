@@ -1,4 +1,4 @@
-package diy.lingerie.reactive_html
+package dev.toolkt.dom.reactive
 
 import org.w3c.dom.Element
 

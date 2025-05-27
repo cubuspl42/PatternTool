@@ -1,4 +1,4 @@
-package diy.lingerie.html.collections
+package dev.toolkt.dom.pure.collections
 
 interface BasicMutableList<E> : MutableList<E>, BasicList<E> {
     override fun addAll(elements: Collection<E>): Boolean {

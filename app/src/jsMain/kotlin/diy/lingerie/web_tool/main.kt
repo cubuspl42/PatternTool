@@ -1,9 +1,9 @@
 package diy.lingerie.web_tool
 
-import diy.lingerie.reactive_html.ReactiveButtonElement
-import diy.lingerie.reactive_html.ReactiveDivElement
-import diy.lingerie.reactive_html.ReactiveHtmlText
-import diy.lingerie.reactive_html.ReactiveWrapperElement
+import dev.toolkt.dom.reactive.ReactiveButtonElement
+import dev.toolkt.dom.reactive.ReactiveDivElement
+import dev.toolkt.dom.reactive.ReactiveHtmlText
+import dev.toolkt.dom.reactive.ReactiveWrapperElement
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import dev.toolkt.reactive.event_stream.hold

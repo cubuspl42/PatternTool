@@ -1,3 +1,3 @@
-package diy.lingerie.html.collections
+package dev.toolkt.dom.pure.collections
 
 interface MutableDomList<E> : BasicMutableList<E>, DomList<E>

@@ -1,4 +1,4 @@
-package diy.lingerie.html.collections
+package dev.toolkt.dom.pure.collections
 
 class ReadOnlyBasicListIterator<out E>(
     override val list: List<E>,

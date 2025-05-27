@@ -47,7 +47,8 @@ kotlin {
             implementation(libs.clikt)
         }
 
-        jvmTest.dependencies {
+        jsMain.dependencies {
+            implementation("dev.toolkt:reactiveDom")
         }
     }
 

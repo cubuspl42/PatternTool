@@ -1,13 +1,12 @@
-package diy.lingerie.reactive_html
+package dev.toolkt.dom.reactive
 
 import dev.toolkt.reactive.cell.Cell
-import diy.lingerie.reactive_html.ReactiveHtmlNode
 import kotlinx.browser.document
 import org.w3c.dom.Text
 
 class ReactiveHtmlText(
     val data: Cell<String>,
-) : ReactiveHtmlNode() {
+) : ReactiveNode() {
     override val rawNode: Text = data.form(
         create = { initialValue: String ->
             document.createTextNode(
