@@ -2,7 +2,7 @@ package diy.lingerie.web_tool
 
 import dev.toolkt.dom.reactive.ReactiveButtonElement
 import dev.toolkt.dom.reactive.ReactiveDivElement
-import dev.toolkt.dom.reactive.ReactiveHtmlText
+import dev.toolkt.dom.reactive.ReactiveTextNode
 import dev.toolkt.dom.reactive.ReactiveWrapperElement
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
@@ -12,7 +12,7 @@ import kotlinx.browser.document
 fun main() {
     val button = ReactiveButtonElement(
         children = ReactiveList.of(
-            ReactiveHtmlText(
+            ReactiveTextNode(
                 data = Cell.of("Click me!"),
             ),
         ),
@@ -24,7 +24,7 @@ fun main() {
 
     val root = ReactiveDivElement(
         children = ReactiveList.of(
-            ReactiveHtmlText(
+            ReactiveTextNode(
                 data = position.map { positionNow ->
                     when (positionNow) {
                         null -> "(none)"
