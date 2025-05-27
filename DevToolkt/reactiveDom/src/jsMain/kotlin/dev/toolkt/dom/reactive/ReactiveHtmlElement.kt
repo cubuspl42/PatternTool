@@ -1,9 +1,9 @@
-package diy.lingerie.reactive_html
+package dev.toolkt.dom.reactive
 
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 
-abstract class ReactiveHtmlElement : ReactiveHtmlNode() {
+abstract class ReactiveHtmlElement : ReactiveNode() {
     final override val rawNode: Node
         get() = rawElement
 

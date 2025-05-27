@@ -1,4 +1,4 @@
-package diy.lingerie.html
+package dev.toolkt.dom.reactive.html
 
 import org.w3c.dom.events.Event
 

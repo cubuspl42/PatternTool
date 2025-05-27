@@ -1,7 +1,7 @@
-package diy.lingerie.reactive_html
+package dev.toolkt.dom.reactive
 
+import dev.toolkt.dom.pure.collections.ChildNodesDomList
 import dev.toolkt.reactive.reactive_list.ReactiveList
-import diy.lingerie.html.collections.ChildNodesDomList
 import kotlinx.browser.document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -11,7 +11,7 @@ abstract class ReactiveGenericHtmlElement() : ReactiveHtmlElement() {
     companion object {
         private fun bindChildren(
             target: Node,
-            children: ReactiveList<ReactiveHtmlNode>,
+            children: ReactiveList<ReactiveNode>,
         ) {
             children.map {
                 it.rawNode
@@ -40,7 +40,7 @@ abstract class ReactiveGenericHtmlElement() : ReactiveHtmlElement() {
 
     abstract val elementName: String
 
-    abstract val children: ReactiveList<ReactiveHtmlNode>
+    abstract val children: ReactiveList<ReactiveNode>
 
     protected abstract fun attachEventHandlers(
         target: EventTarget,

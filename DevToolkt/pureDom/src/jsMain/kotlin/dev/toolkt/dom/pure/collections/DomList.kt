@@ -1,4 +1,4 @@
-package diy.lingerie.html.collections
+package dev.toolkt.dom.pure.collections
 
 interface DomList<out E> : BasicList<E> {
     override val size: Int
