@@ -1,8 +1,8 @@
 @file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 
-package diy.lingerie.frp
+package dev.toolkt.core.platform
 
-import diy.lingerie.utils.collection.CollectionUtils
+import dev.toolkt.core.collection.CollectionUtils
 
 actual class PlatformWeakSet<T : Any> : AbstractMutableSet<T>() {
     private val weakHashSet: MutableSet<T> = CollectionUtils.newWeakSet()

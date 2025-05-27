@@ -1,7 +1,7 @@
 package diy.lingerie.frp.event_stream
 
 import diy.lingerie.frp.Listener
-import diy.lingerie.frp.PlatformFinalizationRegistry
+import dev.toolkt.core.platform.PlatformFinalizationRegistry
 import diy.lingerie.frp.vertices.Vertex
 import diy.lingerie.frp.vertices.event_stream.FilterEventStreamVertex
 import diy.lingerie.frp.vertices.event_stream.MapEventStreamVertex

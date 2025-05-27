@@ -1,4 +1,4 @@
-package diy.lingerie.utils.collection
+package dev.toolkt.core.collection
 
 import java.util.Collections
 import java.util.WeakHashMap

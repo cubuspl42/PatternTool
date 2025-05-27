@@ -3,7 +3,7 @@ package diy.lingerie.frp.vertices
 import diy.lingerie.frp.HybridSubscription
 import diy.lingerie.frp.Listener
 import diy.lingerie.frp.Subscription
-import diy.lingerie.frp.mutableWeakSetOf
+import dev.toolkt.core.platform.mutableWeakSetOf
 
 /**
  * A vertex in the functional-reactive dependency graph. Allows abstracting the

@@ -1,4 +1,4 @@
-package diy.lingerie.frp
+package dev.toolkt.core.platform
 
 external class WeakSet<T : Any> {
     fun add(value: T): WeakSet<T>
@@ -7,5 +7,3 @@ external class WeakSet<T : Any> {
 
     fun has(value: T): Boolean
 }
-
-

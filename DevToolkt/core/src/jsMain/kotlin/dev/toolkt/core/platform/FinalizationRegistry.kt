@@ -1,4 +1,4 @@
-package diy.lingerie.frp
+package dev.toolkt.core.platform
 
 external class FinalizationRegistry(
     cleanupCallback: (heldValue: dynamic) -> Unit,
