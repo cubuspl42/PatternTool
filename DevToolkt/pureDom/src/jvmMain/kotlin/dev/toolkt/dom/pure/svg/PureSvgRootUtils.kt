@@ -1,9 +1,9 @@
-package diy.lingerie.simple_dom.svg
+package dev.toolkt.dom.pure.svg
 
-import diy.lingerie.utils.xml.svg.MinimalCssContext
-import diy.lingerie.utils.xml.svg.SVGDOMImplementationUtils
-import diy.lingerie.utils.xml.svg.createSvgDocument
-import diy.lingerie.utils.xml.svg.documentSvgElement
+import dev.toolkt.dom.pure.utils.xml.svg.MinimalCssContext
+import dev.toolkt.dom.pure.utils.xml.svg.SVGDOMImplementationUtils
+import dev.toolkt.dom.pure.utils.xml.svg.createSvgDocument
+import dev.toolkt.dom.pure.utils.xml.svg.documentSvgElement
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory
 import org.apache.batik.anim.dom.SVGDOMImplementation
 import org.apache.batik.anim.dom.SVGOMDocument

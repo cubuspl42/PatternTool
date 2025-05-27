@@ -3,10 +3,13 @@ package diy.lingerie.simple_dom.svg
 import dev.toolkt.geometry.Point
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.dom.pure.PureColor
-import diy.lingerie.utils.xml.childElements
-import diy.lingerie.utils.xml.svg.SVGDOMImplementationUtils
-import diy.lingerie.utils.xml.svg.documentSvgElement
-import diy.lingerie.utils.xml.svg.parseSvgDocument
+import dev.toolkt.dom.pure.svg.PureSvgPath
+import dev.toolkt.dom.pure.svg.PureSvgShape
+import dev.toolkt.dom.pure.svg.toSimplePath
+import dev.toolkt.dom.pure.utils.xml.childElements
+import dev.toolkt.dom.pure.utils.xml.svg.SVGDOMImplementationUtils
+import dev.toolkt.dom.pure.utils.xml.svg.documentSvgElement
+import dev.toolkt.dom.pure.utils.xml.svg.parseSvgDocument
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory
 import org.apache.batik.anim.dom.SVGDOMImplementation
 import org.w3c.dom.svg.SVGPathElement

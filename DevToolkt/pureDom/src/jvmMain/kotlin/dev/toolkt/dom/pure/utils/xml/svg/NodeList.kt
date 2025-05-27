@@ -1,4 +1,4 @@
-package diy.lingerie.utils.xml.svg
+package dev.toolkt.dom.pure.utils.xml.svg
 
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList

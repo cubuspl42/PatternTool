@@ -1,11 +1,10 @@
-package diy.lingerie.simple_dom.svg
+package dev.toolkt.dom.pure.svg
 
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import dev.toolkt.dom.pure.PureColor
-import diy.lingerie.simple_dom.toHexString
 import org.w3c.dom.Element
 
 abstract class PureSvgShape : PureSvgGraphicsElement() {
@@ -40,7 +39,7 @@ abstract class PureSvgShape : PureSvgGraphicsElement() {
         ) : Fill() {
             companion object {
                 val default = Specified(
-                    color = PureColor.black,
+                    color = PureColor.Companion.black,
                 )
             }
 

@@ -1,15 +1,15 @@
 package diy.lingerie.pattern_tool
 
+import dev.toolkt.dom.pure.PureDimension
+import dev.toolkt.dom.pure.PureUnit
+import dev.toolkt.dom.pure.svg.PureSvgPath
+import dev.toolkt.dom.pure.svg.PureSvgRoot
 import dev.toolkt.geometry.Vector2
 import dev.toolkt.geometry.splines.ClosedSpline
 import dev.toolkt.geometry.splines.Spline
-import dev.toolkt.geometry.svg.importSvgPath
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.math.algebra.linear.vectors.Vector2
-import dev.toolkt.dom.pure.PureDimension
-import dev.toolkt.dom.pure.PureUnit
-import diy.lingerie.simple_dom.svg.PureSvgPath
-import diy.lingerie.simple_dom.svg.PureSvgRoot
+import diy.lingerie.geometry.svg_utils.importSvgPath
 
 private const val mmPerInch = 25.4
 private const val defaultDpi = 300.0
@@ -27,7 +27,8 @@ fun Outline.Companion.loadSvg(
     )
 
     val singleElement =
-        svgRoot.graphicsElements.singleOrNull() ?: throw IllegalArgumentException("SVG document must contain a single element")
+        svgRoot.graphicsElements.singleOrNull()
+            ?: throw IllegalArgumentException("SVG document must contain a single element")
 
     val svgPath =
         singleElement as? PureSvgPath ?: throw IllegalArgumentException("The single element must be a path element")

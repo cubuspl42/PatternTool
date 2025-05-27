@@ -2,9 +2,9 @@
 
 package diy.lingerie.pattern_tool
 
+import dev.toolkt.dom.pure.svg.PureSvgRoot
+import dev.toolkt.dom.pure.svg.parse
 import diy.lingerie.pattern_tool.layout.PatternLayout
-import diy.lingerie.simple_dom.svg.PureSvgRoot
-import diy.lingerie.simple_dom.svg.parse
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.nio.file.Path
 import kotlin.io.path.createDirectories

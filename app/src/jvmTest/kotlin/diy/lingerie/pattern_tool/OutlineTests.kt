@@ -1,17 +1,17 @@
 package diy.lingerie.pattern_tool
 
+import dev.toolkt.core.numeric.assertEqualsWithTolerance
+import dev.toolkt.dom.pure.mm
+import dev.toolkt.dom.pure.svg.PureSvgPath
+import dev.toolkt.dom.pure.svg.PureSvgRoot
+import dev.toolkt.dom.pure.svg.parse
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
-import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.curves.BezierCurve
+import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.splines.OpenSpline
 import dev.toolkt.geometry.splines.Spline
 import diy.lingerie.pattern_tool.Outline.Verge
-import dev.toolkt.dom.pure.mm
-import diy.lingerie.simple_dom.svg.PureSvgPath
-import diy.lingerie.simple_dom.svg.PureSvgRoot
-import dev.toolkt.core.numeric.assertEqualsWithTolerance
-import diy.lingerie.simple_dom.svg.parse
 import diy.lingerie.utils.getResourceAsReader
 import kotlin.test.Ignore
 import kotlin.test.Test

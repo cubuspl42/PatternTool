@@ -3,7 +3,7 @@ package diy.lingerie.simple_dom.fo
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.dom.pure.PureDimension
-import diy.lingerie.simple_dom.svg.PureSvgElement
+import dev.toolkt.dom.pure.svg.PureSvgElement
 import org.apache.fop.apps.FopFactory
 import org.apache.fop.apps.MimeConstants
 import org.apache.fop.util.XMLConstants

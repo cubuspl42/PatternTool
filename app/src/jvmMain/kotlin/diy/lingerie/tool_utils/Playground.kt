@@ -1,25 +1,26 @@
 package diy.lingerie.tool_utils
 
+
+import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.dom.pure.PureColor
+import dev.toolkt.dom.pure.px
+import dev.toolkt.dom.pure.svg.PureSvgCircle
+import dev.toolkt.dom.pure.svg.PureSvgGraphicsElement
+import dev.toolkt.dom.pure.svg.PureSvgGroup
+import dev.toolkt.dom.pure.svg.PureSvgLine
+import dev.toolkt.dom.pure.svg.PureSvgMarker
+import dev.toolkt.dom.pure.svg.PureSvgPath
+import dev.toolkt.dom.pure.svg.PureSvgRoot
+import dev.toolkt.dom.pure.svg.PureSvgShape
 import dev.toolkt.geometry.BoundingBox
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Size
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.OpenCurve
-import dev.toolkt.geometry.svg.toSvgPath
-import dev.toolkt.math.algebra.sample
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
-import dev.toolkt.dom.pure.px
-import diy.lingerie.simple_dom.svg.PureSvgCircle
-import diy.lingerie.simple_dom.svg.PureSvgGraphicsElement
-import diy.lingerie.simple_dom.svg.PureSvgGroup
-import diy.lingerie.simple_dom.svg.PureSvgLine
-import diy.lingerie.simple_dom.svg.PureSvgMarker
-import diy.lingerie.simple_dom.svg.PureSvgPath
-import diy.lingerie.simple_dom.svg.PureSvgRoot
-import diy.lingerie.simple_dom.svg.PureSvgShape
-import dev.toolkt.core.iterable.LinSpace
-import dev.toolkt.dom.pure.PureColor
+import dev.toolkt.math.algebra.sample
+import diy.lingerie.geometry.svg_utils.toSvgPath
 import java.nio.file.Files
 import java.nio.file.Path
 

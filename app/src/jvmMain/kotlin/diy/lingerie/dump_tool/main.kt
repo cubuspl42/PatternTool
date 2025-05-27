@@ -8,12 +8,12 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
+import dev.toolkt.dom.pure.svg.PureSvgRoot
+import dev.toolkt.dom.pure.svg.parse
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Ray
 import dev.toolkt.geometry.curves.PrimitiveCurve
 import dev.toolkt.geometry.splines.Spline
-import diy.lingerie.simple_dom.svg.PureSvgRoot
-import diy.lingerie.simple_dom.svg.parse
 import diy.lingerie.tool_utils.RecognizedShape
 import java.nio.file.Path
 import kotlin.io.path.reader

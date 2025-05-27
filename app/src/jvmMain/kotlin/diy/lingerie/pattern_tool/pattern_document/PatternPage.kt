@@ -1,7 +1,7 @@
 package diy.lingerie.pattern_tool.pattern_document
 
+import dev.toolkt.dom.pure.svg.PureSvgRoot
 import diy.lingerie.simple_dom.fo.FoSvgBlock
-import diy.lingerie.simple_dom.svg.PureSvgRoot
 import java.nio.file.Path
 
 data class PatternPage(

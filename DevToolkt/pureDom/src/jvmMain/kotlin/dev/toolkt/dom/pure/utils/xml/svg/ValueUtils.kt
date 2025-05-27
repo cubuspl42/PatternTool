@@ -1,4 +1,4 @@
-package diy.lingerie.simple_dom
+package dev.toolkt.dom.pure.utils.xml.svg
 
 import dev.toolkt.dom.pure.PureColor
 import org.apache.batik.css.engine.value.Value

@@ -1,4 +1,4 @@
-package diy.lingerie.simple_dom.svg
+package dev.toolkt.dom.pure.svg
 
 import dev.toolkt.dom.pure.PureElement
 import dev.toolkt.geometry.transformations.Transformation

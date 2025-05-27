@@ -1,4 +1,4 @@
-package diy.lingerie.utils.xml.svg
+package dev.toolkt.dom.pure.utils.xml.svg
 
 data class SVGViewBox(
     val xMin: Double,
