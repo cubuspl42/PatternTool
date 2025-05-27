@@ -4,7 +4,7 @@ import dev.toolkt.core.numeric.NumericObject
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
-abstract class SimpleElement : NumericObject {
+abstract class PureElement : NumericObject {
     abstract fun toRawElement(
         document: Document,
     ): Element

@@ -1,11 +1,11 @@
 package diy.lingerie.simple_dom.fo
 
-import diy.lingerie.simple_dom.SimpleElement
+import diy.lingerie.simple_dom.PureElement
 import org.apache.fop.fo.FOElementMapping
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
-abstract class FoElement : SimpleElement() {
+abstract class FoElement : PureElement() {
     companion object {
         const val FO_NS = FOElementMapping.URI
     }

@@ -8,30 +8,30 @@ import dev.toolkt.geometry.splines.OpenSpline
 import dev.toolkt.geometry.splines.Spline
 import dev.toolkt.geometry.svg.importSvgPath
 import dev.toolkt.geometry.transformations.Transformation
-import diy.lingerie.simple_dom.svg.SvgLine
-import diy.lingerie.simple_dom.svg.SvgPath
-import diy.lingerie.simple_dom.svg.SvgRectangle
-import diy.lingerie.simple_dom.svg.SvgRoot
-import diy.lingerie.simple_dom.svg.SvgShape
+import diy.lingerie.simple_dom.svg.PureSvgLine
+import diy.lingerie.simple_dom.svg.PureSvgPath
+import diy.lingerie.simple_dom.svg.PureSvgRectangle
+import diy.lingerie.simple_dom.svg.PureSvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgShape
 import diy.lingerie.simple_dom.toHexString
 
 sealed class RecognizedShape {
     companion object {
         fun interpretSvg(
-            svgRoot: SvgRoot,
+            svgRoot: PureSvgRoot,
         ): List<RecognizedShape> {
             val svgShapes = svgRoot.flatten(
                 baseTransformation = Transformation.Identity,
             )
 
             val (svgRects, otherSvgShapes) = svgShapes.partition {
-                it is SvgRectangle
+                it is PureSvgRectangle
             }
 
             val singleSvgRect = svgRects.singleOrNull()
                 ?: error("Expected a single rectangle, but found ${svgRects.size} rectangles")
 
-            val areaRectangle = singleSvgRect as SvgRectangle
+            val areaRectangle = singleSvgRect as PureSvgRectangle
 
             return RecognizedShape.interpretSvgShapes(
                 areaRectangle = areaRectangle,
@@ -40,8 +40,8 @@ sealed class RecognizedShape {
         }
 
         fun interpretSvgShapes(
-            areaRectangle: SvgRectangle,
-            svgShapes: Iterable<SvgShape>,
+            areaRectangle: PureSvgRectangle,
+            svgShapes: Iterable<PureSvgShape>,
         ): List<RecognizedShape> = svgShapes.map { svgShape ->
             interpretSvgShape(
                 areaRectangle = areaRectangle,
@@ -50,17 +50,17 @@ sealed class RecognizedShape {
         }
 
         fun interpretSvgShape(
-            areaRectangle: SvgRectangle,
-            svgShape: SvgShape,
+            areaRectangle: PureSvgRectangle,
+            svgShape: PureSvgShape,
         ): RecognizedShape = when (svgShape) {
-            is SvgLine -> {
+            is PureSvgLine -> {
                 interpretSvgLine(
                     areaRectangle = areaRectangle,
                     svgLine = svgShape,
                 )
             }
 
-            is SvgPath -> {
+            is PureSvgPath -> {
                 interpretSvgPath(
                     areaRectangle = areaRectangle,
                     svgPath = svgShape,
@@ -71,8 +71,8 @@ sealed class RecognizedShape {
         }
 
         private fun interpretSvgLine(
-            areaRectangle: SvgRectangle,
-            svgLine: SvgLine,
+            areaRectangle: PureSvgRectangle,
+            svgLine: PureSvgLine,
         ): RecognizedShape = when {
             areaRectangle.contains(svgLine.start) && areaRectangle.contains(svgLine.end) -> {
                 recognizeLineSegment(
@@ -145,8 +145,8 @@ sealed class RecognizedShape {
         }
 
         private fun interpretSvgPath(
-            areaRectangle: SvgRectangle,
-            svgPath: SvgPath,
+            areaRectangle: PureSvgRectangle,
+            svgPath: PureSvgPath,
         ): RecognizedShape {
             val hexColorString = svgPath.stroke?.let { stroke ->
                 "[${svgPath.stroke.color.toHexString()}]"
@@ -161,7 +161,7 @@ sealed class RecognizedShape {
             return when {
                 lineSegment != null -> interpretSvgLine(
                     areaRectangle = areaRectangle,
-                    svgLine = SvgLine(
+                    svgLine = PureSvgLine(
                         start = lineSegment.start,
                         end = lineSegment.end,
                     ),

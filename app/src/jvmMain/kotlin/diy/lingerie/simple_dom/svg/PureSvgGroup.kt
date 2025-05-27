@@ -10,11 +10,11 @@ import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGGElement
 import org.w3c.dom.svg.SVGTransformList
 
-data class SvgGroup(
+data class PureSvgGroup(
     val id: String? = null,
     val transformation: Transformation? = null,
-    val children: List<SvgGraphicsElements>,
-) : SvgGraphicsElements() {
+    val children: List<PureSvgGraphicsElement>,
+) : PureSvgGraphicsElement() {
     override fun toRawElement(
         document: Document,
     ): Element = document.createSvgElement("g").apply {
@@ -35,7 +35,7 @@ data class SvgGroup(
     override fun equalsWithTolerance(
         other: NumericObject, tolerance: NumericObject.Tolerance
     ): Boolean = when {
-        other !is SvgGroup -> false
+        other !is PureSvgGroup -> false
         id != other.id -> false
         transformation != other.transformation -> false
         children.size != other.children.size -> false
@@ -45,7 +45,7 @@ data class SvgGroup(
 
     override fun flatten(
         baseTransformation: Transformation,
-    ): List<SvgShape> {
+    ): List<PureSvgShape> {
         val newTransformation = baseTransformation.combineWith(
             this.transformation ?: Transformation.Identity,
         )
@@ -56,7 +56,7 @@ data class SvgGroup(
     }
 }
 
-fun SVGGElement.toSimpleGroup(): SvgGroup = SvgGroup(
+fun SVGGElement.toSimpleGroup(): PureSvgGroup = PureSvgGroup(
     id = id,
     transformation = Transformation.fromSvgTransformList(
         transformList = transform.baseVal,

@@ -4,8 +4,8 @@ import diy.lingerie.pattern_tool.PaperSizeConstants
 import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
 import diy.lingerie.pattern_tool.pattern_document.PatternPage
-import diy.lingerie.simple_dom.svg.SvgGroup
-import diy.lingerie.simple_dom.svg.SvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgGroup
+import diy.lingerie.simple_dom.svg.PureSvgRoot
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,10 +14,10 @@ data class PatternPageLayout(
 ) {
     companion object {
         fun reconstruct(
-            pageSvgRoot: SvgRoot,
+            pageSvgRoot: PureSvgRoot,
         ): PatternPageLayout = PatternPageLayout(
             pieceLayoutById = pageSvgRoot.graphicsElements.mapNotNull { svgElement ->
-                (svgElement as? SvgGroup)?.let { svgGroup ->
+                (svgElement as? PureSvgGroup)?.let { svgGroup ->
                     PatternPieceLayout.reconstruct(svgGroup)
                 }
             }.toMap(),
@@ -27,7 +27,7 @@ data class PatternPageLayout(
     fun layOut(
         patternPieceById: Map<PatternPieceId, PatternPiece>,
     ): PatternPage = PatternPage(
-        pageSvgRoot = SvgRoot(
+        pageSvgRoot = PureSvgRoot(
             width = PaperSizeConstants.A4.width,
             height = PaperSizeConstants.A4.height,
             graphicsElements = pieceLayoutById.map { (id, patternPieceLayout) ->

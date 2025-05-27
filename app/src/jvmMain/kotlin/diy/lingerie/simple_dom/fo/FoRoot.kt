@@ -3,7 +3,7 @@ package diy.lingerie.simple_dom.fo
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.dom.pure.PureDimension
-import diy.lingerie.simple_dom.svg.SvgElement
+import diy.lingerie.simple_dom.svg.PureSvgElement
 import org.apache.fop.apps.FopFactory
 import org.apache.fop.apps.MimeConstants
 import org.apache.fop.util.XMLConstants
@@ -71,7 +71,7 @@ data class FoRoot(
     override fun toRawElement(
         document: Document,
     ): Element = document.createFoElement("root").apply {
-        setAttributeNS(XMLNS_NS, "xmlns:svg", SvgElement.SVG_NS)
+        setAttributeNS(XMLNS_NS, "xmlns:svg", PureSvgElement.SVG_NS)
 
         appendChild(
             document.createFoElement("layout-master-set").apply {

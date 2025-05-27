@@ -10,8 +10,8 @@ import dev.toolkt.geometry.transformations.CombinedTransformation
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
-import diy.lingerie.simple_dom.svg.SvgGroup
-import diy.lingerie.simple_dom.svg.SvgShape
+import diy.lingerie.simple_dom.svg.PureSvgGroup
+import diy.lingerie.simple_dom.svg.PureSvgShape
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -27,7 +27,7 @@ data class PatternPieceLayout(
 ) {
     companion object {
         fun reconstruct(
-            svgGroup: SvgGroup,
+            svgGroup: PureSvgGroup,
         ): Pair<PatternPieceId, PatternPieceLayout> {
             val pieceId = PatternPieceId.valueOf(
                 svgGroup.id ?: throw IllegalArgumentException("Pattern piece layout must have an id"),
@@ -71,19 +71,19 @@ data class PatternPieceLayout(
     fun layOut(
         pieceId: PatternPieceId,
         patternPiece: PatternPiece,
-    ): SvgGroup = SvgGroup(
+    ): PureSvgGroup = PureSvgGroup(
         id = pieceId.name,
         transformation = transformation,
         children = listOf(
             patternPiece.outline.innerSpline.toSvgPath(
-                stroke = SvgShape.Stroke(
+                stroke = PureSvgShape.Stroke(
                     color = PureColor.black,
                     width = 0.4,
                     dashArray = listOf(2.0, 1.0),
                 ),
             ),
             patternPiece.outline.findSeamContour().toSvgPath(
-                stroke = SvgShape.Stroke(
+                stroke = PureSvgShape.Stroke(
                     color = PureColor.black,
                     width = 0.8,
                 ),

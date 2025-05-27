@@ -3,7 +3,7 @@
 package diy.lingerie.pattern_tool
 
 import diy.lingerie.pattern_tool.layout.PatternLayout
-import diy.lingerie.simple_dom.svg.SvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgRoot
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -31,7 +31,7 @@ class PatternGenerator(
         pagesDumpDirectoryPath.createDirectories()
 
         val svgRootByName = inputDirectoryPath.listDirectoryEntries("*.svg").associate { filePath ->
-            filePath.nameWithoutExtension to SvgRoot.parse(
+            filePath.nameWithoutExtension to PureSvgRoot.parse(
                 reader = filePath.reader(),
             )
         }

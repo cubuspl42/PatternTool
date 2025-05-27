@@ -12,7 +12,7 @@ import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Ray
 import dev.toolkt.geometry.curves.PrimitiveCurve
 import dev.toolkt.geometry.splines.Spline
-import diy.lingerie.simple_dom.svg.SvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgRoot
 import diy.lingerie.tool_utils.RecognizedShape
 import java.nio.file.Path
 import kotlin.io.path.reader
@@ -72,7 +72,7 @@ class Tool : CliktCommand() {
     ).help("Path to the SVG file")
 
     override fun run() {
-        val svgRoot = SvgRoot.parse(
+        val svgRoot = PureSvgRoot.parse(
             reader = svgFilePath.reader(),
         )
 

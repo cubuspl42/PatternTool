@@ -8,8 +8,8 @@ import dev.toolkt.geometry.splines.OpenSpline
 import dev.toolkt.geometry.splines.Spline
 import diy.lingerie.pattern_tool.Outline.Verge
 import dev.toolkt.dom.pure.mm
-import diy.lingerie.simple_dom.svg.SvgPath
-import diy.lingerie.simple_dom.svg.SvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgPath
+import diy.lingerie.simple_dom.svg.PureSvgRoot
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import diy.lingerie.utils.getResourceAsReader
 import kotlin.test.Ignore
@@ -346,54 +346,54 @@ class OutlineTests {
         val point22Control = Point(1084.05, 812.07)
         val point23Control = Point(997.57, 842.14)
 
-        val svgRoot = SvgRoot(
+        val svgRoot = PureSvgRoot(
             graphicsElements = listOf(
-                SvgPath(
+                PureSvgPath(
                     segments = listOf(
-                        SvgPath.Segment.MoveTo(
+                        PureSvgPath.Segment.MoveTo(
                             targetPoint = point0FreeJoint,
                         ),
-                        SvgPath.Segment.CubicBezierCurveTo(
+                        PureSvgPath.Segment.CubicBezierCurveTo(
                             controlPoint1 = point1Control,
                             controlPoint2 = point2Control,
                             finalPoint = point3SmoothJoint,
                         ),
-                        SvgPath.Segment.CubicBezierCurveTo(
+                        PureSvgPath.Segment.CubicBezierCurveTo(
                             controlPoint1 = point4Control,
                             controlPoint2 = point5Control,
                             finalPoint = point6FreeJoint,
                         ),
-                        SvgPath.Segment.CubicBezierCurveTo(
+                        PureSvgPath.Segment.CubicBezierCurveTo(
                             controlPoint1 = point7Control,
                             controlPoint2 = point8Control,
                             finalPoint = point9SmoothJoint,
                         ),
-                        SvgPath.Segment.CubicBezierCurveTo(
+                        PureSvgPath.Segment.CubicBezierCurveTo(
                             controlPoint1 = point10Control,
                             controlPoint2 = point11Control,
                             finalPoint = point12SmoothJoint,
                         ),
-                        SvgPath.Segment.CubicBezierCurveTo(
+                        PureSvgPath.Segment.CubicBezierCurveTo(
                             controlPoint1 = point13Control,
                             controlPoint2 = point14Control,
                             finalPoint = point15FreeJoint,
                         ),
-                        SvgPath.Segment.CubicBezierCurveTo(
+                        PureSvgPath.Segment.CubicBezierCurveTo(
                             controlPoint1 = point16Control,
                             controlPoint2 = point17Control,
                             finalPoint = point18FreeJoint,
                         ),
-                        SvgPath.Segment.CubicBezierCurveTo(
+                        PureSvgPath.Segment.CubicBezierCurveTo(
                             controlPoint1 = point19Control,
                             controlPoint2 = point20Control,
                             finalPoint = point21SmoothJoint,
                         ),
-                        SvgPath.Segment.CubicBezierCurveTo(
+                        PureSvgPath.Segment.CubicBezierCurveTo(
                             controlPoint1 = point22Control,
                             controlPoint2 = point23Control,
                             finalPoint = point0FreeJoint,
                         ),
-                        SvgPath.Segment.ClosePath,
+                        PureSvgPath.Segment.ClosePath,
                     ),
                 ),
             ),
@@ -529,7 +529,7 @@ class OutlineTests {
     @Ignore // TODO: Implement spline intersections
     fun testCut() {
         val inputOutline = Outline.loadSvg(
-            svgRoot = SvgRoot.parse(
+            svgRoot = PureSvgRoot.parse(
                 reader = OutlineTests::class.java.getResourceAsReader("outlineCut_input.svg")!!,
             ),
             edgeMetadataMap = Outline.EdgeMetadataMap(
@@ -539,7 +539,7 @@ class OutlineTests {
         )
 
         val expectedFirstCutOutline = Outline.loadSvg(
-            svgRoot = SvgRoot.parse(
+            svgRoot = PureSvgRoot.parse(
                 reader = OutlineTests::class.java.getResourceAsReader("outlineCut_output1.svg")!!,
             ),
             edgeMetadataMap = Outline.EdgeMetadataMap(
@@ -549,7 +549,7 @@ class OutlineTests {
         )
 
         val expectedSecondCutOutline = Outline.loadSvg(
-            svgRoot = SvgRoot.parse(
+            svgRoot = PureSvgRoot.parse(
                 reader = OutlineTests::class.java.getResourceAsReader("outlineCut_output2.svg")!!,
             ),
             edgeMetadataMap = Outline.EdgeMetadataMap(

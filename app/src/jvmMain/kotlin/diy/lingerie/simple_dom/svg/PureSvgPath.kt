@@ -25,12 +25,12 @@ import org.w3c.dom.svg.SVGPathSegCurvetoQuadraticAbs
 import org.w3c.dom.svg.SVGPathSegCurvetoQuadraticRel
 import org.w3c.dom.svg.SVGPathSegMovetoAbs
 
-data class SvgPath(
+data class PureSvgPath(
     override val stroke: Stroke? = Stroke.default,
     override val fill: Fill? = Fill.None,
     override val markerEndId: String? = null,
     val segments: List<Segment>,
-) : SvgShape() {
+) : PureSvgShape() {
     sealed class Segment : NumericObject {
         data object ClosePath : Segment() {
             override val finalPointOrNull: Nothing?
@@ -219,10 +219,10 @@ data class SvgPath(
         fun polyline(
             stroke: Stroke,
             points: List<Point>,
-        ): SvgPath? {
+        ): PureSvgPath? {
             val (firstPoint, trailingPoints) = points.uncons() ?: return null
 
-            return SvgPath(
+            return PureSvgPath(
                 stroke = stroke,
                 segments = listOf(
                     Segment.MoveTo(
@@ -248,7 +248,7 @@ data class SvgPath(
     override fun equalsWithTolerance(
         other: NumericObject, tolerance: NumericObject.Tolerance
     ): Boolean = when {
-        other !is SvgPath -> false
+        other !is PureSvgPath -> false
         !stroke.equalsWithToleranceOrNull(other.stroke, tolerance) -> false
         !segments.equalsWithTolerance(other.segments, tolerance) -> false
         else -> true
@@ -256,7 +256,7 @@ data class SvgPath(
 
     override fun transformVia(
         transformation: Transformation,
-    ): SvgPath = SvgPath(
+    ): PureSvgPath = PureSvgPath(
         stroke = stroke,
         segments = segments.map { segment ->
             segment.transformVia(transformation = transformation)
@@ -264,7 +264,7 @@ data class SvgPath(
     )
 }
 
-fun SVGPathElement.toSimplePath(): SvgPath {
+fun SVGPathElement.toSimplePath(): PureSvgPath {
     val (segments, _) = pathSegList.asList().mapCarrying(
         initialCarry = Point.origin,
     ) { currentPoint, svgPathSeg ->
@@ -276,18 +276,18 @@ fun SVGPathElement.toSimplePath(): SvgPath {
         )
     }
 
-    return SvgPath(
+    return PureSvgPath(
         stroke = toSimpleStroke(),
         segments = segments,
     )
 }
 
-fun SVGElement.toSimpleStroke(): SvgShape.Stroke {
+fun SVGElement.toSimpleStroke(): PureSvgShape.Stroke {
     val strokeColor = getComputedStyle(SVGCSSEngine.STROKE_INDEX).toSimpleColor()
     val strokeWidth = getComputedStyle(SVGCSSEngine.STROKE_WIDTH_INDEX).floatValue.toDouble()
     val strokeDashArray = getComputedStyle(SVGCSSEngine.STROKE_DASHARRAY_INDEX).toList()
 
-    return SvgShape.Stroke(
+    return PureSvgShape.Stroke(
         color = strokeColor ?: PureColor.black,
         width = strokeWidth,
         dashArray = strokeDashArray?.map { it.floatValue.toDouble() },
@@ -296,11 +296,11 @@ fun SVGElement.toSimpleStroke(): SvgShape.Stroke {
 
 fun SVGPathSeg.toSimpleSegment(
     currentPoint: Point,
-): SvgPath.Segment = when (pathSegType) {
+): PureSvgPath.Segment = when (pathSegType) {
     SVGPathSeg.PATHSEG_MOVETO_ABS -> {
         this as SVGPathSegMovetoAbs
 
-        SvgPath.Segment.MoveTo(
+        PureSvgPath.Segment.MoveTo(
             targetPoint = Point(
                 x = x.toDouble(),
                 y = y.toDouble(),
@@ -311,7 +311,7 @@ fun SVGPathSeg.toSimpleSegment(
     SVGPathSeg.PATHSEG_MOVETO_REL -> {
         this as SVGPathSegMovetoAbs
 
-        SvgPath.Segment.MoveTo(
+        PureSvgPath.Segment.MoveTo(
             targetPoint = PrimitiveTransformation.Translation(
                 tx = x.toDouble(),
                 ty = y.toDouble(),
@@ -324,7 +324,7 @@ fun SVGPathSeg.toSimpleSegment(
     SVGPathSeg.PATHSEG_LINETO_ABS -> {
         this as SVGPathSegMovetoAbs
 
-        SvgPath.Segment.LineTo(
+        PureSvgPath.Segment.LineTo(
             finalPoint = Point(
                 x = x.toDouble(),
                 y = y.toDouble(),
@@ -335,7 +335,7 @@ fun SVGPathSeg.toSimpleSegment(
     SVGPathSeg.PATHSEG_LINETO_REL -> {
         this as SVGPathSegMovetoAbs
 
-        SvgPath.Segment.LineTo(
+        PureSvgPath.Segment.LineTo(
             finalPoint = PrimitiveTransformation.Translation(
                 tx = x.toDouble(),
                 ty = y.toDouble(),
@@ -348,7 +348,7 @@ fun SVGPathSeg.toSimpleSegment(
     SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS -> {
         this as SVGPathSegCurvetoQuadraticAbs
 
-        SvgPath.Segment.QuadraticBezierCurveTo(
+        PureSvgPath.Segment.QuadraticBezierCurveTo(
             controlPoint = Point(
                 x = x1.toDouble(),
                 y = y1.toDouble(),
@@ -363,7 +363,7 @@ fun SVGPathSeg.toSimpleSegment(
     SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL -> {
         this as SVGPathSegCurvetoQuadraticRel
 
-        SvgPath.Segment.QuadraticBezierCurveTo(
+        PureSvgPath.Segment.QuadraticBezierCurveTo(
             controlPoint = PrimitiveTransformation.Translation(
                 tx = x1.toDouble(),
                 ty = y1.toDouble(),
@@ -382,7 +382,7 @@ fun SVGPathSeg.toSimpleSegment(
     SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS -> {
         this as SVGPathSegCurvetoCubicAbs
 
-        SvgPath.Segment.CubicBezierCurveTo(
+        PureSvgPath.Segment.CubicBezierCurveTo(
             controlPoint1 = Point(
                 x = x1.toDouble(),
                 y = y1.toDouble(),
@@ -401,7 +401,7 @@ fun SVGPathSeg.toSimpleSegment(
     SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL -> {
         this as SVGPathSegCurvetoCubicRel
 
-        SvgPath.Segment.CubicBezierCurveTo(
+        PureSvgPath.Segment.CubicBezierCurveTo(
             controlPoint1 = PrimitiveTransformation.Translation(
                 tx = x1.toDouble(),
                 ty = y1.toDouble(),
@@ -423,7 +423,7 @@ fun SVGPathSeg.toSimpleSegment(
         )
     }
 
-    SVGPathSeg.PATHSEG_CLOSEPATH -> SvgPath.Segment.ClosePath
+    SVGPathSeg.PATHSEG_CLOSEPATH -> PureSvgPath.Segment.ClosePath
 
     else -> error("Unsupported path segment type: $pathSegType (${this.pathSegTypeAsLetter})")
 }

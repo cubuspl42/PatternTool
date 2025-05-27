@@ -8,14 +8,14 @@ import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.dom.pure.PureDimension
 import dev.toolkt.dom.pure.PureUnit
-import diy.lingerie.simple_dom.svg.SvgPath
-import diy.lingerie.simple_dom.svg.SvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgPath
+import diy.lingerie.simple_dom.svg.PureSvgRoot
 
 private const val mmPerInch = 25.4
 private const val defaultDpi = 300.0
 
 fun Outline.Companion.loadSvg(
-    svgRoot: SvgRoot,
+    svgRoot: PureSvgRoot,
     edgeMetadataMap: Outline.EdgeMetadataMap,
 ): Outline {
     val transformationToMm = PrimitiveTransformation.Scaling(
@@ -30,7 +30,7 @@ fun Outline.Companion.loadSvg(
         svgRoot.graphicsElements.singleOrNull() ?: throw IllegalArgumentException("SVG document must contain a single element")
 
     val svgPath =
-        singleElement as? SvgPath ?: throw IllegalArgumentException("The single element must be a path element")
+        singleElement as? PureSvgPath ?: throw IllegalArgumentException("The single element must be a path element")
 
     val closedSpline = Spline.importSvgPath(
         svgPath = svgPath,
@@ -53,7 +53,7 @@ fun Outline.Companion.loadSvg(
 private fun determineToMmScale(
     width: PureDimension<*>,
     height: PureDimension<*>,
-    viewBox: SvgRoot.ViewBox,
+    viewBox: PureSvgRoot.ViewBox,
 ): Vector2 {
     if (viewBox.x != 0.0 || viewBox.y != 0.0) {
         throw IllegalArgumentException("ViewBox must start at (0, 0)")

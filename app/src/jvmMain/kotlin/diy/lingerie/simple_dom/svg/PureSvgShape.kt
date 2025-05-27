@@ -8,7 +8,7 @@ import dev.toolkt.dom.pure.PureColor
 import diy.lingerie.simple_dom.toHexString
 import org.w3c.dom.Element
 
-abstract class SvgShape : SvgGraphicsElements() {
+abstract class PureSvgShape : PureSvgGraphicsElement() {
     data class Stroke(
         val color: PureColor,
         val width: Double,
@@ -73,7 +73,7 @@ abstract class SvgShape : SvgGraphicsElements() {
 
     final override fun flatten(
         baseTransformation: Transformation,
-    ): List<SvgShape> = listOf(
+    ): List<PureSvgShape> = listOf(
         transformVia(transformation = baseTransformation),
     )
 
@@ -113,5 +113,5 @@ abstract class SvgShape : SvgGraphicsElements() {
 
     abstract fun transformVia(
         transformation: Transformation,
-    ): SvgShape
+    ): PureSvgShape
 }

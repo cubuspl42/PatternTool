@@ -9,7 +9,7 @@ import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.splines.OpenSpline
-import diy.lingerie.simple_dom.svg.SvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgRoot
 import diy.lingerie.tool_utils.Playground
 import diy.lingerie.tool_utils.RecognizedShape
 import java.nio.file.Path
@@ -29,7 +29,7 @@ class Tool : CliktCommand() {
     ).help("Path to the output file")
 
     override fun run() {
-        val svgRoot = SvgRoot.parse(
+        val svgRoot = PureSvgRoot.parse(
             reader = svgFilePath.reader(),
         )
 
