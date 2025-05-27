@@ -1,4 +1,4 @@
-package diy.lingerie.simple_dom
+package dev.toolkt.dom.pure
 
 import dev.toolkt.core.numeric.NumericObject
 import org.w3c.dom.Document

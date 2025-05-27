@@ -1,7 +1,7 @@
 package diy.lingerie.simple_dom.svg
 
+import dev.toolkt.dom.pure.PureElement
 import dev.toolkt.geometry.transformations.Transformation
-import diy.lingerie.simple_dom.PureElement
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGGElement
