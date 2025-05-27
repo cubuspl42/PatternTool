@@ -277,12 +277,12 @@ fun SVGPathElement.toSimplePath(): PureSvgPath {
     }
 
     return PureSvgPath(
-        stroke = toSimpleStroke(),
+        stroke = extractStroke(),
         segments = segments,
     )
 }
 
-fun SVGElement.toSimpleStroke(): PureSvgShape.Stroke {
+fun SVGElement.extractStroke(): PureSvgShape.Stroke {
     val strokeColor = getComputedStyle(SVGCSSEngine.STROKE_INDEX).toSimpleColor()
     val strokeWidth = getComputedStyle(SVGCSSEngine.STROKE_WIDTH_INDEX).floatValue.toDouble()
     val strokeDashArray = getComputedStyle(SVGCSSEngine.STROKE_DASHARRAY_INDEX).toList()

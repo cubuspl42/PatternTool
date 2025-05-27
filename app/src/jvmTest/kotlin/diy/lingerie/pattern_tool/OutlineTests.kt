@@ -11,6 +11,7 @@ import dev.toolkt.dom.pure.mm
 import diy.lingerie.simple_dom.svg.PureSvgPath
 import diy.lingerie.simple_dom.svg.PureSvgRoot
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
+import diy.lingerie.simple_dom.svg.parse
 import diy.lingerie.utils.getResourceAsReader
 import kotlin.test.Ignore
 import kotlin.test.Test

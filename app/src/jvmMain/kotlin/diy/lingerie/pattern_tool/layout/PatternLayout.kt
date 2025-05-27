@@ -6,6 +6,7 @@ import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
 import diy.lingerie.pattern_tool.pattern_document.PatternDocument
 import diy.lingerie.simple_dom.svg.PureSvgRoot
+import diy.lingerie.simple_dom.svg.parse
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json

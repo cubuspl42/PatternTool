@@ -1,24 +1,17 @@
 package diy.lingerie.simple_dom.svg
 
-import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import dev.toolkt.dom.pure.PureDimension
+import dev.toolkt.geometry.transformations.Transformation
 import diy.lingerie.utils.xml.childElements
 import diy.lingerie.utils.xml.getAttributeOrNull
-import diy.lingerie.utils.xml.svg.MinimalCssContext
-import diy.lingerie.utils.xml.svg.SVGDOMImplementationUtils
-import diy.lingerie.utils.xml.svg.createSvgDocument
 import diy.lingerie.utils.xml.svg.documentSvgElement
 import diy.lingerie.utils.xml.writeToFile
-import org.apache.batik.anim.dom.SAXSVGDocumentFactory
-import org.apache.batik.anim.dom.SVGDOMImplementation
-import org.apache.batik.anim.dom.SVGOMDocument
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGDocument
-import java.io.Reader
 import java.nio.file.Path
 
 data class PureSvgRoot(
@@ -67,23 +60,7 @@ data class PureSvgRoot(
         }
     }
 
-    companion object {
-        private val svgDocumentFactory = SAXSVGDocumentFactory(null)
-
-        private val svgDomImplementation: SVGDOMImplementation = SVGDOMImplementationUtils.getSVGDOMImplementation()
-
-        fun parse(
-            reader: Reader,
-        ): PureSvgRoot {
-            val uri = "file://Document.svg"
-
-            val document = svgDocumentFactory.createDocument(uri, reader) as SVGOMDocument
-
-            document.cssEngine = svgDomImplementation.createCSSEngine(document, MinimalCssContext())
-
-            return document.toSimple()
-        }
-    }
+    companion object;
 
     val effectiveViewBox: ViewBox
         get() = viewBox ?: ViewBox(
@@ -101,13 +78,6 @@ data class PureSvgRoot(
         )
     }
 
-    private fun toSvgDocument(): SVGDocument = svgDomImplementation.createSvgDocument().apply {
-        setup(
-            document = this,
-            root = documentSvgElement,
-        )
-    }
-
     private fun toDefsElement(
         document: Document,
     ): Element = document.createSvgElement("defs").apply {
@@ -116,7 +86,7 @@ data class PureSvgRoot(
         }
     }
 
-    private fun setup(
+    internal fun setup(
         document: Document,
         root: Element,
     ) {
@@ -139,7 +109,6 @@ data class PureSvgRoot(
             }
         }
     }
-
 
     override fun toRawElement(
         document: Document,

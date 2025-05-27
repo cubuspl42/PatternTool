@@ -10,6 +10,7 @@ import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.splines.OpenSpline
 import diy.lingerie.simple_dom.svg.PureSvgRoot
+import diy.lingerie.simple_dom.svg.parse
 import diy.lingerie.tool_utils.Playground
 import diy.lingerie.tool_utils.RecognizedShape
 import java.nio.file.Path

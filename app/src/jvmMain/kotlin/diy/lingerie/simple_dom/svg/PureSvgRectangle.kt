@@ -69,6 +69,6 @@ fun SVGRectElement.toSimpleRect(): PureSvgRectangle = PureSvgRectangle(
         width = width.baseVal.value.toDouble(),
         height = height.baseVal.value.toDouble(),
     ),
-    stroke = toSimpleStroke(),
+    stroke = extractStroke(),
 )
 
