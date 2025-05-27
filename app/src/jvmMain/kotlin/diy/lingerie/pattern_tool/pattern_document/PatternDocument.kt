@@ -1,7 +1,7 @@
 package diy.lingerie.pattern_tool.pattern_document
 
+import dev.toolkt.dom.pure.fo.FoRoot
 import diy.lingerie.pattern_tool.PaperSizeConstants
-import diy.lingerie.simple_dom.fo.FoRoot
 import java.nio.file.Path
 
 data class PatternDocument(
