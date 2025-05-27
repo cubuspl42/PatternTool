@@ -1,7 +1,14 @@
 package diy.lingerie.simple_dom
 
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
+import dev.toolkt.dom.pure.PureDimension
 import dev.toolkt.dom.pure.PureUnit
+import dev.toolkt.dom.pure.inUnit
+import dev.toolkt.dom.pure.inch
+import dev.toolkt.dom.pure.mm
+import dev.toolkt.dom.pure.percent
+import dev.toolkt.dom.pure.pt
+import dev.toolkt.dom.pure.px
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -11,32 +18,32 @@ class SimpleDimensionTests {
     @Test
     fun testParse() {
         assertEquals(
-            expected = SimpleDimension(
+            expected = PureDimension(
                 value = 123.0,
                 unit = PureUnit.Pt,
             ),
-            actual = SimpleDimension.parse("123pt"),
+            actual = PureDimension.parse("123pt"),
         )
 
         assertEquals(
-            expected = SimpleDimension(
+            expected = PureDimension(
                 value = 123.0,
                 unit = PureUnit.Mm,
             ),
-            actual = SimpleDimension.parse("123mm"),
+            actual = PureDimension.parse("123mm"),
         )
 
         assertEquals(
             expected = 123.2.px,
-            actual = SimpleDimension.parse("123.2px"),
+            actual = PureDimension.parse("123.2px"),
         )
 
         assertEquals(
-            expected = SimpleDimension(
+            expected = PureDimension(
                 value = 123.0,
                 unit = PureUnit.Percent,
             ),
-            actual = SimpleDimension.parse("123%"),
+            actual = PureDimension.parse("123%"),
         )
     }
 
@@ -164,7 +171,7 @@ class SimpleDimensionTests {
     fun testParseInvalidFormat() {
         assertIs<IllegalArgumentException>(
             assertFails {
-                SimpleDimension.parse("invalid")
+                PureDimension.parse("invalid")
             },
         )
     }

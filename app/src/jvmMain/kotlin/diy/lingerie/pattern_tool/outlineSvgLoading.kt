@@ -6,7 +6,7 @@ import dev.toolkt.geometry.splines.Spline
 import dev.toolkt.geometry.svg.importSvgPath
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.math.algebra.linear.vectors.Vector2
-import diy.lingerie.simple_dom.SimpleDimension
+import dev.toolkt.dom.pure.PureDimension
 import dev.toolkt.dom.pure.PureUnit
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
@@ -51,8 +51,8 @@ fun Outline.Companion.loadSvg(
  * @return The scale factor [s_x, s_y]
  */
 private fun determineToMmScale(
-    width: SimpleDimension<*>,
-    height: SimpleDimension<*>,
+    width: PureDimension<*>,
+    height: PureDimension<*>,
     viewBox: SvgRoot.ViewBox,
 ): Vector2 {
     if (viewBox.x != 0.0 || viewBox.y != 0.0) {

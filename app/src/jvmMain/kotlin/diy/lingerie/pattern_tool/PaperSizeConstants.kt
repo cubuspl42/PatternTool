@@ -1,6 +1,6 @@
 package diy.lingerie.pattern_tool
 
-import diy.lingerie.simple_dom.mm
+import dev.toolkt.dom.pure.mm
 
 object PaperSizeConstants {
     object A4 {

@@ -4,7 +4,7 @@ import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
-import diy.lingerie.simple_dom.SimpleDimension
+import dev.toolkt.dom.pure.PureDimension
 import diy.lingerie.utils.xml.childElements
 import diy.lingerie.utils.xml.getAttributeOrNull
 import diy.lingerie.utils.xml.svg.MinimalCssContext
@@ -24,8 +24,8 @@ import java.nio.file.Path
 data class SvgRoot(
     val viewBox: ViewBox? = null,
     val defs: List<SvgDef> = emptyList(),
-    val width: SimpleDimension<*>,
-    val height: SimpleDimension<*>,
+    val width: PureDimension<*>,
+    val height: PureDimension<*>,
     val graphicsElements: List<SvgGraphicsElements>,
 ) : SvgElement() {
     data class ViewBox(
@@ -176,8 +176,8 @@ fun SVGDocument.toSimple(): SvgRoot {
     val heightString =
         documentSvgElement.getAttributeOrNull("height") ?: throw IllegalArgumentException("Height is not set")
 
-    val width = SimpleDimension.parse(widthString)
-    val height = SimpleDimension.parse(heightString)
+    val width = PureDimension.parse(widthString)
+    val height = PureDimension.parse(heightString)
 
     val viewBox = documentSvgElement.getAttributeOrNull("viewBox")?.let { viewBoxString ->
         SvgRoot.ViewBox.parse(viewBoxString)
