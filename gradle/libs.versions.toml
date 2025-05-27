@@ -1,6 +1,6 @@
 [versions]
 kotlinx-benchmark = "0.4.13"
-kotlin = "2.2.0-Beta1"
+kotlin = "2.2.0-RC"
 kotlinx-serialization = "1.6.0"
 
 [libraries]
