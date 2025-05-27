@@ -16,7 +16,7 @@ import dev.toolkt.reactive.event_stream.hold
 import kotlinx.browser.document
 
 fun main() {
-    val button = ReactiveButtonElement(
+    val positionButton = ReactiveButtonElement(
         children = ReactiveList.of(
             ReactiveTextNode(
                 data = Cell.of("Click me!"),
@@ -26,7 +26,7 @@ fun main() {
 
     val checkbox = ReactiveCheckboxElement()
 
-    val position = button.onClick.map {
+    val position = positionButton.onClick.map {
         it.position
     }.hold(initialValue = null)
 
@@ -64,12 +64,29 @@ fun main() {
                     ),
                 ),
             ),
-            button,
+            positionButton,
             checkbox,
             ReactiveWrapperElement(
                 document.createElement("h1").apply {
                     textContent = "Hello, world!"
                 },
+            ),
+            ReactiveSpanElement(
+                children = ReactiveList.of(
+                    ReactiveButtonElement(
+                        children = ReactiveList.of(
+                            ReactiveTextNode(
+                                data = Cell.of("Check!"),
+                            ),
+                        ),
+                    ).apply {
+                        onClick.pipe(
+                            target = checkbox,
+                        ) {
+                            checkbox.setChecked(true)
+                        }
+                    },
+                )
             ),
         ),
     )
