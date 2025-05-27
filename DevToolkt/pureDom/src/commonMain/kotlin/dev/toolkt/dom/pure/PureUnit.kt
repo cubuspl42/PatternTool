@@ -1,11 +1,11 @@
-package diy.lingerie.simple_dom
+package dev.toolkt.dom.pure
 
-sealed class SimpleUnit {
-    sealed class Absolute : SimpleUnit() {
+sealed class PureUnit {
+    sealed class Absolute : PureUnit() {
         companion object {
             fun parse(
                 unitString: String,
-            ): SimpleUnit = when (unitString) {
+            ): PureUnit = when (unitString) {
                 Mm.string -> Mm
                 Pt.string -> Pt
                 Px.string -> Px
@@ -89,14 +89,14 @@ sealed class SimpleUnit {
         override val string: String = "px"
     }
 
-    data object Percent : SimpleUnit() {
+    data object Percent : PureUnit() {
         override val string: String = "%"
     }
 
     companion object {
         fun parse(
             unitString: String,
-        ): SimpleUnit = when (unitString) {
+        ): PureUnit = when (unitString) {
             Percent.string -> Percent
 
             else -> Absolute.parse(

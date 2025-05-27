@@ -7,7 +7,7 @@ import dev.toolkt.geometry.svg.importSvgPath
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import diy.lingerie.simple_dom.SimpleDimension
-import diy.lingerie.simple_dom.SimpleUnit
+import dev.toolkt.dom.pure.PureUnit
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
 
@@ -66,7 +66,7 @@ private fun determineToMmScale(
     }
 
     return when (unit) {
-        SimpleUnit.Percent -> {
+        PureUnit.Percent -> {
             if (width.value != 100.0 || height.value != 100.0) {
                 throw IllegalArgumentException("Width and height must be 100% when using percent units")
             }
@@ -76,7 +76,7 @@ private fun determineToMmScale(
             Vector2.full(mmPerInch / defaultDpi)
         }
 
-        SimpleUnit.Mm -> {
+        PureUnit.Mm -> {
             // If the SVG document size is expressed in millimeters, we just need to project the viewbox onto the
             // expected size
 
