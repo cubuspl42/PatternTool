@@ -1,12 +1,12 @@
-package diy.lingerie.reactive.vertices.dynamic_list
+package diy.lingerie.reactive.vertices.reactive_list
 
 import diy.lingerie.reactive.reactive_list.ReactiveList
 import diy.lingerie.reactive.Listener
 
-class MapDynamicListVertex<E, Er>(
-    private val source: DynamicListVertex<E>,
+class MapReactiveListVertex<E, Er>(
+    private val source: ReactiveListVertex<E>,
     private val transform: (E) -> Er,
-) : DependentDynamicListVertex<Er>(
+) : DependentReactiveListVertex<Er>(
     initialElements = source.currentElements.map(transform),
 ) {
     override val kind: String = "MapL"

@@ -1,4 +1,4 @@
-package diy.lingerie.dynamic_html
+package diy.lingerie.reactive_html
 
 import diy.lingerie.reactive.reactive_list.ReactiveList
 import diy.lingerie.html.collections.ChildNodesDomList
@@ -7,11 +7,11 @@ import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.events.EventTarget
 
-abstract class DynamicGenericHtmlElement() : DynamicHtmlElement() {
+abstract class ReactiveGenericHtmlElement() : ReactiveHtmlElement() {
     companion object {
         private fun bindChildren(
             target: Node,
-            children: ReactiveList<DynamicHtmlNode>,
+            children: ReactiveList<ReactiveHtmlNode>,
         ) {
             children.map {
                 it.rawNode
@@ -40,7 +40,7 @@ abstract class DynamicGenericHtmlElement() : DynamicHtmlElement() {
 
     abstract val elementName: String
 
-    abstract val children: ReactiveList<DynamicHtmlNode>
+    abstract val children: ReactiveList<ReactiveHtmlNode>
 
     protected abstract fun attachEventHandlers(
         target: EventTarget,

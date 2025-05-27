@@ -1,10 +1,10 @@
-package diy.lingerie.reactive.vertices.dynamic_list
+package diy.lingerie.reactive.vertices.reactive_list
 
 import diy.lingerie.reactive.reactive_list.ReactiveList
 import diy.lingerie.reactive.reactive_list.applyTo
 import diy.lingerie.reactive.vertices.Vertex
 
-abstract class DynamicListVertex<E>(
+abstract class ReactiveListVertex<E>(
     initialElements: List<E>,
 ) : Vertex<ReactiveList.Change<E>>() {
     private val mutableElements = initialElements.toMutableList()

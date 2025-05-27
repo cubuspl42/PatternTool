@@ -5,7 +5,7 @@ import diy.lingerie.reactive.reactive_list.applyTo
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class DynamicListTests {
+class ReactiveListTests {
     @Test
     fun testChangeApply() {
         val originalList = listOf(
