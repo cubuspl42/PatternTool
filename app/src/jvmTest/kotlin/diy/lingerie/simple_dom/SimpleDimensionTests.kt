@@ -1,6 +1,7 @@
 package diy.lingerie.simple_dom
 
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
+import dev.toolkt.dom.pure.PureUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -12,7 +13,7 @@ class SimpleDimensionTests {
         assertEquals(
             expected = SimpleDimension(
                 value = 123.0,
-                unit = SimpleUnit.Pt,
+                unit = PureUnit.Pt,
             ),
             actual = SimpleDimension.parse("123pt"),
         )
@@ -20,7 +21,7 @@ class SimpleDimensionTests {
         assertEquals(
             expected = SimpleDimension(
                 value = 123.0,
-                unit = SimpleUnit.Mm,
+                unit = PureUnit.Mm,
             ),
             actual = SimpleDimension.parse("123mm"),
         )
@@ -33,7 +34,7 @@ class SimpleDimensionTests {
         assertEquals(
             expected = SimpleDimension(
                 value = 123.0,
-                unit = SimpleUnit.Percent,
+                unit = PureUnit.Percent,
             ),
             actual = SimpleDimension.parse("123%"),
         )
@@ -43,27 +44,27 @@ class SimpleDimensionTests {
     fun testMmInUnit() {
         assertEquals(
             expected = 1.mm,
-            actual = 1.mm.inUnit(SimpleUnit.Mm)
+            actual = 1.mm.inUnit(PureUnit.Mm)
         )
 
         assertEqualsWithTolerance(
             expected = 0.039370.inch,
-            actual = 1.mm.inUnit(SimpleUnit.Inch)
+            actual = 1.mm.inUnit(PureUnit.Inch)
         )
 
         assertEqualsWithTolerance(
             expected = 2.834645.pt,
-            actual = 1.mm.inUnit(SimpleUnit.Pt)
+            actual = 1.mm.inUnit(PureUnit.Pt)
         )
 
         assertEqualsWithTolerance(
             expected = 3.779527.px,
-            actual = 1.mm.inUnit(SimpleUnit.Px)
+            actual = 1.mm.inUnit(PureUnit.Px)
         )
 
         assertEqualsWithTolerance(
             expected = 4.860236.inch,
-            actual = 123.45.mm.inUnit(SimpleUnit.Inch)
+            actual = 123.45.mm.inUnit(PureUnit.Inch)
         )
     }
 
@@ -71,27 +72,27 @@ class SimpleDimensionTests {
     fun testInchInUnit() {
         assertEquals(
             expected = 1.inch,
-            actual = 1.inch.inUnit(SimpleUnit.Inch)
+            actual = 1.inch.inUnit(PureUnit.Inch)
         )
 
         assertEquals(
             expected = 25.4.mm,
-            actual = 1.inch.inUnit(SimpleUnit.Mm)
+            actual = 1.inch.inUnit(PureUnit.Mm)
         )
 
         assertEquals(
             expected = 72.0.pt,
-            actual = 1.inch.inUnit(SimpleUnit.Pt)
+            actual = 1.inch.inUnit(PureUnit.Pt)
         )
 
         assertEquals(
             expected = 96.0.px,
-            actual = 1.inch.inUnit(SimpleUnit.Px)
+            actual = 1.inch.inUnit(PureUnit.Px)
         )
 
         assertEquals(
             expected = 3135.63.mm,
-            actual = 123.45.inch.inUnit(SimpleUnit.Mm)
+            actual = 123.45.inch.inUnit(PureUnit.Mm)
         )
     }
 
@@ -99,27 +100,27 @@ class SimpleDimensionTests {
     fun testPtInUnit() {
         assertEquals(
             expected = 1.pt,
-            actual = 1.pt.inUnit(SimpleUnit.Pt)
+            actual = 1.pt.inUnit(PureUnit.Pt)
         )
 
         assertEqualsWithTolerance(
             expected = 0.013888.inch,
-            actual = 1.pt.inUnit(SimpleUnit.Inch)
+            actual = 1.pt.inUnit(PureUnit.Inch)
         )
 
         assertEqualsWithTolerance(
             expected = 0.352778.mm,
-            actual = 1.pt.inUnit(SimpleUnit.Mm)
+            actual = 1.pt.inUnit(PureUnit.Mm)
         )
 
         assertEqualsWithTolerance(
             expected = 1.333333.px,
-            actual = 1.pt.inUnit(SimpleUnit.Px)
+            actual = 1.pt.inUnit(PureUnit.Px)
         )
 
         assertEqualsWithTolerance(
             expected = 43.550416.mm,
-            actual = 123.45.pt.inUnit(SimpleUnit.Mm)
+            actual = 123.45.pt.inUnit(PureUnit.Mm)
         )
     }
 
@@ -127,27 +128,27 @@ class SimpleDimensionTests {
     fun testPxInUnit() {
         assertEquals(
             expected = 1.px,
-            actual = 1.px.inUnit(SimpleUnit.Px)
+            actual = 1.px.inUnit(PureUnit.Px)
         )
 
         assertEqualsWithTolerance(
             expected = 0.010417.inch,
-            actual = 1.px.inUnit(SimpleUnit.Inch)
+            actual = 1.px.inUnit(PureUnit.Inch)
         )
 
         assertEqualsWithTolerance(
             expected = 0.264583.mm,
-            actual = 1.px.inUnit(SimpleUnit.Mm)
+            actual = 1.px.inUnit(PureUnit.Mm)
         )
 
         assertEqualsWithTolerance(
             expected = 0.75.pt,
-            actual = 1.px.inUnit(SimpleUnit.Pt)
+            actual = 1.px.inUnit(PureUnit.Pt)
         )
 
         assertEqualsWithTolerance(
             expected = 32.662812.mm,
-            actual = 123.45.px.inUnit(SimpleUnit.Mm)
+            actual = 123.45.px.inUnit(PureUnit.Mm)
         )
     }
 
