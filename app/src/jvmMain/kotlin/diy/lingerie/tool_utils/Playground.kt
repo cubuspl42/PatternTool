@@ -9,7 +9,7 @@ import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.svg.toSvgPath
 import dev.toolkt.math.algebra.sample
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
-import diy.lingerie.simple_dom.px
+import dev.toolkt.dom.pure.px
 import diy.lingerie.simple_dom.svg.SvgCircle
 import diy.lingerie.simple_dom.svg.SvgGraphicsElements
 import diy.lingerie.simple_dom.svg.SvgGroup

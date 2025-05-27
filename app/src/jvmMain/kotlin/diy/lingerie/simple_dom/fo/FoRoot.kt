@@ -2,7 +2,7 @@ package diy.lingerie.simple_dom.fo
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
-import diy.lingerie.simple_dom.SimpleDimension
+import dev.toolkt.dom.pure.PureDimension
 import diy.lingerie.simple_dom.svg.SvgElement
 import org.apache.fop.apps.FopFactory
 import org.apache.fop.apps.MimeConstants
@@ -19,8 +19,8 @@ import javax.xml.transform.sax.SAXResult
 import kotlin.io.path.outputStream
 
 data class FoRoot(
-    val pageWidth: SimpleDimension<*>,
-    val pageHeight: SimpleDimension<*>,
+    val pageWidth: PureDimension<*>,
+    val pageHeight: PureDimension<*>,
     val blocks: List<FoSvgBlock>,
 ) : FoElement() {
     companion object {

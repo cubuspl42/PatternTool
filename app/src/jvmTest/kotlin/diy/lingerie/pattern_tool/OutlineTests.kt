@@ -7,7 +7,7 @@ import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.splines.OpenSpline
 import dev.toolkt.geometry.splines.Spline
 import diy.lingerie.pattern_tool.Outline.Verge
-import diy.lingerie.simple_dom.mm
+import dev.toolkt.dom.pure.mm
 import diy.lingerie.simple_dom.svg.SvgPath
 import diy.lingerie.simple_dom.svg.SvgRoot
 import dev.toolkt.core.numeric.assertEqualsWithTolerance

@@ -1,10 +1,9 @@
-package diy.lingerie.simple_dom
+package dev.toolkt.dom.pure
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
-import dev.toolkt.dom.pure.PureUnit
 
-data class SimpleDimension<out U : PureUnit>(
+data class PureDimension<out U : PureUnit>(
     val value: Double,
     val unit: U,
 ) : NumericObject {
@@ -13,7 +12,7 @@ data class SimpleDimension<out U : PureUnit>(
 
         fun parse(
             string: String,
-        ): SimpleDimension<*> {
+        ): PureDimension<*> {
             val matchResult =
                 regex.matchEntire(string) ?: throw IllegalArgumentException("Invalid dimension format: $string")
 
@@ -22,7 +21,7 @@ data class SimpleDimension<out U : PureUnit>(
             val value = valueString.toDouble()
             val unit = PureUnit.parse(unitString)
 
-            return SimpleDimension(
+            return PureDimension(
                 value = value,
                 unit = unit,
             )
@@ -31,11 +30,11 @@ data class SimpleDimension<out U : PureUnit>(
 
     fun toDimensionString(): String = "$value${unit.string}"
 
-    val asAbsolute: SimpleDimension<PureUnit.Absolute>?
+    val asAbsolute: PureDimension<PureUnit.Absolute>?
         get() {
             val absoluteUnit = unit as? PureUnit.Absolute ?: return null
 
-            return SimpleDimension(
+            return PureDimension(
                 value = value,
                 unit = absoluteUnit,
             )
@@ -44,62 +43,62 @@ data class SimpleDimension<out U : PureUnit>(
     override fun equalsWithTolerance(
         other: NumericObject, tolerance: NumericObject.Tolerance
     ): Boolean = when {
-        other !is SimpleDimension<*> -> false
+        other !is PureDimension<*> -> false
         !value.equalsWithTolerance(other.value, tolerance = tolerance) -> false
         unit != other.unit -> false
         else -> true
     }
 }
 
-fun <U : PureUnit.Absolute> SimpleDimension<PureUnit.Absolute>.inUnit(
+fun <U : PureUnit.Absolute> PureDimension<PureUnit.Absolute>.inUnit(
     otherUnit: U,
-): SimpleDimension<U> = SimpleDimension(
+): PureDimension<U> = PureDimension(
     value = value * otherUnit.per(unit),
     unit = otherUnit,
 )
 
-val Double.mm: SimpleDimension<PureUnit.Mm>
-    get() = SimpleDimension(
+val Double.mm: PureDimension<PureUnit.Mm>
+    get() = PureDimension(
         value = this,
         unit = PureUnit.Mm,
     )
 
-val Int.mm: SimpleDimension<PureUnit.Mm>
+val Int.mm: PureDimension<PureUnit.Mm>
     get() = this.toDouble().mm
 
-val Double.inch: SimpleDimension<PureUnit.Inch>
-    get() = SimpleDimension(
+val Double.inch: PureDimension<PureUnit.Inch>
+    get() = PureDimension(
         value = this,
         unit = PureUnit.Inch,
     )
 
-val Int.inch: SimpleDimension<PureUnit.Inch>
+val Int.inch: PureDimension<PureUnit.Inch>
     get() = this.toDouble().inch
 
-val Double.pt: SimpleDimension<PureUnit.Pt>
-    get() = SimpleDimension(
+val Double.pt: PureDimension<PureUnit.Pt>
+    get() = PureDimension(
         value = this,
         unit = PureUnit.Pt,
     )
 
-val Int.pt: SimpleDimension<PureUnit.Pt>
+val Int.pt: PureDimension<PureUnit.Pt>
     get() = this.toDouble().pt
 
 
-val Double.px: SimpleDimension<PureUnit.Px>
-    get() = SimpleDimension(
+val Double.px: PureDimension<PureUnit.Px>
+    get() = PureDimension(
         value = this,
         unit = PureUnit.Px,
     )
 
-val Int.px: SimpleDimension<PureUnit.Px>
+val Int.px: PureDimension<PureUnit.Px>
     get() = this.toDouble().px
 
-val Double.percent: SimpleDimension<PureUnit.Percent>
-    get() = SimpleDimension(
+val Double.percent: PureDimension<PureUnit.Percent>
+    get() = PureDimension(
         value = this,
         unit = PureUnit.Percent,
     )
 
-val Int.percent: SimpleDimension<PureUnit.Percent>
+val Int.percent: PureDimension<PureUnit.Percent>
     get() = this.toDouble().percent
