@@ -13,6 +13,7 @@ import dev.toolkt.geometry.Ray
 import dev.toolkt.geometry.curves.PrimitiveCurve
 import dev.toolkt.geometry.splines.Spline
 import diy.lingerie.simple_dom.svg.PureSvgRoot
+import diy.lingerie.simple_dom.svg.parse
 import diy.lingerie.tool_utils.RecognizedShape
 import java.nio.file.Path
 import kotlin.io.path.reader

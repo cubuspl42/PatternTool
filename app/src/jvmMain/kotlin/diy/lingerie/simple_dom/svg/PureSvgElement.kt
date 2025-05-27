@@ -2,7 +2,6 @@ package diy.lingerie.simple_dom.svg
 
 import dev.toolkt.geometry.transformations.Transformation
 import diy.lingerie.simple_dom.PureElement
-import org.apache.batik.anim.dom.SVGDOMImplementation
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGGElement
@@ -11,7 +10,7 @@ import org.w3c.dom.svg.SVGRectElement
 
 abstract class PureSvgElement : PureElement() {
     companion object {
-        const val SVG_NS = SVGDOMImplementation.SVG_NAMESPACE_URI
+        const val SVG_NS = "http://www.w3.org/2000/svg"
     }
 
     protected fun Document.createSvgElement(
