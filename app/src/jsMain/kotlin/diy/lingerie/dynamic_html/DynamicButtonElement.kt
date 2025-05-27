@@ -1,6 +1,6 @@
 package diy.lingerie.dynamic_html
 
-import diy.lingerie.reactive.dynamic_list.DynamicList
+import diy.lingerie.reactive.reactive_list.ReactiveList
 import diy.lingerie.reactive.event_stream.EventEmitter
 import diy.lingerie.html.HtmlEventHandler
 import diy.lingerie.html.HtmlMouseEvent
@@ -8,7 +8,7 @@ import diy.lingerie.html.attach
 import org.w3c.dom.events.EventTarget
 
 class DynamicButtonElement(
-    override val children: DynamicList<DynamicHtmlNode>,
+    override val children: ReactiveList<DynamicHtmlNode>,
     private val handleClick: HtmlEventHandler<HtmlMouseEvent> = HtmlEventHandler.Accepting,
 ) : DynamicGenericHtmlElement() {
     override val elementName: String = "button"

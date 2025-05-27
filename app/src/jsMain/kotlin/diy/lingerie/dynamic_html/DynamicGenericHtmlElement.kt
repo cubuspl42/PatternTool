@@ -1,6 +1,6 @@
 package diy.lingerie.dynamic_html
 
-import diy.lingerie.reactive.dynamic_list.DynamicList
+import diy.lingerie.reactive.reactive_list.ReactiveList
 import diy.lingerie.html.collections.ChildNodesDomList
 import kotlinx.browser.document
 import org.w3c.dom.Element
@@ -11,7 +11,7 @@ abstract class DynamicGenericHtmlElement() : DynamicHtmlElement() {
     companion object {
         private fun bindChildren(
             target: Node,
-            children: DynamicList<DynamicHtmlNode>,
+            children: ReactiveList<DynamicHtmlNode>,
         ) {
             children.map {
                 it.rawNode
@@ -40,7 +40,7 @@ abstract class DynamicGenericHtmlElement() : DynamicHtmlElement() {
 
     abstract val elementName: String
 
-    abstract val children: DynamicList<DynamicHtmlNode>
+    abstract val children: ReactiveList<DynamicHtmlNode>
 
     protected abstract fun attachEventHandlers(
         target: EventTarget,

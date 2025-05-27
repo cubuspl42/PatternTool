@@ -1,6 +1,6 @@
 package diy.lingerie.reactive.vertices.dynamic_list
 
-import diy.lingerie.reactive.dynamic_list.DynamicList
+import diy.lingerie.reactive.reactive_list.ReactiveList
 import diy.lingerie.reactive.Listener
 
 class MapDynamicListVertex<E, Er>(
@@ -12,12 +12,12 @@ class MapDynamicListVertex<E, Er>(
     override val kind: String = "MapL"
 
     override fun buildHybridSubscription() = source.subscribeHybrid(
-        listener = object : Listener<DynamicList.Change<E>> {
-            override fun handle(change: DynamicList.Change<E>) {
+        listener = object : Listener<ReactiveList.Change<E>> {
+            override fun handle(change: ReactiveList.Change<E>) {
                 update(
-                    change = DynamicList.Change(
+                    change = ReactiveList.Change(
                         updates = change.updates.map { update ->
-                            DynamicList.Change.Update(
+                            ReactiveList.Change.Update(
                                 indexRange = update.indexRange,
                                 updatedElements = update.updatedElements.map(transform),
                             )

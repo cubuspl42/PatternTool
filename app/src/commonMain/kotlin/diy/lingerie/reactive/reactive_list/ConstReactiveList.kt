@@ -1,10 +1,10 @@
-package diy.lingerie.reactive.dynamic_list
+package diy.lingerie.reactive.reactive_list
 
 import diy.lingerie.reactive.event_stream.EventStream
 
-data class ConstDynamicList<out E>(
+data class ConstReactiveList<out E>(
     private val constElements: List<E>,
-) : DynamicList<E>() {
+) : ReactiveList<E>() {
     override val currentElements: List<E>
         get() = constElements
 
@@ -12,7 +12,7 @@ data class ConstDynamicList<out E>(
 
     override fun <Er> map(
         transform: (E) -> Er,
-    ): DynamicList<Er> = ConstDynamicList(
+    ): ReactiveList<Er> = ConstReactiveList(
         constElements = constElements.map(transform),
     )
 
