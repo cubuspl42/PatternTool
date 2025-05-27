@@ -4,9 +4,9 @@ import diy.lingerie.dynamic_html.DynamicButtonElement
 import diy.lingerie.dynamic_html.DynamicDivElement
 import diy.lingerie.dynamic_html.DynamicHtmlText
 import diy.lingerie.dynamic_html.DynamicWrapperElement
-import diy.lingerie.frp.cell.Cell
-import diy.lingerie.frp.dynamic_list.DynamicList
-import diy.lingerie.frp.event_stream.hold
+import diy.lingerie.reactive.cell.Cell
+import diy.lingerie.reactive.dynamic_list.DynamicList
+import diy.lingerie.reactive.event_stream.hold
 import kotlinx.browser.document
 
 fun main() {

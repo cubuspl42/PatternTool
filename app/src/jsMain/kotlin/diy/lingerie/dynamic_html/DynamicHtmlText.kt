@@ -1,6 +1,6 @@
 package diy.lingerie.dynamic_html
 
-import diy.lingerie.frp.cell.Cell
+import diy.lingerie.reactive.cell.Cell
 import kotlinx.browser.document
 import org.w3c.dom.Text
 

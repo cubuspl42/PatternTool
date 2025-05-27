@@ -1,6 +1,6 @@
 package diy.lingerie.dynamic_html
 
-import diy.lingerie.frp.dynamic_list.DynamicList
+import diy.lingerie.reactive.dynamic_list.DynamicList
 import diy.lingerie.html.collections.ChildNodesDomList
 import kotlinx.browser.document
 import org.w3c.dom.Element
