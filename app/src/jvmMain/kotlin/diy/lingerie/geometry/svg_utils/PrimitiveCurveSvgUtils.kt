@@ -1,22 +1,23 @@
-package dev.toolkt.geometry.svg
+package diy.lingerie.geometry.svg_utils
 
+import dev.toolkt.dom.pure.svg.PureSvgPath
+import dev.toolkt.dom.pure.svg.PureSvgPath.Segment
+import dev.toolkt.dom.pure.svg.PureSvgShape
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
-import dev.toolkt.geometry.curves.PrimitiveCurve
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.BezierCurve.Edge
-import dev.toolkt.geometry.splines.Spline
+import dev.toolkt.geometry.curves.PrimitiveCurve
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
-import diy.lingerie.simple_dom.svg.PureSvgPath
-import diy.lingerie.simple_dom.svg.PureSvgPath.Segment
-import diy.lingerie.simple_dom.svg.PureSvgShape
+import dev.toolkt.geometry.splines.Spline
 
 fun BezierCurve.toSvgPath(
-    stroke: PureSvgShape.Stroke = PureSvgShape.Stroke.default,
+    stroke:
+    PureSvgShape.Stroke = PureSvgShape.Stroke.default,
 ): PureSvgPath = PureSvgPath(
     stroke = stroke,
     segments = listOf(
-        PureSvgPath.Segment.MoveTo(
+        Segment.MoveTo(
             targetPoint = start,
         ),
     ) + toSvgBezierSegment(),
@@ -27,14 +28,14 @@ fun QuadraticBezierBinomial.toSvgPath(
 ): PureSvgPath = PureSvgPath(
     stroke = stroke,
     segments = listOf(
-        PureSvgPath.Segment.MoveTo(
+        Segment.MoveTo(
             targetPoint = Point(pointVector = point0),
         ),
     ) + toSvgBezierSegment(),
 )
 
-fun PrimitiveCurve.toSvgSegment(): PureSvgPath.Segment = when (this) {
-    is LineSegment -> PureSvgPath.Segment.LineTo(
+fun PrimitiveCurve.toSvgSegment(): Segment = when (this) {
+    is LineSegment -> Segment.LineTo(
         finalPoint = end,
     )
 
@@ -43,20 +44,20 @@ fun PrimitiveCurve.toSvgSegment(): PureSvgPath.Segment = when (this) {
     else -> throw UnsupportedOperationException("Unsupported segment curve: $this")
 }
 
-fun BezierCurve.toSvgBezierSegment(): PureSvgPath.Segment.CubicBezierCurveTo = PureSvgPath.Segment.CubicBezierCurveTo(
+fun BezierCurve.toSvgBezierSegment(): Segment.CubicBezierCurveTo = Segment.CubicBezierCurveTo(
     controlPoint1 = firstControl,
     controlPoint2 = secondControl,
     finalPoint = end,
 )
 
-fun QuadraticBezierBinomial.toSvgBezierSegment(): PureSvgPath.Segment.QuadraticBezierCurveTo =
-    PureSvgPath.Segment.QuadraticBezierCurveTo(
+fun QuadraticBezierBinomial.toSvgBezierSegment(): Segment.QuadraticBezierCurveTo =
+    Segment.QuadraticBezierCurveTo(
         controlPoint = Point(pointVector = point1),
         finalPoint = Point(pointVector = point2),
     )
 
 fun PrimitiveCurve.Edge.Companion.importSvgSegment(
-    segment: PureSvgPath.Segment.CurveSegment,
+    segment: Segment.CurveSegment,
 ): PrimitiveCurve.Edge = when (segment) {
     is Segment.LineTo -> LineSegment.Edge
 
@@ -73,7 +74,7 @@ fun PrimitiveCurve.Edge.Companion.importSvgSegment(
 }
 
 fun Spline.Link.Companion.importSvgSegment(
-    segment: PureSvgPath.Segment.CurveSegment,
+    segment: Segment.CurveSegment,
 ): Spline.Link {
     val edge = PrimitiveCurve.Edge.importSvgSegment(segment)
 

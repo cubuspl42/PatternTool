@@ -1,4 +1,4 @@
-package diy.lingerie.utils.xml.svg
+package dev.toolkt.dom.pure.utils.xml.svg
 
 import org.apache.batik.anim.dom.SVGOMDocument
 import org.apache.batik.css.engine.CSSContext

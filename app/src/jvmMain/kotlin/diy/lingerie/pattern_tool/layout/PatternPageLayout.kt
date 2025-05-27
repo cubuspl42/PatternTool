@@ -1,11 +1,11 @@
 package diy.lingerie.pattern_tool.layout
 
+import dev.toolkt.dom.pure.svg.PureSvgGroup
+import dev.toolkt.dom.pure.svg.PureSvgRoot
 import diy.lingerie.pattern_tool.PaperSizeConstants
 import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
 import diy.lingerie.pattern_tool.pattern_document.PatternPage
-import diy.lingerie.simple_dom.svg.PureSvgGroup
-import diy.lingerie.simple_dom.svg.PureSvgRoot
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,6 +1,6 @@
-package diy.lingerie.utils.xml
+package dev.toolkt.dom.pure.utils.xml
 
-import diy.lingerie.utils.xml.svg.asList
+import dev.toolkt.dom.pure.utils.xml.svg.asList
 import org.w3c.dom.Element
 
 val Element.childElements: List<Element>

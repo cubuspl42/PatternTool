@@ -1,3 +1,3 @@
-package diy.lingerie.simple_dom.svg
+package dev.toolkt.dom.pure.svg
 
 sealed class PureSvgDef : PureSvgElement()

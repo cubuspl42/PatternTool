@@ -5,13 +5,13 @@ import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.types.path
+import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.toCoordRange
-import diy.lingerie.tool_utils.Playground
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
-import dev.toolkt.core.iterable.LinSpace
-import dev.toolkt.dom.pure.PureColor
+import diy.lingerie.tool_utils.Playground
 import java.nio.file.Path
 
 class MainCommand : CliktCommand() {

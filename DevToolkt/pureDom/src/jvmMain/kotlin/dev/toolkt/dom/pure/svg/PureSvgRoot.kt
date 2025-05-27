@@ -1,14 +1,14 @@
-package diy.lingerie.simple_dom.svg
+package dev.toolkt.dom.pure.svg
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import dev.toolkt.dom.pure.PureDimension
 import dev.toolkt.geometry.transformations.Transformation
-import diy.lingerie.utils.xml.childElements
-import diy.lingerie.utils.xml.getAttributeOrNull
-import diy.lingerie.utils.xml.svg.documentSvgElement
-import diy.lingerie.utils.xml.writeToFile
+import dev.toolkt.dom.pure.utils.xml.childElements
+import dev.toolkt.dom.pure.utils.xml.getAttributeOrNull
+import dev.toolkt.dom.pure.utils.xml.svg.documentSvgElement
+import dev.toolkt.dom.pure.utils.xml.writeToFile
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGDocument

@@ -1,19 +1,19 @@
 package diy.lingerie.tool_utils
 
+import dev.toolkt.dom.pure.svg.PureSvgLine
+import dev.toolkt.dom.pure.svg.PureSvgPath
+import dev.toolkt.dom.pure.svg.PureSvgRectangle
+import dev.toolkt.dom.pure.svg.PureSvgRoot
+import dev.toolkt.dom.pure.svg.PureSvgShape
+import dev.toolkt.dom.pure.svg.toHexString
 import dev.toolkt.geometry.Line
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Ray
 import dev.toolkt.geometry.splines.OpenSpline
 import dev.toolkt.geometry.splines.Spline
-import dev.toolkt.geometry.svg.importSvgPath
 import dev.toolkt.geometry.transformations.Transformation
-import diy.lingerie.simple_dom.svg.PureSvgLine
-import diy.lingerie.simple_dom.svg.PureSvgPath
-import diy.lingerie.simple_dom.svg.PureSvgRectangle
-import diy.lingerie.simple_dom.svg.PureSvgRoot
-import diy.lingerie.simple_dom.svg.PureSvgShape
-import diy.lingerie.simple_dom.toHexString
+import diy.lingerie.geometry.svg_utils.importSvgPath
 
 sealed class RecognizedShape {
     companion object {
@@ -149,7 +149,7 @@ sealed class RecognizedShape {
             svgPath: PureSvgPath,
         ): RecognizedShape {
             val hexColorString = svgPath.stroke?.let { stroke ->
-                "[${svgPath.stroke.color.toHexString()}]"
+                "[${stroke.color.toHexString()}]"
             }
 
             println("(SVG path, color: $hexColorString)")

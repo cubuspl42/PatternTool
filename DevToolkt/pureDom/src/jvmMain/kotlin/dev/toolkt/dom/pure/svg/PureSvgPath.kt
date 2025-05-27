@@ -1,4 +1,4 @@
-package diy.lingerie.simple_dom.svg
+package dev.toolkt.dom.pure.svg
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
@@ -6,13 +6,13 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
-import diy.lingerie.simple_dom.toList
-import diy.lingerie.simple_dom.toSimpleColor
 import dev.toolkt.core.iterable.mapCarrying
 import dev.toolkt.core.iterable.uncons
 import dev.toolkt.dom.pure.PureColor
-import diy.lingerie.utils.xml.svg.asList
-import diy.lingerie.utils.xml.svg.getComputedStyle
+import dev.toolkt.dom.pure.utils.xml.svg.asList
+import dev.toolkt.dom.pure.utils.xml.svg.getComputedStyle
+import dev.toolkt.dom.pure.utils.xml.svg.toList
+import dev.toolkt.dom.pure.utils.xml.svg.toSimpleColor
 import org.apache.batik.css.engine.SVGCSSEngine
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -288,7 +288,7 @@ fun SVGElement.extractStroke(): PureSvgShape.Stroke {
     val strokeDashArray = getComputedStyle(SVGCSSEngine.STROKE_DASHARRAY_INDEX).toList()
 
     return PureSvgShape.Stroke(
-        color = strokeColor ?: PureColor.black,
+        color = strokeColor ?: PureColor.Companion.black,
         width = strokeWidth,
         dashArray = strokeDashArray?.map { it.floatValue.toDouble() },
     )

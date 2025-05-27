@@ -1,14 +1,14 @@
-package dev.toolkt.geometry.svg
+package diy.lingerie.geometry.svg_utils
 
-import dev.toolkt.geometry.splines.ClosedSpline
-import dev.toolkt.geometry.splines.OpenSpline
-import dev.toolkt.geometry.splines.Spline
-import diy.lingerie.simple_dom.svg.PureSvgPath
-import diy.lingerie.simple_dom.svg.PureSvgPath.Segment
-import diy.lingerie.simple_dom.svg.PureSvgShape
 import dev.toolkt.core.iterable.mapCarrying
 import dev.toolkt.core.iterable.takeWhileIsInstanceWithReminder
 import dev.toolkt.core.iterable.uncons
+import dev.toolkt.dom.pure.svg.PureSvgPath
+import dev.toolkt.dom.pure.svg.PureSvgPath.Segment
+import dev.toolkt.dom.pure.svg.PureSvgShape
+import dev.toolkt.geometry.splines.ClosedSpline
+import dev.toolkt.geometry.splines.OpenSpline
+import dev.toolkt.geometry.splines.Spline
 
 fun ClosedSpline.toSvgPath(
     stroke: PureSvgShape.Stroke = PureSvgShape.Stroke.default,
@@ -19,13 +19,13 @@ fun ClosedSpline.toSvgPath(
     return PureSvgPath(
         stroke = stroke,
         segments = listOf(
-            PureSvgPath.Segment.MoveTo(
+            Segment.MoveTo(
                 targetPoint = start,
             ),
         ) + edgeCurves.map { edgeCurve ->
             edgeCurve.toSvgSegment()
         } + listOf(
-            PureSvgPath.Segment.ClosePath,
+            Segment.ClosePath,
         ),
     )
 }

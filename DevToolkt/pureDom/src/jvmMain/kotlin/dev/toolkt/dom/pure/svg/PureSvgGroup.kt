@@ -1,10 +1,10 @@
-package diy.lingerie.simple_dom.svg
+package dev.toolkt.dom.pure.svg
 
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
-import diy.lingerie.utils.xml.childElements
+import dev.toolkt.dom.pure.utils.xml.childElements
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGGElement

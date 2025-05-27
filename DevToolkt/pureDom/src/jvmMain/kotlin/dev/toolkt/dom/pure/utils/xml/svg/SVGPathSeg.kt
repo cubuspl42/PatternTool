@@ -1,4 +1,4 @@
-package diy.lingerie.utils.xml.svg
+package dev.toolkt.dom.pure.utils.xml.svg
 
 import dev.toolkt.geometry.Point
 import org.w3c.dom.svg.SVGPathSeg

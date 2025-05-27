@@ -1,7 +1,7 @@
 package diy.lingerie.simple_dom.fo
 
 import dev.toolkt.core.numeric.NumericObject
-import diy.lingerie.simple_dom.svg.PureSvgRoot
+import dev.toolkt.dom.pure.svg.PureSvgRoot
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 

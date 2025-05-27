@@ -1,4 +1,4 @@
-package diy.lingerie.utils.xml
+package dev.toolkt.dom.pure.utils.xml
 
 import org.w3c.dom.Document
 import java.nio.file.Path
