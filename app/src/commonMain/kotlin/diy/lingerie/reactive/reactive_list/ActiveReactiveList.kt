@@ -2,8 +2,8 @@ package diy.lingerie.reactive.reactive_list
 
 import diy.lingerie.reactive.event_stream.DependentEventStream
 import diy.lingerie.reactive.event_stream.EventStream
-import diy.lingerie.reactive.vertices.dynamic_list.DynamicListVertex
-import diy.lingerie.reactive.vertices.dynamic_list.MapDynamicListVertex
+import diy.lingerie.reactive.vertices.reactive_list.ReactiveListVertex
+import diy.lingerie.reactive.vertices.reactive_list.MapReactiveListVertex
 
 abstract class ActiveReactiveList<E>() : ReactiveList<E>() {
     final override val currentElements: List<E>
@@ -15,7 +15,7 @@ abstract class ActiveReactiveList<E>() : ReactiveList<E>() {
     final override fun <Er> map(
         transform: (E) -> Er,
     ): ReactiveList<Er> = DependentReactiveList(
-        vertex = MapDynamicListVertex(
+        vertex = MapReactiveListVertex(
             source = this.vertex,
             transform = transform,
         ),
@@ -34,5 +34,5 @@ abstract class ActiveReactiveList<E>() : ReactiveList<E>() {
         }
     }
 
-    internal abstract val vertex: DynamicListVertex<E>
+    internal abstract val vertex: ReactiveListVertex<E>
 }

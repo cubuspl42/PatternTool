@@ -1,4 +1,4 @@
-package diy.lingerie.reactive.vertices.dynamic_list
+package diy.lingerie.reactive.vertices.reactive_list
 
 import diy.lingerie.reactive.HybridSubscription
 import diy.lingerie.reactive.strengthen
@@ -9,9 +9,9 @@ import diy.lingerie.reactive.weaken
  * cells and/or streams), installing a hybrid (weak/strong) subscription to
  * the dependencies. Analogical to [diy.lingerie.reactive.vertices.cell.DependentCellVertex].
  */
-abstract class DependentDynamicListVertex<E>(
+abstract class DependentReactiveListVertex<E>(
     initialElements: List<E>,
-) : DynamicListVertex<E>(
+) : ReactiveListVertex<E>(
     initialElements = initialElements,
 ) {
     lateinit var subscription: HybridSubscription

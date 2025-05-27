@@ -1,18 +1,18 @@
 package diy.lingerie.web_tool
 
-import diy.lingerie.dynamic_html.DynamicButtonElement
-import diy.lingerie.dynamic_html.DynamicDivElement
-import diy.lingerie.dynamic_html.DynamicHtmlText
-import diy.lingerie.dynamic_html.DynamicWrapperElement
+import diy.lingerie.reactive_html.ReactiveButtonElement
+import diy.lingerie.reactive_html.ReactiveDivElement
+import diy.lingerie.reactive_html.ReactiveHtmlText
+import diy.lingerie.reactive_html.ReactiveWrapperElement
 import diy.lingerie.reactive.cell.Cell
 import diy.lingerie.reactive.reactive_list.ReactiveList
 import diy.lingerie.reactive.event_stream.hold
 import kotlinx.browser.document
 
 fun main() {
-    val button = DynamicButtonElement(
+    val button = ReactiveButtonElement(
         children = ReactiveList.of(
-            DynamicHtmlText(
+            ReactiveHtmlText(
                 data = Cell.of("Click me!"),
             ),
         ),
@@ -22,9 +22,9 @@ fun main() {
         it.position
     }.hold(initialValue = null)
 
-    val root = DynamicDivElement(
+    val root = ReactiveDivElement(
         children = ReactiveList.of(
-            DynamicHtmlText(
+            ReactiveHtmlText(
                 data = position.map { positionNow ->
                     when (positionNow) {
                         null -> "(none)"
@@ -33,7 +33,7 @@ fun main() {
                 },
             ),
             button,
-            DynamicWrapperElement(
+            ReactiveWrapperElement(
                 document.createElement("h1").apply {
                     textContent = "Hello, world!"
                 },

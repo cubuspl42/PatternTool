@@ -1,11 +1,11 @@
-package diy.lingerie.reactive.vertices.dynamic_list
+package diy.lingerie.reactive.vertices.reactive_list
 
 import diy.lingerie.reactive.reactive_list.ReactiveList
 import dev.toolkt.core.range.single
 
-class MutableDynamicListVertex<E>(
+class MutableReactiveListVertex<E>(
     initialElements: List<E>,
-) : DynamicListVertex<E>(
+) : ReactiveListVertex<E>(
     initialElements = initialElements,
 ) {
     override val kind: String = "MutableL"

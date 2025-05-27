@@ -1,9 +1,9 @@
-package diy.lingerie.dynamic_html
+package diy.lingerie.reactive_html
 
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 
-abstract class DynamicHtmlElement : DynamicHtmlNode() {
+abstract class ReactiveHtmlElement : ReactiveHtmlNode() {
     final override val rawNode: Node
         get() = rawElement
 
