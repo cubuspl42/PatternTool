@@ -1,6 +1,6 @@
 package diy.lingerie.html
 
-import diy.lingerie.reactive.event_stream.EventEmitter
+import dev.toolkt.reactive.event_stream.EventEmitter
 import org.w3c.dom.events.EventTarget
 
 interface HtmlEventHandler<in E : HtmlEvent> {

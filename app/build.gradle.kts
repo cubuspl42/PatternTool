@@ -35,6 +35,7 @@ kotlin {
             implementation("dev.toolkt:math")
             implementation("dev.toolkt:geometry")
             implementation("dev.toolkt:pureDom")
+            implementation("dev.toolkt:reactive")
         }
 
         commonTest.dependencies {
