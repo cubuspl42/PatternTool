@@ -5,10 +5,10 @@ import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.types.path
+import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.splines.OpenSpline
-import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.svg.SvgRoot
 import diy.lingerie.tool_utils.Playground
 import diy.lingerie.tool_utils.RecognizedShape
@@ -58,7 +58,7 @@ class Tool : CliktCommand() {
         bezierCurve: BezierCurve,
     ): List<Playground.Item> {
         val cubicItem = Playground.BezierCurveItem(
-            color = SimpleColor.blue,
+            color = PureColor.blue,
             bezierCurve = bezierCurve,
         )
 

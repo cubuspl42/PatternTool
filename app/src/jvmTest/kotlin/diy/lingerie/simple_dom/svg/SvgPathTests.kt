@@ -1,8 +1,8 @@
 package diy.lingerie.simple_dom.svg
 
 import dev.toolkt.geometry.Point
-import diy.lingerie.simple_dom.SimpleColor
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
+import dev.toolkt.dom.pure.PureColor
 import diy.lingerie.utils.xml.childElements
 import diy.lingerie.utils.xml.svg.SVGDOMImplementationUtils
 import diy.lingerie.utils.xml.svg.documentSvgElement
@@ -56,7 +56,7 @@ class SvgPathTests {
 
         val expectedPath = SvgPath(
             stroke = SvgShape.Stroke(
-                color = SimpleColor.red,
+                color = PureColor.red,
                 width = 2.0,
                 dashArray = listOf(5.0, 2.0),
             ),

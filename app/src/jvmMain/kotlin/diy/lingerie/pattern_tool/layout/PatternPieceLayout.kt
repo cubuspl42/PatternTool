@@ -1,5 +1,6 @@
 package diy.lingerie.pattern_tool.layout
 
+import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.geometry.AngleSerializer
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.PointSerializer
@@ -9,7 +10,6 @@ import dev.toolkt.geometry.transformations.CombinedTransformation
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
-import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.svg.SvgGroup
 import diy.lingerie.simple_dom.svg.SvgShape
 import kotlinx.serialization.Serializable
@@ -77,14 +77,14 @@ data class PatternPieceLayout(
         children = listOf(
             patternPiece.outline.innerSpline.toSvgPath(
                 stroke = SvgShape.Stroke(
-                    color = SimpleColor.black,
+                    color = PureColor.black,
                     width = 0.4,
                     dashArray = listOf(2.0, 1.0),
                 ),
             ),
             patternPiece.outline.findSeamContour().toSvgPath(
                 stroke = SvgShape.Stroke(
-                    color = SimpleColor.black,
+                    color = PureColor.black,
                     width = 0.8,
                 ),
             )

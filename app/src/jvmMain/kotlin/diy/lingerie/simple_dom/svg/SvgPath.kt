@@ -6,11 +6,11 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
-import diy.lingerie.simple_dom.SimpleColor
 import diy.lingerie.simple_dom.toList
 import diy.lingerie.simple_dom.toSimpleColor
 import dev.toolkt.core.iterable.mapCarrying
 import dev.toolkt.core.iterable.uncons
+import dev.toolkt.dom.pure.PureColor
 import diy.lingerie.utils.xml.svg.asList
 import diy.lingerie.utils.xml.svg.getComputedStyle
 import org.apache.batik.css.engine.SVGCSSEngine
@@ -288,7 +288,7 @@ fun SVGElement.toSimpleStroke(): SvgShape.Stroke {
     val strokeDashArray = getComputedStyle(SVGCSSEngine.STROKE_DASHARRAY_INDEX).toList()
 
     return SvgShape.Stroke(
-        color = strokeColor ?: SimpleColor.black,
+        color = strokeColor ?: PureColor.black,
         width = strokeWidth,
         dashArray = strokeDashArray?.map { it.floatValue.toDouble() },
     )

@@ -4,19 +4,19 @@ import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
-import diy.lingerie.simple_dom.SimpleColor
+import dev.toolkt.dom.pure.PureColor
 import diy.lingerie.simple_dom.toHexString
 import org.w3c.dom.Element
 
 abstract class SvgShape : SvgGraphicsElements() {
     data class Stroke(
-        val color: SimpleColor,
+        val color: PureColor,
         val width: Double,
         val dashArray: List<Double>? = null,
     ) : NumericObject {
         companion object {
             val default = Stroke(
-                color = SimpleColor.Companion.black,
+                color = PureColor.Companion.black,
                 width = 1.0,
             )
         }
@@ -36,11 +36,11 @@ abstract class SvgShape : SvgGraphicsElements() {
 
     sealed class Fill : NumericObject {
         data class Specified(
-            val color: SimpleColor,
+            val color: PureColor,
         ) : Fill() {
             companion object {
                 val default = Specified(
-                    color = SimpleColor.black,
+                    color = PureColor.black,
                 )
             }
 

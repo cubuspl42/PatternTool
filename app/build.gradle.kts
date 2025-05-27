@@ -34,6 +34,7 @@ kotlin {
             implementation("dev.toolkt:core")
             implementation("dev.toolkt:math")
             implementation("dev.toolkt:geometry")
+            implementation("dev.toolkt:pureDom")
         }
 
         commonTest.dependencies {
