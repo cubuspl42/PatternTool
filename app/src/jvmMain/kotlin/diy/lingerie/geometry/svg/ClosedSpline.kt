@@ -3,35 +3,35 @@ package dev.toolkt.geometry.svg
 import dev.toolkt.geometry.splines.ClosedSpline
 import dev.toolkt.geometry.splines.OpenSpline
 import dev.toolkt.geometry.splines.Spline
-import diy.lingerie.simple_dom.svg.SvgPath
-import diy.lingerie.simple_dom.svg.SvgPath.Segment
-import diy.lingerie.simple_dom.svg.SvgShape
+import diy.lingerie.simple_dom.svg.PureSvgPath
+import diy.lingerie.simple_dom.svg.PureSvgPath.Segment
+import diy.lingerie.simple_dom.svg.PureSvgShape
 import dev.toolkt.core.iterable.mapCarrying
 import dev.toolkt.core.iterable.takeWhileIsInstanceWithReminder
 import dev.toolkt.core.iterable.uncons
 
 fun ClosedSpline.toSvgPath(
-    stroke: SvgShape.Stroke = SvgShape.Stroke.default,
-): SvgPath {
+    stroke: PureSvgShape.Stroke = PureSvgShape.Stroke.default,
+): PureSvgPath {
     val edgeCurves = this.cyclicCurves
     val start = edgeCurves.first().start
 
-    return SvgPath(
+    return PureSvgPath(
         stroke = stroke,
         segments = listOf(
-            SvgPath.Segment.MoveTo(
+            PureSvgPath.Segment.MoveTo(
                 targetPoint = start,
             ),
         ) + edgeCurves.map { edgeCurve ->
             edgeCurve.toSvgSegment()
         } + listOf(
-            SvgPath.Segment.ClosePath,
+            PureSvgPath.Segment.ClosePath,
         ),
     )
 }
 
 fun Spline.Companion.importSvgPath(
-    svgPath: SvgPath,
+    svgPath: PureSvgPath,
 ): Spline {
     val (firstSegment, trailingSegments) = svgPath.segments.uncons()
         ?: throw IllegalArgumentException("Path must contain at least one segment")

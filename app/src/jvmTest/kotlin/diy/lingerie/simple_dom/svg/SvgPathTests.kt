@@ -54,25 +54,25 @@ class SvgPathTests {
 
         val path = pathElement.toSimplePath()
 
-        val expectedPath = SvgPath(
-            stroke = SvgShape.Stroke(
+        val expectedPath = PureSvgPath(
+            stroke = PureSvgShape.Stroke(
                 color = PureColor.red,
                 width = 2.0,
                 dashArray = listOf(5.0, 2.0),
             ),
             segments = listOf(
-                SvgPath.Segment.MoveTo(
+                PureSvgPath.Segment.MoveTo(
                     targetPoint = Point(x = 12.3, y = 45.6),
                 ),
-                SvgPath.Segment.LineTo(
+                PureSvgPath.Segment.LineTo(
                     finalPoint = Point(x = 78.9, y = 12.3),
                 ),
-                SvgPath.Segment.CubicBezierCurveTo(
+                PureSvgPath.Segment.CubicBezierCurveTo(
                     controlPoint1 = Point(x = 34.5, y = 67.8),
                     controlPoint2 = Point(x = 90.1, y = 23.4),
                     finalPoint = Point(x = 56.7, y = 89.0),
                 ),
-                SvgPath.Segment.ClosePath,
+                PureSvgPath.Segment.ClosePath,
             ),
         )
 

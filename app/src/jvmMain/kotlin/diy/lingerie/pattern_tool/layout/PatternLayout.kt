@@ -5,7 +5,7 @@ package diy.lingerie.pattern_tool.layout
 import diy.lingerie.pattern_tool.PatternPiece
 import diy.lingerie.pattern_tool.PatternPieceId
 import diy.lingerie.pattern_tool.pattern_document.PatternDocument
-import diy.lingerie.simple_dom.svg.SvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgRoot
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -47,7 +47,7 @@ data class PatternLayout(
                 }
 
                 PatternPageLayout.reconstruct(
-                    pageSvgRoot = SvgRoot.parse(
+                    pageSvgRoot = PureSvgRoot.parse(
                         reader = filePath.reader(),
                     ),
                 )

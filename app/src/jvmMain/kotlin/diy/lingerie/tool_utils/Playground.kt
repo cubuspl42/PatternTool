@@ -10,14 +10,14 @@ import dev.toolkt.geometry.svg.toSvgPath
 import dev.toolkt.math.algebra.sample
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
 import dev.toolkt.dom.pure.px
-import diy.lingerie.simple_dom.svg.SvgCircle
-import diy.lingerie.simple_dom.svg.SvgGraphicsElements
-import diy.lingerie.simple_dom.svg.SvgGroup
-import diy.lingerie.simple_dom.svg.SvgLine
-import diy.lingerie.simple_dom.svg.SvgMarker
-import diy.lingerie.simple_dom.svg.SvgPath
-import diy.lingerie.simple_dom.svg.SvgRoot
-import diy.lingerie.simple_dom.svg.SvgShape
+import diy.lingerie.simple_dom.svg.PureSvgCircle
+import diy.lingerie.simple_dom.svg.PureSvgGraphicsElement
+import diy.lingerie.simple_dom.svg.PureSvgGroup
+import diy.lingerie.simple_dom.svg.PureSvgLine
+import diy.lingerie.simple_dom.svg.PureSvgMarker
+import diy.lingerie.simple_dom.svg.PureSvgPath
+import diy.lingerie.simple_dom.svg.PureSvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgShape
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.dom.pure.PureColor
 import java.nio.file.Files
@@ -29,7 +29,7 @@ data class Playground(
     sealed class Item {
         abstract val color: PureColor
 
-        abstract fun toSvgElement(): SvgGraphicsElements
+        abstract fun toSvgElement(): PureSvgGraphicsElement
 
         abstract fun findBoundingBox(): BoundingBox
     }
@@ -52,7 +52,7 @@ data class Playground(
         override val openCurve: OpenCurve
             get() = bezierCurve
 
-        override fun toSvgElement(): SvgGraphicsElements = SvgGroup(
+        override fun toSvgElement(): PureSvgGraphicsElement = PureSvgGroup(
             children = listOfNotNull(
                 toSvgControlRubber(
                     anchor = bezierCurve.start,
@@ -67,8 +67,8 @@ data class Playground(
             ),
         )
 
-        private fun toPrimarySvgPath(): SvgPath = bezierCurve.toSvgPath(
-            stroke = SvgShape.Stroke(
+        private fun toPrimarySvgPath(): PureSvgPath = bezierCurve.toSvgPath(
+            stroke = PureSvgShape.Stroke(
                 color = color,
                 width = 0.5,
             ),
@@ -76,7 +76,7 @@ data class Playground(
             markerEndId = triangleMarkerId,
         )
 
-        private fun toExtendedSvgPath(): SvgPath? {
+        private fun toExtendedSvgPath(): PureSvgPath? {
             val samples = bezierCurve.basisFunction.sample(
                 linSpace = LinSpace(
                     range = extendedCurveSampleRange,
@@ -86,8 +86,8 @@ data class Playground(
 
             val points = samples.map { Point(pointVector = it.b) }
 
-            return SvgPath.Companion.polyline(
-                stroke = SvgShape.Stroke(
+            return PureSvgPath.Companion.polyline(
+                stroke = PureSvgShape.Stroke(
                     color = PureColor.Companion.lightGray,
                     width = 0.25,
                 ),
@@ -98,7 +98,7 @@ data class Playground(
         private fun toSvgControlRubber(
             anchor: Point,
             handle: Point,
-        ): SvgGroup = SvgGroup(
+        ): PureSvgGroup = PureSvgGroup(
             children = listOf(
                 toSvgControlLine(
                     start = anchor, end = handle
@@ -111,11 +111,11 @@ data class Playground(
 
         private fun toSvgHandle(
             point: Point,
-        ) = SvgCircle(
+        ) = PureSvgCircle(
             center = point,
             radius = 1.0,
             stroke = null,
-            fill = SvgShape.Fill.Specified(
+            fill = PureSvgShape.Fill.Specified(
                 color = PureColor.Companion.lightGray,
             ),
         )
@@ -123,10 +123,10 @@ data class Playground(
         private fun toSvgControlLine(
             start: Point,
             end: Point,
-        ) = SvgLine(
+        ) = PureSvgLine(
             start = start,
             end = end,
-            stroke = SvgShape.Stroke(
+            stroke = PureSvgShape.Stroke(
                 color = PureColor.Companion.lightGray,
                 width = 1.0,
             ),
@@ -142,7 +142,7 @@ data class Playground(
             private val extendedCurveSampleRange = (-2.0)..(2.0)
         }
 
-        override fun toSvgElement(): SvgGraphicsElements = SvgGroup(
+        override fun toSvgElement(): PureSvgGraphicsElement = PureSvgGroup(
             children = listOfNotNull(
                 toSvgControlShape(),
                 toPrimarySvgPath(),
@@ -153,8 +153,8 @@ data class Playground(
             TODO("Not yet implemented")
         }
 
-        private fun toPrimarySvgPath(): SvgPath = quadraticBezierBinomial.toSvgPath(
-            stroke = SvgShape.Stroke(
+        private fun toPrimarySvgPath(): PureSvgPath = quadraticBezierBinomial.toSvgPath(
+            stroke = PureSvgShape.Stroke(
                 color = color,
                 width = 0.4,
             ),
@@ -162,7 +162,7 @@ data class Playground(
             markerEndId = triangleMarkerId,
         )
 
-        private fun toSvgControlShape(): SvgGroup = SvgGroup(
+        private fun toSvgControlShape(): PureSvgGroup = PureSvgGroup(
             children = listOf(
                 toSvgControlLine(
                     start = Point(pointVector = quadraticBezierBinomial.point0),
@@ -178,10 +178,10 @@ data class Playground(
         private fun toSvgControlLine(
             start: Point,
             end: Point,
-        ) = SvgLine(
+        ) = PureSvgLine(
             start = start,
             end = end,
-            stroke = SvgShape.Stroke(
+            stroke = PureSvgShape.Stroke(
                 color = PureColor.Companion.lightGray,
                 width = 0.25,
             ),
@@ -200,10 +200,10 @@ data class Playground(
         override val openCurve: OpenCurve
             get() = lineSegment
 
-        override fun toSvgElement(): SvgGraphicsElements = SvgLine(
+        override fun toSvgElement(): PureSvgGraphicsElement = PureSvgLine(
             start = lineSegment.start,
             end = lineSegment.end,
-            stroke = SvgShape.Stroke(
+            stroke = PureSvgShape.Stroke(
                 color = color,
                 width = 0.5,
             ),
@@ -216,11 +216,11 @@ data class Playground(
         override val color: PureColor = PureColor.Companion.black,
         val point: Point,
     ) : Item() {
-        override fun toSvgElement(): SvgCircle = SvgCircle(
+        override fun toSvgElement(): PureSvgCircle = PureSvgCircle(
             center = point,
             radius = 1.0,
             stroke = null,
-            fill = SvgShape.Fill.Specified(
+            fill = PureSvgShape.Fill.Specified(
                 color = color,
             ),
         )
@@ -236,7 +236,7 @@ data class Playground(
 
         private const val triangleMarkerSize = 4.0
 
-        private val triangleMarker = SvgMarker(
+        private val triangleMarker = PureSvgMarker(
             id = triangleMarkerId,
             size = Size(
                 width = triangleMarkerSize,
@@ -246,33 +246,33 @@ data class Playground(
                 x = triangleMarkerSize / 2,
                 y = triangleMarkerSize / 2,
             ),
-            path = SvgPath(
+            path = PureSvgPath(
                 stroke = null,
                 fill = null,
                 segments = listOf(
-                    SvgPath.Segment.MoveTo(
+                    PureSvgPath.Segment.MoveTo(
                         targetPoint = Point.Companion.origin,
                     ),
-                    SvgPath.Segment.LineTo(
+                    PureSvgPath.Segment.LineTo(
                         finalPoint = Point(
                             x = triangleMarkerSize,
                             y = triangleMarkerSize / 2,
                         ),
                     ),
-                    SvgPath.Segment.LineTo(
+                    PureSvgPath.Segment.LineTo(
                         finalPoint = Point(
                             x = 0.0,
                             y = triangleMarkerSize,
                         ),
                     ),
-                    SvgPath.Segment.ClosePath,
+                    PureSvgPath.Segment.ClosePath,
                 ),
             ),
         )
     }
 
-    fun toSvgRoot(): SvgRoot {
-        val viewBox = SvgRoot.ViewBox(
+    fun toSvgRoot(): PureSvgRoot {
+        val viewBox = PureSvgRoot.ViewBox(
             x = 0.0,
             y = 0.0,
             width = 1024.0,
@@ -281,7 +281,7 @@ data class Playground(
 
         val elements = items.map { it.toSvgElement() }
 
-        return SvgRoot(
+        return PureSvgRoot(
             viewBox = viewBox,
             defs = listOf(
                 triangleMarker,

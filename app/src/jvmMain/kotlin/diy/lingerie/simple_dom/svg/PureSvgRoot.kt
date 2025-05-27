@@ -21,13 +21,13 @@ import org.w3c.dom.svg.SVGDocument
 import java.io.Reader
 import java.nio.file.Path
 
-data class SvgRoot(
+data class PureSvgRoot(
     val viewBox: ViewBox? = null,
-    val defs: List<SvgDef> = emptyList(),
+    val defs: List<PureSvgDef> = emptyList(),
     val width: PureDimension<*>,
     val height: PureDimension<*>,
-    val graphicsElements: List<SvgGraphicsElements>,
-) : SvgElement() {
+    val graphicsElements: List<PureSvgGraphicsElement>,
+) : PureSvgElement() {
     data class ViewBox(
         val x: Double,
         val y: Double,
@@ -74,7 +74,7 @@ data class SvgRoot(
 
         fun parse(
             reader: Reader,
-        ): SvgRoot {
+        ): PureSvgRoot {
             val uri = "file://Document.svg"
 
             val document = svgDocumentFactory.createDocument(uri, reader) as SVGOMDocument
@@ -155,7 +155,7 @@ data class SvgRoot(
         tolerance: NumericObject.Tolerance,
     ): Boolean {
         return when {
-            other !is SvgRoot -> false
+            other !is PureSvgRoot -> false
             !width.equalsWithTolerance(other.width, tolerance) -> false
             !height.equalsWithTolerance(other.height, tolerance) -> false
             !viewBox.equalsWithToleranceOrNull(other.viewBox, tolerance) -> false
@@ -165,12 +165,12 @@ data class SvgRoot(
 
     fun flatten(
         baseTransformation: Transformation,
-    ): List<SvgShape> = graphicsElements.flatMap {
+    ): List<PureSvgShape> = graphicsElements.flatMap {
         it.flatten(baseTransformation = baseTransformation)
     }
 }
 
-fun SVGDocument.toSimple(): SvgRoot {
+fun SVGDocument.toSimple(): PureSvgRoot {
     val widthString =
         documentSvgElement.getAttributeOrNull("width") ?: throw IllegalArgumentException("Width is not set")
     val heightString =
@@ -180,10 +180,10 @@ fun SVGDocument.toSimple(): SvgRoot {
     val height = PureDimension.parse(heightString)
 
     val viewBox = documentSvgElement.getAttributeOrNull("viewBox")?.let { viewBoxString ->
-        SvgRoot.ViewBox.parse(viewBoxString)
+        PureSvgRoot.ViewBox.parse(viewBoxString)
     }
 
-    return SvgRoot(
+    return PureSvgRoot(
         width = width,
         height = height,
         viewBox = viewBox,

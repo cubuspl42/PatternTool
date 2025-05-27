@@ -6,12 +6,12 @@ import dev.toolkt.core.numeric.NumericObject
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
-data class SvgLine(
+data class PureSvgLine(
     val start: Point,
     val end: Point,
     override val stroke: Stroke = Stroke.default,
     override val markerEndId: String? = null,
-) : SvgShape() {
+) : PureSvgShape() {
     override val fill: Fill.Specified? = null
 
     override fun toRawElement(
@@ -28,7 +28,7 @@ data class SvgLine(
     override fun equalsWithTolerance(
         other: NumericObject, tolerance: NumericObject.Tolerance
     ): Boolean = when {
-        other !is SvgLine -> false
+        other !is PureSvgLine -> false
         !start.equalsWithTolerance(other.start, tolerance) -> false
         !end.equalsWithTolerance(other.end, tolerance) -> false
         !stroke.equalsWithTolerance(other.stroke, tolerance) -> false
@@ -37,7 +37,7 @@ data class SvgLine(
 
     override fun transformVia(
         transformation: Transformation,
-    ): SvgLine = SvgLine(
+    ): PureSvgLine = PureSvgLine(
         start = transformation.transform(point = start),
         end = transformation.transform(point = end),
         stroke = stroke,

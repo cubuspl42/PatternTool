@@ -6,12 +6,12 @@ import dev.toolkt.core.numeric.NumericObject
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
-data class SvgMarker(
+data class PureSvgMarker(
     val id: String,
     val size: Size,
     val ref: Point,
-    val path: SvgPath,
-) : SvgDef() {
+    val path: PureSvgPath,
+) : PureSvgDef() {
     override fun toRawElement(
         document: Document,
     ): Element = document.createSvgElement("marker").apply {
@@ -29,7 +29,7 @@ data class SvgMarker(
     override fun equalsWithTolerance(
         other: NumericObject, tolerance: NumericObject.Tolerance
     ): Boolean = when {
-        other !is SvgMarker -> false
+        other !is PureSvgMarker -> false
         id != other.id -> false
         size != other.size -> false
         ref != other.ref -> false

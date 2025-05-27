@@ -9,7 +9,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.enum
 import com.github.ajalt.clikt.parameters.types.path
-import diy.lingerie.simple_dom.svg.SvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgRoot
 import java.nio.file.Path
 
 enum class PatternPieceId {
@@ -39,7 +39,7 @@ class MainCommand : CliktCommand() {
             workingDirectoryPath = workingDirectoryPath,
             patternPiecePreparator = object : PatternPiecePreparator() {
                 override fun preparePatternPieceOutlines(
-                    svgRootByName: Map<String, SvgRoot>,
+                    svgRootByName: Map<String, PureSvgRoot>,
                 ): PatternPieceOutlineSet {
                     val upperCupSvgRoot =
                         svgRootByName["upperCup"] ?: throw IllegalArgumentException("upperCup not found")

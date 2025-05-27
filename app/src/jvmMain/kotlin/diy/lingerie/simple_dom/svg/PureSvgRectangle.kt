@@ -9,12 +9,12 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.svg.SVGRectElement
 
-data class SvgRectangle(
+data class PureSvgRectangle(
     val position: Point,
     val size: Size,
     override val stroke: Stroke? = Stroke.default,
     override val fill: Fill.Specified? = Fill.Specified.default,
-) : SvgShape() {
+) : PureSvgShape() {
     override fun toRawElement(
         document: Document,
     ): Element = document.createSvgElement("rect").apply {
@@ -30,7 +30,7 @@ data class SvgRectangle(
         other: NumericObject,
         tolerance: NumericObject.Tolerance,
     ): Boolean = when {
-        other !is SvgRectangle -> false
+        other !is PureSvgRectangle -> false
         !position.equalsWithTolerance(other.position, tolerance) -> false
         !size.equalsWithTolerance(other.size, tolerance) -> false
         !stroke.equalsWithToleranceOrNull(other.stroke, tolerance) -> false
@@ -40,11 +40,11 @@ data class SvgRectangle(
 
     override fun transformVia(
         transformation: Transformation,
-    ): SvgRectangle {
+    ): PureSvgRectangle {
         val projection = transformation.toProjection
             ?: throw UnsupportedOperationException("SvgRectangle does not support this transformation: $transformation")
 
-        return SvgRectangle(
+        return PureSvgRectangle(
             position = position.transformBy(projection),
             size = size.scaleBy(projection.scaling),
         )
@@ -60,7 +60,7 @@ data class SvgRectangle(
     }
 }
 
-fun SVGRectElement.toSimpleRect(): SvgRectangle = SvgRectangle(
+fun SVGRectElement.toSimpleRect(): PureSvgRectangle = PureSvgRectangle(
     position = Point(
         x = x.baseVal.value.toDouble(),
         y = y.baseVal.value.toDouble(),

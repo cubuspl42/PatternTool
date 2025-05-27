@@ -1,7 +1,7 @@
 package diy.lingerie.simple_dom.svg
 
 import dev.toolkt.geometry.transformations.Transformation
-import diy.lingerie.simple_dom.SimpleElement
+import diy.lingerie.simple_dom.PureElement
 import org.apache.batik.anim.dom.SVGDOMImplementation
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -9,7 +9,7 @@ import org.w3c.dom.svg.SVGGElement
 import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGRectElement
 
-abstract class SvgElement : SimpleElement() {
+abstract class PureSvgElement : PureElement() {
     companion object {
         const val SVG_NS = SVGDOMImplementation.SVG_NAMESPACE_URI
     }
@@ -19,13 +19,13 @@ abstract class SvgElement : SimpleElement() {
     ): Element = createElementNS(SVG_NS, "svg:$name")
 }
 
-abstract class SvgGraphicsElements : SvgElement() {
+abstract class PureSvgGraphicsElement : PureSvgElement() {
     abstract fun flatten(
         baseTransformation: Transformation,
-    ): List<SvgShape>
+    ): List<PureSvgShape>
 }
 
-fun Element.toSvgGraphicsElements(): SvgGraphicsElements? = when (this) {
+fun Element.toSvgGraphicsElements(): PureSvgGraphicsElement? = when (this) {
     is SVGPathElement -> toSimplePath()
     is SVGGElement -> toSimpleGroup()
     is SVGRectElement -> toSimpleRect()

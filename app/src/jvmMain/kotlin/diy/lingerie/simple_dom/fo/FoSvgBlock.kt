@@ -1,12 +1,12 @@
 package diy.lingerie.simple_dom.fo
 
 import dev.toolkt.core.numeric.NumericObject
-import diy.lingerie.simple_dom.svg.SvgRoot
+import diy.lingerie.simple_dom.svg.PureSvgRoot
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
 data class FoSvgBlock(
-    val svgElement: SvgRoot,
+    val svgElement: PureSvgRoot,
 ) : FoElement() {
     override fun toRawElement(
         document: Document,

@@ -8,12 +8,12 @@ import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
-data class SvgCircle(
+data class PureSvgCircle(
     val center: Point,
     val radius: Double,
     override val stroke: Stroke? = Stroke.default,
     override val fill: Fill.Specified? = Fill.Specified.default,
-) : SvgShape() {
+) : PureSvgShape() {
     override fun toRawElement(
         document: Document,
     ): Element = document.createSvgElement("circle").apply {
@@ -28,7 +28,7 @@ data class SvgCircle(
         other: NumericObject,
         tolerance: NumericObject.Tolerance,
     ): Boolean = when {
-        other !is SvgCircle -> false
+        other !is PureSvgCircle -> false
         !center.equalsWithTolerance(other.center, tolerance) -> false
         !radius.equalsWithTolerance(other.radius, tolerance) -> false
         !stroke.equalsWithToleranceOrNull(other.stroke, tolerance) -> false
@@ -38,7 +38,7 @@ data class SvgCircle(
 
     override fun transformVia(
         transformation: Transformation,
-    ): SvgShape = SvgCircle(
+    ): PureSvgShape = PureSvgCircle(
         center = transformation.transform(point = center),
         radius = radius,
         stroke = stroke,
