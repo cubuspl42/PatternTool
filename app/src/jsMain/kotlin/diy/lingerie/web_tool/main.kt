@@ -6,6 +6,7 @@ import dev.toolkt.dom.reactive.ReactiveButtonElement
 import dev.toolkt.dom.reactive.ReactiveCheckboxElement
 import dev.toolkt.dom.reactive.ReactiveDivElement
 import dev.toolkt.dom.reactive.ReactiveFlexStyle
+import dev.toolkt.dom.reactive.ReactiveSpanElement
 import dev.toolkt.dom.reactive.ReactiveStyle
 import dev.toolkt.dom.reactive.ReactiveTextNode
 import dev.toolkt.dom.reactive.ReactiveWrapperElement
@@ -39,13 +40,29 @@ fun main() {
             ),
         ),
         children = ReactiveList.of(
-            ReactiveTextNode(
-                data = position.map { positionNow ->
-                    when (positionNow) {
-                        null -> "(none)"
-                        else -> "$positionNow"
-                    }
-                },
+            ReactiveSpanElement(
+                children = ReactiveList.of(
+                    ReactiveTextNode(
+                        data = checkbox.isChecked.map { isCheckedNow ->
+                            val symbol = if (isCheckedNow) "✅" else "❌"
+                            "Checkbox state: $symbol"
+                        },
+                    ),
+                ),
+            ),
+            ReactiveSpanElement(
+                children = ReactiveList.of(
+                    ReactiveTextNode(
+                        data = position.map { positionNow ->
+                            val positionString = when (positionNow) {
+                                null -> "(none)"
+                                else -> positionNow.toString()
+                            }
+
+                            "Position: $positionString"
+                        },
+                    ),
+                ),
             ),
             button,
             checkbox,
