@@ -1,7 +1,7 @@
 package diy.lingerie.dynamic_html
 
-import diy.lingerie.frp.dynamic_list.DynamicList
-import diy.lingerie.frp.event_stream.EventEmitter
+import diy.lingerie.reactive.dynamic_list.DynamicList
+import diy.lingerie.reactive.event_stream.EventEmitter
 import diy.lingerie.html.HtmlEventHandler
 import diy.lingerie.html.HtmlMouseEvent
 import diy.lingerie.html.attach
