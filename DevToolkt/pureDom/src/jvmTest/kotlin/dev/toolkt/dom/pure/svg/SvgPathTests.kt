@@ -1,15 +1,12 @@
-package diy.lingerie.simple_dom.svg
+package dev.toolkt.dom.pure.svg
 
-import dev.toolkt.geometry.Point
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.dom.pure.PureColor
-import dev.toolkt.dom.pure.svg.PureSvgPath
-import dev.toolkt.dom.pure.svg.PureSvgShape
-import dev.toolkt.dom.pure.svg.toSimplePath
 import dev.toolkt.dom.pure.utils.xml.childElements
 import dev.toolkt.dom.pure.utils.xml.svg.SVGDOMImplementationUtils
 import dev.toolkt.dom.pure.utils.xml.svg.documentSvgElement
 import dev.toolkt.dom.pure.utils.xml.svg.parseSvgDocument
+import dev.toolkt.geometry.Point
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory
 import org.apache.batik.anim.dom.SVGDOMImplementation
 import org.w3c.dom.svg.SVGPathElement
@@ -59,7 +56,7 @@ class SvgPathTests {
 
         val expectedPath = PureSvgPath(
             stroke = PureSvgShape.Stroke(
-                color = PureColor.red,
+                color = PureColor.Companion.red,
                 width = 2.0,
                 dashArray = listOf(5.0, 2.0),
             ),

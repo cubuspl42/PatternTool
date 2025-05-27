@@ -1,4 +1,4 @@
-package diy.lingerie.simple_dom.fo
+package dev.toolkt.dom.pure.fo
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance

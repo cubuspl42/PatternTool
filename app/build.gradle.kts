@@ -43,7 +43,6 @@ kotlin {
         }
 
         jvmMain.dependencies {
-            implementation(libs.fop)
             implementation(libs.clikt)
         }
 
