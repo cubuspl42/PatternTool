@@ -1,6 +1,6 @@
 @file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 
-package diy.lingerie.frp
+package dev.toolkt.core.platform
 
 expect class PlatformWeakSet<T : Any>() : AbstractMutableSet<T> {
     override val size: Int
