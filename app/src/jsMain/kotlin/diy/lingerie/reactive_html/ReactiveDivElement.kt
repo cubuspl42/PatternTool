@@ -1,7 +1,7 @@
-package diy.lingerie.reactive_html
+package dev.toolkt.reactive_html
 
-import diy.lingerie.reactive.reactive_list.ReactiveList
-import diy.lingerie.reactive.event_stream.EventEmitter
+import dev.toolkt.reactive.reactive_list.ReactiveList
+import dev.toolkt.reactive.event_stream.EventEmitter
 import diy.lingerie.html.HtmlEventHandler
 import diy.lingerie.html.HtmlMouseEvent
 import diy.lingerie.html.attach

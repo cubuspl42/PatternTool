@@ -1,6 +1,6 @@
-package diy.lingerie.reactive_html
+package dev.toolkt.reactive_html
 
-import diy.lingerie.reactive.cell.Cell
+import dev.toolkt.reactive.cell.Cell
 import kotlinx.browser.document
 import org.w3c.dom.Text
 

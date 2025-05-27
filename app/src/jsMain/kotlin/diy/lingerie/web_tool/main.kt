@@ -1,12 +1,12 @@
 package diy.lingerie.web_tool
 
-import diy.lingerie.reactive_html.ReactiveButtonElement
-import diy.lingerie.reactive_html.ReactiveDivElement
-import diy.lingerie.reactive_html.ReactiveHtmlText
-import diy.lingerie.reactive_html.ReactiveWrapperElement
-import diy.lingerie.reactive.cell.Cell
-import diy.lingerie.reactive.reactive_list.ReactiveList
-import diy.lingerie.reactive.event_stream.hold
+import dev.toolkt.reactive_html.ReactiveButtonElement
+import dev.toolkt.reactive_html.ReactiveDivElement
+import dev.toolkt.reactive_html.ReactiveHtmlText
+import dev.toolkt.reactive_html.ReactiveWrapperElement
+import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.reactive_list.ReactiveList
+import dev.toolkt.reactive.event_stream.hold
 import kotlinx.browser.document
 
 fun main() {
