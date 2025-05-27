@@ -1,4 +1,4 @@
-package dev.toolkt.reactive_html
+package diy.lingerie.reactive_html
 
 import org.w3c.dom.Node
 

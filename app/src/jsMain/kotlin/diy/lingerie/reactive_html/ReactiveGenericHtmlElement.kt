@@ -1,4 +1,4 @@
-package dev.toolkt.reactive_html
+package diy.lingerie.reactive_html
 
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import diy.lingerie.html.collections.ChildNodesDomList
