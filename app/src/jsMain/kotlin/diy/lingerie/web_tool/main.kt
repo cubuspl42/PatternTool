@@ -1,6 +1,7 @@
 package diy.lingerie.web_tool
 
 import dev.toolkt.dom.reactive.ReactiveButtonElement
+import dev.toolkt.dom.reactive.ReactiveCheckboxElement
 import dev.toolkt.dom.reactive.ReactiveDivElement
 import dev.toolkt.dom.reactive.ReactiveTextNode
 import dev.toolkt.dom.reactive.ReactiveWrapperElement
@@ -18,6 +19,8 @@ fun main() {
         ),
     )
 
+    val checkbox = ReactiveCheckboxElement()
+
     val position = button.onClick.map {
         it.position
     }.hold(initialValue = null)
@@ -33,6 +36,7 @@ fun main() {
                 },
             ),
             button,
+            checkbox,
             ReactiveWrapperElement(
                 document.createElement("h1").apply {
                     textContent = "Hello, world!"
