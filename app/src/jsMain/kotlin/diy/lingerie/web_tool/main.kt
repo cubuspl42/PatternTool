@@ -2,32 +2,34 @@ package diy.lingerie.web_tool
 
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
-import dev.toolkt.dom.reactive.node.ReactiveTextNode
-import dev.toolkt.dom.reactive.node.element.ReactiveButtonElement
-import dev.toolkt.dom.reactive.node.element.ReactiveCheckboxElement
-import dev.toolkt.dom.reactive.node.element.ReactiveDivElement
-import dev.toolkt.dom.reactive.node.element.ReactiveSpanElement
-import dev.toolkt.dom.reactive.node.element.ReactiveWrapperNode
 import dev.toolkt.dom.reactive.style.ReactiveFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
-import dev.toolkt.dom.reactive.widget.Button
+import dev.toolkt.dom.reactive.utils.createReactiveHtmlButtonElement
+import dev.toolkt.dom.reactive.utils.createReactiveHtmlDivElement
+import dev.toolkt.dom.reactive.utils.createReactiveHtmlInputElement
+import dev.toolkt.dom.reactive.utils.createReactiveHtmlSpanElement
+import dev.toolkt.dom.reactive.utils.createReactiveTextNode
+import dev.toolkt.dom.reactive.utils.getCheckedCell
+import dev.toolkt.dom.reactive.utils.getClickEventStream
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 
 fun main() {
-    val positionButton = Button.of(
-        text = Cell.of("Click me!!"),
+    val positionButton = document.createReactiveHtmlButtonElement(
+        children = ReactiveList.of(
+            document.createTextNode("Click!"),
+        ),
     )
 
-    val checkbox = ReactiveCheckboxElement()
+    val checkbox = document.createReactiveHtmlInputElement(type = "checkbox")
 
-    val position = positionButton.onPressed.map {
+    val position = positionButton.getClickEventStream().map {
         "pressed!"
     }.hold(initialValue = null)
 
-    val root = ReactiveDivElement(
+    val root = document.createReactiveHtmlDivElement(
         style = ReactiveStyle(
             displayStyle = Cell.of(
                 ReactiveFlexStyle(
@@ -37,19 +39,19 @@ fun main() {
             ),
         ),
         children = ReactiveList.of(
-            ReactiveSpanElement(
+            document.createReactiveHtmlSpanElement(
                 children = ReactiveList.of(
-                    ReactiveTextNode(
-                        data = checkbox.isChecked.map { isCheckedNow ->
+                    document.createReactiveTextNode(
+                        data = checkbox.getCheckedCell().map { isCheckedNow ->
                             val symbol = if (isCheckedNow) "✅" else "❌"
                             "Checkbox state: $symbol"
                         },
                     ),
                 ),
             ),
-            ReactiveSpanElement(
+            document.createReactiveHtmlSpanElement(
                 children = ReactiveList.of(
-                    ReactiveTextNode(
+                    document.createReactiveTextNode(
                         data = position.map { positionNow ->
                             val positionString = when (positionNow) {
                                 null -> "(none)"
@@ -61,26 +63,22 @@ fun main() {
                     ),
                 ),
             ),
-            positionButton.asReactiveElement,
+            positionButton,
             checkbox,
-            ReactiveWrapperNode(
-                document.createElement("h1").apply {
-                    textContent = "Hello, world!"
-                },
-            ),
-            ReactiveSpanElement(
+            document.createElement("h1").apply {
+                textContent = "Hello, world!"
+            },
+            document.createReactiveHtmlSpanElement(
                 children = ReactiveList.of(
-                    ReactiveButtonElement(
+                    document.createReactiveHtmlButtonElement(
                         children = ReactiveList.of(
-                            ReactiveTextNode(
-                                data = Cell.of("Check!"),
-                            ),
+                            document.createTextNode("Check!"),
                         ),
-                    ).apply {
-                        onClick.pipe(
+                    ).also { buttonElement ->
+                        buttonElement.getClickEventStream().pipe(
                             target = checkbox
                         ) { checkbox, _ ->
-                            checkbox.setChecked(true)
+                            checkbox.checked = true
                         }
                     },
                 )
@@ -88,7 +86,5 @@ fun main() {
         ),
     )
 
-    document.body!!.appendChild(
-        root.rawNode,
-    )
+    document.body!!.appendChild(root)
 }
