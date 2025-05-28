@@ -78,8 +78,8 @@ fun main() {
                         ),
                     ).apply {
                         onClick.pipe(
-                            target = checkbox,
-                        ) {
+                            target = checkbox
+                        ) { checkbox, _ ->
                             checkbox.setChecked(true)
                         }
                     },
