@@ -2,38 +2,18 @@ package diy.lingerie.web_tool
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureUnit
-import dev.toolkt.dom.pure.input.PureInputType
+import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
+import dev.toolkt.dom.pure.style.PureFlexJustifyContent
 import dev.toolkt.dom.reactive.style.ReactiveFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
-import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlButtonElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
-import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlInputElement
-import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlSpanElement
-import dev.toolkt.dom.reactive.utils.createReactiveTextNode
-import dev.toolkt.dom.reactive.utils.html.getCheckedCell
-import dev.toolkt.dom.reactive.utils.html.getClickEventStream
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 
 fun main() {
-    val positionButton = document.createReactiveHtmlButtonElement(
-        children = ReactiveList.of(
-            document.createTextNode("Click!"),
-        ),
-    )
-
-    val checkbox = document.createReactiveHtmlInputElement(
-        type = PureInputType.Checkbox,
-    )
-
-    val position = positionButton.getClickEventStream().map {
-        "pressed!"
-    }.hold(initialValue = null)
-
     val root = document.createReactiveHtmlDivElement(
         style = ReactiveStyle(
             displayStyle = Cell.of(
@@ -47,50 +27,22 @@ fun main() {
             backgroundColor = Cell.of(PureColor.lightGray),
         ),
         children = ReactiveList.of(
-            document.createReactiveHtmlSpanElement(
-                children = ReactiveList.of(
-                    document.createReactiveTextNode(
-                        data = checkbox.getCheckedCell().map { isCheckedNow ->
-                            val symbol = if (isCheckedNow) "✅" else "❌"
-                            "Checkbox state: $symbol"
-                        },
-                    ),
-                ),
-            ),
-            document.createReactiveHtmlSpanElement(
-                children = ReactiveList.of(
-                    document.createReactiveTextNode(
-                        data = position.map { positionNow ->
-                            val positionString = when (positionNow) {
-                                null -> "(none)"
-                                else -> positionNow
-                            }
-
-                            "Position: $positionString"
-                        },
-                    ),
-                ),
-            ),
-            positionButton,
-            checkbox,
-            document.createElement("h1").apply {
-                textContent = "Hello, world!"
-            },
-            document.createReactiveHtmlSpanElement(
-                children = ReactiveList.of(
-                    document.createReactiveHtmlButtonElement(
-                        children = ReactiveList.of(
-                            document.createTextNode("Check!"),
+            document.createReactiveHtmlDivElement(
+                style = ReactiveStyle(
+                    displayStyle = Cell.of(
+                        ReactiveFlexStyle(
+                            alignItems = PureFlexAlignItems.Center,
+                            justifyContent = PureFlexJustifyContent.Start,
                         ),
-                    ).also { buttonElement ->
-                        buttonElement.getClickEventStream().pipe(
-                            target = checkbox
-                        ) { checkbox, _ ->
-                            checkbox.checked = true
-                        }
-                    },
-                )
-            ),
+                    ),
+                    width = Cell.of(PureUnit.Percent.full),
+                    height = Cell.of(24.px),
+                    backgroundColor = Cell.of(PureColor.lightGray),
+                ),
+                children = ReactiveList.of(
+                    document.createTextNode("Hello"),
+                ),
+            )
         ),
     )
 
