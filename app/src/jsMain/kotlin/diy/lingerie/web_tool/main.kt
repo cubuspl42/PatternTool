@@ -1,5 +1,6 @@
 package diy.lingerie.web_tool
 
+import dev.toolkt.dom.pure.input.PureInputType
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.reactive.style.ReactiveFlexStyle
@@ -23,7 +24,9 @@ fun main() {
         ),
     )
 
-    val checkbox = document.createReactiveHtmlInputElement(type = "checkbox")
+    val checkbox = document.createReactiveHtmlInputElement(
+        type = PureInputType.Checkbox,
+    )
 
     val position = positionButton.getClickEventStream().map {
         "pressed!"
