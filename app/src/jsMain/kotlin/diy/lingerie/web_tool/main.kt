@@ -1,5 +1,7 @@
 package diy.lingerie.web_tool
 
+import dev.toolkt.dom.pure.PureColor
+import dev.toolkt.dom.pure.PureUnit
 import dev.toolkt.dom.pure.input.PureInputType
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
@@ -40,6 +42,9 @@ fun main() {
                     alignItems = PureFlexAlignItems.Start,
                 ),
             ),
+            width = Cell.of(PureUnit.Vw.full),
+            height = Cell.of(PureUnit.Vh.full),
+            backgroundColor = Cell.of(PureColor.lightGray),
         ),
         children = ReactiveList.of(
             document.createReactiveHtmlSpanElement(
