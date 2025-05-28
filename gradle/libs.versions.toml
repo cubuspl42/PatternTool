@@ -1,14 +1,16 @@
 [versions]
 kotlinx-benchmark = "0.4.13"
-kotlin = "2.2.0-Beta1"
+kotlin = "2.2.0-RC"
 kotlinx-serialization = "1.6.0"
+kotlinx-coroutines = "1.10.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark" }
-
-clikt = { module = "com.github.ajalt.clikt:clikt", version = "5.0.3" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+clikt = { module = "com.github.ajalt.clikt:clikt", version = "5.0.3" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
