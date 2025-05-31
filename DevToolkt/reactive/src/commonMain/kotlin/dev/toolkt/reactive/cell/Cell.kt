@@ -105,6 +105,8 @@ sealed class Cell<out V> {
     ): EventStream<Er> = EventStream.divert(
         nestedEventStream = map(transform),
     )
+
+    abstract val isFinal: Boolean
 }
 
 fun <V, T : Any> Cell<V>.bindNested(

@@ -46,4 +46,7 @@ abstract class ProperCell<out V> : Cell<V>() {
 
         return subscription
     }
+
+    override val isFinal: Boolean
+        get() = newValues.didEnd
 }

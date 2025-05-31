@@ -39,4 +39,6 @@ class ConstCell<V>(
 
         return Subscription.Noop
     }
+
+    override val isFinal: Boolean = true
 }

@@ -31,10 +31,6 @@ fun main() {
 private fun createRootElement(): HTMLDivElement {
     val primaryViewport = createPrimaryViewport()
 
-    primaryViewport.getMouseMoveEventStream().listen {
-        println(it)
-    }
-
     return document.createReactiveHtmlDivElement(
         style = ReactiveStyle(
             displayStyle = Cell.of(

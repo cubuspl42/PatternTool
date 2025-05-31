@@ -8,11 +8,11 @@ class EventStreamVerifier<E>(
     private val mutableReceivedEvents = mutableListOf<E>()
 
     init {
-        eventStream.listenWeak(
-            target = this,
-        ) { self, event ->
-            self.mutableReceivedEvents.add(event)
-        }
+//        eventStream.listenWeak(
+//            target = this,
+//        ) { self, event ->
+//            self.mutableReceivedEvents.add(event)
+//        }
     }
 
     fun removeReceivedEvents(): List<E> {

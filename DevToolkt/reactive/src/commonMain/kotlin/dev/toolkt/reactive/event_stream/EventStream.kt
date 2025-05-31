@@ -2,6 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.cell.Future
 import dev.toolkt.reactive.cell.HoldCell
 
 typealias WeakListener<T, E> = (T, E) -> Unit
@@ -53,6 +54,8 @@ abstract class EventStream<out E> : EventSource<E> {
         count: Int,
     ): EventStream<E>
 
+    abstract fun next(): Future<E>
+
     abstract fun <T : Any> pipe(
         target: T,
         forward: (T, E) -> Unit,
@@ -69,6 +72,14 @@ abstract class EventStream<out E> : EventSource<E> {
             forward = forward,
         )
     }
+
+    val didEnd: Boolean
+        get() = successorEventStream != null
+
+    val effectiveEventStream: EventStream<E>
+        get() = successorEventStream ?: this
+
+    abstract val successorEventStream: EventStream<E>?
 
     fun units(): EventStream<Unit> = map { }
 }
@@ -90,3 +101,11 @@ fun <E> EventStream<E>.hold(
     initialValue = initialValue,
     newValues = this,
 )
+
+fun <E> EventStream<E>.internalizeIfProper(
+    other: ProperEventStream<E>,
+) {
+    val thisProperEventStream = this as? ProperEventStream<E> ?: return
+
+    thisProperEventStream.internalize(other = other)
+}

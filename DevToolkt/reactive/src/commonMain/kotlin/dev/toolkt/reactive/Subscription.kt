@@ -6,5 +6,5 @@ interface Subscription {
         }
     }
 
-    fun cancel()
+    fun cancel(): Any
 }

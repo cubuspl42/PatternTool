@@ -10,4 +10,7 @@ class EventEmitter<E> : ManagedEventStream<E>() {
 
     override fun onPaused() {
     }
+
+    override val successorEventStream: EventStream<E>?
+        get() = null
 }
