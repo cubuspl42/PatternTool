@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.Vertex
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.HoldCell
 
@@ -71,6 +72,8 @@ abstract class EventStream<out E> : EventSource<E> {
     }
 
     fun units(): EventStream<Unit> = map { }
+
+    abstract val vertex: Vertex<@UnsafeVariance E>
 }
 
 fun <E> EventStream<E>.mergeWith(
