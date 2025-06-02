@@ -10,9 +10,9 @@ import dev.toolkt.dom.pure.style.PureFlexJustifyContent
 import dev.toolkt.dom.reactive.style.ReactiveFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
+import dev.toolkt.dom.reactive.utils.gestures.trackMouseOverGesture
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.html.getMouseMoveEventStream
-import dev.toolkt.dom.reactive.utils.html.getMouseOffsetCell
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
@@ -49,7 +49,12 @@ private fun createRootElement(): HTMLDivElement {
         ),
         children = ReactiveList.of(
             createTopBar(
-                point = primaryViewport.getMouseOffsetCell(),
+                title = primaryViewport.trackMouseOverGesture().switchOf { gestureOrNul ->
+                    when (gestureOrNul) {
+                        null -> Cell.of("(no gesture)")
+                        else -> gestureOrNul.clientPosition.map { "[${it.x}, ${it.y}]" }
+                    }
+                },
             ),
             primaryViewport,
         ),
@@ -57,7 +62,7 @@ private fun createRootElement(): HTMLDivElement {
 }
 
 private fun createTopBar(
-    point: Cell<Point?>,
+    title: Cell<String>,
 ): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
         displayStyle = Cell.of(
@@ -72,7 +77,7 @@ private fun createTopBar(
     ),
     children = ReactiveList.of(
         document.createReactiveTextNode(
-            data = point.map { it.toString() },
+            data = title,
         ),
     ),
 )
