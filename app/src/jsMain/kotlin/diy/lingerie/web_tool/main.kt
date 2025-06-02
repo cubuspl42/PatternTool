@@ -10,6 +10,7 @@ import dev.toolkt.dom.pure.style.PureFlexJustifyContent
 import dev.toolkt.dom.reactive.style.ReactiveFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
+import dev.toolkt.dom.reactive.utils.gestures.MouseOverGesture
 import dev.toolkt.dom.reactive.utils.gestures.trackMouseOverGesture
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.html.getMouseMoveEventStream
@@ -49,12 +50,7 @@ private fun createRootElement(): HTMLDivElement {
         ),
         children = ReactiveList.of(
             createTopBar(
-                title = primaryViewport.trackMouseOverGesture().switchOf { gestureOrNul ->
-                    when (gestureOrNul) {
-                        null -> Cell.of("(no gesture)")
-                        else -> gestureOrNul.clientPosition.map { "[${it.x}, ${it.y}]" }
-                    }
-                },
+                mouseOverGesture = primaryViewport.trackMouseOverGesture(),
             ),
             primaryViewport,
         ),
@@ -62,7 +58,7 @@ private fun createRootElement(): HTMLDivElement {
 }
 
 private fun createTopBar(
-    title: Cell<String>,
+    mouseOverGesture: Cell<MouseOverGesture?>,
 ): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
         displayStyle = Cell.of(
@@ -75,13 +71,42 @@ private fun createTopBar(
         height = Cell.of(24.px),
         backgroundColor = Cell.of(PureColor.lightGray),
     ),
-    children = ReactiveList.of(
-        document.createReactiveTextNode(
-            data = title,
-        ),
+    children = ReactiveList.single(
+        mouseOverGesture.map {
+            createMouseOverGesturePreview(mouseOverGesture = it)
+        },
     ),
 )
 
+private fun createMouseOverGesturePreview(
+    mouseOverGesture: MouseOverGesture?,
+): HTMLDivElement = when (mouseOverGesture) {
+    null -> document.createReactiveHtmlDivElement(
+        style = ReactiveStyle(
+            backgroundColor = Cell.of(PureColor.red),
+        ),
+        children = ReactiveList.of(
+            document.createTextNode("(no gesture)"),
+        ),
+    )
+
+    else -> document.createReactiveHtmlDivElement(
+        style = ReactiveStyle(
+            backgroundColor = Cell.of(PureColor.green),
+        ),
+        children = ReactiveList.of(
+            document.createReactiveHtmlDivElement(
+                children = ReactiveList.of(
+                    document.createReactiveTextNode(
+                        data = mouseOverGesture.clientPosition.map {
+                            "[${it.x}, ${it.y}]"
+                        },
+                    )
+                ),
+            ),
+        ),
+    )
+}
 private fun createPrimaryViewport(): SVGSVGElement = ReactiveList.looped { childrenLooped ->
     val svgElement = document.createReactiveSvgSvgElement(
         style = ReactiveStyle(
