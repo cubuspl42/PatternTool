@@ -13,10 +13,8 @@ import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.gestures.MouseOverGesture
 import dev.toolkt.dom.reactive.utils.gestures.trackMouseOverGesture
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
-import dev.toolkt.dom.reactive.utils.html.getMouseMoveEventStream
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
-import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
@@ -26,14 +24,22 @@ import org.w3c.dom.svg.SVGSVGElement
 fun main() {
     val rootElement = createRootElement()
 
-    document.body!!.appendChild(rootElement)
+    document.body!!.apply {
+        style.margin = "0"
+
+        appendChild(rootElement)
+    }
 }
 
 private fun createRootElement(): HTMLDivElement {
-    val primaryViewport = createPrimaryViewport()
+    val primaryViewport = Cell.looped(
+        placeholderValue = null,
+    ) { mouseOverGestureLooped: Cell<MouseOverGesture?> ->
+        val primaryViewport = createPrimaryViewport(
+            mouseOverGesture = mouseOverGestureLooped,
+        )
 
-    primaryViewport.getMouseMoveEventStream().listen {
-        println(it)
+        Pair(primaryViewport, primaryViewport.trackMouseOverGesture())
     }
 
     return document.createReactiveHtmlDivElement(
@@ -73,14 +79,14 @@ private fun createTopBar(
     ),
     children = ReactiveList.single(
         mouseOverGesture.map {
-            createMouseOverGesturePreview(mouseOverGesture = it)
+            createMouseOverGesturePreview(mouseOverGestureNow = it)
         },
     ),
 )
 
 private fun createMouseOverGesturePreview(
-    mouseOverGesture: MouseOverGesture?,
-): HTMLDivElement = when (mouseOverGesture) {
+    mouseOverGestureNow: MouseOverGesture?,
+): HTMLDivElement = when (mouseOverGestureNow) {
     null -> document.createReactiveHtmlDivElement(
         style = ReactiveStyle(
             backgroundColor = Cell.of(PureColor.red),
@@ -98,16 +104,19 @@ private fun createMouseOverGesturePreview(
             document.createReactiveHtmlDivElement(
                 children = ReactiveList.of(
                     document.createReactiveTextNode(
-                        data = mouseOverGesture.clientPosition.map {
+                        data = mouseOverGestureNow.clientPosition.map {
                             "[${it.x}, ${it.y}]"
                         },
-                    )
+                    ),
                 ),
             ),
         ),
     )
 }
-private fun createPrimaryViewport(): SVGSVGElement = ReactiveList.looped { childrenLooped ->
+
+private fun createPrimaryViewport(
+    mouseOverGesture: Cell<MouseOverGesture?>,
+): SVGSVGElement = ReactiveList.looped { childrenLooped ->
     val svgElement = document.createReactiveSvgSvgElement(
         style = ReactiveStyle(
             width = Cell.of(100.percent),
@@ -116,11 +125,15 @@ private fun createPrimaryViewport(): SVGSVGElement = ReactiveList.looped { child
         children = childrenLooped,
     )
 
-    val children = ReactiveList.of(
-        document.createReactiveSvgCircleElement(
-            position = Cell.of(Point(20.0, 20.0)),
-            radius = 4.0,
-        ),
+    val children = ReactiveList.singleNotNull(
+        mouseOverGesture.map { mouseOverGestureOrNull ->
+            mouseOverGestureOrNull?.let {
+                document.createReactiveSvgCircleElement(
+                    position = it.offsetPosition,
+                    radius = 4.0,
+                )
+            }
+        },
     )
 
     return@looped Pair(svgElement, children)
