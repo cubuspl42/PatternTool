@@ -1,4 +1,4 @@
-package dev.toolkt.core.data_structures
+package dev.toolkt.core.data_structures.red_black_tree
 
 import kotlin.test.Ignore
 import kotlin.test.Test
