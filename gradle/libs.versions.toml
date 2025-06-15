@@ -1,5 +1,5 @@
 [versions]
-kotlinx-benchmark = "0.4.13"
+kotlinx-benchmark = "0.4.14"
 kotlin = "2.2.0-RC"
 kotlinx-serialization = "1.6.0"
 kotlinx-coroutines = "1.10.2"
