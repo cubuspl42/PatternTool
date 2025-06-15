@@ -1,0 +1,16 @@
+name: System tests
+
+on:
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  coreSystemTests:
+    uses: ./.github/workflows/run-gradle-task.yml
+    with:
+      task: ':coreSystemTests:allTests'
+      working-dir: './DevToolkt'
