@@ -1,12 +1,8 @@
-; DO NOT EDIT (unless you know what you are doing)
-;
-; This subdirectory is a git "subrepo", and this file is maintained by the
-; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
-;
 [subrepo]
-	remote = git@github.com:dev-toolkt/DevToolkt.git
-	branch = dev
-	commit = 8b391937dcc1b83a3db6874a8b9169b7cb533c5f
-	parent = 32d9534243a1d2df523cd8ca990e3d74ac4dc85d
-	method = rebase
-	cmdver = 0.4.9
+remote = git@github.com:dev-toolkt/DevToolkt.git
+branch = dev
+commit = 8b391937dcc1b83a3db6874a8b9169b7cb533c5f
+parent = 46e14b05045785d765957fbb5d4f09b04f818d69
+method = rebase
+cmdver = 0.4.9
+
