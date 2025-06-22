@@ -4,10 +4,10 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class RedBlackTreeSetTests {
+class MutableTreeSetTests {
     @Test
     fun testInitial() {
-        val set = RedBlackTreeSet<Int>()
+        val set = mutableTreeSetOf<Int>()
 
         set.verifyContent(
             elements = emptyList(),
@@ -17,7 +17,7 @@ class RedBlackTreeSetTests {
 
     @Test
     fun testAdd_empty() {
-        val set = RedBlackTreeSet<Int>()
+        val set = mutableTreeSetOf<Int>()
 
         assertTrue(
             actual = set.add(10),
@@ -31,7 +31,7 @@ class RedBlackTreeSetTests {
 
     @Test
     fun testAdd_nonEmpty() {
-        val set = RedBlackTreeSet<Int>()
+        val set = mutableTreeSetOf<Int>()
 
         set.addAll(
             listOf(
@@ -53,7 +53,7 @@ class RedBlackTreeSetTests {
 
     @Test
     fun testRemove() {
-        val set = RedBlackTreeSet<Int>()
+        val set = mutableTreeSetOf<Int>()
 
         set.addAll(
             listOf(
@@ -93,7 +93,7 @@ class RedBlackTreeSetTests {
 
     @Test
     fun testRemove_notContained() {
-        val set = RedBlackTreeSet<Int>()
+        val set = mutableTreeSetOf<Int>()
 
         set.addAll(
             listOf(
