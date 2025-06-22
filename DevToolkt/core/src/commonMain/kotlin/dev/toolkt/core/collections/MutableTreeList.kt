@@ -1,0 +1,314 @@
+package dev.toolkt.core.collections
+
+import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
+import dev.toolkt.core.data_structures.binary_tree.getLeftChildLocation
+import dev.toolkt.core.data_structures.binary_tree.getNextInOrderFreeLocation
+import dev.toolkt.core.data_structures.binary_tree.getRank
+import dev.toolkt.core.data_structures.binary_tree.getRightChildLocation
+import dev.toolkt.core.data_structures.binary_tree.getSideMostFreeLocation
+import dev.toolkt.core.data_structures.binary_tree.insertAll
+import dev.toolkt.core.data_structures.binary_tree.insertRelative
+import dev.toolkt.core.data_structures.binary_tree.select
+import kotlin.jvm.JvmInline
+
+/**
+ * A list variant that provides stable handles to the elements, but also focuses
+ * on providing efficient order statistic.
+ */
+class MutableTreeList<E>() : AbstractMutableList<E>() {
+    @JvmInline
+    value class Handle<E> internal constructor(
+        internal val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
+    )
+
+    private val tree = RedBlackTree<E>()
+
+    override val size: Int
+        get() = tree.size
+
+    fun resolve(
+        index: Int,
+    ): Handle<E>? {
+        val nodeHandle = tree.select(index = index) ?: return null
+
+        return nodeHandle.pack()
+    }
+
+    /**
+     * Returns the element at the specified index in the list.
+     * Guarantees logarithmic time complexity.
+     */
+    override fun get(
+        index: Int,
+    ): E {
+        val handle = resolve(index = index) ?: throw IndexOutOfBoundsException(
+            "Index $index is out of bounds for size ${size}."
+        )
+
+        return getVia(handle = handle)
+    }
+
+    /**
+     * Returns the element corresponding to the given handle.
+     * Guarantees constant time complexity.
+     */
+    fun getVia(
+        handle: Handle<E>,
+    ): E {
+        val nodeHandle = handle.unpack()
+
+        return tree.getPayload(nodeHandle = nodeHandle)
+    }
+
+    /**
+     * Replaces the element at the specified position in this list with the specified element.
+     * Guarantees logarithmic time complexity.
+     *
+     * @return the element previously at the specified position.
+     */
+    override fun set(
+        index: Int,
+        element: E,
+    ): E {
+        val handle = resolve(index = index) ?: throw IndexOutOfBoundsException(
+            "Index $index is out of bounds for size ${size}."
+        )
+
+        return setVia(
+            handle = handle,
+            element = element,
+        )
+    }
+
+    /**
+     * Replaces the element corresponding to the given handle with the specified element. Doesn't invalidate the handle.
+     * Guarantees constant time complexity.
+     *
+     * @return the element previously at the specified position.
+     */
+    fun setVia(
+        handle: Handle<E>,
+        element: E,
+    ): E {
+        val nodeHandle = handle.unpack()
+
+        val previousElement = tree.getPayload(nodeHandle = nodeHandle)
+
+        tree.setPayload(
+            nodeHandle = nodeHandle,
+            payload = element,
+        )
+
+        return previousElement
+    }
+
+    /**
+     * Adds the specified element to the end of this list.
+     * Guarantees logarithmic time complexity.
+     *
+     * @return `true` because the list is always modified as the result of this operation.
+     */
+    override fun add(
+        element: E,
+    ): Boolean {
+        addEx(element = element)
+
+        return true
+    }
+
+    /**
+     * Adds the specified element to the end of this list in exchange for a handle.
+     * Guarantees logarithmic time complexity.
+     *
+     * @return the handle to the added element.
+     */
+    fun addEx(
+        element: E,
+    ): Handle<E> {
+        val insertedNodeHandle = tree.insert(
+            location = tree.getSideMostFreeLocation(
+                side = BinaryTree.Side.Right,
+            ),
+            payload = element,
+        )
+
+        return insertedNodeHandle.pack()
+    }
+
+    /**
+     * Inserts an element into the list at the specified [index].
+     * Guarantees logarithmic time complexity.
+     */
+    override fun add(
+        index: Int,
+        element: E,
+    ) {
+        addAtEx(
+            index = index,
+            element = element,
+        )
+    }
+
+    /**
+     * Inserts all the elements of the specified collection [elements] into this list at the specified [index].
+     * Guarantees logarithmic time complexity.
+     *
+     * @return `true` because the list is always modified as the result of this operation.
+     */
+    override fun addAll(
+        index: Int,
+        elements: Collection<E>,
+    ): Boolean {
+        addAllAt(
+            index = index,
+            elements = elements.toList(),
+        )
+
+        return true
+    }
+
+    /**
+     * Inserts all the elements of the specified collection [elements] into this list at the specified [index].
+     * Guarantees logarithmic time complexity.
+     */
+    fun addAllAt(
+        index: Int,
+        elements: List<E>,
+    ) {
+        if (index < 0 || index > size) {
+            throw IndexOutOfBoundsException(
+                "Index $index is out of bounds for size ${size}."
+            )
+        }
+
+        val location =  when (val nodeHandle = tree.select(index = index)) {
+            // index == size, we have to append the elements
+            null -> tree.getSideMostFreeLocation(side = BinaryTree.Side.Right)
+
+            // Otherwise, we'll start inserting on the left side of the given node
+            else -> tree.getNextInOrderFreeLocation(
+                nodeHandle = nodeHandle,
+                side = BinaryTree.Side.Left,
+            )
+        }
+
+        tree.insertAll(
+            location = location,
+            payloads = elements,
+        )
+    }
+
+    /**
+     * Inserts an element into the list at the specified [index] in exchange for a handle.
+     * Guarantees logarithmic time complexity.
+     *
+     * @return the handle to the added element.
+     */
+    fun addAtEx(
+        index: Int,
+        element: E,
+    ): Handle<E> {
+        if (index < 0 || index > size) {
+            throw IndexOutOfBoundsException(
+                "Index $index is out of bounds for size ${size}."
+            )
+        }
+
+        val referenceNodeHandle = tree.select(index = index)
+
+        val insertedNodeHandle = when (referenceNodeHandle) {
+            null -> tree.insert(
+                location = tree.getSideMostFreeLocation(
+                    side = BinaryTree.Side.Right,
+                ),
+                payload = element,
+            )
+
+            else -> tree.insertRelative(
+                nodeHandle = referenceNodeHandle,
+                side = BinaryTree.Side.Left,
+                payload = element,
+            )
+        }
+
+        return insertedNodeHandle.pack()
+    }
+
+    /**
+     * Removes an element at the specified [index] from the list.
+     * Guarantees logarithmic time complexity.
+     *
+     * @return the element that has been removed.
+     */
+    override fun removeAt(
+        index: Int,
+    ): E {
+        val handle = resolve(index = index) ?: throw IndexOutOfBoundsException(
+            "Index $index is out of bounds for size ${size}."
+        )
+
+        return removeVia(handle = handle)
+    }
+
+    /**
+     * Removes the element corresponding to the given handle from the list.
+     *
+     * @return the element that has been removed.
+     */
+    fun removeVia(
+        handle: Handle<E>,
+    ): E {
+        val nodeHandle = handle.unpack()
+
+        val removedElement = tree.getPayload(nodeHandle = nodeHandle)
+
+        tree.remove(nodeHandle = nodeHandle)
+
+        return removedElement
+    }
+
+    /**
+     * Returns the index of the element corresponding to the given handle in the list.
+     *
+     * Guarantees logarithmic time complexity.
+     */
+    fun indexOfVia(
+        handle: Handle<E>,
+    ): Int {
+        val nodeHandle = handle.unpack()
+
+        return tree.getRank(nodeHandle = nodeHandle)
+    }
+
+    /**
+     * Returns the index of the first occurrence of the specified element in the list, or -1 if the specified
+     * element is not contained in the list.
+     *
+     * Guarantees only linear time complexity, as the list can contain duplicates. For logarithmic time complexity,
+     * use [indexOfVia] with a handle.
+     */
+    @Suppress("RedundantOverride")
+    override fun indexOf(element: E): Int {
+        return super.indexOf(element)
+    }
+}
+
+fun <E> mutableTreeListOf(
+    vararg elements: E,
+): MutableTreeList<E> {
+    val mutableTreeList = MutableTreeList<E>()
+
+    elements.forEach { element ->
+        mutableTreeList.add(element)
+    }
+
+    return mutableTreeList
+}
+
+private fun <E> MutableTreeList.Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color> = this.nodeHandle
+
+private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): MutableTreeList.Handle<E> =
+    MutableTreeList.Handle(
+        nodeHandle = this,
+    )
