@@ -5,8 +5,8 @@ import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.find
 import dev.toolkt.core.data_structures.binary_tree.getMinimalDescendant
 
-class RedBlackTreeSet<E : Comparable<E>>() : AbstractMutableSet<E>() {
-    class RedBlackTreeSetIterator<E : Comparable<E>>(
+class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutableSet<E>() {
+    private class TreeSetIterator<E : Comparable<E>>(
         private val tree: RedBlackTree<E>,
     ) : HandleIterator<E, BinaryTree.NodeHandle<E, RedBlackTree.Color>>(
         firstElementHandle = tree.getMinimalDescendant(),
@@ -34,7 +34,7 @@ class RedBlackTreeSet<E : Comparable<E>>() : AbstractMutableSet<E>() {
     override val size: Int
         get() = tree.size
 
-    override fun iterator(): MutableIterator<E> = RedBlackTreeSetIterator(
+    override fun iterator(): MutableIterator<E> = TreeSetIterator(
         tree = tree,
     )
 
@@ -61,4 +61,16 @@ class RedBlackTreeSet<E : Comparable<E>>() : AbstractMutableSet<E>() {
         val location = tree.find(element)
         return tree.resolve(location = location) != null
     }
+}
+
+fun <E : Comparable<E>> mutableTreeSetOf(
+    vararg elements: E,
+): MutableTreeSet<E> {
+    val set = MutableTreeSet<E>()
+
+    for (element in elements) {
+        set.add(element)
+    }
+
+    return set
 }
