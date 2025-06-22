@@ -1,5 +1,10 @@
 package dev.toolkt.core.data_structures.binary_tree
 
+/**
+ * Select the node at the given [index] in the binary tree's order.
+ *
+ * @return the handle to the node at the given index, or null if the index is out of bounds.
+ */
 fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.select(
     index: Int,
 ): BinaryTree.NodeHandle<PayloadT, MetadataT>? {

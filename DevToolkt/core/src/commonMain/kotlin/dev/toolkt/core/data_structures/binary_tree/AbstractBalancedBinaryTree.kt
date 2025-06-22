@@ -1,6 +1,7 @@
 package dev.toolkt.core.data_structures.binary_tree
 
 import dev.toolkt.core.errors.assert
+import dev.toolkt.core.iterable.uncons
 
 abstract class AbstractBalancedBinaryTree<PayloadT, ColorT>(
     protected val internalTree: MutableUnbalancedBinaryTree<PayloadT, ColorT>,
@@ -110,5 +111,25 @@ abstract class AbstractBalancedBinaryTree<PayloadT, ColorT>(
 
     abstract fun rebalanceAfterCollapse(
         elevatedNodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+    )
+}
+
+fun <PayloadT, ColorT> AbstractBalancedBinaryTree<PayloadT, ColorT>.insertAll(
+    location: BinaryTree.Location<PayloadT, ColorT>,
+    payloads: List<PayloadT>,
+) {
+    val (firstPayload, trailingPayloads) = payloads.uncons() ?: return
+
+    val nodeHandle = insert(
+        location = location,
+        payload = firstPayload,
+    )
+
+    insertAll(
+        location = getNextInOrderFreeLocation(
+            nodeHandle = nodeHandle,
+            side = BinaryTree.Side.Right,
+        ),
+        payloads = trailingPayloads,
     )
 }

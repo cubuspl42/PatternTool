@@ -16,9 +16,7 @@ class MutableUniqueListTests {
     fun testInitial() {
         val mutableUniqueList = MutableUniqueList<Fruit>()
 
-        mutableUniqueList.verifyContent(
-            elements = emptyList(),
-        )
+        mutableUniqueList.verifyContentUnique()
     }
 
     @Test
@@ -33,7 +31,7 @@ class MutableUniqueListTests {
 
         mutableUniqueList[1] = Fruit.Raspberry
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Banana,
             Fruit.Raspberry,
             Fruit.Kiwi,
@@ -69,7 +67,7 @@ class MutableUniqueListTests {
             )
         )
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Grape,
         )
     }
@@ -87,7 +85,7 @@ class MutableUniqueListTests {
             ),
         )
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Grape,
             Fruit.Strawberry,
             Fruit.Orange,
@@ -109,7 +107,7 @@ class MutableUniqueListTests {
             ),
         )
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Grape,
             Fruit.Strawberry,
             Fruit.Apple,
@@ -130,7 +128,7 @@ class MutableUniqueListTests {
             element = Fruit.Apple,
         )
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Apple,
             Fruit.Grape,
             Fruit.Strawberry,
@@ -153,7 +151,7 @@ class MutableUniqueListTests {
             element = Fruit.Apple,
         )
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Strawberry,
             Fruit.Grape,
             Fruit.Apple,
@@ -194,7 +192,7 @@ class MutableUniqueListTests {
             element = Fruit.Apple,
         )
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Strawberry,
             Fruit.Grape,
             Fruit.Apple,
@@ -216,7 +214,7 @@ class MutableUniqueListTests {
             element = Fruit.Apple,
         )
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Strawberry,
             Fruit.Grape,
             Fruit.Orange,
@@ -235,7 +233,7 @@ class MutableUniqueListTests {
 
         mutableUniqueList.removeAt(0)
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Grape,
             Fruit.Orange,
         )
@@ -251,7 +249,7 @@ class MutableUniqueListTests {
 
         mutableUniqueList.removeAt(1)
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Strawberry,
             Fruit.Orange,
         )
@@ -267,7 +265,7 @@ class MutableUniqueListTests {
 
         mutableUniqueList.removeAt(2)
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Strawberry,
             Fruit.Grape,
         )
@@ -302,7 +300,7 @@ class MutableUniqueListTests {
             ),
         )
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Grape,
             Fruit.Orange,
         )
@@ -322,7 +320,7 @@ class MutableUniqueListTests {
             ),
         )
 
-        mutableUniqueList.verifyContent(
+        mutableUniqueList.verifyContentUnique(
             Fruit.Strawberry,
             Fruit.Kiwi,
             Fruit.Orange,
