@@ -1,9 +1,6 @@
 package dev.toolkt.core.collections
 
-import kotlin.jvm.JvmInline
-
-@JvmInline
-value class CollectionBackedSet<E>(
+class CollectionBackedSet<E>(
     private val backingCollection: Collection<E>,
 ) : Set<E> {
     override val size: Int
@@ -16,4 +13,11 @@ value class CollectionBackedSet<E>(
     override fun iterator(): Iterator<E> = backingCollection.iterator()
 
     override fun containsAll(elements: Collection<E>): Boolean = backingCollection.containsAll(elements)
+
+    override fun equals(other: Any?): Boolean {
+        val otherSet = other as? Set<*> ?: return false
+        return toSet() == otherSet
+    }
+
+    override fun hashCode(): Int = toSet().hashCode()
 }
