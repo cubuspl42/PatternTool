@@ -1,7 +1,10 @@
 package dev.toolkt.core.collections
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class MutableTreeSetTests {
@@ -52,6 +55,47 @@ class MutableTreeSetTests {
     }
 
     @Test
+    fun testAddEx_duplicate() {
+        val set = mutableTreeSetOf(
+            10, 15, 20, 30,
+        )
+
+        assertNull(
+            actual = set.addEx(
+                element = 20,
+            ),
+        )
+
+        set.verifyContent(
+            elements = listOf(10, 15, 20, 30),
+            controlElements = setOf(-10, 40, 50),
+        )
+    }
+
+    @Test
+    fun testAddEx_nonDuplicate() {
+        val set = mutableTreeSetOf(
+            10, 15, 20, 30,
+        )
+
+        val handle = assertNotNull(
+            actual = set.addEx(
+                element = 25,
+            ),
+        )
+
+        assertEquals(
+            expected = 25,
+            actual = set.getVia(handle = handle),
+        )
+
+        set.verifyContent(
+            elements = listOf(10, 15, 20, 25, 30),
+            controlElements = setOf(-10, 40, 50),
+        )
+    }
+
+    @Test
     fun testRemove() {
         val set = mutableTreeSetOf<Int>()
 
@@ -88,6 +132,24 @@ class MutableTreeSetTests {
         set.verifyContent(
             elements = emptyList(),
             controlElements = setOf(10, 20, 30, 40, 50),
+        )
+    }
+
+    @Test
+    fun testRemoveVia() {
+        val set = mutableTreeSetOf(
+            10, 15, 20, 30,
+        )
+
+        val handle15 = assertNotNull(
+            actual = set.resolve(element = 15),
+        )
+
+        set.removeVia(handle = handle15)
+
+        set.verifyContent(
+            elements = listOf(10, 20, 30),
+            controlElements = setOf(15, -20),
         )
     }
 

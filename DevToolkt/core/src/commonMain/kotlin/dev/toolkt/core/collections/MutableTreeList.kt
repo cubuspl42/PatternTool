@@ -17,7 +17,7 @@ import kotlin.jvm.JvmInline
  */
 class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
     @JvmInline
-    value class TreeHandle<E> internal constructor(
+    internal value class TreeListHandle<E> internal constructor(
         internal val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
     ) : Handle<E>
 
@@ -307,13 +307,13 @@ fun <E> mutableTreeListOf(
 }
 
 private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color> {
-    this as? MutableTreeList.TreeHandle<E> ?: throw IllegalArgumentException(
-        "Handle is not a TreeHandle: $this"
+    this as? MutableTreeList.TreeListHandle<E> ?: throw IllegalArgumentException(
+        "Handle is not a TreeListHandle: $this"
     )
 
     return this.nodeHandle
 }
 
-private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): Handle<E> = MutableTreeList.TreeHandle(
+private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): Handle<E> = MutableTreeList.TreeListHandle(
     nodeHandle = this,
 )
