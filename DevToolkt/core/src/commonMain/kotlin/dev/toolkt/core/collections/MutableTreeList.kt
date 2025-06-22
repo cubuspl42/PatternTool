@@ -1,11 +1,10 @@
 package dev.toolkt.core.collections
 
+import dev.toolkt.core.collections.StableList.Handle
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
-import dev.toolkt.core.data_structures.binary_tree.getLeftChildLocation
 import dev.toolkt.core.data_structures.binary_tree.getNextInOrderFreeLocation
 import dev.toolkt.core.data_structures.binary_tree.getRank
-import dev.toolkt.core.data_structures.binary_tree.getRightChildLocation
 import dev.toolkt.core.data_structures.binary_tree.getSideMostFreeLocation
 import dev.toolkt.core.data_structures.binary_tree.insertAll
 import dev.toolkt.core.data_structures.binary_tree.insertRelative
@@ -16,18 +15,18 @@ import kotlin.jvm.JvmInline
  * A list variant that provides stable handles to the elements, but also focuses
  * on providing efficient order statistic.
  */
-class MutableTreeList<E>() : AbstractMutableList<E>() {
+class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
     @JvmInline
-    value class Handle<E> internal constructor(
+    value class TreeHandle<E> internal constructor(
         internal val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
-    )
+    ) : Handle<E>
 
     private val tree = RedBlackTree<E>()
 
     override val size: Int
         get() = tree.size
 
-    fun resolve(
+    override fun resolve(
         index: Int,
     ): Handle<E>? {
         val nodeHandle = tree.select(index = index) ?: return null
@@ -53,7 +52,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>() {
      * Returns the element corresponding to the given handle.
      * Guarantees constant time complexity.
      */
-    fun getVia(
+    override fun getVia(
         handle: Handle<E>,
     ): E {
         val nodeHandle = handle.unpack()
@@ -87,7 +86,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>() {
      *
      * @return the element previously at the specified position.
      */
-    fun setVia(
+    override fun setVia(
         handle: Handle<E>,
         element: E,
     ): E {
@@ -123,7 +122,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>() {
      *
      * @return the handle to the added element.
      */
-    fun addEx(
+    override fun addEx(
         element: E,
     ): Handle<E> {
         val insertedNodeHandle = tree.insert(
@@ -182,7 +181,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>() {
             )
         }
 
-        val location =  when (val nodeHandle = tree.select(index = index)) {
+        val location = when (val nodeHandle = tree.select(index = index)) {
             // index == size, we have to append the elements
             null -> tree.getSideMostFreeLocation(side = BinaryTree.Side.Right)
 
@@ -205,7 +204,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>() {
      *
      * @return the handle to the added element.
      */
-    fun addAtEx(
+    override fun addAtEx(
         index: Int,
         element: E,
     ): Handle<E> {
@@ -253,10 +252,11 @@ class MutableTreeList<E>() : AbstractMutableList<E>() {
 
     /**
      * Removes the element corresponding to the given handle from the list.
+     * Guarantees logarithmic time complexity.
      *
      * @return the element that has been removed.
      */
-    fun removeVia(
+    override fun removeVia(
         handle: Handle<E>,
     ): E {
         val nodeHandle = handle.unpack()
@@ -273,7 +273,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>() {
      *
      * Guarantees logarithmic time complexity.
      */
-    fun indexOfVia(
+    override fun indexOfVia(
         handle: Handle<E>,
     ): Int {
         val nodeHandle = handle.unpack()
@@ -306,9 +306,14 @@ fun <E> mutableTreeListOf(
     return mutableTreeList
 }
 
-private fun <E> MutableTreeList.Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color> = this.nodeHandle
-
-private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): MutableTreeList.Handle<E> =
-    MutableTreeList.Handle(
-        nodeHandle = this,
+private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color> {
+    this as? MutableTreeList.TreeHandle<E> ?: throw IllegalArgumentException(
+        "Handle is not a TreeHandle: $this"
     )
+
+    return this.nodeHandle
+}
+
+private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): Handle<E> = MutableTreeList.TreeHandle(
+    nodeHandle = this,
+)
