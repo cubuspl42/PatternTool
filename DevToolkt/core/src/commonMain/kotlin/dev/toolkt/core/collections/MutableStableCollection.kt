@@ -2,27 +2,24 @@ package dev.toolkt.core.collections
 
 import dev.toolkt.core.collections.StableCollection.Handle
 
-/**
- * A mutable set providing stable handles to its elements.
- */
-interface MutableStableSet<E> : MutableStableCollection<E>, MutableSet<E>, StableSet<E> {
+interface MutableStableCollection<E> : MutableSet<E>, StableSet<E> {
     /**
      * Adds the specified element to the set in exchange for a handle.
-     * Guarantees logarithmic time complexity or better.
+     * Guarantees linear time complexity or better.
      *
      * @return the handle to the added element or `null` if the element is already present.
      */
-    override fun addEx(
+    fun addEx(
         element: E,
     ): Handle<E>?
 
     /**
      * Removes the element corresponding to the given handle from the set.
-     * Guarantees logarithmic time complexity or better.
+     * Guarantees linear time complexity or better.
      *
      * @return the element that has been removed.
      */
-    override fun removeVia(
+    fun removeVia(
         handle: Handle<E>,
     ): E
 }
