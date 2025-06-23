@@ -1,6 +1,6 @@
 package dev.toolkt.core.collections
 
-import dev.toolkt.core.collections.StableSet.Handle
+import dev.toolkt.core.collections.StableCollection.Handle
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.find
@@ -21,13 +21,13 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
         tree = elementTree,
     )
 
-    override fun resolve(element: E): StableSet.Handle<E>? {
+    override fun resolve(element: E): Handle<E>? {
         val location = elementTree.find(payload = element)
         val nodeHandle = elementTree.resolve(location = location) ?: return null
         return nodeHandle.pack()
     }
 
-    override fun getVia(handle: StableSet.Handle<E>): E {
+    override fun getVia(handle: Handle<E>): E {
         val nodeHandle = handle.unpack()
         return elementTree.getPayload(nodeHandle = nodeHandle)
     }
@@ -36,7 +36,7 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
         element: E,
     ): Boolean = addEx(element) != null
 
-    override fun addEx(element: E): StableSet.Handle<E>? {
+    override fun addEx(element: E): Handle<E>? {
         val location = elementTree.find(element)
 
         val existingNodeHandle = elementTree.resolve(location = location)
@@ -63,7 +63,7 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
         return true
     }
 
-    override fun removeVia(handle: StableSet.Handle<E>): E {
+    override fun removeVia(handle: Handle<E>): E {
         val nodeHandle = handle.unpack()
 
         val removedElement = elementTree.getPayload(nodeHandle = nodeHandle)
@@ -92,7 +92,7 @@ fun <E : Comparable<E>> mutableTreeSetOf(
     return set
 }
 
-private fun <E> StableSet.Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color> {
+private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color> {
     this as? MutableTreeSet.TreeSetHandle<E> ?: throw IllegalArgumentException(
         "Handle is not a TreeSetHandle: $this"
     )
@@ -100,6 +100,6 @@ private fun <E> StableSet.Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackT
     return this.nodeHandle
 }
 
-private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): StableSet.Handle<E> = MutableTreeSet.TreeSetHandle(
+private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): Handle<E> = MutableTreeSet.TreeSetHandle(
     nodeHandle = this,
 )

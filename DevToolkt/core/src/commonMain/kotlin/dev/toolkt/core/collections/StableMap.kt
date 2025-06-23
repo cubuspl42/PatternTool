@@ -8,6 +8,7 @@ interface StableMap<K, out V> : Map<K, V> {
 
     /**
      * Returns a handle to the entry corresponding to the given key.
+     * Guarantees linear time complexity or better.
      */
     fun resolve(
         key: K,
@@ -15,6 +16,7 @@ interface StableMap<K, out V> : Map<K, V> {
 
     /**
      * Returns the value corresponding to the given handle.
+     * Guarantees constant time complexity.
      */
     fun getVia(
         handle: Handle<K, @UnsafeVariance V>,
@@ -22,6 +24,7 @@ interface StableMap<K, out V> : Map<K, V> {
 
     /**
      * Returns the entry corresponding to the given handle.
+     * Guarantees constant time complexity.
      */
     fun getEntryVia(
         handle: Handle<K, @UnsafeVariance V>,
