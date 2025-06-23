@@ -162,41 +162,55 @@ private fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifySubtreeBalance
 }
 
 fun <PayloadT : Comparable<PayloadT>, ColorT> BinaryTree<PayloadT, ColorT>.verifyOrder() {
+    verifyOrderBy { it }
+}
+
+fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> BinaryTree<PayloadT, ColorT>.verifyOrderBy(
+    selector: (PayloadT) -> KeyT,
+) {
     val rootHandle = this.root ?: return
 
     verifySubtreeOrder(
         nodeHandle = rootHandle,
+        selector = selector,
     )
 }
 
-private fun <PayloadT : Comparable<PayloadT>, ColorT> BinaryTree<PayloadT, ColorT>.verifySubtreeOrder(
+private fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> BinaryTree<PayloadT, ColorT>.verifySubtreeOrder(
     nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+    selector: (PayloadT) -> KeyT,
 ) {
     val payload = getPayload(nodeHandle = nodeHandle)
+    val key = selector(payload)
+
     val leftChildHandle = getLeftChild(nodeHandle = nodeHandle)
     val rightChildHandle = getRightChild(nodeHandle = nodeHandle)
 
     leftChildHandle?.let {
         val leftPayload = getPayload(nodeHandle = it)
+        val leftKey = selector(leftPayload)
 
-        if (leftPayload >= payload) {
+        if (leftKey >= key) {
             throw AssertionError("Left child payload $leftPayload is not less than parent payload $payload")
         }
 
         verifySubtreeOrder(
             nodeHandle = it,
+            selector = selector,
         )
     }
 
-    val rightSubtreeVerificationResult = rightChildHandle?.let {
+    rightChildHandle?.let {
         val rightPayload = getPayload(nodeHandle = it)
+        val rightKey = selector(rightPayload)
 
-        if (rightPayload <= payload) {
+        if (rightKey <= key) {
             throw AssertionError("Right child payload $rightPayload is not greater than parent payload $payload")
         }
 
         verifySubtreeOrder(
             nodeHandle = it,
+            selector = selector,
         )
     }
 }
