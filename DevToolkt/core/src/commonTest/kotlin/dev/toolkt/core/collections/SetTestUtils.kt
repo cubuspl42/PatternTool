@@ -3,8 +3,17 @@ package dev.toolkt.core.collections
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+/**
+ * Verifies the consistency of a [Set] against expected elements and control elements.
+ */
 fun <E> Set<E>.verifyContent(
+    /**
+     * Expected elements in the set (in the iteration order).
+     */
     elements: List<E>,
+    /**
+     * Control elements that should not be present in the set.
+     */
     controlElements: Set<E>,
 ) {
     assertEquals(
@@ -13,7 +22,7 @@ fun <E> Set<E>.verifyContent(
         message = "Actual size does not match expected size: expected ${elements.size}, got $size",
     )
 
-    // Actual list elements in the iteration order
+    // Actual elements in the iteration order
     val actualElements = toList()
 
     assertEquals(
