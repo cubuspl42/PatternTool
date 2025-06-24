@@ -3,7 +3,8 @@ package dev.toolkt.core.collections
 import dev.toolkt.core.collections.StableCollection.Handle
 
 /**
- * A read-only list providing stable handles to its elements.
+ * A stable list providing efficient operations for selecting elements by index
+ * and retrieving their indices via handles.
  */
 interface IndexedList<out E> : StableList<E> {
     /**

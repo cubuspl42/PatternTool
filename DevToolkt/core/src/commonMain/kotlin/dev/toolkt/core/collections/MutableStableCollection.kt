@@ -2,7 +2,7 @@ package dev.toolkt.core.collections
 
 import dev.toolkt.core.collections.StableCollection.Handle
 
-interface MutableStableCollection<E> : MutableSet<E>, StableSet<E> {
+interface MutableStableCollection<E> : MutableCollection<E>, StableCollection<E> {
     /**
      * Adds the specified element to the collection in exchange for a handle.
      * Guarantees logarithmic time complexity or better.
