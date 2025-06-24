@@ -5,6 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class MutableTreeListTests {
@@ -257,7 +258,6 @@ class MutableTreeListTests {
         )
     }
 
-
     @Test
     fun testAdd_atIndex_onePastLast() {
         val mutableTreeList = mutableTreeListOf(
@@ -450,6 +450,7 @@ class MutableTreeListTests {
             // +Kiwi
             Fruit.Orange,
         )
+        val stableList: StableList<Fruit> = mutableTreeList
 
         val kiwiHandle = mutableTreeList.addAtEx(
             index = 5,
@@ -463,6 +464,13 @@ class MutableTreeListTests {
             ),
         )
 
+        assertEquals(
+            expected = 5,
+            actual = stableList.indexOfVia(
+                handle = kiwiHandle,
+            ),
+        )
+
         val pineappleHandle = mutableTreeList.addAtEx(
             index = 3,
             element = Fruit.Pineapple,
@@ -471,6 +479,13 @@ class MutableTreeListTests {
         assertEquals(
             expected = 3,
             actual = mutableTreeList.indexOfVia(
+                handle = pineappleHandle,
+            ),
+        )
+
+        assertEquals(
+            expected = 3,
+            actual = stableList.indexOfVia(
                 handle = pineappleHandle,
             ),
         )
@@ -488,8 +503,22 @@ class MutableTreeListTests {
         )
 
         assertEquals(
+            expected = 1,
+            actual = stableList.indexOfVia(
+                handle = mangoHandle,
+            ),
+        )
+
+        assertEquals(
             expected = 4,
             actual = mutableTreeList.indexOfVia(
+                handle = pineappleHandle,
+            ),
+        )
+
+        assertEquals(
+            expected = 4,
+            actual = stableList.indexOfVia(
                 handle = pineappleHandle,
             ),
         )
@@ -499,6 +528,37 @@ class MutableTreeListTests {
             actual = mutableTreeList.indexOfVia(
                 handle = kiwiHandle,
             ),
+        )
+
+        assertEquals(
+            expected = 7,
+            actual = stableList.indexOfVia(
+                handle = kiwiHandle,
+            ),
+        )
+    }
+
+    @Test
+    fun testFind() {
+        val mutableTreeList = mutableTreeListOf(
+            Fruit.Strawberry,
+            Fruit.Kiwi,
+            Fruit.Orange,
+            Fruit.Kiwi,
+        )
+
+        val handle = assertNotNull(
+            mutableTreeList.find(Fruit.Kiwi),
+        )
+
+        assertEquals(
+            expected = Fruit.Kiwi,
+            actual = mutableTreeList.getVia(handle = handle),
+        )
+
+        assertEquals(
+            expected = 1,
+            actual = mutableTreeList.indexOfVia(handle = handle),
         )
     }
 }
