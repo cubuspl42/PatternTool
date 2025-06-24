@@ -6,7 +6,7 @@ import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 
-abstract class ReactiveList<out E> {
+abstract class ReactiveList<out E> : ReactiveListView<E> {
     data class Change<out E>(
         /**
          * The update this change consists of. In the future, a change might
@@ -107,6 +107,10 @@ abstract class ReactiveList<out E> {
         }
     }
 
+    enum class Behavior {
+        Forward, Cache,
+    }
+
     companion object {
         fun <E> of(
             vararg children: E,
@@ -116,15 +120,18 @@ abstract class ReactiveList<out E> {
 
         fun <E> single(
             element: Cell<E>,
-        ): ReactiveList<E> = SingleReactiveList(
-            element = element,
+            behavior: Behavior = Behavior.Forward,
+        ): ReactiveList<E> = ReactiveListSingleOperator(
+            elementCell = element,
+        ).instantiate(
+            behavior = behavior,
         )
 
         fun <E : Any> singleNotNull(
             element: Cell<E?>,
-        ): ReactiveList<E> = SingleNotNullReactiveList(
-            element = element,
-        )
+        ): ReactiveList<E> = ReactiveListSingleNotNullOperator(
+            elementCell = element,
+        ).instantiateCaching()
 
         fun <E, R> looped(
             block: (ReactiveList<E>) -> Pair<R, ReactiveList<E>>,
@@ -139,11 +146,10 @@ abstract class ReactiveList<out E> {
         }
     }
 
-    abstract val currentElements: List<E>
-
     abstract val changes: EventStream<Change<E>>
 
     abstract fun <Er> map(
+        behavior: Behavior = Behavior.Forward,
         transform: (E) -> Er,
     ): ReactiveList<Er>
 }
