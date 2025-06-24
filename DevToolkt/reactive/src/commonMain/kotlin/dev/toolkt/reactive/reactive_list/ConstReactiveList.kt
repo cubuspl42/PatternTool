@@ -11,6 +11,7 @@ data class ConstReactiveList<out E>(
     override val changes: EventStream<Change<E>> = EventStream.Never
 
     override fun <Er> map(
+        behavior: Behavior,
         transform: (E) -> Er,
     ): ReactiveList<Er> = ConstReactiveList(
         constElements = constElements.map(transform),

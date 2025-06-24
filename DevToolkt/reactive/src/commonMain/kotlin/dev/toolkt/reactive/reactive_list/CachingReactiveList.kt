@@ -1,19 +1,30 @@
 package dev.toolkt.reactive.reactive_list
 
-abstract class CachingReactiveList<E>(
-    initialContent: List<E>,
+import dev.toolkt.reactive.event_stream.EventEmitter
+import dev.toolkt.reactive.event_stream.EventStream
+
+class CachingReactiveList<E>(
+    operator: ReactiveListOperator<E>,
 ) : ActiveReactiveList<E>() {
-    private val cachedContent = initialContent.toMutableList()
+    private val cachedElements = operator.getInitialContent().toMutableList()
 
-    final override val currentElements: List<E>
-        get() = cachedContent.toList()
+    private val changeEmitter = EventEmitter<Change<E>>()
 
-    protected fun init() {
-        changes.listenWeak(
+    override val currentElements: List<E>
+        get() = cachedElements
+
+    override val changes: EventStream<Change<E>> = changeEmitter
+
+    init {
+        operator.buildChanges(
+            reactiveListView = this,
+        ).listenWeak(
             target = this,
         ) { self, change ->
+            changeEmitter.emit(change)
+
             change.applyTo(
-                mutableList = cachedContent,
+                mutableList = cachedElements,
             )
         }
     }
