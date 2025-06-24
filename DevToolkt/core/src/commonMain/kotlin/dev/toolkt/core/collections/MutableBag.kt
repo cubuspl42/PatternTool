@@ -1,0 +1,17 @@
+package dev.toolkt.core.collections
+
+interface MutableBag<E> : Bag<E>, MutableCollection<E> {
+    /**
+     * Adds all the elements of the specified collection to this bag.
+     *
+     * @return `true` because the bag is always modified as the result of this operation.
+     */
+    override fun addAll(elements: Collection<E>): Boolean
+
+    /**
+     * Adds the specified element to the bag.
+     *
+     * @return `true` because the bag is always modified as the result of this operation.
+     */
+    override fun add(element: E): Boolean
+}
