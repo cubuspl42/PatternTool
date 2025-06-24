@@ -146,11 +146,6 @@ abstract class ReactiveList<out E> {
     abstract fun <Er> map(
         transform: (E) -> Er,
     ): ReactiveList<Er>
-
-    abstract fun <T : Any> bind(
-        target: T,
-        extract: (T) -> MutableList<in E>,
-    )
 }
 
 internal fun <E> ReactiveList<E>.copyNow(
@@ -158,6 +153,19 @@ internal fun <E> ReactiveList<E>.copyNow(
 ) {
     mutableList.clear()
     mutableList.addAll(currentElements)
+}
+
+fun <E, T : Any> ReactiveList<E>.bind(
+    target: T,
+    extract: (T) -> MutableList<in E>,
+) {
+    copyNow(mutableList = extract(target))
+
+    changes.pipe(
+        target = target,
+    ) { target, change ->
+        change.applyTo(mutableList = extract(target))
+    }
 }
 
 fun <E> ReactiveList.Change.Update<E>.applyTo(
