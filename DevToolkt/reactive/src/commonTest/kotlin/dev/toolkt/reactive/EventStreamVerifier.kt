@@ -7,12 +7,10 @@ class EventStreamVerifier<E>(
 ) {
     private val mutableReceivedEvents = mutableListOf<E>()
 
-    init {
-        eventStream.listenWeak(
-            target = this,
-        ) { self, event ->
-            self.mutableReceivedEvents.add(event)
-        }
+    private val subscription = eventStream.listenWeak(
+        target = this,
+    ) { self, event ->
+        self.mutableReceivedEvents.add(event)
     }
 
     fun removeReceivedEvents(): List<E> {
@@ -21,5 +19,9 @@ class EventStreamVerifier<E>(
         mutableReceivedEvents.clear()
 
         return receivedEvents
+    }
+
+    fun dispose() {
+        subscription.cancel()
     }
 }
