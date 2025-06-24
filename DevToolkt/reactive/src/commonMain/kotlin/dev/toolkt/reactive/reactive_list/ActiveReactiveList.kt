@@ -7,17 +7,4 @@ abstract class ActiveReactiveList<E>() : ReactiveList<E>() {
         source = this,
         transform = transform,
     )
-
-    final override fun <T : Any> bind(
-        target: T,
-        extract: (T) -> MutableList<in E>,
-    ) {
-        copyNow(mutableList = extract(target))
-
-        changes.pipe(
-            target = target,
-        ) { target, change ->
-            change.applyTo(mutableList = extract(target))
-        }
-    }
 }

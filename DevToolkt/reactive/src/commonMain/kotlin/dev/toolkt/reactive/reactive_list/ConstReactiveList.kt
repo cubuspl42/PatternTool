@@ -15,11 +15,4 @@ data class ConstReactiveList<out E>(
     ): ReactiveList<Er> = ConstReactiveList(
         constElements = constElements.map(transform),
     )
-
-    override fun <T : Any> bind(
-        target: T,
-        extract: (T) -> MutableList<in E>,
-    ) {
-        copyNow(mutableList = extract(target))
-    }
 }
