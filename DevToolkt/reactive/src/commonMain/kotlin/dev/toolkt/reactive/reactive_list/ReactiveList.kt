@@ -135,9 +135,12 @@ abstract class ReactiveList<out E> : ReactiveListView<E> {
 
         fun <E> fuse(
             cells: ReactiveList<Cell<E>>,
-        ): ReactiveList<E> {
-            TODO()
-        }
+            behavior: Behavior = Behavior.Forward,
+        ): ReactiveList<E> = FuseReactiveListOperator(
+            source = cells,
+        ).instantiate(
+            behavior = behavior,
+        )
 
         fun <E, R> looped(
             block: (ReactiveList<E>) -> Pair<R, ReactiveList<E>>,
