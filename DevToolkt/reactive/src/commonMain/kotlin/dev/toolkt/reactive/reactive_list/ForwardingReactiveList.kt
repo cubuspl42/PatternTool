@@ -8,5 +8,5 @@ class ForwardingReactiveList<E>(
     override val currentElements: List<E>
         get() = operator.getCurrentContent()
 
-    override val changes: EventStream<Change<E>> = operator.buildChanges()
+    override val changes: EventStream<Change<E>> = operator.getChanges()
 }

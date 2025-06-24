@@ -5,11 +5,11 @@ import dev.toolkt.reactive.event_stream.EventStream
 abstract class ReactiveListPureTransformingOperator<E, Er>(
     val source: ReactiveList<E>,
 ) : ReactiveListPureOperator<Er>() {
-    override fun buildChanges(): EventStream<ReactiveList.Change<Er>> = source.changes.map(
+    final override fun getChanges(): EventStream<ReactiveList.Change<Er>> = source.changes.map(
         transform = this::transformChange,
     )
 
-    override fun getCurrentContent(): List<Er> = transformElements(source.currentElements)
+    final override fun getCurrentContent(): List<Er> = transformElements(source.currentElements)
 
     abstract fun transformElements(
         elements: List<E>,

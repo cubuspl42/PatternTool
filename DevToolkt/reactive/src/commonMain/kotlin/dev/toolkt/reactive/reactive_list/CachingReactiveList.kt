@@ -16,15 +16,17 @@ class CachingReactiveList<E>(
     override val changes: EventStream<Change<E>> = changeEmitter
 
     init {
-        operator.buildChanges(
-            reactiveListView = this,
-        ).listenWeak(
+        operator.buildChanges().listenWeak(
             target = this,
-        ) { self, change ->
-            changeEmitter.emit(change)
+        ) { self, changeBuilder ->
+            val change = changeBuilder.buildChange(
+                currentElements = self.cachedElements,
+            ) ?: return@listenWeak
+
+            self.changeEmitter.emit(change)
 
             change.applyTo(
-                mutableList = cachedElements,
+                mutableList = self.cachedElements,
             )
         }
     }

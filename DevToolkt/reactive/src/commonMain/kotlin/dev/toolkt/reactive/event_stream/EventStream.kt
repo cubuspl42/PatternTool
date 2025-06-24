@@ -2,10 +2,16 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.cell.HoldCell
+import dev.toolkt.reactive.future.Future
 
 typealias WeakListener<T, E> = (T, E) -> Unit
+
+fun <T, E, Er> WeakListener<T, Er>.mapWeakListener(
+    transform: (T, E) -> Er,
+): WeakListener<T, E> = { target, event ->
+    this@mapWeakListener(target, transform(target, event))
+}
 
 abstract class EventStream<out E> : EventSource<E> {
     companion object {
@@ -46,7 +52,7 @@ abstract class EventStream<out E> : EventSource<E> {
         transform: (E) -> Er,
     ): EventStream<Er>
 
-    abstract fun <Er: Any> mapNotNull(
+    abstract fun <Er : Any> mapNotNull(
         transform: (E) -> Er?,
     ): EventStream<Er>
 
