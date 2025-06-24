@@ -2,7 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
-import dev.toolkt.reactive.event_stream.EventSource.TargetedWeakListener
+import dev.toolkt.reactive.event_stream.WeakEventSource.TargetedWeakListener
 
 class LoopedEventStream<E>() : ProperEventStream<E>() {
     sealed class PlaceholderSubscription<E> : Subscription {

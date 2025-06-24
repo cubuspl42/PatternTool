@@ -7,8 +7,8 @@ import dev.toolkt.reactive.reactive_list.ReactiveList.Change
 class ReactiveListSingleOperator<E>(
     private val elementCell: Cell<E>,
 ) : ReactiveListPureOperator<E>() {
-    override fun buildChanges(): EventStream<Change<E>> = elementCell.newValues.map { newValue ->
-        ReactiveList.Change.Companion.single(
+    override fun getChanges(): EventStream<Change<E>> = elementCell.newValues.map { newValue ->
+        ReactiveList.Change.single(
             update = ReactiveList.Change.Update.set(
                 index = 0,
                 newValue = newValue,

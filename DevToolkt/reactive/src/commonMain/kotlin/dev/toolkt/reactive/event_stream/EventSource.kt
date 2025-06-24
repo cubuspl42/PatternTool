@@ -2,16 +2,13 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.event_stream.WeakEventSource.TargetedWeakListener
 
-interface EventSource<out E> {
+interface WeakEventSource<out E> {
     data class TargetedWeakListener<T, E>(
         val target: T,
         val listener: WeakListener<T, E>,
     )
-
-    fun listen(
-        listener: Listener<E>,
-    ): Subscription
 
     fun <T : Any> listenWeak(
         target: T,
@@ -19,9 +16,18 @@ interface EventSource<out E> {
     ): Subscription
 }
 
+interface StrongEventSource<out E> {
+    fun listen(
+        listener: Listener<E>,
+    ): Subscription
+}
+
+interface EventSource<out E> : WeakEventSource<E>, StrongEventSource<E>
+
 fun <T : Any, E> EventSource<E>.listenWeak(
-    targetedWeakListener: EventSource.TargetedWeakListener<T, E>,
+    targetedWeakListener: TargetedWeakListener<T, E>,
 ): Subscription = listenWeak(
     target = targetedWeakListener.target,
     listener = targetedWeakListener.listener,
 )
+

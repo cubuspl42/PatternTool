@@ -133,6 +133,12 @@ abstract class ReactiveList<out E> : ReactiveListView<E> {
             elementCell = element,
         ).instantiateCaching()
 
+        fun <E> fuse(
+            cells: ReactiveList<Cell<E>>,
+        ): ReactiveList<E> {
+            TODO()
+        }
+
         fun <E, R> looped(
             block: (ReactiveList<E>) -> Pair<R, ReactiveList<E>>,
         ): R {
