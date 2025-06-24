@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 
 class ReactiveListChangeTests {
     @Test
-    fun testChangeApply() {
+    fun testChangeApply_modify() {
         val originalList = listOf(
             0,
             10,
@@ -13,27 +13,14 @@ class ReactiveListChangeTests {
             30,
             40,
             50,
-            60,
-            70,
-            80,
-            90,
         )
 
         val mutableList = originalList.toMutableList()
 
-        val change = ReactiveList.Change(
-            updates = setOf(
-                ReactiveList.Change.Update.change(
-                    indexRange = 2..3,
-                    changedElements = listOf(21, 31),
-                ),
-                ReactiveList.Change.Update.remove(
-                    indexRange = 5..6,
-                ),
-                ReactiveList.Change.Update.insert(
-                    index = 9,
-                    newElements = listOf(81, 82, 83),
-                ),
+        val change = ReactiveList.Change.single(
+            ReactiveList.Change.Update.change(
+                indexRange = 2..3,
+                changedElements = listOf(21, 31),
             ),
         )
 
@@ -46,12 +33,73 @@ class ReactiveListChangeTests {
                 21,
                 31,
                 40,
-                70,
-                80,
-                81,
-                82,
-                83,
-                90,
+                50,
+            ),
+            actual = mutableList,
+        )
+    }
+
+    @Test
+    fun testChangeApply_remove() {
+        val originalList = listOf(
+            0,
+            10,
+            20,
+            30,
+            40,
+            50,
+        )
+
+        val mutableList = originalList.toMutableList()
+
+        val change = ReactiveList.Change.single(
+            ReactiveList.Change.Update.remove(
+                indexRange = 3..4,
+            ),
+        )
+
+        change.applyTo(mutableList)
+
+        assertEquals(
+            expected = listOf(
+                0,
+                10,
+                20,
+                50,
+            ),
+            actual = mutableList,
+        )
+    }
+
+    @Test
+    fun testChangeApply_insert() {
+        val originalList = listOf(
+            0,
+            10,
+            20,
+            30,
+        )
+
+        val mutableList = originalList.toMutableList()
+
+        val change = ReactiveList.Change.single(
+            ReactiveList.Change.Update.insert(
+                index = 2,
+                newElements = listOf(11, 12, 13),
+            ),
+        )
+
+        change.applyTo(mutableList)
+
+        assertEquals(
+            expected = listOf(
+                0,
+                10,
+                11,
+                12,
+                13,
+                20,
+                30,
             ),
             actual = mutableList,
         )
@@ -63,12 +111,10 @@ class ReactiveListChangeTests {
 
         val mutableList = originalList.toMutableList()
 
-        val change = ReactiveList.Change(
-            updates = setOf(
-                ReactiveList.Change.Update.change(
-                    indexRange = 0 until 0,
-                    changedElements = listOf(10, 20),
-                ),
+        val change = ReactiveList.Change.single(
+            ReactiveList.Change.Update.change(
+                indexRange = 0 until 0,
+                changedElements = listOf(10, 20),
             ),
         )
 

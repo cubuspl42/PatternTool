@@ -1,16 +1,18 @@
 package dev.toolkt.reactive.reactive_list
 
-import dev.toolkt.core.iterable.allUniquePairs
 import dev.toolkt.core.iterable.updateRange
 import dev.toolkt.core.range.empty
-import dev.toolkt.core.range.overlaps
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 
 abstract class ReactiveList<out E> {
     data class Change<out E>(
-        val updates: Set<Update<E>>,
+        /**
+         * The update this change consists of. In the future, a change might
+         * consider of multiple updates.
+         */
+        val update: Update<E>,
     ) {
         data class Update<out E>(
             val indexRange: IntRange,
@@ -77,13 +79,9 @@ abstract class ReactiveList<out E> {
         companion object {
             fun <E> single(
                 update: Update<E>,
-            ): Change<E>? {
-                val effectiveUpdate = update.takeIf { it.isEffective } ?: return null
-
-                return Change(
-                    updates = setOf(effectiveUpdate),
-                )
-            }
+            ): Change<E> = Change(
+                update = update,
+            )
 
             fun <E> fill(
                 elements: List<E>,
@@ -96,43 +94,16 @@ abstract class ReactiveList<out E> {
         }
 
         val updatesInOrder: List<Update<E>>
-            get() = updates.sortedBy { it.indexRange.first }
+            get() = listOf(update)
 
         fun <Er> map(
             transform: (E) -> Er,
         ): Change<Er> = Change(
-            updates = updates.map { update ->
-                update.map(transform)
-            }.toSet(),
+            update = update.map(transform),
         )
 
         init {
-            require(updates.isNotEmpty()) { "The change has no updates" }
-
-            require(updates.all { it.isEffective }) { "Some of the updates are ineffective" }
-
-            require(
-                updates.allUniquePairs().none { (updateA, updateB) ->
-                    updateA.indexRange.overlaps(updateB.indexRange)
-                },
-            ) { "Some of the updates overlap" }
-        }
-    }
-
-    object Empty : ReactiveList<Nothing>() {
-        override val currentElements: List<Nothing> = emptyList()
-
-        override val changes: EventStream<Change<Nothing>> = EventStream.Never
-
-        override fun <Er> map(
-            transform: (Nothing) -> Er,
-        ): ReactiveList<Er> = Empty
-
-        override fun <T : Any> bind(
-            target: T,
-            extract: (T) -> MutableList<in Nothing>,
-        ) {
-            extract(target).clear()
+            require(update.isEffective)
         }
     }
 

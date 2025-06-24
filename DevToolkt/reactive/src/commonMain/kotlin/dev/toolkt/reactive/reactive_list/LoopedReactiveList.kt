@@ -23,11 +23,17 @@ class LoopedReactiveList<E>() : ActiveReactiveList<E>() {
 
         loopedReactiveList = reactiveList
 
+        val currentElements = reactiveList.currentElements
+
         changesLooped.loop(
             eventStream = reactiveList.changes,
-            initialEvent = Change.fill(
-                elements = reactiveList.currentElements,
-            ),
+            initialEvent = when {
+                currentElements.isNotEmpty() -> Change.fill(
+                    elements = currentElements,
+                )
+
+                else -> null
+            },
         )
     }
 }
