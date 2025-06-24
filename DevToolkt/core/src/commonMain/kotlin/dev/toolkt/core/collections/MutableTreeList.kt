@@ -1,6 +1,6 @@
 package dev.toolkt.core.collections
 
-import dev.toolkt.core.collections.StableList.Handle
+import dev.toolkt.core.collections.StableCollection.Handle
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.getNextInOrderFreeLocation
@@ -9,27 +9,37 @@ import dev.toolkt.core.data_structures.binary_tree.getSideMostFreeLocation
 import dev.toolkt.core.data_structures.binary_tree.insertAll
 import dev.toolkt.core.data_structures.binary_tree.insertRelative
 import dev.toolkt.core.data_structures.binary_tree.select
+import dev.toolkt.core.data_structures.binary_tree.traverse
 import kotlin.jvm.JvmInline
 
 /**
  * A list variant that provides stable handles to the elements, but also focuses
  * on providing efficient order statistic.
  */
-class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
+class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
     @JvmInline
     internal value class TreeListHandle<E> internal constructor(
         internal val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
     ) : Handle<E>
 
-    private val tree = RedBlackTree<E>()
+    private val elementTree = RedBlackTree<E>()
 
     override val size: Int
-        get() = tree.size
+        get() = elementTree.size
 
-    override fun resolve(
+    override val handles: Sequence<Handle<E>>
+        get() = elementTree.traverse().map { it.pack() }
+
+    override fun find(
+        element: E,
+    ): Handle<E>? = elementTree.traverse().find { nodeHandle ->
+        elementTree.getPayload(nodeHandle) == element
+    }?.pack()
+
+    override fun select(
         index: Int,
     ): Handle<E>? {
-        val nodeHandle = tree.select(index = index) ?: return null
+        val nodeHandle = elementTree.select(index = index) ?: return null
 
         return nodeHandle.pack()
     }
@@ -41,7 +51,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
     override fun get(
         index: Int,
     ): E {
-        val handle = resolve(index = index) ?: throw IndexOutOfBoundsException(
+        val handle = select(index = index) ?: throw IndexOutOfBoundsException(
             "Index $index is out of bounds for size ${size}."
         )
 
@@ -57,7 +67,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
     ): E {
         val nodeHandle = handle.unpack()
 
-        return tree.getPayload(nodeHandle = nodeHandle)
+        return elementTree.getPayload(nodeHandle = nodeHandle)
     }
 
     /**
@@ -70,7 +80,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
         index: Int,
         element: E,
     ): E {
-        val handle = resolve(index = index) ?: throw IndexOutOfBoundsException(
+        val handle = select(index = index) ?: throw IndexOutOfBoundsException(
             "Index $index is out of bounds for size ${size}."
         )
 
@@ -92,9 +102,9 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
     ): E {
         val nodeHandle = handle.unpack()
 
-        val previousElement = tree.getPayload(nodeHandle = nodeHandle)
+        val previousElement = elementTree.getPayload(nodeHandle = nodeHandle)
 
-        tree.setPayload(
+        elementTree.setPayload(
             nodeHandle = nodeHandle,
             payload = element,
         )
@@ -125,8 +135,8 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
     override fun addEx(
         element: E,
     ): Handle<E> {
-        val insertedNodeHandle = tree.insert(
-            location = tree.getSideMostFreeLocation(
+        val insertedNodeHandle = elementTree.insert(
+            location = elementTree.getSideMostFreeLocation(
                 side = BinaryTree.Side.Right,
             ),
             payload = element,
@@ -181,18 +191,18 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
             )
         }
 
-        val location = when (val nodeHandle = tree.select(index = index)) {
+        val location = when (val nodeHandle = elementTree.select(index = index)) {
             // index == size, we have to append the elements
-            null -> tree.getSideMostFreeLocation(side = BinaryTree.Side.Right)
+            null -> elementTree.getSideMostFreeLocation(side = BinaryTree.Side.Right)
 
             // Otherwise, we'll start inserting on the left side of the given node
-            else -> tree.getNextInOrderFreeLocation(
+            else -> elementTree.getNextInOrderFreeLocation(
                 nodeHandle = nodeHandle,
                 side = BinaryTree.Side.Left,
             )
         }
 
-        tree.insertAll(
+        elementTree.insertAll(
             location = location,
             payloads = elements,
         )
@@ -214,17 +224,17 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
             )
         }
 
-        val referenceNodeHandle = tree.select(index = index)
+        val referenceNodeHandle = elementTree.select(index = index)
 
         val insertedNodeHandle = when (referenceNodeHandle) {
-            null -> tree.insert(
-                location = tree.getSideMostFreeLocation(
+            null -> elementTree.insert(
+                location = elementTree.getSideMostFreeLocation(
                     side = BinaryTree.Side.Right,
                 ),
                 payload = element,
             )
 
-            else -> tree.insertRelative(
+            else -> elementTree.insertRelative(
                 nodeHandle = referenceNodeHandle,
                 side = BinaryTree.Side.Left,
                 payload = element,
@@ -243,7 +253,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
     override fun removeAt(
         index: Int,
     ): E {
-        val handle = resolve(index = index) ?: throw IndexOutOfBoundsException(
+        val handle = select(index = index) ?: throw IndexOutOfBoundsException(
             "Index $index is out of bounds for size ${size}."
         )
 
@@ -261,9 +271,9 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
     ): E {
         val nodeHandle = handle.unpack()
 
-        val removedElement = tree.getPayload(nodeHandle = nodeHandle)
+        val removedElement = elementTree.getPayload(nodeHandle = nodeHandle)
 
-        tree.remove(nodeHandle = nodeHandle)
+        elementTree.remove(nodeHandle = nodeHandle)
 
         return removedElement
     }
@@ -278,7 +288,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableStableList<E> {
     ): Int {
         val nodeHandle = handle.unpack()
 
-        return tree.getRank(nodeHandle = nodeHandle)
+        return elementTree.getRank(nodeHandle = nodeHandle)
     }
 
     /**

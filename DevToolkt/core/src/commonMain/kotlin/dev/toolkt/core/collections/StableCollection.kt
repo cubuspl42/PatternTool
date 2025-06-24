@@ -1,21 +1,29 @@
 package dev.toolkt.core.collections
 
-interface StableCollection<E> : Collection<E> {
+interface StableCollection<out E> : Collection<E> {
     interface Handle<E>
 
     /**
-     * Returns a handle to the element corresponding to the given element.
-     * Guarantees linear time complexity or better.
+     * A sequence of handles to the elements of this collection, in the order
+     * defined by the collection (potentially not a meaningful order).
      */
-    fun resolve(
-        element: E,
-    ): Handle<E>?
+    val handles: Sequence<Handle<@UnsafeVariance E>>
+
+    /**
+     * Returns a handle to any instance of the given [element].
+     * Guarantees linear time complexity or better.
+     *
+     * @return the handle to the element or `null` if the collection does not contain such element
+     */
+    fun find(
+        element: @UnsafeVariance E,
+    ): Handle<@UnsafeVariance E>?
 
     /**
      * Returns the element corresponding to the given handle.
      * Guarantees constant time complexity.
      */
     fun getVia(
-        handle: Handle<E>,
+        handle: Handle<@UnsafeVariance E>,
     ): E
 }

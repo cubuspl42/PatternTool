@@ -4,6 +4,7 @@ import dev.toolkt.core.collections.StableCollection.Handle
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.find
+import dev.toolkt.core.data_structures.binary_tree.traverse
 import kotlin.jvm.JvmInline
 
 class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutableSet<E>(), MutableStableSet<E> {
@@ -21,7 +22,10 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
         tree = elementTree,
     )
 
-    override fun resolve(element: E): Handle<E>? {
+    override val handles: Sequence<Handle<E>>
+        get() = elementTree.traverse().map { it.pack() }
+
+    override fun find(element: E): Handle<E>? {
         val location = elementTree.find(payload = element)
         val nodeHandle = elementTree.resolve(location = location) ?: return null
         return nodeHandle.pack()
@@ -56,7 +60,7 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
     override fun remove(
         element: E,
     ): Boolean {
-        val handle = resolve(element = element) ?: return false
+        val handle = find(element = element) ?: return false
 
         removeVia(handle = handle)
 

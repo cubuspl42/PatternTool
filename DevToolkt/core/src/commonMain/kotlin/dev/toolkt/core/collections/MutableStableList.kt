@@ -1,6 +1,6 @@
 package dev.toolkt.core.collections
 
-import dev.toolkt.core.collections.StableList.Handle
+import dev.toolkt.core.collections.StableCollection.Handle
 
 /**
  * A mutable list providing stable handles to its elements.
