@@ -55,13 +55,42 @@ class MutableReactiveList<E>(
 
         val change = Change.single(
             update = update,
-        ) ?: return
+        )
 
         changeEmitter.emit(change)
 
         mutableContent.addAll(
             index = index,
             elements = elements,
+        )
+    }
+
+    fun replaceAll(
+        indexRange: IntRange,
+        changedElements: List<E>,
+    ) {
+        if (indexRange.first !in 0..mutableContent.size ||
+            indexRange.last !in 0 until mutableContent.size
+        ) {
+            throw IndexOutOfBoundsException("Index range $indexRange is out of bounds for list of size ${mutableContent.size}.")
+        }
+
+        val update = Change.Update.change(
+            indexRange = indexRange,
+            changedElements = changedElements,
+        )
+
+        val change = Change.single(
+            update = update,
+        )
+
+        changeEmitter.emit(change)
+
+        mutableContent.removeRange(indexRange)
+
+        mutableContent.addAll(
+            index = indexRange.first,
+            elements = changedElements,
         )
     }
 
@@ -75,11 +104,31 @@ class MutableReactiveList<E>(
 
         val change = Change.single(
             update = update,
-        ) ?: return
+        )
 
         changeEmitter.emit(change)
 
         mutableContent.append(element)
+    }
+
+    fun removeRange(indexRange: IntRange) {
+        if (indexRange.first !in 0..mutableContent.size ||
+            indexRange.last !in 0 until mutableContent.size
+        ) {
+            throw IndexOutOfBoundsException("Index range $indexRange is out of bounds for list of size ${mutableContent.size}.")
+        }
+
+        val update = Change.Update.remove(
+            indexRange = indexRange,
+        )
+
+        changeEmitter.emit(
+            Change.single(
+                update = update,
+            ),
+        )
+
+        mutableContent.removeRange(indexRange)
     }
 
     fun removeAt(index: Int) {
@@ -94,7 +143,7 @@ class MutableReactiveList<E>(
         changeEmitter.emit(
             Change.single(
                 update = update,
-            ) ?: throw AssertionError("The change is not effective"),
+            ),
         )
 
         mutableContent.removeAt(index = index)

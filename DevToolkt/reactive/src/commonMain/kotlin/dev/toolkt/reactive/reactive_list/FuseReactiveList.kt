@@ -14,6 +14,10 @@ class FuseReactiveListOperator<E>(
     class ChangesEventStream<E>(
         private val source: ReactiveList<Cell<E>>,
     ) : DependentEventStream<ReactiveList.Change<E>>() {
+        // Thought: This subscription object is quite heavy (has the size
+        // of the original list), while a separate subscription is created for
+        // each observer. This could be potentially improved by some sharing
+        // mechanism depending on weak caching. Switch to StatefulEventStream?
         override fun observe(): Subscription = object : Subscription {
             private val outerSubscription = source.changes.listen { outerChange ->
                 val update = outerChange.update
@@ -90,6 +94,8 @@ class FuseReactiveListOperator<E>(
             }
 
             override fun cancel() {
+                // Observation: Removing this block clearly makes the implementation
+                // obviously invalid, but no tests are currently testing this properly
                 outerSubscription.cancel()
                 innerSubscriptions.forEach { it.cancel() }
                 innerSubscriptions.clear()

@@ -21,7 +21,7 @@ class EventStreamVerifier<E>(
         return receivedEvents
     }
 
-    fun dispose() {
+    fun cancel() {
         subscription.cancel()
     }
 }
