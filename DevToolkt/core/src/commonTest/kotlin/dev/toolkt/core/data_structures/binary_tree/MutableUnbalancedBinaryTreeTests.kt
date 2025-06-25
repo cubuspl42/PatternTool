@@ -39,11 +39,11 @@ class MutableUnbalancedBinaryTreeTests {
         )
 
         assertEquals(
-            expected = tree.dump(),
-            actual = NodeData(
+            expected = NodeData(
                 payload = 100,
                 color = TestColor.Green,
             ),
+            actual = tree.dump(),
         )
 
         assertNull(
@@ -97,8 +97,7 @@ class MutableUnbalancedBinaryTreeTests {
         )
 
         assertEquals(
-            expected = tree.dump(),
-            actual = NodeData(
+            expected = NodeData(
                 payload = 100,
                 color = TestColor.Green,
                 leftChild = NodeData(
@@ -110,6 +109,7 @@ class MutableUnbalancedBinaryTreeTests {
                     color = TestColor.Green,
                 ),
             ),
+            actual = tree.dump(),
         )
     }
 
@@ -126,8 +126,8 @@ class MutableUnbalancedBinaryTreeTests {
         val emptiedLocation = tree.cutOffVerified(leafHandle = handle100)
 
         assertEquals(
-            expected = tree.dump(),
-            actual = null,
+            expected = null,
+            actual = tree.dump(),
         )
 
         assertEquals(
@@ -161,8 +161,7 @@ class MutableUnbalancedBinaryTreeTests {
         val emptiedLocation = tree.cutOffVerified(leafHandle = handle110)
 
         assertEquals(
-            expected = tree.dump(),
-            actual = NodeData(
+            expected = NodeData(
                 payload = 100,
                 color = TestColor.Green,
                 leftChild = NodeData(
@@ -170,6 +169,7 @@ class MutableUnbalancedBinaryTreeTests {
                     color = TestColor.Blue,
                 ),
             ),
+            actual = tree.dump(),
         )
 
         assertEquals(
@@ -212,8 +212,7 @@ class MutableUnbalancedBinaryTreeTests {
         val emptiedLocation = tree.cutOffVerified(leafHandle = handle75)
 
         assertEquals(
-            expected = tree.dump(),
-            actual = NodeData(
+            expected = NodeData(
                 payload = 100,
                 color = TestColor.Green,
                 leftChild = NodeData(
@@ -225,6 +224,7 @@ class MutableUnbalancedBinaryTreeTests {
                     color = TestColor.Blue,
                 ),
             ),
+            actual = tree.dump(),
         )
 
         assertEquals(
