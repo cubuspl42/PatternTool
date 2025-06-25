@@ -18,6 +18,7 @@ class PlatformWeakMapSystemTests {
     }
 
     @Test
+    @Suppress("AssignedValueIsNeverRead")
     fun testGarbageCollection(): TestResult = runTestDefault(
         duration = 15.seconds,
     ) {

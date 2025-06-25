@@ -22,7 +22,9 @@ kotlin {
         }
 
         commonTest.dependencies {
+            implementation(project(":coreTestUtils"))
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 

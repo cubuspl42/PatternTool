@@ -1,10 +1,15 @@
 package dev.toolkt.reactive.reactive_list
 
+import dev.toolkt.core.platform.PlatformWeakReference
+import dev.toolkt.core.platform.test_utils.ensureNotCollected
+import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.EventStreamVerifier
 import dev.toolkt.reactive.cell.MutableCell
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.seconds
 
 class ReactiveListSingleNotNullTests {
     @Test
@@ -180,6 +185,47 @@ class ReactiveListSingleNotNullTests {
 
         assertEquals(
             expected = emptyList(),
+            actual = changesVerifier.removeReceivedEvents(),
+        )
+    }
+
+    /**
+     * [ReactiveList.singleNotNull] is a stateful operator, involving weak references, so it's reasonable to test
+     * how it behaves when some stress is applied to the garbage collector.
+     */
+    @Test
+    @Ignore // FIXME: singleNotNull does not manage memory properly (no stateful streams do?)
+    fun testSingleNotNull_garbageCollection() = runTestDefault(
+        duration = 10.seconds,
+    ) {
+        val mutableCell = MutableCell<Int?>(initialValue = 10)
+
+        fun setup(): Pair<PlatformWeakReference<ReactiveList<Int>>, EventStreamVerifier<ReactiveList.Change<Int>>> {
+            val singleReactiveList = ReactiveList.singleNotNull(
+                element = mutableCell,
+            )
+
+            val changesVerifier = EventStreamVerifier(
+                eventStream = singleReactiveList.changes,
+            )
+
+            return Pair(PlatformWeakReference(singleReactiveList), changesVerifier)
+        }
+
+        val (singleReactiveListWeakRef, changesVerifier) = setup()
+
+        ensureNotCollected(weakRef = singleReactiveListWeakRef)
+
+        mutableCell.set(null)
+
+        assertEquals(
+            expected = listOf(
+                ReactiveList.Change.single(
+                    update = ReactiveList.Change.Update.remove(
+                        index = 0,
+                    ),
+                ),
+            ),
             actual = changesVerifier.removeReceivedEvents(),
         )
     }
