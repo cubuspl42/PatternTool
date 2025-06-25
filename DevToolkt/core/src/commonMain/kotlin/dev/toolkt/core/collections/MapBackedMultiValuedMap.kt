@@ -3,11 +3,6 @@ package dev.toolkt.core.collections
 class MapBackedMultiValuedMap<K, V>(
     private val backingMap: MutableMap<K, MutableSet<V>>,
 ) : MutableMultiValuedMap<K, V> {
-    data class MapEntry<K, out V>(
-        override val key: K,
-        override val value: V,
-    ) : Map.Entry<K, V>
-
     private var cachedSize: Int = backingMap.values.sumOf { it.size }
 
     override fun clear() {
