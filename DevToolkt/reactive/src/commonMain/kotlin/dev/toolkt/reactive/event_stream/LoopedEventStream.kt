@@ -2,7 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
-import dev.toolkt.reactive.event_stream.WeakEventSource.TargetedWeakListener
+import dev.toolkt.reactive.event_stream.WeakEventSource.TargetedListener
 
 class LoopedEventStream<E>() : ProperEventStream<E>() {
     sealed class PlaceholderSubscription<E> : Subscription {
@@ -66,10 +66,10 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
     }
 
     class PlaceholderWeakSubscription<E>(
-        initialBufferedListener: TargetedWeakListener<Any, E>,
+        initialBufferedListener: TargetedListener<Any, E>,
     ) : PlaceholderSubscription<E>() {
         class BufferedSubscription<E>(
-            var bufferedTargetedListener: TargetedWeakListener<Any, E>?,
+            var bufferedTargetedListener: TargetedListener<Any, E>?,
         ) : Subscription {
             fun loop(
                 eventStream: EventStream<E>,
@@ -133,15 +133,15 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
 
         override fun <T : Any> listenWeak(
             target: T,
-            listener: WeakListener<T, E>,
+            listener: TargetingListener<T, E>,
         ): Subscription {
-            val targetedWeakListener = TargetedWeakListener(
+            val targetedWeakListener = TargetedListener(
                 target = target,
                 listener = listener,
             )
 
             @Suppress("UNCHECKED_CAST") val placeholderSubscription = PlaceholderWeakSubscription(
-                initialBufferedListener = targetedWeakListener as TargetedWeakListener<Any, E>,
+                initialBufferedListener = targetedWeakListener as TargetedListener<Any, E>,
             )
 
             placeholderSubscriptions.add(placeholderSubscription)
@@ -187,7 +187,7 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
 
     override fun <T : Any> listenWeak(
         target: T,
-        listener: WeakListener<T, E>,
+        listener: TargetingListener<T, E>,
     ): Subscription = innerEventStream.listenWeak(
         target = target,
         listener = listener,

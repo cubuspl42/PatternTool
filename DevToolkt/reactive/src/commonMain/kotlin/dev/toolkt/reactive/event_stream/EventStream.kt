@@ -5,13 +5,12 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.HoldCell
 import dev.toolkt.reactive.future.Future
 
-typealias WeakListener<T, E> = (T, E) -> Unit
-
-fun <T, E, Er> WeakListener<T, Er>.mapWeakListener(
-    transform: (T, E) -> Er,
-): WeakListener<T, E> = { target, event ->
-    this@mapWeakListener(target, transform(target, event))
-}
+/**
+ * A type alias for a function that accepts two parameter:
+ * - A target (an object it's bound to)
+ * - An event
+ */
+typealias TargetingListener<TargetT, EventT> = (TargetT, EventT) -> Unit
 
 abstract class EventStream<out E> : EventSource<E> {
     companion object {

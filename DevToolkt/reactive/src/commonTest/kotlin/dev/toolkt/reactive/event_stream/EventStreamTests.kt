@@ -136,7 +136,7 @@ class EventStreamTests {
     @Test
     fun testListenWeak_sameListener_sameTarget() {
         fun test(
-            weakListener: WeakListener<Any, String>,
+            weakListener: TargetingListener<Any, String>,
         ) {
             val eventEmitter = EventEmitter<Int>()
 
