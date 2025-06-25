@@ -32,10 +32,15 @@ suspend fun <T> assertEqualsEventually(
 /**
  * Executes [testBody] as a test in a new coroutine, using the default dispatcher. This disables the delay-skipping
  * behavior.
+ *
+ * The platform difference entails that, in order to use this function correctly in common code, one must always
+ * immediately return the produced [TestResult] from the test method, without doing anything else afterward. See
+ * [TestResult] for details on this.
  */
+// The return-immediately part of the contract is inherited from `runTest`
 fun <T> runTestDefault(
     duration: Duration,
-    testBody: suspend CoroutineScope.() -> T
+    testBody: suspend CoroutineScope.() -> T,
 ): TestResult = runTest(
     timeout = duration,
 ) {

@@ -2,37 +2,33 @@ package dev.toolkt.core.platform
 
 import dev.toolkt.core.platform.test_utils.assertEqualsEventually
 import dev.toolkt.core.platform.test_utils.runTestDefault
-import kotlin.random.Random
+import kotlinx.coroutines.test.TestResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-private class GarbageCollectionTest {
-    // A key of random data that weights roughly 32 KiB
-    private class Key(
-        @Suppress("unused") val data: List<Int>,
-    ) {
-        companion object {
-            private val random = Random(seed = 0)
-
-            fun create(): Key = Key(
-                data = List(8000) { random.nextInt() },
-            )
-        }
-
-        override fun toString(): String = "Key#${hashCode()}"
+class PlatformWeakMapSystemTests {
+    private data class Key(
+        val key: Int,
+    ) : Comparable<Key> {
+        override fun compareTo(
+            other: Key,
+        ): Int = compareValuesBy(this, other) { it.key }
     }
 
-    private val key1: Key = Key.create()
+    @Test
+    fun testGarbageCollection(): TestResult = runTestDefault(
+        duration = 15.seconds,
+    ) {
+        val key1 = Key(key = 10)
 
-    private var key2: Key? = Key.create()
+        var key2: Key? = Key(key = 20)
 
-    private val key3: Key = Key.create()
+        val key3 = Key(key = 30)
 
-    private var key4: Key? = Key.create()
+        var key4: Key? = Key(key = 40)
 
-    suspend fun run() {
         val weakMap = mutableWeakMapOf<Key, String>()
 
         weakMap[key1] = "value1"
@@ -56,17 +52,12 @@ private class GarbageCollectionTest {
         assertEqualsEventually(
             pauseDuration = 100.milliseconds,
             timeoutDuration = 10.seconds,
-            expected = listOf(key1, key3).sortedBy { it.hashCode() },
-            actual = { weakMap.keys.toList().sortedBy { it.hashCode() } },
-        )
-    }
-}
+            expected = listOf(key1, key3).sorted(),
+            actual = {
+                PlatformSystem.collectGarbage()
 
-class PlatformWeakMapSystemTests {
-    @Test
-    fun testGarbageCollection() = runTestDefault(
-        duration = 15.seconds,
-    ) {
-        GarbageCollectionTest().run()
+                weakMap.keys.toList().sorted()
+            },
+        )
     }
 }
