@@ -13,8 +13,13 @@ abstract class ManagedEventStream<out E> : ProperEventStream<E>() {
         Paused, Resumed,
     }
 
+    // The order of listeners invocation is non-deterministic (this could be
+    // changed by using a linked mutable set, but that wouldn't give much
+    // without reworking the weak listeners too)
     private val listeners = mutableSetOf<Listener<E>>()
 
+    // The order of weak listeners invocation is non-deterministic (changing
+    // this would require a new multivalued map implementation)
     private val weakListeners = mutableWeakMultiValuedMapOf<Any, WeakListener<Any, E>>()
 
     final override fun listen(
