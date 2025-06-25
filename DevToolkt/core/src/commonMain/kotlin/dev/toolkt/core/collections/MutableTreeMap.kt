@@ -7,13 +7,13 @@ import dev.toolkt.core.data_structures.binary_tree.findBy
 import kotlin.jvm.JvmInline
 
 class MutableTreeMap<K : Comparable<K>, V> internal constructor() : AbstractMutableMap<K, V>(), MutableStableMap<K, V> {
-    internal class MapEntry<K : Comparable<K>, V>(
+    internal class MutableMapEntry<K : Comparable<K>, V>(
         override val key: K,
         initialValue: V,
     ) : MutableMap.MutableEntry<K, V> {
         companion object {
             fun <K : Comparable<K>, V> selectKey(
-                entry: MapEntry<K, V>,
+                entry: MutableMapEntry<K, V>,
             ): K = entry.key
         }
 
@@ -32,7 +32,7 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor() : AbstractMuta
     }
 
     internal class EntrySet<K : Comparable<K>, V>(
-        private val entryTree: RedBlackTree<MapEntry<K, V>>,
+        private val entryTree: RedBlackTree<MutableMapEntry<K, V>>,
     ) : AbstractMutableCollection<MutableMap.MutableEntry<K, V>>(), MutableSet<MutableMap.MutableEntry<K, V>> {
         override val size: Int
             get() = entryTree.size
@@ -49,7 +49,7 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor() : AbstractMuta
         internal val nodeHandle: EntryNodeHandle<K, V>,
     ) : Handle<K, V>
 
-    private val entryTree = RedBlackTree<MapEntry<K, V>>()
+    private val entryTree = RedBlackTree<MutableMapEntry<K, V>>()
 
     override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
         get() = EntrySet(entryTree = entryTree)
@@ -67,7 +67,7 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor() : AbstractMuta
             null -> {
                 entryTree.insert(
                     location = location,
-                    payload = MapEntry(
+                    payload = MutableMapEntry(
                         key = key,
                         initialValue = value,
                     ),
@@ -99,7 +99,7 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor() : AbstractMuta
 
         val insertedNodeHandle = entryTree.insert(
             location = location,
-            payload = MapEntry(
+            payload = MutableMapEntry(
                 key = key,
                 initialValue = value,
             ),
@@ -146,7 +146,7 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor() : AbstractMuta
     ): Pair<EntryLocation<K, V>, EntryNodeHandle<K, V>?> {
         val location = entryTree.findBy(
             key = key,
-            selector = MapEntry.Companion::selectKey,
+            selector = MutableMapEntry.Companion::selectKey,
         )
 
         val existingNodeHandle = entryTree.resolve(
@@ -169,11 +169,11 @@ fun <K : Comparable<K>, V> mutableTreeMapOf(
     return map
 }
 
-private typealias EntryLocation<K, V> = BinaryTree.Location<MutableTreeMap.MapEntry<K, V>, RedBlackTree.Color>
+private typealias EntryLocation<K, V> = BinaryTree.Location<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color>
 
-private typealias EntryNodeHandle<K, V> = BinaryTree.NodeHandle<MutableTreeMap.MapEntry<K, V>, RedBlackTree.Color>
+private typealias EntryNodeHandle<K, V> = BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color>
 
-private fun <K : Comparable<K>, V> Handle<K, V>.unpack(): BinaryTree.NodeHandle<MutableTreeMap.MapEntry<K, V>, RedBlackTree.Color> {
+private fun <K : Comparable<K>, V> Handle<K, V>.unpack(): BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color> {
     this as? MutableTreeMap.TreeMapHandle<K, V> ?: throw IllegalArgumentException(
         "Handle is not a TreeMapHandle: $this"
     )
@@ -181,7 +181,7 @@ private fun <K : Comparable<K>, V> Handle<K, V>.unpack(): BinaryTree.NodeHandle<
     return this.nodeHandle
 }
 
-private fun <K : Comparable<K>, V> BinaryTree.NodeHandle<MutableTreeMap.MapEntry<K, V>, RedBlackTree.Color>.pack(): Handle<K, V> =
+private fun <K : Comparable<K>, V> BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color>.pack(): Handle<K, V> =
     MutableTreeMap.TreeMapHandle(
         nodeHandle = this,
     )
