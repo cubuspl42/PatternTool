@@ -113,17 +113,17 @@ private class RandomGuide<PayloadT>(
     )
 }
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.findLocationGuided(
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocationGuided(
     guide: Guide<PayloadT>,
-): BinaryTree.Location<PayloadT, MetadataT> = this.findLocationGuided(
+): BinaryTree.Location<PayloadT, ColorT> = this.findLocationGuided(
     location = BinaryTree.RootLocation,
     guide = guide,
 )
 
-private tailrec fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.findLocationGuided(
-    location: BinaryTree.Location<PayloadT, MetadataT>,
+private tailrec fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocationGuided(
+    location: BinaryTree.Location<PayloadT, ColorT>,
     guide: Guide<PayloadT>,
-): BinaryTree.Location<PayloadT, MetadataT> {
+): BinaryTree.Location<PayloadT, ColorT> {
     val nodeHandle = resolve(
         location = location,
     ) ?: return location
@@ -152,18 +152,18 @@ private tailrec fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.findLo
     }
 }
 
-fun <PayloadT : Comparable<PayloadT>, MetadataT> BinaryTree<PayloadT, MetadataT>.find(
+fun <PayloadT : Comparable<PayloadT>, ColorT> BinaryTree<PayloadT, ColorT>.find(
     payload: PayloadT,
-): BinaryTree.Location<PayloadT, MetadataT> = findLocationGuided(
+): BinaryTree.Location<PayloadT, ColorT> = findLocationGuided(
     guide = IntrinsicOrderGuide(
         locatedPayload = payload,
     ),
 )
 
-fun <PayloadT, KeyT : Comparable<KeyT>, MetadataT> BinaryTree<PayloadT, MetadataT>.findBy(
+fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> BinaryTree<PayloadT, ColorT>.findBy(
     key: KeyT,
     selector: (PayloadT) -> KeyT,
-): BinaryTree.Location<PayloadT, MetadataT> = findLocationGuided(
+): BinaryTree.Location<PayloadT, ColorT> = findLocationGuided(
     guide = KeyOrderGuide(
         locatedKey = key,
         selector = selector,

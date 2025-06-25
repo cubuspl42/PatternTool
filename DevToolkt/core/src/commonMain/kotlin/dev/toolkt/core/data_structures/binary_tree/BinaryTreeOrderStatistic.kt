@@ -5,9 +5,9 @@ package dev.toolkt.core.data_structures.binary_tree
  *
  * @return the handle to the node at the given index, or null if the index is out of bounds.
  */
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.select(
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.select(
     index: Int,
-): BinaryTree.NodeHandle<PayloadT, MetadataT>? {
+): BinaryTree.NodeHandle<PayloadT, ColorT>? {
     val rootHandle = this.currentRootHandle ?: return null
 
     return this.select(
@@ -16,10 +16,10 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.select(
     )
 }
 
-private tailrec fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.select(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
+private tailrec fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.select(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
     index: Int,
-): BinaryTree.NodeHandle<PayloadT, MetadataT>? {
+): BinaryTree.NodeHandle<PayloadT, ColorT>? {
     val downRank = getDownRank(nodeHandle = nodeHandle)
 
     val leftChildHandle = getLeftChild(nodeHandle = nodeHandle)
@@ -48,8 +48,8 @@ private tailrec fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.select
     }
 }
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getRank(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getRank(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
 ): Int {
     val downRank = getDownRank(
         nodeHandle = nodeHandle,
@@ -66,8 +66,8 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getRank(
  * Get the rank of the node corresponding to the given [nodeHandle] in its supertree (the whole tree minus the node's
  * descendants)
  */
-private tailrec fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getUpRank(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
+private tailrec fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getUpRank(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
 ): Int {
     val relativeLocation = locateRelatively(
         nodeHandle = nodeHandle,
@@ -85,8 +85,8 @@ private tailrec fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getUpR
 /**
  * Get the rank of the node corresponding to the given [nodeHandle] in its own subtree
  */
-private fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getDownRank(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
+private fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getDownRank(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
 ): Int {
     val leftChildHandle = getLeftChild(nodeHandle = nodeHandle)
 

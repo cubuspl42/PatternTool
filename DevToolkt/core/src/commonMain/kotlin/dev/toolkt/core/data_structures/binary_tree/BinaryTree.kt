@@ -65,10 +65,10 @@ interface BinaryTree<out PayloadT, out ColorT> {
      * removed through this handle. If two handles correspond to the same node,
      * they compare equal.
      */
-    interface NodeHandle<out PayloadT, out MetadataT>
+    interface NodeHandle<out PayloadT, out ColorT>
 
-    sealed interface Location<out PayloadT, out MetadataT> {
-        val parentHandle: NodeHandle<PayloadT, MetadataT>?
+    sealed interface Location<out PayloadT, out ColorT> {
+        val parentHandle: NodeHandle<PayloadT, ColorT>?
     }
 
     /**
@@ -81,16 +81,16 @@ interface BinaryTree<out PayloadT, out ColorT> {
     /**
      * Location relative to the parent node
      */
-    data class RelativeLocation<out PayloadT, out MetadataT>(
+    data class RelativeLocation<out PayloadT, out ColorT>(
         /**
          * The handle to the parent node
          */
-        override val parentHandle: NodeHandle<PayloadT, MetadataT>,
+        override val parentHandle: NodeHandle<PayloadT, ColorT>,
         /**
          * The side of the parent node where the child is located
          */
         val side: Side,
-    ) : Location<PayloadT, MetadataT> {
+    ) : Location<PayloadT, ColorT> {
         val siblingSide: Side
             get() = side.opposite
 
@@ -135,9 +135,9 @@ interface BinaryTree<out PayloadT, out ColorT> {
     ): NodeHandle<PayloadT, ColorT>?
 }
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.isEmpty(): Boolean = size == 0
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.isEmpty(): Boolean = size == 0
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.traverse(): Sequence<BinaryTree.NodeHandle<PayloadT, MetadataT>> {
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.traverse(): Sequence<BinaryTree.NodeHandle<PayloadT, ColorT>> {
     val minimalNodeHandle = getMinimalDescendant() ?: return emptySequence()
 
     return generateSequence(
@@ -151,10 +151,10 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.traverse(): Sequence<B
  * Get the handle to the child on the given [side] of the node associated
  * with the given [nodeHandle].
  */
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getChild(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getChild(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
     side: BinaryTree.Side,
-): BinaryTree.NodeHandle<PayloadT, MetadataT>? = resolve(
+): BinaryTree.NodeHandle<PayloadT, ColorT>? = resolve(
     location = nodeHandle.getChildLocation(side = side),
 )
 
@@ -163,12 +163,12 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getChild(
  * child will be the "closer" child, the second one will be the "distant"
  * child.
  */
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getChildren(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getChildren(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
     side: BinaryTree.Side,
 ): Pair<
-        BinaryTree.NodeHandle<PayloadT, MetadataT>?,
-        BinaryTree.NodeHandle<PayloadT, MetadataT>?,
+        BinaryTree.NodeHandle<PayloadT, ColorT>?,
+        BinaryTree.NodeHandle<PayloadT, ColorT>?,
         > {
     val closerChild = getChild(
         nodeHandle = nodeHandle,
@@ -186,23 +186,23 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getChildren(
 /**
  * Get a sibling of a node occupying the given [location] in the tree.
  */
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getSibling(
-    location: BinaryTree.RelativeLocation<PayloadT, MetadataT>,
-): BinaryTree.NodeHandle<PayloadT, MetadataT>? = getChild(
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getSibling(
+    location: BinaryTree.RelativeLocation<PayloadT, ColorT>,
+): BinaryTree.NodeHandle<PayloadT, ColorT>? = getChild(
     nodeHandle = location.parentHandle,
     side = location.siblingSide,
 )
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getLeftChild(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
-): BinaryTree.NodeHandle<PayloadT, MetadataT>? = getChild(
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getLeftChild(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+): BinaryTree.NodeHandle<PayloadT, ColorT>? = getChild(
     nodeHandle = nodeHandle,
     side = BinaryTree.Side.Left,
 )
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getRightChild(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
-): BinaryTree.NodeHandle<PayloadT, MetadataT>? = getChild(
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getRightChild(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+): BinaryTree.NodeHandle<PayloadT, ColorT>? = getChild(
     nodeHandle = nodeHandle,
     side = BinaryTree.Side.Right,
 )
@@ -210,26 +210,26 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getRightChild(
 /**
  * Get a relative location of the child on the given [side] of the node
  */
-fun <PayloadT, MetadataT> BinaryTree.NodeHandle<PayloadT, MetadataT>.getChildLocation(
+fun <PayloadT, ColorT> BinaryTree.NodeHandle<PayloadT, ColorT>.getChildLocation(
     side: BinaryTree.Side,
-): BinaryTree.RelativeLocation<PayloadT, MetadataT> = BinaryTree.RelativeLocation(
+): BinaryTree.RelativeLocation<PayloadT, ColorT> = BinaryTree.RelativeLocation(
     parentHandle = this,
     side = side,
 )
 
-fun <PayloadT, MetadataT> BinaryTree.NodeHandle<PayloadT, MetadataT>.getLeftChildLocation(): BinaryTree.RelativeLocation<PayloadT, MetadataT> =
+fun <PayloadT, ColorT> BinaryTree.NodeHandle<PayloadT, ColorT>.getLeftChildLocation(): BinaryTree.RelativeLocation<PayloadT, ColorT> =
     getChildLocation(
         side = BinaryTree.Side.Left,
     )
 
-fun <PayloadT, MetadataT> BinaryTree.NodeHandle<PayloadT, MetadataT>.getRightChildLocation(): BinaryTree.RelativeLocation<PayloadT, MetadataT> =
+fun <PayloadT, ColorT> BinaryTree.NodeHandle<PayloadT, ColorT>.getRightChildLocation(): BinaryTree.RelativeLocation<PayloadT, ColorT> =
     getChildLocation(
         side = BinaryTree.Side.Right,
     )
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getChildSide(
-    parentHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
-    childHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getChildSide(
+    parentHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+    childHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
 ): BinaryTree.Side {
     val leftChildHandle = getChild(
         nodeHandle = parentHandle,
@@ -252,9 +252,9 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getChildSide(
     }
 }
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.locate(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
-): BinaryTree.Location<PayloadT, MetadataT> = locateRelatively(
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.locate(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+): BinaryTree.Location<PayloadT, ColorT> = locateRelatively(
     nodeHandle = nodeHandle,
 ) ?: BinaryTree.RootLocation
 
@@ -262,9 +262,9 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.locate(
  * @return A relative location of the node associated with [nodeHandle] in the tree,
  * or null if the node is the root of the tree (i.e. has no parent).
  */
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.locateRelatively(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
-): BinaryTree.RelativeLocation<PayloadT, MetadataT>? {
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.locateRelatively(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+): BinaryTree.RelativeLocation<PayloadT, ColorT>? {
     val parentHandle = getParent(
         nodeHandle = nodeHandle,
     ) ?: return null
@@ -280,26 +280,26 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.locateRelatively(
     )
 }
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getMinimalDescendant(): BinaryTree.NodeHandle<PayloadT, MetadataT>? =
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getMinimalDescendant(): BinaryTree.NodeHandle<PayloadT, ColorT>? =
     getSideMostDescendant(
         side = BinaryTree.Side.Left,
     )
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getMaximalDescendant(): BinaryTree.NodeHandle<PayloadT, MetadataT>? =
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getMaximalDescendant(): BinaryTree.NodeHandle<PayloadT, ColorT>? =
     getSideMostDescendant(
         side = BinaryTree.Side.Right,
     )
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getSideMostDescendant(
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getSideMostDescendant(
     side: BinaryTree.Side,
-): BinaryTree.NodeHandle<PayloadT, MetadataT>? = getSideMostFreeLocation(
+): BinaryTree.NodeHandle<PayloadT, ColorT>? = getSideMostFreeLocation(
     side = side,
 ).parentHandle
 
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getSideMostFreeLocation(
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getSideMostFreeLocation(
     side: BinaryTree.Side,
-): BinaryTree.Location<PayloadT, MetadataT> {
+): BinaryTree.Location<PayloadT, ColorT> {
     val root = this.currentRootHandle ?: return BinaryTree.RootLocation
 
     return getSideMostFreeLocation(
@@ -308,10 +308,10 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getSideMostFreeLocatio
     )
 }
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getSideMostFreeLocation(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getSideMostFreeLocation(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
     side: BinaryTree.Side,
-): BinaryTree.RelativeLocation<PayloadT, MetadataT> {
+): BinaryTree.RelativeLocation<PayloadT, ColorT> {
     val sideChildHandle = getChild(
         nodeHandle = nodeHandle,
         side = side,
@@ -326,24 +326,24 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getSideMostFreeLocatio
     )
 }
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getInOrderPredecessor(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
-): BinaryTree.NodeHandle<PayloadT, MetadataT>? = getInOrderNeighbour(
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getInOrderPredecessor(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+): BinaryTree.NodeHandle<PayloadT, ColorT>? = getInOrderNeighbour(
     nodeHandle = nodeHandle,
     side = BinaryTree.Side.Left,
 )
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getInOrderSuccessor(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
-): BinaryTree.NodeHandle<PayloadT, MetadataT>? = getInOrderNeighbour(
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getInOrderSuccessor(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+): BinaryTree.NodeHandle<PayloadT, ColorT>? = getInOrderNeighbour(
     nodeHandle = nodeHandle,
     side = BinaryTree.Side.Right,
 )
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getNextInOrderFreeLocation(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getNextInOrderFreeLocation(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
     side: BinaryTree.Side,
-): BinaryTree.RelativeLocation<PayloadT, MetadataT> {
+): BinaryTree.RelativeLocation<PayloadT, ColorT> {
     val sideChildLocation = nodeHandle.getChildLocation(side = side)
 
     val sideChildHandle = resolve(
