@@ -96,7 +96,7 @@ interface BinaryTree<out PayloadT, out ColorT> {
 
     }
 
-    val root: NodeHandle<PayloadT, ColorT>?
+    val currentRootHandle: NodeHandle<PayloadT, ColorT>?
 
     val size: Int
 
@@ -300,7 +300,7 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getSideMostDescendant(
 fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.getSideMostFreeLocation(
     side: BinaryTree.Side,
 ): BinaryTree.Location<PayloadT, MetadataT> {
-    val root = this.root ?: return BinaryTree.RootLocation
+    val root = this.currentRootHandle ?: return BinaryTree.RootLocation
 
     return getSideMostFreeLocation(
         nodeHandle = root,

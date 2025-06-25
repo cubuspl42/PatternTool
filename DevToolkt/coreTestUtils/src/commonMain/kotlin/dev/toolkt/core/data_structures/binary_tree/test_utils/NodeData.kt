@@ -35,7 +35,7 @@ data class NodeData<PayloadT, ColorT>(
     }
 }
 
-fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.dump(): NodeData<PayloadT, ColorT>? = root?.let { dump(it) }
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.dump(): NodeData<PayloadT, ColorT>? = currentRootHandle?.let { dump(it) }
 
 fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.dump(
     nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,

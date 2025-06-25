@@ -8,7 +8,7 @@ package dev.toolkt.core.data_structures.binary_tree
 fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.select(
     index: Int,
 ): BinaryTree.NodeHandle<PayloadT, MetadataT>? {
-    val rootHandle = this.root ?: return null
+    val rootHandle = this.currentRootHandle ?: return null
 
     return this.select(
         nodeHandle = rootHandle,

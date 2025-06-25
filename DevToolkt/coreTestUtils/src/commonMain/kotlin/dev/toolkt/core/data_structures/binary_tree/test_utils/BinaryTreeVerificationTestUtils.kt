@@ -20,7 +20,7 @@ private data class BalanceVerificationResult(
 )
 
 fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifyIntegrity() {
-    val rootResult = this.root?.let { rootHandle ->
+    val rootResult = this.currentRootHandle?.let { rootHandle ->
         verifySubtreeIntegrity(
             nodeHandle = rootHandle,
             expectedParentHandle = null,
@@ -122,7 +122,7 @@ private fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifySubtreeIntegri
 }
 
 fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifyBalance() {
-    val rootHandle = this.root ?: return
+    val rootHandle = this.currentRootHandle ?: return
 
     verifySubtreeBalance(
         nodeHandle = rootHandle,
@@ -168,7 +168,7 @@ fun <PayloadT : Comparable<PayloadT>, ColorT> BinaryTree<PayloadT, ColorT>.verif
 fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> BinaryTree<PayloadT, ColorT>.verifyOrderBy(
     selector: (PayloadT) -> KeyT,
 ) {
-    val rootHandle = this.root ?: return
+    val rootHandle = this.currentRootHandle ?: return
 
     verifySubtreeOrder(
         nodeHandle = rootHandle,

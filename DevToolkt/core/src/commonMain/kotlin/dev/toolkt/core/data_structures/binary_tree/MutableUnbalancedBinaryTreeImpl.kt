@@ -921,7 +921,7 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
         return ascendingChild.pack()
     }
 
-    override val root: BinaryTree.NodeHandle<PayloadT, ColorT>?
+    override val currentRootHandle: BinaryTree.NodeHandle<PayloadT, ColorT>?
         get() = origin.root?.pack()
 
     override val size: Int
