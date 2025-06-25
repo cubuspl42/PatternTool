@@ -2,6 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Subscription
 
+// TODO: Extract FiniteEventStream?
 class TakeEventStream<E>(
     source: EventStream<E>,
     count: Int,
