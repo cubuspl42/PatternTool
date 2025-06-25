@@ -2,30 +2,34 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
-import dev.toolkt.reactive.event_stream.WeakEventSource.TargetedWeakListener
+import dev.toolkt.reactive.event_stream.WeakEventSource.TargetedListener
 
-interface WeakEventSource<out E> {
-    data class TargetedWeakListener<T, E>(
-        val target: T,
-        val listener: WeakListener<T, E>,
+interface WeakEventSource<out EventT> {
+    /**
+     * A helper object that's binding a target with an event lister that's
+     * targeting it.
+     */
+    data class TargetedListener<TargetT, EventT>(
+        val target: TargetT,
+        val listener: TargetingListener<TargetT, EventT>,
     )
 
-    fun <T : Any> listenWeak(
-        target: T,
-        listener: WeakListener<T, E>,
+    fun <TargetT : Any> listenWeak(
+        target: TargetT,
+        listener: TargetingListener<TargetT, EventT>,
     ): Subscription
 }
 
-interface StrongEventSource<out E> {
+interface StrongEventSource<out EventT> {
     fun listen(
-        listener: Listener<E>,
+        listener: Listener<EventT>,
     ): Subscription
 }
 
-interface EventSource<out E> : WeakEventSource<E>, StrongEventSource<E>
+interface EventSource<out EventT> : WeakEventSource<EventT>, StrongEventSource<EventT>
 
-fun <T : Any, E> EventSource<E>.listenWeak(
-    targetedWeakListener: TargetedWeakListener<T, E>,
+fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
+    targetedWeakListener: TargetedListener<TargetT, EventT>,
 ): Subscription = listenWeak(
     target = targetedWeakListener.target,
     listener = targetedWeakListener.listener,

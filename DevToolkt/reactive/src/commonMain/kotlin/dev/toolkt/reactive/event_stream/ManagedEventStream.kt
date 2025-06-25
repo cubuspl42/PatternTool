@@ -8,7 +8,7 @@ import dev.toolkt.core.collections.removeEffectively
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 
-abstract class ManagedEventStream<out E> : ProperEventStream<E>() {
+abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
     enum class State {
         Paused, Resumed,
     }
@@ -16,14 +16,14 @@ abstract class ManagedEventStream<out E> : ProperEventStream<E>() {
     // The order of listeners invocation is non-deterministic (this could be
     // changed by using a linked mutable set, but that wouldn't give much
     // without reworking the weak listeners too)
-    private val listeners = mutableSetOf<Listener<E>>()
+    private val listeners = mutableSetOf<Listener<EventT>>()
 
     // The order of weak listeners invocation is non-deterministic (changing
     // this would require a new multivalued map implementation)
-    private val weakListeners = mutableWeakMultiValuedMapOf<Any, WeakListener<Any, E>>()
+    private val weakListeners = mutableWeakMultiValuedMapOf<Any, TargetingListener<Any, EventT>>()
 
     final override fun listen(
-        listener: Listener<E>,
+        listener: Listener<EventT>,
     ): Subscription {
         val remover = listeners.insertEffectively(listener)
 
@@ -38,13 +38,13 @@ abstract class ManagedEventStream<out E> : ProperEventStream<E>() {
         }
     }
 
-    final override fun <T : Any> listenWeak(
-        target: T,
-        listener: WeakListener<T, E>,
+    final override fun <TargetT : Any> listenWeak(
+        target: TargetT,
+        listener: TargetingListener<TargetT, EventT>,
     ): Subscription {
         val remover = weakListeners.insertEffectivelyWeak(
             key = target,
-            value = @Suppress("UNCHECKED_CAST") (listener as WeakListener<Any, E>),
+            value = @Suppress("UNCHECKED_CAST") (listener as TargetingListener<Any, EventT>),
         )
 
         potentiallyResume()
@@ -80,7 +80,7 @@ abstract class ManagedEventStream<out E> : ProperEventStream<E>() {
     }
 
     protected fun notify(
-        event: @UnsafeVariance E,
+        event: @UnsafeVariance EventT,
     ) {
         listeners.forEach {
             it(event)
