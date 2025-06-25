@@ -5,7 +5,7 @@ actual object PlatformSystem {
         System.gc()
     }
 
-    actual fun log(value: Any) {
+    actual fun log(value: Any?) {
         println(value)
     }
 }
