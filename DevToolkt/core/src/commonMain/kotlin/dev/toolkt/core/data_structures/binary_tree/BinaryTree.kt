@@ -65,9 +65,7 @@ interface BinaryTree<out PayloadT, out ColorT> {
      * removed through this handle. If two handles correspond to the same node,
      * they compare equal.
      */
-    interface NodeHandle<out PayloadT, out MetadataT> {
-        val isValid: Boolean
-    }
+    interface NodeHandle<out PayloadT, out MetadataT>
 
     sealed interface Location<out PayloadT, out MetadataT> {
         val parentHandle: NodeHandle<PayloadT, MetadataT>?

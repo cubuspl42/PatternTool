@@ -570,9 +570,6 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
 
             return properNode
         }
-
-        override val isValid: Boolean
-            get() = properNode.isValid
     }
 
     override fun attach(
@@ -1020,9 +1017,7 @@ private fun <PayloadT, ColorT> BinaryTree.NodeHandle<PayloadT, ColorT>.unpack():
     @Suppress("UNCHECKED_CAST") val nodeHandleImpl =
         this as? NodeHandleImpl<PayloadT, ColorT> ?: throw IllegalArgumentException("Unrelated handle type")
 
-    val properNode = nodeHandleImpl.resolve()
-
-    return properNode
+    return nodeHandleImpl.resolve()
 }
 
 private fun <PayloadT, ColorT> ProperNode<PayloadT, ColorT>.pack(): BinaryTree.NodeHandle<PayloadT, ColorT> =
