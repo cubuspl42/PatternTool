@@ -57,7 +57,7 @@ fun <PayloadT : Comparable<PayloadT>> BinaryTree<PayloadT, RedBlackTree.Color>.v
 }
 
 private fun <PayloadT : Comparable<PayloadT>> BinaryTree<PayloadT, RedBlackTree.Color>.verifyColor() {
-    val rootHandle = this.root ?: return
+    val rootHandle = this.currentRootHandle ?: return
 
     verifySubtreeColor(parentColor = null, rootHandle)
 }

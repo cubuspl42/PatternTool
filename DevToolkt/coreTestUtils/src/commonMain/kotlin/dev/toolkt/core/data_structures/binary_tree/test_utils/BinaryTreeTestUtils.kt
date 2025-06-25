@@ -2,13 +2,11 @@ package dev.toolkt.core.data_structures.binary_tree.test_utils
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 import dev.toolkt.core.data_structures.binary_tree.getChild
-import dev.toolkt.core.data_structures.binary_tree.getSibling
-import dev.toolkt.core.data_structures.binary_tree.locateRelatively
 import dev.toolkt.core.data_structures.binary_tree.traverse
 
 fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.traverseNaively(): Sequence<BinaryTree.NodeHandle<PayloadT, MetadataT>> =
     this.traverseNaivelyOrEmpty(
-        subtreeRootHandle = root,
+        subtreeRootHandle = currentRootHandle,
     )
 
 fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.traverseNaively(

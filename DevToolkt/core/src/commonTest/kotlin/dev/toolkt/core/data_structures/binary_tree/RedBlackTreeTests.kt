@@ -62,7 +62,7 @@ class RedBlackTreeTests {
             ),
         )
 
-        val parentHandle = tree.root!!
+        val parentHandle = tree.currentRootHandle!!
 
         tree.insertVerified(
             location = parentHandle.getRightChildLocation(),
@@ -430,7 +430,7 @@ class RedBlackTreeTests {
             ),
         )
 
-        val parentHandle = tree.root!!
+        val parentHandle = tree.currentRootHandle!!
 
         tree.insertVerified(
             location = parentHandle.getLeftChildLocation(),
@@ -678,7 +678,7 @@ class RedBlackTreeTests {
             ),
         )
 
-        val nodeHandle = tree.root!!
+        val nodeHandle = tree.currentRootHandle!!
 
         tree.removeVerified(
             nodeHandle = nodeHandle,
@@ -697,7 +697,7 @@ class RedBlackTreeTests {
             ),
         )
 
-        val nodeHandle = tree.root!!
+        val nodeHandle = tree.currentRootHandle!!
 
         tree.removeVerified(
             nodeHandle = nodeHandle,
