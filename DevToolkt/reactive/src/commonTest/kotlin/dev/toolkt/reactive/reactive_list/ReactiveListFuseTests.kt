@@ -1,10 +1,10 @@
 package dev.toolkt.reactive.reactive_list
 
+import dev.toolkt.core.iterable.splitBefore
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.EventStreamVerifier
 import dev.toolkt.reactive.cell.MutableCell
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -16,7 +16,6 @@ class ReactiveListFuseTests {
      * fused list should reflect the new values of the cells in the original list.
      */
     @Test
-    @Ignore // FIXME: Non-determinism!!
     fun testFuse_initial() {
         val mutableCell0 = MutableCell(initialValue = 0)
         val mutableCell1 = MutableCell(initialValue = 100)
@@ -63,6 +62,9 @@ class ReactiveListFuseTests {
             actual = fuseReactiveList.currentElements,
         )
 
+        val nonDeterministicChanges = changesVerifier.removeReceivedEvents()
+        val (orderedChanges, unorderedChanges) = nonDeterministicChanges.splitBefore(index = 1)
+
         assertEquals(
             expected = listOf(
                 ReactiveList.Change.single(
@@ -71,13 +73,19 @@ class ReactiveListFuseTests {
                         changedElements = listOf(101),
                     ),
                 ),
+            ),
+            actual = orderedChanges,
+        )
+
+        // The order is non-deterministic (!)
+        assertEquals(
+            expected = setOf(
                 ReactiveList.Change.single(
                     update = ReactiveList.Change.Update.change(
                         indexRange = IntRange.single(2),
                         changedElements = listOf(201),
                     ),
                 ),
-                // A duplicate change
                 ReactiveList.Change.single(
                     update = ReactiveList.Change.Update.change(
                         indexRange = IntRange.single(5),
@@ -85,7 +93,7 @@ class ReactiveListFuseTests {
                     ),
                 ),
             ),
-            actual = changesVerifier.removeReceivedEvents(),
+            actual = unorderedChanges.toSet(),
         )
     }
 
@@ -232,8 +240,6 @@ class ReactiveListFuseTests {
      * changes).
      */
     @Test
-    @Ignore
-    // FIXME: Non-determinism!!
     fun testFuse_outerChange_insertedCells() {
         val mutableCell0 = MutableCell(initialValue = 0)
         val mutableCell1 = MutableCell(initialValue = 100)
@@ -305,9 +311,13 @@ class ReactiveListFuseTests {
             actual = fuseReactiveList.currentElements,
         )
 
+        val outerNonDeterministicChanges = changesVerifier.removeReceivedEvents()
+        val (innerNonDeterministicChanges, trailingUnorderedChanges) = outerNonDeterministicChanges.splitBefore(index = 3)
+        val (leadingUnorderedChanges, orderedChanges) = innerNonDeterministicChanges.splitBefore(index = 2)
+
+        // The order is non-deterministic (!)
         assertEquals(
-            expected = listOf(
-                // A duplicate change
+            expected = setOf(
                 ReactiveList.Change.single(
                     update = ReactiveList.Change.Update.change(
                         indexRange = IntRange.single(6),
@@ -320,12 +330,25 @@ class ReactiveListFuseTests {
                         changedElements = listOf(211),
                     ),
                 ),
+            ),
+            actual = leadingUnorderedChanges.toSet(),
+        )
+
+        assertEquals(
+            expected = listOf(
                 ReactiveList.Change.single(
                     update = ReactiveList.Change.Update.change(
                         indexRange = IntRange.single(5),
                         changedElements = listOf(221),
                     ),
                 ),
+            ),
+            actual = orderedChanges,
+        )
+
+        // The order is non-deterministic (!)
+        assertEquals(
+            expected = setOf(
                 ReactiveList.Change.single(
                     update = ReactiveList.Change.Update.change(
                         indexRange = IntRange.single(4),
@@ -340,7 +363,7 @@ class ReactiveListFuseTests {
                     ),
                 ),
             ),
-            actual = changesVerifier.removeReceivedEvents(),
+            actual = trailingUnorderedChanges.toSet(),
         )
     }
 
