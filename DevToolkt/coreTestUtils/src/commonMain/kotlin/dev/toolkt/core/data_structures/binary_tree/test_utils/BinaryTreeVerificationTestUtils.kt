@@ -27,7 +27,7 @@ fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifyIntegrity() {
         )
     }
 
-    val computedSubtreeSize = rootResult?.computedSubtreeSize ?: 0
+    val computedTreeSize = rootResult?.computedSubtreeSize ?: 0
 
     val naivelyTraversedNodeHandles = traverseNaively().toList()
 
@@ -37,8 +37,12 @@ fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifyIntegrity() {
         throw AssertionError("Inconsistent traversal")
     }
 
-    if (traversedNodeHandles.size != computedSubtreeSize) {
-        throw AssertionError("Inconsistent tree size, computed: ${computedSubtreeSize}, traversal: ${traversedNodeHandles.size}")
+    if (traversedNodeHandles.size != size) {
+        throw AssertionError("Inconsistent tree size, computed: ${computedTreeSize}, declared: $size")
+    }
+
+    if (traversedNodeHandles.size != computedTreeSize) {
+        throw AssertionError("Inconsistent tree size, computed: ${computedTreeSize}, traversal: ${traversedNodeHandles.size}")
     }
 
     val uniqueNodeHandles = traversedNodeHandles.toSet()
