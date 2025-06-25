@@ -22,7 +22,7 @@ private data class BalanceVerificationResult(
 fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifyIntegrity() {
     val rootResult = this.currentRootHandle?.let { rootHandle ->
         verifySubtreeIntegrity(
-            nodeHandle = rootHandle,
+            subtreeRootHandle = rootHandle,
             expectedParentHandle = null,
         )
     }
@@ -80,29 +80,29 @@ fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifyIntegrity() {
 }
 
 private fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifySubtreeIntegrity(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+    subtreeRootHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
     expectedParentHandle: BinaryTree.NodeHandle<PayloadT, ColorT>?,
 ): IntegrityVerificationResult {
-    val actualParentHandle = getParent(nodeHandle = nodeHandle)
+    val actualParentHandle = getParent(nodeHandle = subtreeRootHandle)
 
     if (actualParentHandle != expectedParentHandle) {
         throw AssertionError("Inconsistent parent")
     }
 
-    val leftChildHandle = getLeftChild(nodeHandle = nodeHandle)
-    val rightChildHandle = getRightChild(nodeHandle = nodeHandle)
+    val leftChildHandle = getLeftChild(nodeHandle = subtreeRootHandle)
+    val rightChildHandle = getRightChild(nodeHandle = subtreeRootHandle)
 
     val leftSubtreeVerificationResult = leftChildHandle?.let {
         verifySubtreeIntegrity(
-            nodeHandle = it,
-            expectedParentHandle = nodeHandle,
+            subtreeRootHandle = it,
+            expectedParentHandle = subtreeRootHandle,
         )
     }
 
     val rightSubtreeVerificationResult = rightChildHandle?.let {
         verifySubtreeIntegrity(
-            nodeHandle = it,
-            expectedParentHandle = nodeHandle,
+            subtreeRootHandle = it,
+            expectedParentHandle = subtreeRootHandle,
         )
     }
 
@@ -110,7 +110,7 @@ private fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifySubtreeIntegri
     val computedRightSubtreeSize = rightSubtreeVerificationResult?.computedSubtreeSize ?: 0
     val computedTotalSubtreeSize = computedLeftSubtreeSize + computedRightSubtreeSize + 1
 
-    val cachedSubtreeSize = getSubtreeSize(subtreeRootHandle = nodeHandle)
+    val cachedSubtreeSize = getSubtreeSize(subtreeRootHandle = subtreeRootHandle)
 
     if (cachedSubtreeSize != computedTotalSubtreeSize) {
         throw AssertionError("Inconsistent subtree size, computed: $computedTotalSubtreeSize, cached: $cachedSubtreeSize")
@@ -125,25 +125,25 @@ fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifyBalance() {
     val rootHandle = this.currentRootHandle ?: return
 
     verifySubtreeBalance(
-        nodeHandle = rootHandle,
+        subtreeRootHandle = rootHandle,
     )
 }
 
 private fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifySubtreeBalance(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+    subtreeRootHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
 ): BalanceVerificationResult {
-    val leftChildHandle = getLeftChild(nodeHandle = nodeHandle)
-    val rightChildHandle = getRightChild(nodeHandle = nodeHandle)
+    val leftChildHandle = getLeftChild(nodeHandle = subtreeRootHandle)
+    val rightChildHandle = getRightChild(nodeHandle = subtreeRootHandle)
 
     val leftSubtreeVerificationResult = leftChildHandle?.let {
         verifySubtreeBalance(
-            nodeHandle = it,
+            subtreeRootHandle = it,
         )
     }
 
     val rightSubtreeVerificationResult = rightChildHandle?.let {
         verifySubtreeBalance(
-            nodeHandle = it,
+            subtreeRootHandle = it,
         )
     }
 
@@ -171,20 +171,20 @@ fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> BinaryTree<PayloadT, ColorT>.ver
     val rootHandle = this.currentRootHandle ?: return
 
     verifySubtreeOrder(
-        nodeHandle = rootHandle,
+        subtreeRootHandle = rootHandle,
         selector = selector,
     )
 }
 
 private fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> BinaryTree<PayloadT, ColorT>.verifySubtreeOrder(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+    subtreeRootHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
     selector: (PayloadT) -> KeyT,
 ) {
-    val payload = getPayload(nodeHandle = nodeHandle)
+    val payload = getPayload(nodeHandle = subtreeRootHandle)
     val key = selector(payload)
 
-    val leftChildHandle = getLeftChild(nodeHandle = nodeHandle)
-    val rightChildHandle = getRightChild(nodeHandle = nodeHandle)
+    val leftChildHandle = getLeftChild(nodeHandle = subtreeRootHandle)
+    val rightChildHandle = getRightChild(nodeHandle = subtreeRootHandle)
 
     leftChildHandle?.let {
         val leftPayload = getPayload(nodeHandle = it)
@@ -195,7 +195,7 @@ private fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> BinaryTree<PayloadT, Col
         }
 
         verifySubtreeOrder(
-            nodeHandle = it,
+            subtreeRootHandle = it,
             selector = selector,
         )
     }
@@ -209,7 +209,7 @@ private fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> BinaryTree<PayloadT, Col
         }
 
         verifySubtreeOrder(
-            nodeHandle = it,
+            subtreeRootHandle = it,
             selector = selector,
         )
     }
