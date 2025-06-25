@@ -1,6 +1,6 @@
 package dev.toolkt.core.collections
 
-import dev.toolkt.core.collections.StableMap.Handle
+import dev.toolkt.core.collections.StableAssociativeCollection.Handle
 
 /**
  * A mutable map providing stable handles to its elements.
