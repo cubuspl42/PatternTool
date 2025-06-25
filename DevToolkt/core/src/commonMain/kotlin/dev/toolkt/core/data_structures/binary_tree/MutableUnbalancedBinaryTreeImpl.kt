@@ -1,7 +1,7 @@
 package dev.toolkt.core.data_structures.binary_tree
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree.Side
-import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTreeImpl.HandleImpl
+import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTreeImpl.NodeHandleImpl
 import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTreeImpl.ProperNode
 import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTreeImpl.ProperNode.InOrderNeighbourRelation
 import kotlin.jvm.JvmInline
@@ -554,7 +554,7 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
     }
 
     @JvmInline
-    internal value class HandleImpl<PayloadT, ColorT>(
+    internal value class NodeHandleImpl<PayloadT, ColorT>(
         private val properNode: ProperNode<PayloadT, ColorT>,
     ) : BinaryTree.NodeHandle<PayloadT, ColorT> {
         init {
@@ -1017,15 +1017,15 @@ private val <PayloadT, ColorT> MutableUnbalancedBinaryTreeImpl.ParentNode<Payloa
     get() = this as? ProperNode<PayloadT, ColorT>
 
 private fun <PayloadT, ColorT> BinaryTree.NodeHandle<PayloadT, ColorT>.unpack(): ProperNode<PayloadT, ColorT> {
-    @Suppress("UNCHECKED_CAST") val handleImpl =
-        this as? HandleImpl<PayloadT, ColorT> ?: throw IllegalArgumentException("Unrelated handle type")
+    @Suppress("UNCHECKED_CAST") val nodeHandleImpl =
+        this as? NodeHandleImpl<PayloadT, ColorT> ?: throw IllegalArgumentException("Unrelated handle type")
 
-    val properNode = handleImpl.resolve()
+    val properNode = nodeHandleImpl.resolve()
 
     return properNode
 }
 
 private fun <PayloadT, ColorT> ProperNode<PayloadT, ColorT>.pack(): BinaryTree.NodeHandle<PayloadT, ColorT> =
-    HandleImpl(
+    NodeHandleImpl(
         properNode = this,
     )
