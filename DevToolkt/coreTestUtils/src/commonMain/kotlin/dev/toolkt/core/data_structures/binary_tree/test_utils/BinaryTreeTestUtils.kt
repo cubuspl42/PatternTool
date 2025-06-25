@@ -4,14 +4,14 @@ import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 import dev.toolkt.core.data_structures.binary_tree.getChild
 import dev.toolkt.core.data_structures.binary_tree.traverse
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.traverseNaively(): Sequence<BinaryTree.NodeHandle<PayloadT, MetadataT>> =
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.traverseNaively(): Sequence<BinaryTree.NodeHandle<PayloadT, ColorT>> =
     this.traverseNaivelyOrEmpty(
         subtreeRootHandle = currentRootHandle,
     )
 
-fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.traverseNaively(
-    subtreeRootHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>,
-): Sequence<BinaryTree.NodeHandle<PayloadT, MetadataT>> {
+fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.traverseNaively(
+    subtreeRootHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+): Sequence<BinaryTree.NodeHandle<PayloadT, ColorT>> {
     val leftChild = getChild(
         nodeHandle = subtreeRootHandle,
         side = BinaryTree.Side.Left,
@@ -29,9 +29,9 @@ fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.traverseNaively(
     }
 }
 
-private fun <PayloadT, MetadataT> BinaryTree<PayloadT, MetadataT>.traverseNaivelyOrEmpty(
-    subtreeRootHandle: BinaryTree.NodeHandle<PayloadT, MetadataT>?,
-): Sequence<BinaryTree.NodeHandle<PayloadT, MetadataT>> {
+private fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.traverseNaivelyOrEmpty(
+    subtreeRootHandle: BinaryTree.NodeHandle<PayloadT, ColorT>?,
+): Sequence<BinaryTree.NodeHandle<PayloadT, ColorT>> {
     if (subtreeRootHandle == null) return emptySequence()
 
     return this.traverseNaively(
