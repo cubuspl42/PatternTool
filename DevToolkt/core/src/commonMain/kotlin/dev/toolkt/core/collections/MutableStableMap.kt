@@ -1,7 +1,5 @@
 package dev.toolkt.core.collections
 
-import dev.toolkt.core.collections.StableAssociativeCollection.Handle
-
 /**
  * A mutable map providing stable handles to its elements.
  */
@@ -16,7 +14,7 @@ interface MutableStableMap<K, V> : MutableMap<K, V>, StableMap<K, V> {
     fun addEx(
         key: K,
         value: V,
-    ): Handle<K, V>?
+    ): EntryHandle<K, V>?
 
     /**
      * Removes the entry corresponding to the given handle from the map.
@@ -25,6 +23,6 @@ interface MutableStableMap<K, V> : MutableMap<K, V>, StableMap<K, V> {
      * @return the entry that has been removed.
      */
     fun removeVia(
-        handle: Handle<K, V>,
+        handle: EntryHandle<K, V>,
     ): Map.Entry<K, V>
 }
