@@ -5,7 +5,8 @@ import kotlin.test.assertTrue
 
 fun <K, V> MultiValuedMap<K, V>.verifyIntegrity(
     expectedEntries: Collection<Map.Entry<K, V>>,
-    controlEntries: Collection<Map.Entry<K, V>>,
+    controlKeys: Set<K>,
+    controlEntries: Set<Map.Entry<K, V>>,
 ) {
     val groupedExpectedEntries = expectedEntries.groupBy { it.key }
     val expectedValuesByKey = groupedExpectedEntries.mapValues { (_, entries) ->
@@ -15,7 +16,7 @@ fun <K, V> MultiValuedMap<K, V>.verifyIntegrity(
     val expectedKeys = expectedValuesByKey.keys
     val expectedValues = expectedValuesByKey.flatMap { (_, values) ->
         values
-    }.toSet()
+    }.toList()
 
     val expectedSize = expectedEntries.size
     val actualSize = size
@@ -30,11 +31,11 @@ fun <K, V> MultiValuedMap<K, V>.verifyIntegrity(
 
     // Traversal
 
-    val actualEntries = toSet()
+    val actualEntries = toList()
 
     assertEquals(
-        expected = expectedEntries,
-        actual = actualEntries,
+        expected = expectedEntries.sortedBy { it.hashCode() },
+        actual = actualEntries.sortedBy { it.hashCode() },
         message = "Actual entries do not match expected entries: expected $expectedEntries, got $actualEntries",
     )
 
@@ -56,7 +57,7 @@ fun <K, V> MultiValuedMap<K, V>.verifyIntegrity(
         val actualValues = getAll(key = key).toList().sortedBy { it.hashCode() }
 
         assertEquals(
-            expected = expectedValues,
+            expected = expectedValues.sortedBy { it.hashCode() },
             actual = actualValues,
             message = "Values for key $key do not match: expected $expectedValues, got $actualValues",
         )
@@ -95,7 +96,7 @@ fun <K, V> MultiValuedMap<K, V>.verifyIntegrity(
     )
 
     assertTrue(
-        actual = controlEntries.none { containsKey(key = it.key) },
+        actual = controlKeys.none { containsKey(key = it) },
     )
 
     assertTrue(

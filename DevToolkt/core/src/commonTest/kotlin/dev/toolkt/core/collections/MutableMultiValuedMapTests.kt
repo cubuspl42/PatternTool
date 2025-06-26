@@ -1,9 +1,7 @@
 package dev.toolkt.core.collections
 
-import kotlin.test.Ignore
 import kotlin.test.Test
 
-@Ignore // TODO: Get or put ex (with handle)
 class MutableMultiValuedMapTests {
     @Test
     fun testNewFromStableMap_initial() {
@@ -27,7 +25,10 @@ class MutableMultiValuedMapTests {
                 MapEntry(20, "A"),
                 MapEntry(10, "A"),
             ),
-            controlEntries = listOf(
+            controlKeys = setOf(
+                -10, 0, 40,
+            ),
+            controlEntries = setOf(
                 MapEntry(10, "X"),
                 MapEntry(20, "B"),
                 MapEntry(30, "C"),
@@ -63,7 +64,10 @@ class MutableMultiValuedMapTests {
                 MapEntry(30, "O"),
                 MapEntry(20, "X"),
             ),
-            controlEntries = listOf(
+            controlKeys = setOf(
+                -10, 0, 40,
+            ),
+            controlEntries = setOf(
                 MapEntry(10, "U"),
                 MapEntry(20, "A"),
                 MapEntry(30, "L"),
@@ -100,9 +104,12 @@ class MutableMultiValuedMapTests {
                 MapEntry(10, "C"),
                 MapEntry(20, "A"),
                 MapEntry(10, "A"),
-                MapEntry(20, "J"),
+                MapEntry(10, "J"),
             ),
-            controlEntries = listOf(
+            controlKeys = setOf(
+                -10, 0, 40,
+            ),
+            controlEntries = setOf(
                 MapEntry(10, "X"),
                 MapEntry(20, "B"),
                 MapEntry(30, "C"),
@@ -138,7 +145,10 @@ class MutableMultiValuedMapTests {
                 MapEntry(30, "O"),
                 MapEntry(40, "L"),
             ),
-            controlEntries = listOf(
+            controlKeys = setOf(
+                -10, 0, 50,
+            ),
+            controlEntries = setOf(
                 MapEntry(10, "U"),
                 MapEntry(20, "A"),
                 MapEntry(30, "L"),
@@ -154,6 +164,7 @@ class MutableMultiValuedMapTests {
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
                 30 to mutableStableBagOf("K", "O"),
+                40 to mutableStableBagOf("L"),
             ),
         )
 
@@ -166,7 +177,10 @@ class MutableMultiValuedMapTests {
                 MapEntry(30, "O"),
                 MapEntry(40, "L"),
             ),
-            controlEntries = listOf(
+            controlKeys = setOf(
+                -10, 0, 20, 50,
+            ),
+            controlEntries = setOf(
                 MapEntry(10, "U"),
                 MapEntry(20, "A"),
                 MapEntry(20, "X"),
@@ -201,7 +215,10 @@ class MutableMultiValuedMapTests {
                 MapEntry(20, "W"),
                 MapEntry(30, "O"),
             ),
-            controlEntries = listOf(
+            controlKeys = setOf(
+                -10, 0, 40, 50,
+            ),
+            controlEntries = setOf(
                 MapEntry(10, "U"),
                 MapEntry(20, "A"),
                 MapEntry(20, "X"),
@@ -235,7 +252,10 @@ class MutableMultiValuedMapTests {
                 MapEntry(30, "O"),
                 MapEntry(20, "X"),
             ),
-            controlEntries = listOf(
+            controlKeys = setOf(
+                -10, 0, 10, 40, 50,
+            ),
+            controlEntries = setOf(
                 MapEntry(10, "A"),
                 MapEntry(20, "A"),
                 MapEntry(30, "L"),
