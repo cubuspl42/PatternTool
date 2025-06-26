@@ -3,7 +3,7 @@ package dev.toolkt.core.collections
 /**
  * A collection associating a set of keys with a set of values in a one-to-many relation.
  */
-interface MultiValuedMap<K, out V> : AssociativeBag<K, V> {
+interface MultiValuedMap<K, out V> : AssociativeCollection<K, V> {
     /**
      * Returns a view of this multivalued map as a Map from each distinct key to the non-empty collection of that key's associated values.
      */
