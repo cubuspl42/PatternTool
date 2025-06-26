@@ -150,6 +150,16 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
 
         return Pair(location, existingNodeHandle)
     }
+
+    override fun removeKey(key: K): Boolean {
+        val (_, existingNodeHandle) = findByKey(key = key)
+
+        if (existingNodeHandle == null) return false
+
+        entryTree.remove(nodeHandle = existingNodeHandle)
+
+        return true
+    }
 }
 
 fun <K : Comparable<K>, V> mutableTreeMapOf(

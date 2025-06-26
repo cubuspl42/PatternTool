@@ -3,7 +3,7 @@ package dev.toolkt.core.collections
 /**
  * A collection associating a set of keys with a set of values in a one-to-one relation.
  */
-interface AssociativeMap<K, out V : Any> : AssociativeCollection<K, V>, Map<K, V> {
+interface AssociativeMap<K, out V> : AssociativeCollection<K, V>, Map<K, V> {
     /**
      * Gets all values associated with the specified key.
      * Guarantees logarithmic time complexity or better (assuming a small number of values per key).
@@ -13,7 +13,7 @@ interface AssociativeMap<K, out V : Any> : AssociativeCollection<K, V>, Map<K, V
 
 fun <K, V : Any> Map<K, V>.asAssociativeMap(): AssociativeMap<K, V> = AssociativeMapView(map = this)
 
-abstract class AbstractAssociativeMap<K, out V : Any> : Map<K, V>, Collection<Map.Entry<K, V>>, AssociativeMap<K, V> {
+abstract class AbstractAssociativeMap<K, out V> : Map<K, V>, Collection<Map.Entry<K, V>>, AssociativeMap<K, V> {
     override fun contains(
         element: Map.Entry<K, @UnsafeVariance V>,
     ): Boolean = entries.contains(element)

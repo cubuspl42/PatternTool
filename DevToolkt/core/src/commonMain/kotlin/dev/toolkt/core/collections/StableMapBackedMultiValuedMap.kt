@@ -84,6 +84,8 @@ class StableMapBackedMultiValuedMap<K, V>(
         val bucket = getFreshBucket(key = key)
 
         return bucket.add(value)
+
+         addEx(element)
     }
 
     override val values: Collection<V>
@@ -123,19 +125,39 @@ class StableMapBackedMultiValuedMap<K, V>(
         )
     }
 
-    override fun addEx(element: Map.Entry<K, V>): EntryHandle<K, V> {
+    override fun addEx(
+        element: Map.Entry<K, V>,
+    ): EntryHandle<K, V> {
         val (key, value) = element
 
-        // TODO: Get or put ex (with handle)
-        val bucket = getFreshBucket(key = key)
-        val bucketHandle: BucketHandle<K, V> = TODO()
+        when (val existingBucketHandle: BucketHandle<K, V>? = bucketMap.resolve(key = key)) {
+            null -> {
+                val newBucket = mutableStableBagOf<V>()
 
-        val valueHandle = bucket.addEx(value)
+                val newBucketHandle = bucketMap.addEx(
+                    key = key,
+                    value = newBucket,
+                ) ?: throw AssertionError("The new bucket wasn't effectively added")
 
-        return StableMapBackedMultiValuedMap.pack(
-            bucketHandle = bucketHandle,
-            valueHandle = valueHandle,
-        )
+                val addedValueHandle = newBucket.addEx(value)
+
+                return pack(
+                    bucketHandle = newBucketHandle,
+                    valueHandle = addedValueHandle,
+                )
+            }
+
+            else -> {
+                val existingBucket = bucketMap.getValueVia(handle = existingBucketHandle)
+
+                val addedValueHandle = existingBucket.addEx(value)
+
+                return pack(
+                    bucketHandle = existingBucketHandle,
+                    valueHandle = addedValueHandle,
+                )
+            }
+        }
     }
 
     override fun removeVia(

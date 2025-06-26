@@ -1,8 +1,11 @@
 package dev.toolkt.core.collections
 
 /**
- * A mutable collection associating a set of keys with a set of values in a possibly
- * many-to-many relation.
+ * A mutable collection associating a set of keys with a set of values.
+ *
+ * See [MutableAssociativeMap] for an implementation offering one-to-one relation.
+ * See [MutableMultiValuedMap] for an implementation offering one-to-many relation.
+ * See [MutableAssociativeBag] for an implementation offering many-to-many relation.
  *
  * @param K the type of collection keys
  * @param V the type of collection values
