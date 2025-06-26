@@ -19,7 +19,7 @@ import kotlin.jvm.JvmInline
 class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
     @JvmInline
     internal value class TreeListHandle<E> internal constructor(
-        internal val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
+        val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
     ) : Handle<E>
 
     private val elementTree = RedBlackTree<E>()

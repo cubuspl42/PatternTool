@@ -16,3 +16,7 @@ interface MutableStableList<E> : MutableList<E>, MutableStableBag<E>, StableList
         element: E,
     ): Handle<E>
 }
+
+fun <E> mutableStableListOf(
+    vararg elements: E,
+): MutableStableList<E> = mutableTreeListOf(*elements)
