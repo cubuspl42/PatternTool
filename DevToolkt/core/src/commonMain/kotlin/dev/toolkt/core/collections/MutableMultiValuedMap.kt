@@ -5,9 +5,9 @@ import dev.toolkt.core.platform.mutableWeakMapOf
 interface MutableMultiValuedMap<K, V> : MultiValuedMap<K, V>, MutableAssociativeCollection<K, V> {
     companion object {
         fun <K, V> newFromMap(
-            setMap: MutableMap<K, MutableSet<V>>,
+            bucketMap: MutableMap<K, MutableSet<V>>,
         ): MutableMultiValuedMap<K, V> = MapBackedMultiValuedMap(
-            backingMap = setMap,
+            bucketMap = bucketMap,
         )
 
         fun <K, V> new(): MutableMultiValuedMap<K, V> = newFromMap(mutableMapOf())
@@ -28,7 +28,7 @@ fun <K, V> MutableMultiValuedMap<K, V>.put(
 inline fun <K, V> mutableMultiValuedMapOf(
     vararg pairs: Pair<K, V>,
 ): MutableMultiValuedMap<K, V> = MutableMultiValuedMap.newFromMap(
-    setMap = pairs.groupBy { (key, _) -> key }.mapValues { (_, keyPairs) ->
+    bucketMap = pairs.groupBy { (key, _) -> key }.mapValues { (_, keyPairs) ->
         keyPairs.map { (_, value) -> value }.toMutableSet()
     }.toMutableMap(),
 )
@@ -36,5 +36,5 @@ inline fun <K, V> mutableMultiValuedMapOf(
 @Suppress("NOTHING_TO_INLINE")
 inline fun <K : Any, V : Any> mutableWeakMultiValuedMapOf(): MutableMultiValuedMap<K, V> =
     MutableMultiValuedMap.newFromMap(
-        setMap = mutableWeakMapOf(),
+        bucketMap = mutableWeakMapOf(),
     )
