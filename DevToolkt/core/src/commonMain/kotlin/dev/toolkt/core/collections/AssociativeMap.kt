@@ -1,6 +1,12 @@
 package dev.toolkt.core.collections
 
-interface AssociativeMap<K, out V : Any> : AssociativeCollection<K, V>, Map<K, V>
+interface AssociativeMap<K, out V : Any> : AssociativeCollection<K, V>, Map<K, V> {
+    /**
+     * Gets all values associated with the specified key.
+     * Guarantees logarithmic time complexity or better (assuming a small number of values per key).
+     */
+    override fun getAll(key: K): Collection<V>
+}
 
 fun <K, V : Any> Map<K, V>.asAssociativeMap(): AssociativeMap<K, V> = AssociativeMapView(map = this)
 
