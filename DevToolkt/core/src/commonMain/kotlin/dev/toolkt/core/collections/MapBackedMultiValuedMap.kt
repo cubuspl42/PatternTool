@@ -81,6 +81,11 @@ class MapBackedMultiValuedMap<K, V>(
         return wasAdded
     }
 
+    override fun removeKey(key: K): Boolean {
+        val removedBucket = bucketMap.remove(key)
+        return removedBucket != null
+    }
+
     override val values: Collection<V>
         get() = bucketMap.values.flatten()
 }

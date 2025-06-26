@@ -159,19 +159,22 @@ class StableMapBackedMultiValuedMap<K, V>(
         )
     }
 
+    override fun removeKey(key: K): Boolean {
+        val removedBucket = bucketMap.remove(key)
+        return removedBucket != null
+    }
+
     private fun getFreshBucket(
         key: K,
     ): MutableStableBag<V> = bucketMap.getOrPut(key) {
         mutableStableListOf()
     }
 
-
     private fun EntryHandle<K, V>.unpackFully(): UnpackedHandle<K, V> {
         val handleImpl = this.unpack()
 
         val bucketEntry = bucketMap.getVia(handle = handleImpl.bucketHandle)
         val key = bucketEntry.key
-
 
         val bucket = bucketEntry.value
         val value = bucket.getVia(handle = handleImpl.valueHandle)

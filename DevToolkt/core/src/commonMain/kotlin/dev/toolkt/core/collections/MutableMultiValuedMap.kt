@@ -10,8 +10,22 @@ interface MutableMultiValuedMap<K, V> : MultiValuedMap<K, V>, MutableAssociative
             bucketMap = bucketMap,
         )
 
+        fun <K, V> newFromStableMap(
+            bucketMap: MutableStableMap<K, MutableStableBag<V>>,
+        ): MutableStableMultiValuedMap<K, V> = StableMapBackedMultiValuedMap(
+            bucketMap = bucketMap,
+        )
+
         fun <K, V> new(): MutableMultiValuedMap<K, V> = newFromMap(mutableMapOf())
     }
+
+    /**
+     * Remove all entries with the given key from the map
+     * Guarantees logarithmic time complexity or better.
+     *
+     * @return `true` if the key was removed, or `false` if the collection contained no entry with such key
+     */
+    override fun removeKey(key: K): Boolean
 }
 
 /**

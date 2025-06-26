@@ -5,6 +5,10 @@ package dev.toolkt.core.collections
  */
 interface MutableStableMap<K, V> : MutableMap<K, V>, MutableStableAssociativeCollection<K, V>, StableMap<K, V>
 
+fun <K : Comparable<K>, V> mutableStableMapOf(
+    vararg pairs: Pair<K, V>,
+): MutableTreeMap<K, V> = mutableTreeMapOf(*pairs)
+
 fun <K, V> MutableStableMap<K, V>.addEx(
     key: K,
     value: V,

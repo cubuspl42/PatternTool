@@ -1,0 +1,246 @@
+package dev.toolkt.core.collections
+
+import kotlin.test.Ignore
+import kotlin.test.Test
+
+@Ignore // TODO: Get or put ex (with handle)
+class MutableMultiValuedMapTests {
+    @Test
+    fun testNewFromStableMap_initial() {
+        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+            bucketMap = mutableStableMapOf(
+                10 to mutableStableBagOf("A", "B", "C", "A"),
+                20 to mutableStableBagOf("X", "W", "A"),
+                30 to mutableStableBagOf("K", "O"),
+            ),
+        )
+
+        mutableMultiValuedMap.verifyIntegrity(
+            expectedEntries = listOf(
+                MapEntry(10, "A"),
+                MapEntry(20, "X"),
+                MapEntry(30, "K"),
+                MapEntry(10, "B"),
+                MapEntry(20, "W"),
+                MapEntry(30, "O"),
+                MapEntry(10, "C"),
+                MapEntry(20, "A"),
+                MapEntry(10, "A"),
+            ),
+            controlEntries = listOf(
+                MapEntry(10, "X"),
+                MapEntry(20, "B"),
+                MapEntry(30, "C"),
+                MapEntry(30, "D"),
+                MapEntry(40, "A"),
+            ),
+        )
+    }
+
+    @Test
+    fun testNewFromStableMap_add_existingKeyExistingValue() {
+        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+            bucketMap = mutableStableMapOf(
+                10 to mutableStableBagOf("A"),
+                20 to mutableStableBagOf("X", "W"),
+                30 to mutableStableBagOf("K", "O"),
+            ),
+        )
+
+        mutableMultiValuedMap.addEx(
+            MapEntry(
+                key = 20,
+                value = "X",
+            ),
+        )
+
+        mutableMultiValuedMap.verifyIntegrity(
+            expectedEntries = listOf(
+                MapEntry(10, "A"),
+                MapEntry(20, "X"),
+                MapEntry(20, "W"),
+                MapEntry(30, "K"),
+                MapEntry(30, "O"),
+                MapEntry(20, "X"),
+            ),
+            controlEntries = listOf(
+                MapEntry(10, "U"),
+                MapEntry(20, "A"),
+                MapEntry(30, "L"),
+                MapEntry(40, "X"),
+            ),
+        )
+    }
+
+    @Test
+    fun testNewFromStableMap_add_existingKeyNewValue() {
+        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+            bucketMap = mutableStableMapOf(
+                10 to mutableStableBagOf("A", "B", "C", "A"),
+                20 to mutableStableBagOf("X", "W", "A"),
+                30 to mutableStableBagOf("K", "O"),
+            ),
+        )
+
+        mutableMultiValuedMap.addEx(
+            MapEntry(
+                key = 10,
+                value = "J",
+            ),
+        )
+
+        mutableMultiValuedMap.verifyIntegrity(
+            expectedEntries = listOf(
+                MapEntry(10, "A"),
+                MapEntry(20, "X"),
+                MapEntry(30, "K"),
+                MapEntry(10, "B"),
+                MapEntry(20, "W"),
+                MapEntry(30, "O"),
+                MapEntry(10, "C"),
+                MapEntry(20, "A"),
+                MapEntry(10, "A"),
+                MapEntry(20, "J"),
+            ),
+            controlEntries = listOf(
+                MapEntry(10, "X"),
+                MapEntry(20, "B"),
+                MapEntry(30, "C"),
+                MapEntry(30, "D"),
+                MapEntry(40, "B"),
+            ),
+        )
+    }
+
+    @Test
+    fun testNewFromStableMap_add_newKey() {
+        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+            bucketMap = mutableStableMapOf(
+                10 to mutableStableBagOf("A"),
+                20 to mutableStableBagOf("X", "W"),
+                30 to mutableStableBagOf("K", "O"),
+            ),
+        )
+
+        mutableMultiValuedMap.addEx(
+            MapEntry(
+                key = 40,
+                value = "L",
+            ),
+        )
+
+        mutableMultiValuedMap.verifyIntegrity(
+            expectedEntries = listOf(
+                MapEntry(10, "A"),
+                MapEntry(20, "X"),
+                MapEntry(20, "W"),
+                MapEntry(30, "K"),
+                MapEntry(30, "O"),
+                MapEntry(40, "L"),
+            ),
+            controlEntries = listOf(
+                MapEntry(10, "U"),
+                MapEntry(20, "A"),
+                MapEntry(30, "L"),
+                MapEntry(40, "X"),
+            ),
+        )
+    }
+
+    @Test
+    fun testNewFromStableMap_removeKey() {
+        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+            bucketMap = mutableStableMapOf(
+                10 to mutableStableBagOf("A"),
+                20 to mutableStableBagOf("X", "W"),
+                30 to mutableStableBagOf("K", "O"),
+            ),
+        )
+
+        mutableMultiValuedMap.removeKey(key = 20)
+
+        mutableMultiValuedMap.verifyIntegrity(
+            expectedEntries = listOf(
+                MapEntry(10, "A"),
+                MapEntry(30, "K"),
+                MapEntry(30, "O"),
+                MapEntry(40, "L"),
+            ),
+            controlEntries = listOf(
+                MapEntry(10, "U"),
+                MapEntry(20, "A"),
+                MapEntry(20, "X"),
+                MapEntry(20, "W"),
+                MapEntry(30, "L"),
+                MapEntry(40, "X"),
+            ),
+        )
+    }
+
+    @Test
+    fun testNewFromStableMap_removeEntry() {
+        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+            bucketMap = mutableStableMapOf(
+                10 to mutableStableBagOf("A"),
+                20 to mutableStableBagOf("X", "W"),
+                30 to mutableStableBagOf("K", "O"),
+            ),
+        )
+
+        mutableMultiValuedMap.remove(
+            MapEntry(
+                key = 20,
+                value = "X",
+            ),
+        )
+
+        mutableMultiValuedMap.verifyIntegrity(
+            expectedEntries = listOf(
+                MapEntry(10, "A"),
+                MapEntry(30, "K"),
+                MapEntry(20, "W"),
+                MapEntry(30, "O"),
+            ),
+            controlEntries = listOf(
+                MapEntry(10, "U"),
+                MapEntry(20, "A"),
+                MapEntry(20, "X"),
+                MapEntry(30, "L"),
+                MapEntry(40, "X"),
+            ),
+        )
+    }
+
+    @Test
+    fun testNewFromStableMap_removeEntry_lastForKey() {
+        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+            bucketMap = mutableStableMapOf(
+                10 to mutableStableBagOf("A"),
+                20 to mutableStableBagOf("X", "W"),
+                30 to mutableStableBagOf("K", "O"),
+            ),
+        )
+
+        mutableMultiValuedMap.remove(
+            MapEntry(
+                key = 10,
+                value = "A",
+            ),
+        )
+
+        mutableMultiValuedMap.verifyIntegrity(
+            expectedEntries = listOf(
+                MapEntry(30, "K"),
+                MapEntry(20, "W"),
+                MapEntry(30, "O"),
+                MapEntry(20, "X"),
+            ),
+            controlEntries = listOf(
+                MapEntry(10, "A"),
+                MapEntry(20, "A"),
+                MapEntry(30, "L"),
+                MapEntry(40, "X"),
+            ),
+        )
+    }
+}
