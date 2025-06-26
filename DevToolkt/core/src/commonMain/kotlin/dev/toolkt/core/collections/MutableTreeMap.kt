@@ -3,9 +3,14 @@ package dev.toolkt.core.collections
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.findBy
+import dev.toolkt.core.data_structures.binary_tree.traverse
 import kotlin.jvm.JvmInline
 
-class MutableTreeMap<K : Comparable<K>, V> internal constructor() : AbstractMutableMap<K, V>(), MutableStableMap<K, V> {
+class MutableTreeMap<K : Comparable<K>, V> internal constructor(
+    private val entryTree: RedBlackTree<MutableTreeMap.MutableMapEntry<K, V>> = RedBlackTree(),
+) : AbstractMutableStableMap<K, V>(
+    EntrySet(entryTree = entryTree),
+) {
     internal class MutableMapEntry<K : Comparable<K>, V>(
         override val key: K,
         initialValue: V,
@@ -48,10 +53,6 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor() : AbstractMuta
         internal val nodeHandle: EntryNodeHandle<K, V>,
     ) : EntryHandle<K, V>
 
-    private val entryTree = RedBlackTree<MutableMapEntry<K, V>>()
-
-    override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
-        get() = EntrySet(entryTree = entryTree)
 
     override val size: Int
         get() = entryTree.size
@@ -87,9 +88,10 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor() : AbstractMuta
     }
 
     override fun addEx(
-        key: K,
-        value: V,
+        element: Map.Entry<K, V>,
     ): EntryHandle<K, V>? {
+        val (key, value) = element
+
         val (location, existingNodeHandle) = findByKey(key = key)
 
         if (existingNodeHandle != null) {
@@ -125,15 +127,10 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor() : AbstractMuta
         return nodeHandle?.pack()
     }
 
-    override fun getVia(
-        handle: EntryHandle<K, V>,
-    ): V {
-        val nodeHandle = handle.unpack()
-        val entry = entryTree.getPayload(nodeHandle = nodeHandle)
-        return entry.value
-    }
+    override val handles: Sequence<EntryHandle<K, V>>
+        get() = entryTree.traverse().map { it.pack() }
 
-    override fun getEntryVia(
+    override fun getVia(
         handle: EntryHandle<K, V>,
     ): Map.Entry<K, V> {
         val nodeHandle = handle.unpack()

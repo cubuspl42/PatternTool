@@ -7,7 +7,8 @@ interface MutableStableCollection<E> : MutableCollection<E>, StableCollection<E>
      * Adds the specified element to the collection in exchange for a handle.
      * Guarantees logarithmic time complexity or better.
      *
-     * @return the handle to the added element or `null` if the element is already present.
+     * @return the handle to the added element or `null` if the element wasn't
+     * added because it collided with another element
      */
     fun addEx(
         element: E,

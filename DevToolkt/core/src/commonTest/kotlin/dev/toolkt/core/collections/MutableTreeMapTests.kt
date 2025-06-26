@@ -165,7 +165,7 @@ class MutableTreeMapTests {
 
         assertEquals(
             expected = "c",
-            actual = map.getVia(handle = handle),
+            actual = map.getValueVia(handle = handle),
         )
 
         assertEquals(
@@ -306,7 +306,7 @@ class MutableTreeMapTests {
 
         assertEquals(
             expected = "a",
-            actual = map.getVia(handle = handle),
+            actual = map.getValueVia(handle = handle),
         )
 
         map.verifyContent(
