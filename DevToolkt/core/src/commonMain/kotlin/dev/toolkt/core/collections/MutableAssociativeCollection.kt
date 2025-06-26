@@ -22,3 +22,17 @@ interface MutableAssociativeCollection<K, V> : MutableCollection<Map.Entry<K, V>
      */
     override fun addAll(elements: Collection<Map.Entry<K, V>>): Boolean
 }
+
+fun <K, V> MutableAssociativeCollection<K, V>.add(
+    key: K,
+    value: V,
+): Boolean = this.add(
+    element = MapEntry(key = key, value = value),
+)
+
+fun <K, V> MutableAssociativeCollection<K, V>.remove(
+    key: K,
+    value: V,
+): Boolean = this.remove(
+    element = MapEntry(key = key, value = value),
+)

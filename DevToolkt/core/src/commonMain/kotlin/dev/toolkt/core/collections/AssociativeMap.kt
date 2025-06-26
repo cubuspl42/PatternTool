@@ -1,5 +1,8 @@
 package dev.toolkt.core.collections
 
+/**
+ * A collection associating a set of keys with a set of values in a one-to-one relation.
+ */
 interface AssociativeMap<K, out V : Any> : AssociativeCollection<K, V>, Map<K, V> {
     /**
      * Gets all values associated with the specified key.

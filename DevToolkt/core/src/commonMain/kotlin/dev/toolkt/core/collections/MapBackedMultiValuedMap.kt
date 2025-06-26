@@ -1,8 +1,10 @@
 package dev.toolkt.core.collections
 
 class MapBackedMultiValuedMap<K, V>(
+    // TODO: Switch to a mutable collection for the buckets!
     private val backingMap: MutableMap<K, MutableSet<V>>,
-) : MutableMultiValuedMap<K, V> {
+) : AbstractMutableCollection<Map.Entry<K, V>>(), MutableMultiValuedMap<K, V> {
+    // TODO: Figure out if caching breaks the contract (do we claim ownership?)
     private var cachedSize: Int = backingMap.values.sumOf { it.size }
 
     override fun clear() {
@@ -11,41 +13,18 @@ class MapBackedMultiValuedMap<K, V>(
         cachedSize = 0
     }
 
-    override fun put(key: K, value: V): Boolean {
-        val bucket = backingMap.getOrPut(key) { mutableSetOf() }
-
-        val wasAdded = bucket.add(value)
-
-        if (wasAdded) {
-            cachedSize += 1
-        }
-
-        return wasAdded
-    }
-
-    override fun remove(key: K): Collection<V> {
-        val removedBucket = backingMap.remove(key) ?: return emptyList()
-
-        if (removedBucket.isEmpty()) {
-            throw AssertionError("Buckets aren't supposed to be empty")
-        }
-
-        cachedSize -= removedBucket.size
-
-        return removedBucket
-    }
-
-    override fun removeMapping(
-        key: K,
-        item: V,
+    override fun remove(
+        element: Map.Entry<K, V>,
     ): Boolean {
+        val (key, value) = element
+
         val bucket = backingMap[key] ?: return false
 
         if (bucket.isEmpty()) {
             throw AssertionError("Buckets aren't supposed to be empty")
         }
 
-        val wasRemoved = bucket.remove(item)
+        val wasRemoved = bucket.remove(value)
 
         if (wasRemoved) {
             cachedSize -= 1
@@ -68,32 +47,7 @@ class MapBackedMultiValuedMap<K, V>(
         key: K,
     ): Boolean = backingMap.containsKey(key)
 
-    override fun containsMapping(
-        key: K,
-        value: V,
-    ): Boolean {
-        val bucket = backingMap[key] ?: return false
-
-        return bucket.contains(value)
-    }
-
-    override fun containsValue(
-        value: V,
-    ): Boolean = backingMap.any { (_, bucket) ->
-        bucket.contains(value)
-    }
-
-    override val entries: Collection<Map.Entry<K, V>>
-        get() = backingMap.flatMap { (key, values) ->
-            values.map { value ->
-                MapEntry(
-                    key = key,
-                    value = value,
-                )
-            }
-        }
-
-    override operator fun get(
+    override fun getAll(
         key: K,
     ): Collection<V> = backingMap[key] ?: emptySet()
 
@@ -104,6 +58,28 @@ class MapBackedMultiValuedMap<K, V>(
 
     override val size: Int
         get() = cachedSize
+
+    override fun iterator(): MutableIterator<Map.Entry<K, V>> = backingMap.asSequence().flatMap { (key, bucket) ->
+        bucket.asSequence().map { value ->
+            MapEntry(key, value)
+        }
+    }.iterator().forceMutable()
+
+    override fun add(
+        element: Map.Entry<K, V>,
+    ): Boolean {
+        val (key, value) = element
+
+        val bucket = backingMap.getOrPut(key) { mutableSetOf() }
+
+        val wasAdded = bucket.add(value)
+
+        if (wasAdded) {
+            cachedSize += 1
+        }
+
+        return wasAdded
+    }
 
     override val values: Collection<V>
         get() = backingMap.values.flatten()

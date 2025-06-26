@@ -28,13 +28,12 @@ class MapBackedMultiValuedMapTests {
             actual = mutableMultiValuedMap.asMap(),
         )
 
-        val collection = mutableMultiValuedMap.get(10)
+        val collection = mutableMultiValuedMap.getAll(10)
 
         assertTrue(collection.isEmpty())
 
         assertTrue(mutableMultiValuedMap.isEmpty())
         assertTrue(mutableMultiValuedMap.keys.isEmpty())
-        assertTrue(mutableMultiValuedMap.entries.isEmpty())
     }
 
     @Test
@@ -86,7 +85,7 @@ class MapBackedMultiValuedMapTests {
 
         assertEquals(
             expected = setOf("A", "B"),
-            actual = mutableMultiValuedMap.get(20)
+            actual = mutableMultiValuedMap.getAll(20)
         )
 
         assertFalse(mutableMultiValuedMap.isEmpty())
@@ -98,21 +97,23 @@ class MapBackedMultiValuedMapTests {
 
         assertEquals(
             expected = listOf(
-                Pair(10, "A"),
-                Pair(20, "A"),
-                Pair(20, "B"),
-                Pair(30, "C"),
-                Pair(30, "D"),
+                MapEntry(10, "A"),
+                MapEntry(20, "A"),
+                MapEntry(20, "B"),
+                MapEntry(30, "C"),
+                MapEntry(30, "D"),
             ),
-            actual = mutableMultiValuedMap.entries.map { it.toPair() },
+            actual = mutableMultiValuedMap.toList(),
         )
     }
 
     @Test
-    fun testPut() {
+    fun testAdd() {
         val mutableMultiValuedMap = MutableMultiValuedMap.new<Int, String>()
 
-        mutableMultiValuedMap.put(10, "A")
+        assertTrue(
+            mutableMultiValuedMap.add(MapEntry(10, "A"))
+        )
 
         assertTrue(mutableMultiValuedMap.containsKey(10))
         assertFalse(mutableMultiValuedMap.containsKey(20))
@@ -127,40 +128,6 @@ class MapBackedMultiValuedMapTests {
     }
 
     @Test
-    fun testRemove() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromMap(
-            backingMap = mutableMapOf(
-                10 to mutableSetOf("A"),
-                20 to mutableSetOf("A", "B"),
-                30 to mutableSetOf("C", "D"),
-            ),
-        )
-
-        mutableMultiValuedMap.remove(20)
-
-        assertTrue(mutableMultiValuedMap.containsKey(10))
-        assertFalse(mutableMultiValuedMap.containsKey(20))
-
-        assertTrue(mutableMultiValuedMap.containsMapping(10, "A"))
-        assertTrue(mutableMultiValuedMap.containsMapping(30, "C"))
-        assertFalse(mutableMultiValuedMap.containsMapping(20, "A"))
-        assertFalse(mutableMultiValuedMap.containsMapping(20, "B"))
-
-        assertTrue(mutableMultiValuedMap.containsValue("A"))
-        assertFalse(mutableMultiValuedMap.containsValue("B"))
-
-        assertEquals(
-            expected = 3,
-            actual = mutableMultiValuedMap.size,
-        )
-
-        assertEquals(
-            expected = setOf(10, 30),
-            actual = mutableMultiValuedMap.keys,
-        )
-    }
-
-    @Test
     fun testRemoveMapping() {
         val mutableMultiValuedMap = MutableMultiValuedMap.newFromMap(
             backingMap = mutableMapOf(
@@ -170,7 +137,7 @@ class MapBackedMultiValuedMapTests {
             ),
         )
 
-        mutableMultiValuedMap.removeMapping(20, "A")
+        mutableMultiValuedMap.remove(20, "A")
 
         assertTrue(mutableMultiValuedMap.containsKey(10))
         assertTrue(mutableMultiValuedMap.containsKey(20))
@@ -193,7 +160,7 @@ class MapBackedMultiValuedMapTests {
             actual = mutableMultiValuedMap.keys,
         )
 
-        mutableMultiValuedMap.removeMapping(20, "B")
+        mutableMultiValuedMap.remove(20, "B")
 
         assertTrue(mutableMultiValuedMap.containsKey(10))
         assertFalse(mutableMultiValuedMap.containsKey(20))

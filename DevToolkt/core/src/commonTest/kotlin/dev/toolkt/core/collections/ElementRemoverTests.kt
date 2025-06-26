@@ -1,5 +1,6 @@
 package dev.toolkt.core.collections
 
+import dev.toolkt.core.collections.containsMapping
 import kotlin.test.Test
 import kotlin.test.assertFails
 import kotlin.test.assertFalse

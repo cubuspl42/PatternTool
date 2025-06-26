@@ -18,6 +18,10 @@ interface MutableStableAssociativeBag<K, V> : MutableStableBag<Map.Entry<K, V>>,
 private class StableBagBackedStableAssociativeBag<K, V : Any>(
     private val entries: MutableStableBag<Map.Entry<K, V>>,
 ) : MutableStableAssociativeBag<K, V>, MutableStableBag<Map.Entry<K, V>> by entries {
+    override fun containsKey(key: K): Boolean = entries.any { entry ->
+        entry.key == key
+    }
+
     override fun getAll(key: K): Collection<V> = entries.mapNotNull {
         when {
             it.key == key -> it.value
