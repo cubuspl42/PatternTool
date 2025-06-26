@@ -3,18 +3,20 @@ package dev.toolkt.core.collections
 interface MutableStableAssociativeBag<K, V> : MutableStableBag<Map.Entry<K, V>>,
     MutableStableAssociativeCollection<K, V>, StableAssociativeBag<K, V> {
     companion object {
-        fun <K, V : Any> create(): MutableStableAssociativeBag<K, V> = backed(
-            // TODO: Can be replaced with a linked list
-            entries = MutableTreeList(),
-        )
-
-        fun <K, V : Any> backed(
-            entries: MutableStableBag<Map.Entry<K, V>>,
+        fun <K, V : Any> newFromBag(
+            entryBag: MutableStableBag<Map.Entry<K, V>>,
         ): MutableStableAssociativeBag<K, V> = StableBagBackedStableAssociativeBag(
-            entries = entries,
+            entries = entryBag,
         )
     }
 }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <K : Any, V : Any> mutableStableAssociativeBagOf(
+    vararg elements: Map.Entry<K, V>,
+): MutableStableAssociativeBag<K, V> = MutableStableAssociativeBag.newFromBag(
+    entryBag = mutableStableBagOf(*elements),
+)
 
 private class StableBagBackedStableAssociativeBag<K, V : Any>(
     private val entries: MutableStableBag<Map.Entry<K, V>>,

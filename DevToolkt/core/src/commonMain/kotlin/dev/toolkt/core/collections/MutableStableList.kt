@@ -17,6 +17,7 @@ interface MutableStableList<E> : MutableList<E>, MutableStableBag<E>, StableList
     ): Handle<E>
 }
 
-fun <E> mutableStableListOf(
+@Suppress("NOTHING_TO_INLINE")
+inline fun <E> mutableStableListOf(
     vararg elements: E,
 ): MutableStableList<E> = mutableTreeListOf(*elements)

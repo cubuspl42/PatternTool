@@ -39,7 +39,7 @@ class MapBackedMultiValuedMapTests {
     @Test
     fun newFromMap() {
         val mutableMultiValuedMap = MutableMultiValuedMap.newFromMap(
-            backingMap = mutableMapOf(
+            setMap = mutableMapOf(
                 10 to mutableSetOf("A"),
                 20 to mutableSetOf("A", "B"),
                 30 to mutableSetOf("C", "D"),
@@ -130,7 +130,7 @@ class MapBackedMultiValuedMapTests {
     @Test
     fun testRemoveMapping() {
         val mutableMultiValuedMap = MutableMultiValuedMap.newFromMap(
-            backingMap = mutableMapOf(
+            setMap = mutableMapOf(
                 10 to mutableSetOf("A"),
                 20 to mutableSetOf("A", "B"),
                 30 to mutableSetOf("C", "D"),
@@ -187,7 +187,7 @@ class MapBackedMultiValuedMapTests {
     @Test
     fun testClear() {
         val mutableMultiValuedMap = MutableMultiValuedMap.newFromMap(
-            backingMap = mutableMapOf(
+            setMap = mutableMapOf(
                 10 to mutableSetOf("A"),
                 20 to mutableSetOf("A", "B"),
                 30 to mutableSetOf("C", "D"),
