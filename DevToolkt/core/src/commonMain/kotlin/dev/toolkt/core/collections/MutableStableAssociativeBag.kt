@@ -1,6 +1,7 @@
 package dev.toolkt.core.collections
 
-interface MutableStableAssociativeBag<K, V> : MutableStableBag<Map.Entry<K, V>>, MutableAssociativeBag<K, V> {
+interface MutableStableAssociativeBag<K, V> : MutableStableBag<Map.Entry<K, V>>,
+    MutableStableAssociativeCollection<K, V> {
     companion object {
         fun <K, V : Any> create(): MutableStableAssociativeBag<K, V> = backed(
             // TODO: Can be replaced with a linked list
@@ -28,4 +29,9 @@ private class StableBagBackedStableAssociativeBag<K, V : Any>(
             else -> null
         }
     }
+
+    override fun resolveAll(key: K): Collection<EntryHandle<K, V>> = entries.handles.filter { entryHandle ->
+        val entry = entries.getVia(entryHandle)
+        entry.key == key
+    }.toList()
 }

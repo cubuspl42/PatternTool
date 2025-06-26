@@ -52,5 +52,9 @@ abstract class AbstractMutableStableMap<K, V>(
         return resolve(key = key)
     }
 
+    final override fun getAll(
+        key: K,
+    ): Collection<V> = listOfNotNull(this[key])
+
     abstract override val size: Int
 }
