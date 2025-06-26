@@ -7,26 +7,10 @@ typealias EntryHandle<K, V> = StableCollection.Handle<Map.Entry<K, V>>
  */
 interface StableAssociativeCollection<K, out V> : StableCollection<Map.Entry<K, V>> {
     /**
-     * Returns a handle to the entry corresponding to the given key.
+     * Returns handles to the entries corresponding to the given key.
      * Guarantees linear time complexity or better.
      */
-    fun resolve(
+    fun resolveAll(
         key: K,
-    ): EntryHandle<K, @UnsafeVariance V>?
-
-    /**
-     * Returns the value corresponding to the given handle.
-     * Guarantees constant time complexity.
-     */
-    fun getVia(
-        handle: EntryHandle<K, @UnsafeVariance V>,
-    ): V
-
-    /**
-     * Returns the entry corresponding to the given handle.
-     * Guarantees constant time complexity.
-     */
-    fun getEntryVia(
-        handle: EntryHandle<K, @UnsafeVariance V>,
-    ): Map.Entry<K, V>
+    ): Collection<EntryHandle<K, @UnsafeVariance V>>
 }
