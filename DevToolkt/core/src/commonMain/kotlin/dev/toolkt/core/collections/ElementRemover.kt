@@ -1,5 +1,6 @@
 package dev.toolkt.core.collections
 
+import dev.toolkt.core.collections.put
 import dev.toolkt.core.platform.PlatformWeakReference
 
 interface ElementRemover {
@@ -47,11 +48,11 @@ fun <E> MutableCollection<E>.insert(element: E): ElementRemover? {
  * @return an [ElementRemover] that can be used to remove the mapping later (if
  * it was added) or `null` if the mapping was already present
  */
-fun <K, V : Any> MutableMultiValuedMap<K, V>.insert(
+fun <K, V : Any> MutableAssociativeCollection<K, V>.insert(
     key: K,
     value: V,
 ): ElementRemover? {
-    val wasAdded = this.put(
+    val wasAdded = this.add(
         key = key,
         value = value,
     )
@@ -59,7 +60,10 @@ fun <K, V : Any> MutableMultiValuedMap<K, V>.insert(
     if (!wasAdded) return null
 
     return object : ElementRemover {
-        override fun remove(): Boolean = this@insert.removeMapping(key, value)
+        override fun remove(): Boolean = this@insert.remove(
+            key = key,
+            value = value,
+        )
     }
 }
 
@@ -98,13 +102,11 @@ fun <E : Any> MutableCollection<E>.insertWeak(element: E): ElementRemover? {
 fun <K : Any, V : Any> MutableMultiValuedMap<K, V>.insertWeak(
     key: K,
     value: V,
-): ElementRemover? {
-    val wasAdded = this.put(
+): ElementRemover {
+    this.add(
         key = key,
         value = value,
     )
-
-    if (!wasAdded) return null
 
     val keyWeakRef = PlatformWeakReference(key)
     val valueWeakRef = PlatformWeakReference(value)
@@ -115,9 +117,9 @@ fun <K : Any, V : Any> MutableMultiValuedMap<K, V>.insertWeak(
             val key = keyWeakRef.get() ?: return false
             val value = valueWeakRef.get() ?: return false
 
-            return this@insertWeak.removeMapping(
+            return this@insertWeak.remove(
                 key = key,
-                item = value,
+                value = value,
             )
         }
     }
