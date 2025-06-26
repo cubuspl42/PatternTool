@@ -6,7 +6,7 @@ package dev.toolkt.core.collections
  */
 interface AssociativeCollection<K, out V> : Collection<Map.Entry<K, V>> {
     /**
-     * Returns true if this map contains a mapping for the specified key.
+     * Returns true if this map contains at least one mapping for the specified key.
      *
      * Guarantees linear time complexity or better.
      */
@@ -17,4 +17,13 @@ interface AssociativeCollection<K, out V> : Collection<Map.Entry<K, V>> {
      * Guarantees linear time complexity or better.
      */
     fun getAll(key: K): Collection<V>
+}
+
+/**
+ * Checks whether the collection contains at least one mapping for the specified value.
+ */
+fun <K, V> AssociativeCollection<K, V>.containsValue(
+    value: @UnsafeVariance V,
+): Boolean = this.any { entry ->
+    entry.value == value
 }

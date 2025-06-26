@@ -123,15 +123,6 @@ class StableMapBackedMultiValuedMap<K, V>(
         )
     }
 
-    override fun setVia(
-        handle: EntryHandle<K, V>,
-        element: Map.Entry<K, V>,
-    ): Map.Entry<K, V> {
-        // It cannot be implemented reasonably, multivalued maps may not actually
-        // be bags
-        TODO("Not yet implemented")
-    }
-
     override fun addEx(element: Map.Entry<K, V>): EntryHandle<K, V> {
         val (key, value) = element
 

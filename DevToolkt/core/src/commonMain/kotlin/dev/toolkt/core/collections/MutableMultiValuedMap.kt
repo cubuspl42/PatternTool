@@ -2,7 +2,7 @@ package dev.toolkt.core.collections
 
 import dev.toolkt.core.platform.mutableWeakMapOf
 
-interface MutableMultiValuedMap<K, V> : MultiValuedMap<K, V>, MutableAssociativeBag<K, V> {
+interface MutableMultiValuedMap<K, V> : MultiValuedMap<K, V>, MutableAssociativeCollection<K, V> {
     companion object {
         fun <K, V> newFromMap(
             backingMap: MutableMap<K, MutableSet<V>>,
