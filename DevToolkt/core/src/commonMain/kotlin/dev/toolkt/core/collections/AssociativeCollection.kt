@@ -3,6 +3,13 @@ package dev.toolkt.core.collections
 /**
  * A collection associating a set of keys with a set of values in a possibly
  * many-to-many relation.
+ *
+ * See [AssociativeMap] for an implementation offering one-to-one relation.
+ * See [MultiValuedMap] for an implementation offering one-to-many relation.
+ * See [AssociativeBag] for an implementation offering many-to-many relation.
+ *
+ * @param K the type of collection keys
+ * @param V the type of collection values
  */
 interface AssociativeCollection<K, out V> : Collection<Map.Entry<K, V>> {
     /**

@@ -36,4 +36,8 @@ private class StableBagBackedStableAssociativeBag<K, V : Any>(
         val entry = entries.getVia(entryHandle)
         entry.key == key
     }.toList()
+
+    override fun removeKey(key: K): Boolean = entries.removeAll { entry ->
+        entry.key == key
+    }
 }

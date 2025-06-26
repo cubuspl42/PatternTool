@@ -4,7 +4,7 @@ package dev.toolkt.core.collections
  * A mutable associative collection providing stable handles to its elements.
  */
 interface MutableStableAssociativeCollection<K, V> : MutableStableCollection<Map.Entry<K, V>>,
-    StableAssociativeCollection<K, V>
+    StableAssociativeCollection<K, V>, MutableAssociativeCollection<K, V>
 
 /**
  * Adds the specified key-value entry to the collection in exchange for a handle.

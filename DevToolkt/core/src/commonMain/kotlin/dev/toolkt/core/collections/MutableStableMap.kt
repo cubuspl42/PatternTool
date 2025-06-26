@@ -3,7 +3,7 @@ package dev.toolkt.core.collections
 /**
  * A mutable map providing stable handles to its elements.
  */
-interface MutableStableMap<K, V> : MutableMap<K, V>, MutableStableAssociativeCollection<K, V>, StableMap<K, V>
+interface MutableStableMap<K, V> : MutableAssociativeMap<K, V>, MutableStableAssociativeCollection<K, V>, StableMap<K, V>
 
 fun <K : Comparable<K>, V> mutableStableMapOf(
     vararg pairs: Pair<K, V>,
