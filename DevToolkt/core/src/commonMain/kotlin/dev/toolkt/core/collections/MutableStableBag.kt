@@ -21,3 +21,8 @@ interface MutableStableBag<E> : MutableBag<E>, StableBag<E>, MutableStableCollec
      */
     override fun addEx(element: E): Handle<E>
 }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun <E> mutableStableBagOf(
+    vararg elements: E,
+): MutableStableBag<E> = mutableStableListOf(*elements)

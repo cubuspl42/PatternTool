@@ -150,6 +150,7 @@ class ReactiveListFuseTests {
         // Mutate a cell from the left side
         mutableCell1.set(101)
 
+        // This seems to fail non-deterministically...
         assertEquals(
             expected = listOf(0, 101, 310, 320, 330, 400),
             actual = fuseReactiveList.currentElements,

@@ -1,6 +1,5 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.core.collections.forEach
 import dev.toolkt.core.collections.insertEffectively
 import dev.toolkt.core.collections.insertEffectivelyWeak
 import dev.toolkt.core.collections.mutableWeakMultiValuedMapOf
