@@ -30,13 +30,13 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
     override val handles: Sequence<Handle<E>>
         get() = elementTree.traverse().map { it.pack() }
 
-    override fun find(
+    override fun findEx(
         element: E,
     ): Handle<E>? = elementTree.traverse().find { nodeHandle ->
         elementTree.getPayload(nodeHandle) == element
     }?.pack()
 
-    override fun select(
+    override fun getEx(
         index: Int,
     ): Handle<E>? {
         val nodeHandle = elementTree.select(index = index) ?: return null
@@ -51,7 +51,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
     override fun get(
         index: Int,
     ): E {
-        val handle = select(index = index) ?: throw IndexOutOfBoundsException(
+        val handle = getEx(index = index) ?: throw IndexOutOfBoundsException(
             "Index $index is out of bounds for size ${size}."
         )
 
@@ -80,7 +80,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
         index: Int,
         element: E,
     ): E {
-        val handle = select(index = index) ?: throw IndexOutOfBoundsException(
+        val handle = getEx(index = index) ?: throw IndexOutOfBoundsException(
             "Index $index is out of bounds for size ${size}."
         )
 
@@ -253,7 +253,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
     override fun removeAt(
         index: Int,
     ): E {
-        val handle = select(index = index) ?: throw IndexOutOfBoundsException(
+        val handle = getEx(index = index) ?: throw IndexOutOfBoundsException(
             "Index $index is out of bounds for size ${size}."
         )
 

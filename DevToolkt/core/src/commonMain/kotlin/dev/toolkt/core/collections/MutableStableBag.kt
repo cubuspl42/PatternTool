@@ -2,7 +2,7 @@ package dev.toolkt.core.collections
 
 import dev.toolkt.core.collections.StableCollection.Handle
 
-interface MutableStableBag<E> : MutableBag<E>, MutableStableCollection<E> {
+interface MutableStableBag<E> : MutableBag<E>, StableBag<E>, MutableStableCollection<E> {
     /**
      * Replaces the element corresponding to the given handle with the specified element. Doesn't invalidate the handle.
      *

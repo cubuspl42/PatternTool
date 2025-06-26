@@ -45,7 +45,7 @@ abstract class AbstractMutableStableMap<K, V>(
         key: K,
     ): Collection<EntryHandle<K, V>> = listOfNotNull(resolve(key = key))
 
-    final override fun find(
+    final override fun lookup(
         element: Map.Entry<K, V>,
     ): EntryHandle<K, V>? {
         val key = element.key
