@@ -223,10 +223,8 @@ class MutableUniqueList<E>() : AbstractMutableList<E>() {
     /**
      * Returns a set view of the elements contained in this list.
      */
-    val asSet: CollectionBackedSet<E>
-        get() = CollectionBackedSet(
-            backingCollection = this,
-        )
+    val asSet: Set<E>
+        get() = SetUtils.backed(this)
 }
 
 fun <E> mutableUniqueListOf(
