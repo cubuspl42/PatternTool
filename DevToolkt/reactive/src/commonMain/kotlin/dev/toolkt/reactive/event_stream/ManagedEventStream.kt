@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.core.collections.MutableAssociativeCollection
 import dev.toolkt.core.collections.insertEffectively
 import dev.toolkt.core.collections.insertEffectivelyWeak
 import dev.toolkt.core.collections.mutableWeakMultiValuedMapOf
@@ -19,7 +20,8 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
 
     // The order of weak listeners invocation is non-deterministic (changing
     // this would require a new multivalued map implementation)
-    private val weakListeners = mutableWeakMultiValuedMapOf<Any, TargetingListener<Any, EventT>>()
+    private val weakListeners: MutableAssociativeCollection<Any, TargetingListener<Any, EventT>> =
+        mutableWeakMultiValuedMapOf()
 
     final override fun listen(
         listener: Listener<EventT>,
