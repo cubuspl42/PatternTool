@@ -3,7 +3,7 @@ package dev.toolkt.core.collections
 import dev.toolkt.core.collections.StableCollection.Handle
 
 class StableMapBackedMultiValuedMap<K, V>(
-    private val buckets: MutableStableMap<K, MutableStableBag<V>>,
+    private val bucketMap: MutableStableMap<K, MutableStableBag<V>>,
 ) : AbstractMutableCollection<Map.Entry<K, V>>(), MutableStableMultiValuedMap<K, V> {
     internal data class HandleImpl<K, V>(
         val bucketHandle: BucketHandle<K, V>,
@@ -21,7 +21,7 @@ class StableMapBackedMultiValuedMap<K, V>(
     }
 
     override fun clear() {
-        buckets.clear()
+        bucketMap.clear()
     }
 
     override fun remove(
@@ -29,7 +29,7 @@ class StableMapBackedMultiValuedMap<K, V>(
     ): Boolean {
         val (key, value) = element
 
-        val bucket = buckets[key] ?: return false
+        val bucket = bucketMap[key] ?: return false
 
         if (bucket.isEmpty()) {
             throw AssertionError("Buckets aren't supposed to be empty")
@@ -38,7 +38,7 @@ class StableMapBackedMultiValuedMap<K, V>(
         val wasRemoved = bucket.remove(value)
 
         if (bucket.isEmpty()) {
-            val removedBucket = buckets.remove(key)
+            val removedBucket = bucketMap.remove(key)
 
             if (removedBucket == null) {
                 throw AssertionError("The bucket wasn't successfully removed")
@@ -48,26 +48,26 @@ class StableMapBackedMultiValuedMap<K, V>(
         return wasRemoved
     }
 
-    override fun asMap(): Map<K, Collection<V>> = buckets
+    override fun asMap(): Map<K, Collection<V>> = bucketMap
 
     override fun containsKey(
         key: K,
-    ): Boolean = buckets.containsKey(key)
+    ): Boolean = bucketMap.containsKey(key)
 
     override fun getAll(
         key: K,
-    ): Collection<V> = buckets[key] ?: emptySet()
+    ): Collection<V> = bucketMap[key] ?: emptySet()
 
-    override fun isEmpty(): Boolean = buckets.isEmpty()
+    override fun isEmpty(): Boolean = bucketMap.isEmpty()
 
     override val keys: Set<K>
-        get() = buckets.keys
+        get() = bucketMap.keys
 
     override val size: Int
-        get() = buckets.values.sumOf { it.size }
+        get() = bucketMap.values.sumOf { it.size }
 
     override fun iterator(): MutableIterator<Map.Entry<K, V>> {
-        val bucketMap: Map<K, Collection<V>> = buckets
+        val bucketMap: Map<K, Collection<V>> = bucketMap
 
         return bucketMap.asSequence().flatMap { (key, bucket) ->
             bucket.asSequence().map { value ->
@@ -87,13 +87,13 @@ class StableMapBackedMultiValuedMap<K, V>(
     }
 
     override val values: Collection<V>
-        get() = buckets.values.flatten()
+        get() = bucketMap.values.flatten()
 
     override fun resolveAll(
         key: K,
     ): Collection<EntryHandle<K, V>> {
-        val bucketHandle: BucketHandle<K, V> = buckets.resolve(key = key) ?: return emptyList()
-        val bucket = buckets.getValueVia(handle = bucketHandle)
+        val bucketHandle: BucketHandle<K, V> = bucketMap.resolve(key = key) ?: return emptyList()
+        val bucket = bucketMap.getValueVia(handle = bucketHandle)
 
         return bucket.handles.map { valueHandle ->
             StableMapBackedMultiValuedMap.pack(
@@ -104,8 +104,8 @@ class StableMapBackedMultiValuedMap<K, V>(
     }
 
     override val handles: Sequence<EntryHandle<K, V>>
-        get() = buckets.handles.flatMap { bucketHandle ->
-            val bucket = buckets.getValueVia(handle = bucketHandle)
+        get() = bucketMap.handles.flatMap { bucketHandle ->
+            val bucket = bucketMap.getValueVia(handle = bucketHandle)
 
             bucket.handles.map { valueHandle ->
                 pack(bucketHandle, valueHandle)
@@ -145,12 +145,12 @@ class StableMapBackedMultiValuedMap<K, V>(
         val bucketHandle = handleImpl.bucketHandle
         val valueHandle = handleImpl.valueHandle
 
-        val (key, bucket) = buckets.getVia(bucketHandle)
+        val (key, bucket) = bucketMap.getVia(bucketHandle)
 
         val removedValue = bucket.removeVia(handle = valueHandle)
 
         if (bucket.isEmpty()) {
-            buckets.removeVia(handle = bucketHandle)
+            bucketMap.removeVia(handle = bucketHandle)
         }
 
         return MapEntry(
@@ -161,7 +161,7 @@ class StableMapBackedMultiValuedMap<K, V>(
 
     private fun getFreshBucket(
         key: K,
-    ): MutableStableBag<V> = buckets.getOrPut(key) {
+    ): MutableStableBag<V> = bucketMap.getOrPut(key) {
         mutableStableListOf()
     }
 
@@ -169,7 +169,7 @@ class StableMapBackedMultiValuedMap<K, V>(
     private fun EntryHandle<K, V>.unpackFully(): UnpackedHandle<K, V> {
         val handleImpl = this.unpack()
 
-        val bucketEntry = buckets.getVia(handle = handleImpl.bucketHandle)
+        val bucketEntry = bucketMap.getVia(handle = handleImpl.bucketHandle)
         val key = bucketEntry.key
 
 

@@ -2,13 +2,13 @@ package dev.toolkt.core.collections
 
 class MapBackedMultiValuedMap<K, V>(
     // TODO: Switch to a mutable collection for the buckets!
-    private val backingMap: MutableMap<K, MutableSet<V>>,
+    private val bucketMap: MutableMap<K, MutableSet<V>>,
 ) : AbstractMutableCollection<Map.Entry<K, V>>(), MutableMultiValuedMap<K, V> {
     // TODO: Figure out if caching breaks the contract (do we claim ownership?)
-    private var cachedSize: Int = backingMap.values.sumOf { it.size }
+    private var cachedSize: Int = bucketMap.values.sumOf { it.size }
 
     override fun clear() {
-        backingMap.clear()
+        bucketMap.clear()
 
         cachedSize = 0
     }
@@ -18,7 +18,7 @@ class MapBackedMultiValuedMap<K, V>(
     ): Boolean {
         val (key, value) = element
 
-        val bucket = backingMap[key] ?: return false
+        val bucket = bucketMap[key] ?: return false
 
         if (bucket.isEmpty()) {
             throw AssertionError("Buckets aren't supposed to be empty")
@@ -31,7 +31,7 @@ class MapBackedMultiValuedMap<K, V>(
         }
 
         if (bucket.isEmpty()) {
-            val removedBucket = backingMap.remove(key)
+            val removedBucket = bucketMap.remove(key)
 
             if (removedBucket == null) {
                 throw AssertionError("The bucket wasn't successfully removed")
@@ -41,25 +41,25 @@ class MapBackedMultiValuedMap<K, V>(
         return wasRemoved
     }
 
-    override fun asMap(): Map<K, Collection<V>> = backingMap
+    override fun asMap(): Map<K, Collection<V>> = bucketMap
 
     override fun containsKey(
         key: K,
-    ): Boolean = backingMap.containsKey(key)
+    ): Boolean = bucketMap.containsKey(key)
 
     override fun getAll(
         key: K,
-    ): Collection<V> = backingMap[key] ?: emptySet()
+    ): Collection<V> = bucketMap[key] ?: emptySet()
 
-    override fun isEmpty(): Boolean = backingMap.isEmpty()
+    override fun isEmpty(): Boolean = bucketMap.isEmpty()
 
     override val keys: Set<K>
-        get() = backingMap.keys
+        get() = bucketMap.keys
 
     override val size: Int
         get() = cachedSize
 
-    override fun iterator(): MutableIterator<Map.Entry<K, V>> = backingMap.asSequence().flatMap { (key, bucket) ->
+    override fun iterator(): MutableIterator<Map.Entry<K, V>> = bucketMap.asSequence().flatMap { (key, bucket) ->
         bucket.asSequence().map { value ->
             MapEntry(key, value)
         }
@@ -70,7 +70,7 @@ class MapBackedMultiValuedMap<K, V>(
     ): Boolean {
         val (key, value) = element
 
-        val bucket = backingMap.getOrPut(key) { mutableSetOf() }
+        val bucket = bucketMap.getOrPut(key) { mutableSetOf() }
 
         val wasAdded = bucket.add(value)
 
@@ -82,5 +82,5 @@ class MapBackedMultiValuedMap<K, V>(
     }
 
     override val values: Collection<V>
-        get() = backingMap.values.flatten()
+        get() = bucketMap.values.flatten()
 }
