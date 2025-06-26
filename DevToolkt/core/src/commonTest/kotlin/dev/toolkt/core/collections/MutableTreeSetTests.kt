@@ -142,7 +142,7 @@ class MutableTreeSetTests {
         )
 
         val handle15 = assertNotNull(
-            actual = set.find(element = 15),
+            actual = set.lookup(element = 15),
         )
 
         set.removeVia(handle = handle15)

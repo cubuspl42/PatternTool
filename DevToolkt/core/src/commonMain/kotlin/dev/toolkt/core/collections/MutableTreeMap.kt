@@ -53,7 +53,6 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
         internal val nodeHandle: EntryNodeHandle<K, V>,
     ) : EntryHandle<K, V>
 
-
     override val size: Int
         get() = entryTree.size
 

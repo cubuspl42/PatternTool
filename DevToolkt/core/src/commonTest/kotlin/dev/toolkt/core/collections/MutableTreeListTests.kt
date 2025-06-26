@@ -548,7 +548,7 @@ class MutableTreeListTests {
         )
 
         val handle = assertNotNull(
-            mutableTreeList.find(Fruit.Kiwi),
+            mutableTreeList.findEx(Fruit.Kiwi),
         )
 
         assertEquals(

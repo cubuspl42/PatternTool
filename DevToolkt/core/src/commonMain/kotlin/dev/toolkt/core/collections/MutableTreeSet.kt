@@ -26,7 +26,7 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
     override val handles: Sequence<Handle<E>>
         get() = elementTree.traverse().map { it.pack() }
 
-    override fun find(element: E): Handle<E>? {
+    override fun lookup(element: E): Handle<E>? {
         val location = elementTree.find(payload = element)
         val nodeHandle = elementTree.resolve(location = location) ?: return null
         return nodeHandle.pack()
@@ -61,7 +61,7 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
     override fun remove(
         element: E,
     ): Boolean {
-        val handle = find(element = element) ?: return false
+        val handle = lookup(element = element) ?: return false
 
         removeVia(handle = handle)
 

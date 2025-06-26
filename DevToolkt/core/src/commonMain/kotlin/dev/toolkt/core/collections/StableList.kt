@@ -13,7 +13,7 @@ interface StableList<out E> : StableCollection<E>, List<E> {
      *
      * @return the handle to the element or `null` if the list does not contain such element
      */
-    override fun find(
+    fun findEx(
         element: @UnsafeVariance E,
     ): Handle<@UnsafeVariance E>?
 
@@ -21,7 +21,7 @@ interface StableList<out E> : StableCollection<E>, List<E> {
      * Returns the handle to the element at the specified [index] in the list.
      * Guarantees linear time complexity or better.
      */
-    fun select(
+    fun getEx(
         index: Int,
     ): Handle<@UnsafeVariance E>?
 }

@@ -11,7 +11,7 @@ interface IndexedList<out E> : StableList<E> {
      * Returns the handle to the element at the specified [index] in the list.
      * Guarantees logarithmic time complexity or better.
      */
-    override fun select(
+    override fun getEx(
         index: Int,
     ): Handle<@UnsafeVariance E>?
 

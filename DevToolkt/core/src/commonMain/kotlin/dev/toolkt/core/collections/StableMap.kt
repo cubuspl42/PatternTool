@@ -3,7 +3,7 @@ package dev.toolkt.core.collections
 /**
  * A read-only map providing stable handles to its entries.
  */
-interface StableMap<K, out V> : StableAssociativeCollection<K, V>, Map<K, V> {
+interface StableMap<K, out V> : StableAssociativeCollection<K, V>, StableSet<Map.Entry<K, V>>, Map<K, V> {
     /**
      * Returns a handle to the entry corresponding to the given key.
      * Guarantees linear time complexity or better.

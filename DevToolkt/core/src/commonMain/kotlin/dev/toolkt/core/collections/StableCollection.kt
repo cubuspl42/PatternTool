@@ -10,16 +10,6 @@ interface StableCollection<out E> : Collection<E> {
     val handles: Sequence<Handle<@UnsafeVariance E>>
 
     /**
-     * Returns a handle to any instance of the given [element].
-     * Guarantees linear time complexity or better.
-     *
-     * @return the handle to the element or `null` if the collection does not contain such element
-     */
-    fun find(
-        element: @UnsafeVariance E,
-    ): Handle<@UnsafeVariance E>?
-
-    /**
      * Returns the element corresponding to the given handle.
      * Guarantees constant time complexity.
      * TODO: Return null if the entry was removed via another handle?
