@@ -11,7 +11,7 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
 ) : AbstractMutableStableMap<K, V>(
     EntrySet(entryTree = entryTree),
 ) {
-    internal class MutableMapEntry<K : Comparable<K>, V>(
+    internal class MutableMapEntry<K, V>(
         override val key: K,
         initialValue: V,
     ) : MutableMap.MutableEntry<K, V> {
@@ -178,7 +178,7 @@ private typealias EntryLocation<K, V> = BinaryTree.Location<MutableTreeMap.Mutab
 
 private typealias EntryNodeHandle<K, V> = BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color>
 
-private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color> {
+private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): EntryNodeHandle<K, V> {
     this as? MutableTreeMap.TreeMapHandle<K, V> ?: throw IllegalArgumentException(
         "Handle is not a TreeMapHandle: $this"
     )
@@ -186,7 +186,7 @@ private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): BinaryTree.NodeHa
     return this.nodeHandle
 }
 
-private fun <K : Comparable<K>, V> BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color>.pack(): EntryHandle<K, V> =
+private fun <K : Comparable<K>, V> EntryNodeHandle<K, V>.pack(): EntryHandle<K, V> =
     MutableTreeMap.TreeMapHandle(
         nodeHandle = this,
     )
