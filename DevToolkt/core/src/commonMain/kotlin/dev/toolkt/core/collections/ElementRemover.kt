@@ -175,8 +175,12 @@ fun <E : Any> MutableCollection<E>.insertEffectivelyWeak(
  *
  * @throws IllegalStateException if the mapping was already present in the map.
  */
-fun <K : Any, V : Any> MutableMultiValuedMap<K, V>.insertEffectivelyWeak(
+fun <K : Any, V : Any> MutableAssociativeCollection<K, V>.insertEffectivelyWeak(
     key: K,
     value: V,
-): ElementRemover =
-    insertWeak(key, value) ?: throw IllegalStateException("The map already contains the key: $key with value: $value")
+): ElementRemover = insertWeak(
+    element = MapEntry(
+        key = key,
+        value = value,
+    ),
+) ?: throw IllegalStateException("The map already contains the key: $key with value: $value")
