@@ -1,12 +1,13 @@
 package dev.toolkt.core.collections
 
 /**
- * A generic collection of associative entries that supports adding and removing entries.
+ * A mutable collection associating a set of keys with a set of values in a possibly
+ * many-to-many relation.
  *
  * @param K the type of collection keys
  * @param V the type of collection values
  */
-interface MutableAssociativeCollection<K, V> : MutableCollection<Map.Entry<K, V>> {
+interface MutableAssociativeCollection<K, V> : AssociativeCollection<K, V>, MutableCollection<Map.Entry<K, V>> {
     /**
      * Adds the specified entry to the collection.
      *
@@ -21,6 +22,14 @@ interface MutableAssociativeCollection<K, V> : MutableCollection<Map.Entry<K, V>
      * @return `true` if any of the specified elements was added to the collection, `false` if the collection was not modified.
      */
     override fun addAll(elements: Collection<Map.Entry<K, V>>): Boolean
+
+    /**
+     * Remove all entries with the given key from the collection.
+     * Guarantees linear time complexity or better.
+     *
+     * @return `true` if the key was removed, or `false` if the collection contained no entry with such key
+     */
+    fun removeKey(key: K): Boolean
 }
 
 fun <K, V> MutableAssociativeCollection<K, V>.add(
