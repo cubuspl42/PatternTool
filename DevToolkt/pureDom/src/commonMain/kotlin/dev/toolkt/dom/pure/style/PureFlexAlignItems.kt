@@ -1,7 +1,8 @@
 package dev.toolkt.dom.pure.style
 
-enum class PureFlexAlignItems(val cssString: String) {
-    Start("flex-start"), End("flex-end"), Center("center"), Baseline("baseline"), Stretch("stretch");
+sealed class PureFlexAlignItems(
+    override val cssString: String,
+) : PurePropertyValue() {
 
     companion object {
         fun parse(
@@ -15,4 +16,10 @@ enum class PureFlexAlignItems(val cssString: String) {
             else -> throw IllegalArgumentException("Unsupported flex-align-items type: $type")
         }
     }
+
+    data object Start : PureFlexAlignItems("flex-start")
+    data object End : PureFlexAlignItems("flex-end")
+    data object Center : PureFlexAlignItems("center")
+    data object Baseline : PureFlexAlignItems("baseline")
+    data object Stretch : PureFlexAlignItems("stretch")
 }

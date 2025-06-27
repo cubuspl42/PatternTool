@@ -6,6 +6,7 @@ import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 suspend fun <T> assertEqualsEventually(
     pauseDuration: Duration,
@@ -39,10 +40,10 @@ suspend fun <T> assertEqualsEventually(
  */
 // The return-immediately part of the contract is inherited from `runTest`
 fun <T> runTestDefault(
-    duration: Duration,
+    timeout: Duration = 10.seconds,
     testBody: suspend CoroutineScope.() -> T,
 ): TestResult = runTest(
-    timeout = duration,
+    timeout = timeout,
 ) {
     // Although `runTest` accepts a `context` parameter, it throws an exception when `Dispatchers.Default` is passed
     withContext(Dispatchers.Default) {

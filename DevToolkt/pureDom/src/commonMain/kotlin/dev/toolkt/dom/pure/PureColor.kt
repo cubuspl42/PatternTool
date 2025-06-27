@@ -1,10 +1,12 @@
 package dev.toolkt.dom.pure
 
+import dev.toolkt.dom.pure.style.PurePropertyValue
+
 data class PureColor(
     val red: Int,
     val green: Int,
     val blue: Int,
-) {
+) : PurePropertyValue() {
     companion object {
         val black = PureColor(0, 0, 0)
         val red = PureColor(255, 0, 0)
@@ -20,6 +22,6 @@ data class PureColor(
         require(blue in 0..255) { "Blue value must be between 0 and 255" }
     }
 
-    val cssString: String
+    override val cssString: String
         get() = "rgb($red, $green, $blue)"
 }

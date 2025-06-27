@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsSubTargetDsl
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
@@ -28,13 +29,19 @@ kotlin {
     jvm()
 
     js(IR) {
-        browser()
-        nodejs()
+        browser {
+            testWithExtendedTimeout()
+        }
+
+        nodejs {
+            testWithExtendedTimeout()
+        }
     }
 
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.benchmark.runtime)
+            implementation(libs.kotlinx.coroutines.core)
         }
 
         commonTest.dependencies {
@@ -66,4 +73,12 @@ benchmark {
 
 allOpen {
     annotation("org.openjdk.jmh.annotations.State")
+}
+
+fun KotlinJsSubTargetDsl.testWithExtendedTimeout() {
+    testTask {
+        useMocha {
+            timeout = "10s"
+        }
+    }
 }

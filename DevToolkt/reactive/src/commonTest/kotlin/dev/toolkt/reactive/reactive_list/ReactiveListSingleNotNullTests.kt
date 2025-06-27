@@ -196,25 +196,28 @@ class ReactiveListSingleNotNullTests {
     @Test
     @Ignore // FIXME: singleNotNull does not manage memory properly (no stateful streams do?)
     fun testSingleNotNull_garbageCollection() = runTestDefault(
-        duration = 10.seconds,
+        timeout = 10.seconds,
     ) {
         val mutableCell = MutableCell<Int?>(initialValue = 10)
 
         fun setup(): Pair<PlatformWeakReference<ReactiveList<Int>>, EventStreamVerifier<ReactiveList.Change<Int>>> {
-            val singleReactiveList = ReactiveList.singleNotNull(
+            val singleNotNullReactiveList = ReactiveList.singleNotNull(
                 element = mutableCell,
             )
 
             val changesVerifier = EventStreamVerifier(
-                eventStream = singleReactiveList.changes,
+                eventStream = singleNotNullReactiveList.changes,
             )
 
-            return Pair(PlatformWeakReference(singleReactiveList), changesVerifier)
+            return Pair(
+                PlatformWeakReference(singleNotNullReactiveList),
+                changesVerifier,
+            )
         }
 
-        val (singleReactiveListWeakRef, changesVerifier) = setup()
+        val (singleNotNullReactiveListWeakRef, changesVerifier) = setup()
 
-        ensureNotCollected(weakRef = singleReactiveListWeakRef)
+        ensureNotCollected(weakRef = singleNotNullReactiveListWeakRef)
 
         mutableCell.set(null)
 

@@ -10,18 +10,18 @@ class SingleEventStream<out E>(
     private var sourceSubscription: Subscription? = source.listenWeak(
         target = this,
     ) { self, sourceEvent ->
-        if (wasEmitted) {
+        if (self.wasEmitted) {
             throw IllegalStateException("The single event was already emitted")
         }
 
-        notify(event = sourceEvent)
+        self.notify(event = sourceEvent)
 
-        wasEmitted = true
+        self.wasEmitted = true
 
-        val sourceSubscription = this.sourceSubscription ?: throw IllegalStateException("No active source subscription")
+        val sourceSubscription = self.sourceSubscription ?: throw IllegalStateException("No active source subscription")
 
         sourceSubscription.cancel()
 
-        this.sourceSubscription = null
+        self.sourceSubscription = null
     }
 }

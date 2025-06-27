@@ -2,16 +2,22 @@ package dev.toolkt.dom.reactive.style
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureDimension
-import dev.toolkt.reactive.Subscription
+import dev.toolkt.dom.pure.style.PureDisplayStyle
+import dev.toolkt.dom.pure.style.PurePropertyKind
+import dev.toolkt.dom.pure.style.PurePropertyValue
+import dev.toolkt.dom.pure.style.PureTextAlign
+import dev.toolkt.dom.pure.style.PureVerticalAlign
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.cell.bindNested
 import org.w3c.dom.css.CSSStyleDeclaration
 
 data class ReactiveStyle(
-    val displayStyle: Cell<ReactiveDisplayStyle>? = null,
+    val displayStyle: Cell<PureDisplayStyle>? = null,
     val width: Cell<PureDimension<*>>? = null,
     val height: Cell<PureDimension<*>>? = null,
     val backgroundColor: Cell<PureColor>? = null,
+    val margin: Cell<PurePropertyValue.Dynamic>? = null,
+    val textAlign: Cell<PureTextAlign>? = null,
+    val verticalAlign: Cell<PureVerticalAlign>? = null,
 ) {
     companion object {
         val Default = ReactiveStyle()
@@ -20,39 +26,38 @@ data class ReactiveStyle(
     fun bind(
         styleDeclaration: CSSStyleDeclaration,
     ) {
-        displayStyle?.bindNested(
-            target = styleDeclaration,
-            bindInner = { it, reactiveDisplayStyle ->
-                it.display = reactiveDisplayStyle.displayString
-
-                val innerSubscription = reactiveDisplayStyle.bind(styleDeclaration = it)
-
-                object : Subscription {
-                    override fun cancel() {
-                        innerSubscription.cancel()
-
-                        it.display = ""
-                    }
-                }
-            },
+        displayStyle?.bind(
+            styleDeclaration = styleDeclaration,
         )
 
         width?.bind(
-            target = styleDeclaration,
-        ) { it, dimension ->
-            it.width = dimension.toDimensionString()
-        }
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.Width,
+        )
 
         height?.bind(
-            target = styleDeclaration,
-        ) { it, dimension ->
-            it.height = dimension.toDimensionString()
-        }
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.Height,
+        )
 
         backgroundColor?.bind(
-            target = styleDeclaration,
-        ) { it, color ->
-            it.backgroundColor = color.cssString
-        }
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.BackgroundColor,
+        )
+
+        margin?.bind(
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.Margin,
+        )
+
+        textAlign?.bind(
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.TextAlign,
+        )
+
+        verticalAlign?.bind(
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.VerticalAlign,
+        )
     }
 }

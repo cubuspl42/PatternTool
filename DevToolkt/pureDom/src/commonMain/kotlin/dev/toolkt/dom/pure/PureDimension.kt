@@ -2,11 +2,12 @@ package dev.toolkt.dom.pure
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
+import dev.toolkt.dom.pure.style.PurePropertyValue
 
 data class PureDimension<out U : PureUnit>(
     val value: Double,
     val unit: U,
-) : NumericObject {
+) : PurePropertyValue(), NumericObject {
     companion object {
         private val regex = Regex("([0-9.]+)([a-zA-Z%]+)")
 
@@ -28,8 +29,6 @@ data class PureDimension<out U : PureUnit>(
         }
     }
 
-    fun toDimensionString(): String = "$value${unit.string}"
-
     val asAbsolute: PureDimension<PureUnit.Absolute>?
         get() {
             val absoluteUnit = unit as? PureUnit.Absolute ?: return null
@@ -41,13 +40,16 @@ data class PureDimension<out U : PureUnit>(
         }
 
     override fun equalsWithTolerance(
-        other: NumericObject, tolerance: NumericObject.Tolerance
+        other: NumericObject, tolerance: NumericObject.Tolerance,
     ): Boolean = when {
         other !is PureDimension<*> -> false
         !value.equalsWithTolerance(other.value, tolerance = tolerance) -> false
         unit != other.unit -> false
         else -> true
     }
+
+    override val cssString: String
+        get() = "$value${unit.string}"
 }
 
 fun <U : PureUnit.Absolute> PureDimension<PureUnit.Absolute>.inUnit(
