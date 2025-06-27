@@ -1,12 +1,17 @@
 package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.iterable.splitBefore
+import dev.toolkt.core.platform.PlatformWeakReference
+import dev.toolkt.core.platform.test_utils.ensureNotCollected
+import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.EventStreamVerifier
 import dev.toolkt.reactive.cell.MutableCell
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.seconds
 
 class ReactiveListFuseTests {
     /**
@@ -709,6 +714,51 @@ class ReactiveListFuseTests {
         assertEquals(
             expected = emptyList(),
             actual = changesVerifier1.removeReceivedEvents(),
+        )
+    }
+
+    @Test
+    @Ignore // FIXME: fuse does not manage memory properly (no stateful entities do?)
+    fun testFuse_garbageCollection() = runTestDefault(
+        timeout = 2.seconds,
+    ) {
+        val mutableCell0 = MutableCell(initialValue = 0)
+        val mutableCell1 = MutableCell(initialValue = 10)
+
+        fun setup(): Pair<PlatformWeakReference<ReactiveList<Int>>, EventStreamVerifier<ReactiveList.Change<Int>>> {
+            val fuseReactiveList = ReactiveList.fuse(
+                cells = ReactiveList.of(
+                    mutableCell0,
+                    mutableCell1,
+                ),
+            )
+
+            val changesVerifier = EventStreamVerifier(
+                eventStream = fuseReactiveList.changes,
+            )
+
+            return Pair(
+                PlatformWeakReference(fuseReactiveList),
+                changesVerifier,
+            )
+        }
+
+        val (outReactiveListWeakRef, changesVerifier) = setup()
+
+        ensureNotCollected(weakRef = outReactiveListWeakRef)
+
+        mutableCell1.set(11)
+
+        assertEquals(
+            expected = listOf(
+                ReactiveList.Change.single(
+                    update = ReactiveList.Change.Update.change(
+                        indexRange = IntRange.single(1),
+                        changedElements = listOf(11),
+                    ),
+                ),
+            ),
+            actual = changesVerifier.removeReceivedEvents(),
         )
     }
 }
