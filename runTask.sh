@@ -19,6 +19,10 @@ NC='\033[0m'
 
 echo -e "${LIGHT_BLUE}Running task $TASK_NAME (root)${NC}"
 ./gradlew "${TASK_NAME}"
+if [ $? -ne 0 ]; then
+  echo "Task $TASK_NAME failed in root. Exiting."
+  exit 1
+fi
 echo
 
 # Change to the DevToolkt directory
@@ -28,5 +32,9 @@ cd ./DevToolkt || { echo "DevToolkt directory not found"; exit 1; }
 for MODULE in "${MODULES[@]}"; do
   echo -e "${LIGHT_BLUE}Running task $TASK_NAME in $MODULE${NC}"
   ./gradlew ":${MODULE}:${TASK_NAME}"
+  if [ $? -ne 0 ]; then
+    echo "Task $TASK_NAME failed in $MODULE. Exiting."
+    exit 1
+  fi
   echo
 done
