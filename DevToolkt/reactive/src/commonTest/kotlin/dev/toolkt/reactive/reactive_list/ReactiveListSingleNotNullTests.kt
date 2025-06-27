@@ -215,9 +215,9 @@ class ReactiveListSingleNotNullTests {
             )
         }
 
-        val (singleNotNullReactiveListWeakRef, changesVerifier) = setup()
+        val (outReactiveListWeakRef, changesVerifier) = setup()
 
-        ensureNotCollected(weakRef = singleNotNullReactiveListWeakRef)
+        ensureNotCollected(weakRef = outReactiveListWeakRef)
 
         mutableCell.set(null)
 
