@@ -32,22 +32,37 @@ fun main() {
     }
 }
 
-private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
-    style = ReactiveStyle(
-        displayStyle = Cell.of(
-            PureFlexStyle(
-                direction = PureFlexDirection.Column,
-                alignItems = PureFlexAlignItems.Start,
+private fun createRootElement(): HTMLDivElement {
+    val textInput = createTextInput()
+
+    val intData = textInput.data.map { it.toIntOrNull() }
+
+    return document.createReactiveHtmlDivElement(
+        style = ReactiveStyle(
+            displayStyle = Cell.of(
+                PureFlexStyle(
+                    direction = PureFlexDirection.Column,
+                    alignItems = PureFlexAlignItems.Start,
+                ),
+            ),
+            width = Cell.of(PureUnit.Vw.full),
+            height = Cell.of(PureUnit.Vh.full),
+            backgroundColor = Cell.of(PureColor.lightGray),
+        ),
+        children = ReactiveList.of(
+            textInput.element,
+            document.createReactiveHtmlDivElement(
+                children = ReactiveList.singleNotNull(
+                    intData.map { integer ->
+                        integer?.let {
+                            document.createTextNode("Int: $it")
+                        }
+                    },
+                ),
             ),
         ),
-        width = Cell.of(PureUnit.Vw.full),
-        height = Cell.of(PureUnit.Vh.full),
-        backgroundColor = Cell.of(PureColor.lightGray),
-    ),
-    children = ReactiveList.of(
-        createTextInputRow(),
-    ),
-)
+    )
+}
 
 private fun createTextInputRow(): HTMLDivElement {
     val textInputs = ReactiveList.of(
