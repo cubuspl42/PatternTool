@@ -1,16 +1,15 @@
 package dev.toolkt.dom.pure.style
 
-enum class PureDisplayInside(val type: String) {
+enum class PureDisplayInsideType(val type: String) {
     Flow("flow"), Flex("flex");
 
     companion object {
         fun parse(
             type: String,
-        ): PureDisplayInside = when (type.lowercase()) {
+        ): PureDisplayInsideType = when (type.lowercase()) {
             "flow" -> Flow
             "flex" -> Flex
             else -> throw UnsupportedOperationException("Unsupported display-inside type: $type")
         }
     }
 }
-

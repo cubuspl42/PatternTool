@@ -1,8 +1,8 @@
 package dev.toolkt.dom.reactive.style
 
 import dev.toolkt.dom.pure.PureDimension
-import dev.toolkt.dom.pure.style.PureDisplayInside
-import dev.toolkt.dom.pure.style.PureDisplayOutside
+import dev.toolkt.dom.pure.style.PureDisplayInsideType
+import dev.toolkt.dom.pure.style.PureDisplayOutsideType
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexJustifyContent
@@ -11,13 +11,13 @@ import dev.toolkt.reactive.Subscription
 import org.w3c.dom.css.CSSStyleDeclaration
 
 data class ReactiveFlexStyle(
-    override val outsideType: PureDisplayOutside? = null,
+    override val outsideType: PureDisplayOutsideType? = null,
     val direction: PureFlexDirection? = null,
     val alignItems: PureFlexAlignItems? = null,
     val justifyContent: PureFlexJustifyContent? = null,
     val gap: PureDimension<*>? = null,
 ) : ReactiveDisplayStyle() {
-    override val insideType: PureDisplayInside = PureDisplayInside.Flex
+    override val insideType: PureDisplayInsideType = PureDisplayInsideType.Flex
 
     override fun bind(
         styleDeclaration: CSSStyleDeclaration,
