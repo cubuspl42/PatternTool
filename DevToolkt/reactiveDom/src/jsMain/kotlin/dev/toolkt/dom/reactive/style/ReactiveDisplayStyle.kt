@@ -1,14 +1,14 @@
 package dev.toolkt.dom.reactive.style
 
-import dev.toolkt.dom.pure.style.PureDisplayInside
-import dev.toolkt.dom.pure.style.PureDisplayOutside
+import dev.toolkt.dom.pure.style.PureDisplayInsideType
+import dev.toolkt.dom.pure.style.PureDisplayOutsideType
 import dev.toolkt.reactive.Subscription
 import org.w3c.dom.css.CSSStyleDeclaration
 
 sealed class ReactiveDisplayStyle {
-    abstract val outsideType: PureDisplayOutside?
+    abstract val outsideType: PureDisplayOutsideType?
 
-    abstract val insideType: PureDisplayInside
+    abstract val insideType: PureDisplayInsideType
 
     val displayString: String
         get() = listOfNotNull(
