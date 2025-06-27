@@ -14,15 +14,7 @@ sealed class PureDisplayStyle : PurePropertyGroup() {
         )
     }
 
-    abstract val outsideType: PureDisplayOutsideType?
-
-    abstract val insideType: PureDisplayInsideType
-
-    val displayType: PureComplexDisplayType
-        get() = PureComplexDisplayType(
-            outsideType = outsideType,
-            insideType = insideType,
-        )
+    abstract val displayType: PureDisplayType
 
     abstract fun applySpecificDisplayProperties(
         applier: PurePropertyApplier,

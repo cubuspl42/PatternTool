@@ -1,7 +1,7 @@
 package dev.toolkt.dom.pure.style
 
 sealed class PureDisplayInsideType(
-    override val cssString: String,
+    override val cssDisplayString: String,
 ) : PureDisplayType() {
     companion object {
         fun parse(

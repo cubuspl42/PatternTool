@@ -1,14 +1,14 @@
 package dev.toolkt.dom.pure.style
 
 sealed class PureDisplayOutsideType(
-    override val cssString: String,
+    override val cssDisplayString: String,
 ) : PureDisplayType() {
     companion object {
         fun parse(
             type: String,
         ): PureDisplayOutsideType = when (type.lowercase()) {
-            Block.cssString -> Block
-            Inline.cssString -> Inline
+            Block.cssDisplayString -> Block
+            Inline.cssDisplayString -> Inline
             else -> throw IllegalArgumentException("Unknown display-outside type: $type")
         }
     }

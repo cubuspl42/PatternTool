@@ -1,10 +1,10 @@
 package dev.toolkt.dom.pure.style
 
-data class PureComplexDisplayType(
+data class PureDualDisplayType(
     val outsideType: PureDisplayOutsideType?,
     val insideType: PureDisplayInsideType,
-) : PurePropertyValue() {
-    override val cssString: String
+) : PureDisplayType() {
+    override val cssDisplayString: String
         get() = listOfNotNull(
             outsideType?.cssString,
             insideType.cssString,

@@ -7,6 +7,11 @@ import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexStyle
+import dev.toolkt.dom.pure.style.PurePropertyValue
+import dev.toolkt.dom.pure.style.PureTableDisplayStyle
+import dev.toolkt.dom.pure.style.PureTableDisplayStyle.BorderCollapse
+import dev.toolkt.dom.pure.style.PureTextAlign
+import dev.toolkt.dom.pure.style.PureVerticalAlign
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlInputElement
@@ -27,26 +32,22 @@ fun main() {
     }
 }
 
-private fun createRootElement(): HTMLDivElement {
-    val textInput = createTextInput()
-
-    return document.createReactiveHtmlDivElement(
-        style = ReactiveStyle(
-            displayStyle = Cell.of(
-                PureFlexStyle(
-                    direction = PureFlexDirection.Column,
-                    alignItems = PureFlexAlignItems.Start,
-                ),
+private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
+    style = ReactiveStyle(
+        displayStyle = Cell.of(
+            PureFlexStyle(
+                direction = PureFlexDirection.Column,
+                alignItems = PureFlexAlignItems.Start,
             ),
-            width = Cell.of(PureUnit.Vw.full),
-            height = Cell.of(PureUnit.Vh.full),
-            backgroundColor = Cell.of(PureColor.lightGray),
         ),
-        children = ReactiveList.of(
-            createTextInputRow(),
-        ),
-    )
-}
+        width = Cell.of(PureUnit.Vw.full),
+        height = Cell.of(PureUnit.Vh.full),
+        backgroundColor = Cell.of(PureColor.lightGray),
+    ),
+    children = ReactiveList.of(
+        createTextInputRow(),
+    ),
+)
 
 private fun createTextInputRow(): HTMLDivElement {
     val textInputs = ReactiveList.of(
@@ -56,49 +57,58 @@ private fun createTextInputRow(): HTMLDivElement {
         createTextInput(),
     )
 
-    val textInputElements = textInputs.map { it.element }
-
-    val textInputDataNodes = textInputs.fuseOf { textInput ->
+    val fusedChildren = textInputs.fuseOf { textInput ->
         textInput.data.map {
-            document.createTextNode(it)
+            document.createReactiveHtmlDivElement(
+                style = ReactiveStyle(
+                    displayStyle = Cell.of(PureTableDisplayStyle.Cell),
+                    textAlign = Cell.of(PureTextAlign.Center),
+                    verticalAlign = Cell.of(PureVerticalAlign.Middle),
+                ),
+                children = ReactiveList.of(
+                    document.createTextNode(it),
+                ),
+            )
         }
     }
 
     return document.createReactiveHtmlDivElement(
         style = ReactiveStyle(
             displayStyle = Cell.of(
-                PureFlexStyle(
-                    direction = PureFlexDirection.Column,
+                PureTableDisplayStyle(
+                    borderCollapse = BorderCollapse.Separate,
+                    borderSpacing = 10.px,
                 ),
             ),
+            margin = Cell.of(PurePropertyValue.Dynamic("0 auto")),
         ),
         children = ReactiveList.of(
             document.createReactiveHtmlDivElement(
                 style = ReactiveStyle(
-                    displayStyle = Cell.of(
-                        PureFlexStyle(
-                            direction = PureFlexDirection.Row,
-                        ),
-                    ),
+                    displayStyle = Cell.of(PureTableDisplayStyle.Row),
                 ),
-                children = textInputElements,
+                children = textInputs.map {
+                    document.createReactiveHtmlDivElement(
+                        style = ReactiveStyle(
+                            displayStyle = Cell.of(PureTableDisplayStyle.Cell),
+                            textAlign = Cell.of(PureTextAlign.Center),
+                            verticalAlign = Cell.of(PureVerticalAlign.Middle),
+                        ),
+                        children = ReactiveList.of(it.element),
+                    )
+                },
             ),
             document.createReactiveHtmlDivElement(
                 style = ReactiveStyle(
-                    displayStyle = Cell.of(
-                        PureFlexStyle(
-                            direction = PureFlexDirection.Row,
-                        ),
-                    ),
+                    displayStyle = Cell.of(PureTableDisplayStyle.Row),
                 ),
-                children = textInputDataNodes,
+                children = fusedChildren,
             ),
         ),
     )
 }
 
-
-data class TextInput(
+private data class TextInput(
     val element: HTMLDivElement,
     val data: Cell<String>,
 )
