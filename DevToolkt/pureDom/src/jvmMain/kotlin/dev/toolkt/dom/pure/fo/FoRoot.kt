@@ -78,8 +78,8 @@ data class FoRoot(
                 appendChild(
                     document.createFoElement("simple-page-master").apply {
                         setAttribute("master-name", MASTER_NAME)
-                        setAttribute("page-width", pageWidth.toDimensionString())
-                        setAttribute("page-height", pageHeight.toDimensionString())
+                        setAttribute("page-width", pageWidth.cssString)
+                        setAttribute("page-height", pageHeight.cssString)
 
                         appendChild(
                             document.createFoElement("region-body").apply {

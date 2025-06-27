@@ -1,7 +1,8 @@
 package dev.toolkt.dom.pure.style
 
-enum class PureDisplayOutsideType(val cssString: String) {
-    Block("block"), Inline("inline");
+sealed class PureDisplayOutsideType(
+    override val cssString: String,
+) : PurePropertyValue() {
 
     companion object {
         fun parse(
@@ -12,4 +13,7 @@ enum class PureDisplayOutsideType(val cssString: String) {
             else -> throw IllegalArgumentException("Unknown display-outside type: $type")
         }
     }
+
+    data object Block : PureDisplayOutsideType("block")
+    data object Inline : PureDisplayOutsideType("inline")
 }

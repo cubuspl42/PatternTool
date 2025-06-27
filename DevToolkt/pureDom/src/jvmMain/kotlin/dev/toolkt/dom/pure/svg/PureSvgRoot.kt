@@ -93,8 +93,8 @@ data class PureSvgRoot(
         val viewBox = this.viewBox
 
         root.run {
-            setAttribute("width", width.toDimensionString())
-            setAttribute("height", height.toDimensionString())
+            setAttribute("width", width.cssString)
+            setAttribute("height", height.cssString)
 
             if (viewBox != null) {
                 setAttribute("viewBox", viewBox.toViewBoxString())

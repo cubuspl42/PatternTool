@@ -153,15 +153,15 @@ class PureDimensionTests {
     }
 
     @Test
-    fun testToDimensionString() {
-        assertEquals("123.1mm", 123.1.mm.toDimensionString())
-        assertEquals("72.2pt", 72.2.pt.toDimensionString())
-        assertEquals("1.3in", 1.3.inch.toDimensionString())
-        assertEquals("50.2%", 50.2.percent.toDimensionString())
+    fun testCssString() {
+        assertEquals("123.1mm", 123.1.mm.cssString)
+        assertEquals("72.2pt", 72.2.pt.cssString)
+        assertEquals("1.3in", 1.3.inch.cssString)
+        assertEquals("50.2%", 50.2.percent.cssString)
 
         // JS/JVM differences
         assertTrue(
-            123.0.mm.toDimensionString() in setOf("123mm", "123.0mm")
+            123.0.mm.cssString in setOf("123mm", "123.0mm")
         )
     }
 
