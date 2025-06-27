@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsSubTargetDsl
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
 }
@@ -12,8 +14,13 @@ kotlin {
     jvm()
 
     js(IR) {
-        browser()
-        nodejs()
+        browser {
+            testWithExtendedTimeout()
+        }
+
+        nodejs {
+            testWithExtendedTimeout()
+        }
     }
 
     sourceSets {
@@ -34,5 +41,13 @@ kotlin {
                 "-Xconsistent-data-class-copy-visibility",
             ),
         )
+    }
+}
+
+fun KotlinJsSubTargetDsl.testWithExtendedTimeout() {
+    testTask {
+        useMocha {
+            timeout = "10s"
+        }
     }
 }
