@@ -8,7 +8,7 @@ data class PureFlexStyle(
     val alignItems: PureFlexAlignItems? = null,
     val justifyContent: PureFlexJustifyContent? = null,
     val gap: PureDimension<*>? = null,
-) : PureDisplayStyle() {
+) : PureDualDisplayStyle() {
     override val insideType: PureDisplayInsideType = PureDisplayInsideType.Flex
 
     override fun applySpecificDisplayProperties(
