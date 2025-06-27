@@ -1,24 +1,28 @@
 package dev.toolkt.dom.pure.style
 
 sealed class PureDisplayStyle : PurePropertyGroup() {
-    final override fun applyProperties(applier: PurePropertyApplier) {
-
+    final override fun applyProperties(
+        applier: PurePropertyApplier,
+    ) {
         applier.applyProperty(
-            kind = PurePropertyKind.FlexDirection,
-            value = outsideType,
+            kind = PurePropertyKind.Display,
+            value = displayType,
         )
 
+        applySpecificDisplayProperties(
+            applier = applier,
+        )
     }
 
     abstract val outsideType: PureDisplayOutsideType?
 
     abstract val insideType: PureDisplayInsideType
 
-    val displayString: String
-        get() = listOfNotNull(
-            outsideType?.cssString,
-            insideType.type,
-        ).joinToString(separator = " ")
+    val displayType: PureComplexDisplayType
+        get() = PureComplexDisplayType(
+            outsideType = outsideType,
+            insideType = insideType,
+        )
 
     abstract fun applySpecificDisplayProperties(
         applier: PurePropertyApplier,
