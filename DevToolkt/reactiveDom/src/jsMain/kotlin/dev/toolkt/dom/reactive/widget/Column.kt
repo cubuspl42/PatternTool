@@ -1,7 +1,7 @@
 package dev.toolkt.dom.reactive.widget
 
 import dev.toolkt.dom.pure.style.PureFlexDirection
-import dev.toolkt.dom.reactive.style.ReactiveFlexStyle
+import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.reactive.cell.Cell
@@ -20,7 +20,7 @@ class Column private constructor(
             divElement = document.createReactiveHtmlDivElement(
                 style = ReactiveStyle(
                     displayStyle = Cell.Companion.of(
-                        ReactiveFlexStyle(
+                        PureFlexStyle(
                             direction = PureFlexDirection.Column,
                         ),
                     ),

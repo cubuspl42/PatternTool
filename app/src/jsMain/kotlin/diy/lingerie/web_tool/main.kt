@@ -8,7 +8,7 @@ import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexJustifyContent
-import dev.toolkt.dom.reactive.style.ReactiveFlexStyle
+import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.gestures.MouseOverGesture
@@ -46,7 +46,7 @@ private fun createRootElement(): HTMLDivElement {
     return document.createReactiveHtmlDivElement(
         style = ReactiveStyle(
             displayStyle = Cell.of(
-                ReactiveFlexStyle(
+                PureFlexStyle(
                     direction = PureFlexDirection.Column,
                     alignItems = PureFlexAlignItems.Start,
                 ),
@@ -69,7 +69,7 @@ private fun createTopBar(
 ): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
         displayStyle = Cell.of(
-            ReactiveFlexStyle(
+            PureFlexStyle(
                 alignItems = PureFlexAlignItems.Center,
                 justifyContent = PureFlexJustifyContent.Start,
             ),
