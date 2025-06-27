@@ -1,9 +1,14 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.core.platform.PlatformWeakReference
+import dev.toolkt.core.platform.test_utils.ensureNotCollected
+import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.EventStreamVerifier
 import dev.toolkt.reactive.future.Future
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.seconds
 
 class EventStreamNextTests {
     @Test
@@ -47,6 +52,39 @@ class EventStreamNextTests {
                 result = 10,
             ),
             actual = nextFuture.currentState,
+        )
+    }
+
+    @Test
+    @Ignore // FIXME: next does not manage memory properly (no stateful entities do?)
+    fun testNext_garbageCollection() = runTestDefault(
+        timeout = 10.seconds,
+    ) {
+        val eventEmitter = EventEmitter<Int>()
+
+        fun setup(): Pair<PlatformWeakReference<Future<Int>>, EventStreamVerifier<Int>> {
+            val nextFuture = eventEmitter.next()
+
+            val streamVerifier = EventStreamVerifier(
+                eventStream = nextFuture.onResult,
+            )
+
+            return Pair(
+                PlatformWeakReference(nextFuture),
+                streamVerifier,
+            )
+        }
+
+        val (outFutureWeakRef, onResultVerifier) = setup()
+
+        ensureNotCollected(weakRef = outFutureWeakRef)
+
+        // Emit the single event
+        eventEmitter.emit(10)
+
+        assertEquals(
+            expected = listOf(10),
+            actual = onResultVerifier.removeReceivedEvents(),
         )
     }
 }

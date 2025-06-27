@@ -13,10 +13,10 @@ class NextFuture<E>(
             result = sourceEvent,
         )
 
-        val sourceSubscription = this.sourceSubscription ?: throw IllegalStateException("No active source subscription")
+        val sourceSubscription = self.sourceSubscription ?: throw IllegalStateException("No active source subscription")
 
         sourceSubscription.cancel()
 
-        this.sourceSubscription = null
+        self.sourceSubscription = null
     }
 }
