@@ -163,6 +163,14 @@ abstract class ReactiveList<out E> : ReactiveListView<E> {
     ): ReactiveList<Er>
 }
 
+fun <E, Er> ReactiveList<E>.fuseOf(
+    behavior: ReactiveList.Behavior = ReactiveList.Behavior.Forward,
+    transform: (E) -> Cell<Er>,
+): ReactiveList<Er> = ReactiveList.fuse(
+    cells = this.map(transform = transform),
+    behavior = behavior,
+)
+
 internal fun <E> ReactiveList<E>.copyNow(
     mutableList: MutableList<E>,
 ) {

@@ -2,8 +2,7 @@ package dev.toolkt.dom.pure.style
 
 sealed class PureDisplayOutsideType(
     override val cssString: String,
-) : PurePropertyValue() {
-
+) : PureDisplayType() {
     companion object {
         fun parse(
             type: String,
