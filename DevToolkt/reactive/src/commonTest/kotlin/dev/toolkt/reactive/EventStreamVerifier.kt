@@ -2,6 +2,12 @@ package dev.toolkt.reactive
 
 import dev.toolkt.reactive.event_stream.EventStream
 
+/**
+ * A verifier for an [EventStream] that collects all received events through a weak listener.
+ *
+ * @constructor
+ * @param eventStream the [EventStream] to verify. No strong reference to this stream is kept.
+ */
 class EventStreamVerifier<E>(
     eventStream: EventStream<E>,
 ) {
