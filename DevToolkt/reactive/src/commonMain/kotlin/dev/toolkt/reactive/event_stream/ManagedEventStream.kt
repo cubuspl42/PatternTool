@@ -20,6 +20,7 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
 
     // The order of weak listeners invocation is non-deterministic (changing
     // this would require a new multivalued map implementation)
+    // TODO: Switch to `mutableStableWeakMultiValuedMapOf` and start using handles
     private val weakListeners: MutableAssociativeCollection<Any, TargetingListener<Any, EventT>> =
         mutableWeakMultiValuedMapOf()
 
