@@ -6,7 +6,7 @@ import kotlin.random.Random
 fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getRandomFreeLocation(
     random: Random,
 ): BinaryTree.Location<PayloadT, ColorT> = findLocationGuided(
-    guide = RandomGuide(
+    navigator = RandomBinaryTreeNavigator(
         random = random,
     ),
 )
@@ -17,9 +17,9 @@ fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.getRandomFreeLocation(
  * The probability distribution is non-uniform, meaning that the chance on reaching
  * a given free location might be different for different locations.
  */
-private class RandomGuide<PayloadT>(
+private class RandomBinaryTreeNavigator<PayloadT>(
     private val random: Random,
-) : Guide<PayloadT> {
+) : BinaryTreeNavigator<PayloadT> {
     override fun instruct(
         payload: PayloadT,
     ): BinaryTreeNavigationCommand = BinaryTreeNavigationCommand.Turn(

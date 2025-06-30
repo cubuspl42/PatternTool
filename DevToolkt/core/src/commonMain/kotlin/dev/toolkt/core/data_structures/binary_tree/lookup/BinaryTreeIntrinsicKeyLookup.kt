@@ -6,7 +6,7 @@ fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> BinaryTree<PayloadT, ColorT>.fin
     key: KeyT,
     selector: (PayloadT) -> KeyT,
 ): BinaryTree.Location<PayloadT, ColorT> = findLocationGuided(
-    guide = KeyOrderGuide(
+    navigator = KeyOrderBinaryTreeNavigator(
         locatedKey = key,
         selector = selector,
     ),
@@ -17,7 +17,7 @@ fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> BinaryTree<PayloadT, ColorT>.fin
  * "key" that is comparable). Assumes that the tree's structural order corresponds
  * to the natural order of the payload keys.
  */
-private class KeyOrderGuide<PayloadT, KeyT : Comparable<KeyT>>(
+private class KeyOrderBinaryTreeNavigator<PayloadT, KeyT : Comparable<KeyT>>(
     /**
      * The key that the guide is looking for.
      */
@@ -26,7 +26,7 @@ private class KeyOrderGuide<PayloadT, KeyT : Comparable<KeyT>>(
      * A function extracting a key from the payload.
      */
     private val selector: (PayloadT) -> KeyT,
-) : Guide<PayloadT> {
+) : BinaryTreeNavigator<PayloadT> {
     override fun instruct(
         payload: PayloadT,
     ): BinaryTreeNavigationCommand = BinaryTreeNavigationCommand.comparing(

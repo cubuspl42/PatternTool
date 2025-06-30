@@ -8,8 +8,7 @@ import dev.toolkt.core.data_structures.binary_tree.getChildLocation
  * guide (typically) takes some assumptions about the structure of the tree,
  * i.e. how the node's index in the order corresponds to its payload.
  */
-interface Guide<in PayloadT> {
-
+interface BinaryTreeNavigator<in PayloadT> {
     /**
      * Instructs on how to proceed with the given [payload].
      */
@@ -19,15 +18,15 @@ interface Guide<in PayloadT> {
 }
 
 fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocationGuided(
-    guide: Guide<PayloadT>,
+    navigator: BinaryTreeNavigator<PayloadT>,
 ): BinaryTree.Location<PayloadT, ColorT> = this.findLocationGuided(
     location = BinaryTree.RootLocation,
-    guide = guide,
+    navigator = navigator,
 )
 
 private tailrec fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocationGuided(
     location: BinaryTree.Location<PayloadT, ColorT>,
-    guide: Guide<PayloadT>,
+    navigator: BinaryTreeNavigator<PayloadT>,
 ): BinaryTree.Location<PayloadT, ColorT> {
     val nodeHandle = resolve(
         location = location,
@@ -37,7 +36,7 @@ private tailrec fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocation
         nodeHandle = nodeHandle,
     )
 
-    val instruction = guide.instruct(
+    val instruction = navigator.instruct(
         payload = payload,
     )
 
@@ -51,7 +50,7 @@ private tailrec fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocation
 
             return findLocationGuided(
                 location = childLocation,
-                guide = guide,
+                navigator = navigator,
             )
         }
     }
