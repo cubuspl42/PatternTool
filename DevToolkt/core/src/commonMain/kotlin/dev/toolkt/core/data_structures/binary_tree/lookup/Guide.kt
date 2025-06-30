@@ -13,8 +13,6 @@ interface Guide<in PayloadT> {
      * An instruction on how to proceed with the search in a binary tree.
      */
     sealed class Instruction {
-        sealed class Precise : Instruction()
-
         /**
          * An instruction to turn to (recurse to) a side of the tree.
          */
@@ -23,12 +21,12 @@ interface Guide<in PayloadT> {
              * The side of the tree to turn to
              */
             val side: BinaryTree.Side,
-        ) : Precise()
+        ) : Instruction()
 
         /**
          * An instruction to stop, meaning that the payload has been found
          */
-        data object Stop : Precise()
+        data object Stop : Instruction()
 
         companion object {
             fun <T : Comparable<T>> comparing(
