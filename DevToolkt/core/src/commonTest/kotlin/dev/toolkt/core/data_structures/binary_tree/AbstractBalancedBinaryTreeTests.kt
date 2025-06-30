@@ -1,15 +1,15 @@
 package dev.toolkt.core.data_structures.binary_tree
 
 import dev.toolkt.core.data_structures.binary_tree.test_utils.NodeData
+import dev.toolkt.core.data_structures.binary_tree.test_utils.RedBlackTreeTestUtils
 import dev.toolkt.core.data_structures.binary_tree.test_utils.getHandle
-import dev.toolkt.core.data_structures.binary_tree.test_utils.loadVerified
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class AbstractBalancedBinaryTreeTests {
     @Test
     fun testInsertAll() {
-        val tree = RedBlackTree.loadVerified(
+        val tree = RedBlackTreeTestUtils.loadVerified(
             // Grandparent's grandparent
             rootData = NodeData(
                 payload = 1000.0,

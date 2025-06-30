@@ -2,8 +2,8 @@ package dev.toolkt.core.data_structures.binary_tree
 
 import dev.toolkt.core.data_structures.binary_tree.lookup.findByVolatile
 import dev.toolkt.core.data_structures.binary_tree.test_utils.NodeData
+import dev.toolkt.core.data_structures.binary_tree.test_utils.RedBlackTreeTestUtils
 import dev.toolkt.core.data_structures.binary_tree.test_utils.getHandle
-import dev.toolkt.core.data_structures.binary_tree.test_utils.loadVerified
 import dev.toolkt.core.data_structures.binary_tree.test_utils.verify
 import dev.toolkt.core.data_structures.binary_tree.test_utils.verifyOrderBy
 import kotlin.test.Ignore
@@ -43,7 +43,7 @@ class MutableBalancedBinaryTreeTests {
             value = "C",
         )
 
-        val tree = RedBlackTree.loadVerified(
+        val tree = RedBlackTreeTestUtils.loadVerified(
             rootData = NodeData(
                 payload = entryA,
                 color = RedBlackColor.Black,
@@ -99,7 +99,7 @@ class MutableBalancedBinaryTreeTests {
             value = "E",
         )
 
-        val tree = RedBlackTree.loadVerified(
+        val tree = RedBlackTreeTestUtils.loadVerified(
             rootData = NodeData(
                 payload = entryA,
                 color = RedBlackColor.Black,
