@@ -32,7 +32,7 @@ interface MutableBalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, Col
      */
     fun remove(
         nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
-    )
+    ): BinaryTree.Location<PayloadT, ColorT>
 }
 
 fun <PayloadT, ColorT> MutableBalancedBinaryTree<PayloadT, ColorT>.takeOut(

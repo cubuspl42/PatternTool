@@ -23,11 +23,9 @@ class RedBlackTree<PayloadT>(
 
     override fun rebalanceAfterAttach(
         putNodeHandle: BinaryTree.NodeHandle<PayloadT, Color>,
-    ) {
-        fixPotentialRedViolationRecursively(
-            nodeHandle = putNodeHandle,
-        )
-    }
+    ): RebalanceResult<PayloadT, Color> = fixPotentialRedViolationRecursively(
+        nodeHandle = putNodeHandle,
+    )
 
     /**
      * Fix a (potential) red violation in the subtree with the root corresponding
@@ -35,7 +33,7 @@ class RedBlackTree<PayloadT>(
      */
     private fun fixPotentialRedViolationRecursively(
         nodeHandle: BinaryTree.NodeHandle<PayloadT, Color>,
-    ) {
+    ): RebalanceResult<PayloadT, Color> {
         val color = internalTree.getColor(nodeHandle = nodeHandle)
 
         assert(color == Color.Red) {
@@ -54,7 +52,10 @@ class RedBlackTree<PayloadT>(
                 newColor = Color.Black,
             )
 
-            return
+            return RebalanceResult(
+                retractionHeight = 0,
+                finalLocation = BinaryTree.RootLocation,
+            )
         }
 
         val parentHandle = relativeLocation.parentHandle
@@ -65,7 +66,10 @@ class RedBlackTree<PayloadT>(
             // Case #1
             // If the parent is black, there's no red violation between this
             // node and its parent
-            return
+            return RebalanceResult(
+                finalLocation = relativeLocation,
+                retractionHeight = 0,
+            )
         }
 
         // From now on, we know that the parent is red
@@ -83,10 +87,16 @@ class RedBlackTree<PayloadT>(
                 newColor = Color.Black,
             )
 
-            return
+            // Although we touched the parent's color, we didn't really move it
+            return RebalanceResult(
+                finalLocation = relativeLocation,
+                retractionHeight = 0,
+            )
         }
 
         val grandparentHandle = parentRelativeLocation.parentHandle
+
+        val grandparentLocation = locate(nodeHandle = grandparentHandle)
 
         assert(internalTree.getColor(nodeHandle = grandparentHandle) == Color.Black) {
             "The grandparent must be black, as the parent is red"
@@ -96,7 +106,7 @@ class RedBlackTree<PayloadT>(
         val uncleSide = parentRelativeLocation.siblingSide
         val uncleColor = uncleHandle?.let { internalTree.getColor(nodeHandle = it) }
 
-        when (uncleColor) {
+        return when (uncleColor) {
             Color.Red -> {
                 // Case #2
 
@@ -124,8 +134,12 @@ class RedBlackTree<PayloadT>(
 
                 // While we fixed one red violation, we might've introduced
                 // another. Let's fix this recursively.
-                fixPotentialRedViolationRecursively(
+                val recursiveResult = fixPotentialRedViolationRecursively(
                     nodeHandle = grandparentHandle,
+                )
+
+                recursiveResult.copy(
+                    retractionHeight = recursiveResult.retractionHeight + 1,
                 )
             }
 
@@ -165,6 +179,10 @@ class RedBlackTree<PayloadT>(
                 )
 
                 // The violation is fixed!
+                RebalanceResult(
+                    retractionHeight = 2,
+                    finalLocation = grandparentLocation,
+                )
             }
         }
     }
@@ -172,13 +190,16 @@ class RedBlackTree<PayloadT>(
     override fun rebalanceAfterCutOff(
         cutOffLeafLocation: BinaryTree.RelativeLocation<PayloadT, Color>,
         cutOffLeafColor: Color,
-    ) {
-        if (cutOffLeafColor == Color.Black) {
-            fixBlackViolationRecursively(
-                nodeHandle = null,
-                relativeLocation = cutOffLeafLocation,
-            )
-        }
+    ): RebalanceResult<PayloadT, Color> = when (cutOffLeafColor) {
+        Color.Black -> fixBlackViolationRecursively(
+            nodeHandle = null,
+            relativeLocation = cutOffLeafLocation,
+        )
+
+        else -> RebalanceResult(
+            finalLocation = cutOffLeafLocation,
+            retractionHeight = 0,
+        )
     }
 
     private fun fixBlackViolationRecursively(
@@ -190,7 +211,7 @@ class RedBlackTree<PayloadT>(
          * The relative location of the node to be fixed
          */
         relativeLocation: BinaryTree.RelativeLocation<PayloadT, Color>,
-    ) {
+    ): RebalanceResult<PayloadT, Color> {
         val color = nodeHandle?.let {
             internalTree.getColor(nodeHandle = it)
         }
@@ -288,7 +309,10 @@ class RedBlackTree<PayloadT>(
             )
 
             // The violation was fixed!
-            return
+            return RebalanceResult(
+                finalLocation = relativeLocation,
+                retractionHeight = 0,
+            )
         }
 
         // Case #5 S’s close child C is red (the sibling S is black), and S’s distant child D is black
@@ -389,7 +413,10 @@ class RedBlackTree<PayloadT>(
             )
 
             // The violation was fixed!
-            return
+            return RebalanceResult(
+                finalLocation = relativeLocation,
+                retractionHeight = 0,
+            )
         }
 
         if (wasCase3Applied) {
@@ -456,15 +483,22 @@ class RedBlackTree<PayloadT>(
             null -> {
                 // Case #1: The parent is root
                 // The violation was fixed!
-                return
+                return RebalanceResult(
+                    finalLocation = relativeLocation,
+                    retractionHeight = 0,
+                )
             }
 
             else -> {
                 // Although the subtree is balanced (has the same black height on each path), it's still one less than
                 // all the other paths in the whole tree. We need to fix it recursively.
-                fixBlackViolationRecursively(
+                val recursiveResult = fixBlackViolationRecursively(
                     nodeHandle = parentHandle,
                     relativeLocation = parentRelativeLocation,
+                )
+
+                return recursiveResult.copy(
+                    retractionHeight = recursiveResult.retractionHeight + 1,
                 )
             }
         }
@@ -472,12 +506,19 @@ class RedBlackTree<PayloadT>(
 
     override fun rebalanceAfterCollapse(
         elevatedNodeHandle: BinaryTree.NodeHandle<PayloadT, Color>,
-    ) {
+    ): RebalanceResult<PayloadT, Color> {
         // As the elevated node was a single child of its parent, it must be
         // a red node
         internalTree.paint(
             nodeHandle = elevatedNodeHandle,
             newColor = Color.Black,
+        )
+
+        val elevatedNodeLocation = locate(nodeHandle = elevatedNodeHandle)
+
+        return RebalanceResult(
+            finalLocation = elevatedNodeLocation,
+            retractionHeight = 0,
         )
     }
 }

@@ -1,8 +1,18 @@
 package dev.toolkt.core.data_structures.binary_tree
 
 interface MutableUnbalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, ColorT> {
+    data class SwapResult<PayloadT, ColorT>(
+        val neighbourHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+        val neighbourDepth: Int,
+    ) {
+        init {
+            require(neighbourDepth >= 1)
+        }
+    }
+
     companion object {
-        fun <PayloadT, ColorT> create(): MutableUnbalancedBinaryTree<PayloadT, ColorT> = MutableUnbalancedBinaryTreeImpl()
+        fun <PayloadT, ColorT> create(): MutableUnbalancedBinaryTree<PayloadT, ColorT> =
+            MutableUnbalancedBinaryTreeImpl()
     }
 
     /**
@@ -71,7 +81,7 @@ interface MutableUnbalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, C
     fun swap(
         nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
         side: BinaryTree.Side,
-    )
+    ): SwapResult<PayloadT, ColorT>
 
     /**
      * Rotate the subtree starting at node corresponding to [pivotNodeHandle] in

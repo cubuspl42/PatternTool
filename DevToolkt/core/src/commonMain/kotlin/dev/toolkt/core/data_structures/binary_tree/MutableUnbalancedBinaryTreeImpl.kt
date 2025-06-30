@@ -1,6 +1,7 @@
 package dev.toolkt.core.data_structures.binary_tree
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree.Side
+import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTree.SwapResult
 import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTreeImpl.NodeHandleImpl
 import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTreeImpl.ProperNode
 import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTreeImpl.ProperNode.InOrderNeighbourRelation
@@ -62,7 +63,7 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
          */
         sealed class InOrderNeighbourRelation<PayloadT, ColorT> {
             /**
-             * The in-order neighbour is the child's ascendant
+             * The in-order neighbour is the node's ascendant
              */
             data class Ascendant<PayloadT, ColorT>(
                 val ascendantNeighbourLink: NeighbourLink<PayloadT, ColorT>,
@@ -75,11 +76,17 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
             }
 
             /**
-             * The in-order neighbour is the child's descendant
+             * The in-order neighbour is the node's descendant
              */
             sealed class Descendant<PayloadT, ColorT> : InOrderNeighbourRelation<PayloadT, ColorT>() {
                 final override val neighbour: ProperNode<PayloadT, ColorT>
                     get() = descendantNeighbour
+
+                /**
+                 * The number of tree levels that separate the node from its in-order
+                 * neighbour
+                 */
+                abstract val depth: Int
 
                 /**
                  * Node's direct child on the respective side (left in the case of
@@ -87,12 +94,12 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
                  *
                  * Might be the in-order neighbour itself
                  */
-                abstract val directChild: ProperNode<PayloadT, ColorT>
+                internal abstract val directChild: ProperNode<PayloadT, ColorT>
 
                 /**
                  * The in-order neighbour
                  */
-                abstract val descendantNeighbour: ProperNode<PayloadT, ColorT>
+                internal abstract val descendantNeighbour: ProperNode<PayloadT, ColorT>
             }
 
             /**
@@ -106,6 +113,8 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
             ) : Descendant<PayloadT, ColorT>() {
                 override val directDownLink: DownLink<PayloadT, ColorT>
                     get() = childLink
+
+                override val depth: Int = 1
 
                 override val directChild: ProperNode<PayloadT, ColorT>
                     get() = childLink.child
@@ -127,6 +136,7 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
                  * The node's neighbour, separated by at least one node
                  */
                 val distantNeighbour: ProperNode<PayloadT, ColorT>,
+                override val depth: Int,
             ) : Descendant<PayloadT, ColorT>() {
                 val intermediateChild: ProperNode<PayloadT, ColorT>
                     get() = intermediateChildLink.child
@@ -144,9 +154,9 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
             val asDescendant: Descendant<PayloadT, ColorT>?
                 get() = this as? Descendant<PayloadT, ColorT>
 
-            abstract val directDownLink: DownLink<PayloadT, ColorT>
+            internal abstract val directDownLink: DownLink<PayloadT, ColorT>
 
-            abstract val neighbour: ProperNode<PayloadT, ColorT>
+            internal abstract val neighbour: ProperNode<PayloadT, ColorT>
         }
 
         private var validity = Validity.Valid
@@ -255,26 +265,30 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
 
         fun getSideMostDescendant(
             side: Side,
-        ): ProperNode<PayloadT, ColorT>? {
+        ): Pair<ProperNode<PayloadT, ColorT>, Int>? {
             val sideChild = getChild(
                 side = side,
             ) ?: return null
 
-            return sideChild.getSideMostQuasiDescendant(
+            val (descendant, depth) = sideChild.getSideMostQuasiDescendant(
                 side = side,
             )
+
+            return Pair(descendant, depth + 1)
         }
 
         fun getSideMostQuasiDescendant(
             side: Side,
-        ): ProperNode<PayloadT, ColorT> {
+        ): Pair<ProperNode<PayloadT, ColorT>, Int> {
             val sideChild = getChild(
                 side = side,
-            ) ?: return this
+            ) ?: return Pair(this, 0)
 
-            return sideChild.getSideMostQuasiDescendant(
+            val (quasiDescendant, depth) = sideChild.getSideMostQuasiDescendant(
                 side = side,
             )
+
+            return Pair(quasiDescendant, depth + 1)
         }
 
         fun getInOrderNeighbour(
@@ -292,7 +306,7 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
 
             when (sideDownLink) {
                 is ChildLink<PayloadT, ColorT> -> {
-                    val distantNeighbour = sideDownLink.child.getSideMostDescendant(
+                    val (distantNeighbour, depth) = sideDownLink.child.getSideMostDescendant(
                         side = side.opposite,
                     ) ?: return InOrderNeighbourRelation.Close(
                         childLink = sideDownLink,
@@ -301,6 +315,7 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
                     return InOrderNeighbourRelation.Distant(
                         intermediateChildLink = sideDownLink,
                         distantNeighbour = distantNeighbour,
+                        depth = depth,
                     )
                 }
 
@@ -727,7 +742,7 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
     override fun swap(
         nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
         side: Side,
-    ) {
+    ): SwapResult<PayloadT, ColorT> {
         val topNode = nodeHandle.unpack()
         val topUpLink = topNode.upLink
 
@@ -780,6 +795,11 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
 
         // Relink the neighbour's subtree from the primary side
         relinkTopNode()
+
+        return SwapResult(
+            neighbourHandle = neighbourRelation.neighbour.pack(),
+            neighbourDepth = neighbourRelation.depth,
+        )
     }
 
     /**
