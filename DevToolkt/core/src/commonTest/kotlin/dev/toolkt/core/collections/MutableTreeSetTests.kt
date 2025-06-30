@@ -1,5 +1,6 @@
 package dev.toolkt.core.collections
 
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -15,6 +16,22 @@ class MutableTreeSetTests {
         set.verifyContent(
             elements = emptyList(),
             controlElements = setOf(10, 20, 30),
+        )
+    }
+
+    @Test
+    fun testLookup() {
+        val set = mutableTreeSetOf(
+            10, 20, 30, 40,
+        )
+
+        val handle20 = assertNotNull(
+            actual = set.lookup(20),
+        )
+
+        assertEquals(
+            expected = 20,
+            actual = set.getVia(handle = handle20),
         )
     }
 
@@ -147,6 +164,14 @@ class MutableTreeSetTests {
 
         assertEquals(
             expected = 15,
+            actual = set.removeVia(handle = handle15),
+        )
+
+        assertNull(
+            actual = set.getVia(handle = handle15),
+        )
+
+        assertNull(
             actual = set.removeVia(handle = handle15),
         )
 

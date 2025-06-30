@@ -5,13 +5,14 @@ import dev.toolkt.core.collections.StableCollection.Handle
 interface MutableStableBag<E> : MutableBag<E>, StableBag<E>, MutableStableCollection<E> {
     /**
      * Replaces the element corresponding to the given handle with the specified element. Doesn't invalidate the handle.
+     * If the original element was already removed, this operation isn't effective.
      *
-     * @return the element previously at the specified position.
+     * @return the element previously at the specified position, or null if the original element was already removed
      */
     fun setVia(
         handle: Handle<E>,
         element: E,
-    ): E
+    ): E?
 
     /**
      * Adds the specified element to the bag in exchange for a handle.

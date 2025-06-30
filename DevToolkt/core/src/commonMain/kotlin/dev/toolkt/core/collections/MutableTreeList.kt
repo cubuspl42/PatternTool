@@ -9,6 +9,7 @@ import dev.toolkt.core.data_structures.binary_tree.getSideMostFreeLocation
 import dev.toolkt.core.data_structures.binary_tree.insertAll
 import dev.toolkt.core.data_structures.binary_tree.insertRelative
 import dev.toolkt.core.data_structures.binary_tree.select
+import dev.toolkt.core.data_structures.binary_tree.takeOut
 import dev.toolkt.core.data_structures.binary_tree.traverse
 import kotlin.jvm.JvmInline
 
@@ -51,11 +52,11 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
     override fun get(
         index: Int,
     ): E {
-        val handle = getEx(index = index) ?: throw IndexOutOfBoundsException(
+        val nodeHandle = elementTree.select(index = index) ?: throw IndexOutOfBoundsException(
             "Index $index is out of bounds for size ${size}."
         )
 
-        return getVia(handle = handle)
+        return elementTree.getPayload(nodeHandle = nodeHandle)
     }
 
     /**
@@ -64,8 +65,8 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
      */
     override fun getVia(
         handle: Handle<E>,
-    ): E {
-        val nodeHandle = handle.unpack()
+    ): E? {
+        val nodeHandle = handle.unpack() ?: return null
 
         return elementTree.getPayload(nodeHandle = nodeHandle)
     }
@@ -80,14 +81,18 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
         index: Int,
         element: E,
     ): E {
-        val handle = getEx(index = index) ?: throw IndexOutOfBoundsException(
+        val nodeHandle = elementTree.select(index = index) ?: throw IndexOutOfBoundsException(
             "Index $index is out of bounds for size ${size}."
         )
 
-        return setVia(
-            handle = handle,
-            element = element,
+        val previousElement = elementTree.getPayload(nodeHandle = nodeHandle)
+
+        elementTree.setPayload(
+            nodeHandle = nodeHandle,
+            payload = element,
         )
+
+        return previousElement
     }
 
     /**
@@ -99,8 +104,8 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
     override fun setVia(
         handle: Handle<E>,
         element: E,
-    ): E {
-        val nodeHandle = handle.unpack()
+    ): E? {
+        val nodeHandle = handle.unpack() ?: return null
 
         val previousElement = elementTree.getPayload(nodeHandle = nodeHandle)
 
@@ -253,11 +258,11 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
     override fun removeAt(
         index: Int,
     ): E {
-        val handle = getEx(index = index) ?: throw IndexOutOfBoundsException(
+        val nodeHandle = elementTree.select(index = index) ?: throw IndexOutOfBoundsException(
             "Index $index is out of bounds for size ${size}."
         )
 
-        return removeVia(handle = handle)
+        return elementTree.takeOut(nodeHandle = nodeHandle)
     }
 
     /**
@@ -268,25 +273,23 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
      */
     override fun removeVia(
         handle: Handle<E>,
-    ): E {
-        val nodeHandle = handle.unpack()
+    ): E? {
+        val nodeHandle = handle.unpack() ?: return null
 
-        val removedElement = elementTree.getPayload(nodeHandle = nodeHandle)
-
-        elementTree.remove(nodeHandle = nodeHandle)
-
-        return removedElement
+        return elementTree.takeOut(nodeHandle = nodeHandle)
     }
 
     /**
      * Returns the index of the element corresponding to the given handle in the list.
-     *
      * Guarantees logarithmic time complexity.
+     *
+     * @return the index of the element or null if the corresponding element has
+     * already been removed
      */
     override fun indexOfVia(
         handle: Handle<E>,
-    ): Int {
-        val nodeHandle = handle.unpack()
+    ): Int? {
+        val nodeHandle = handle.unpack() ?: return null
 
         return elementTree.getRank(nodeHandle = nodeHandle)
     }
@@ -316,12 +319,15 @@ fun <E> mutableTreeListOf(
     return mutableTreeList
 }
 
-private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color> {
+private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color>? {
     this as? MutableTreeList.TreeListHandle<E> ?: throw IllegalArgumentException(
         "Handle is not a TreeListHandle: $this"
     )
 
-    return this.nodeHandle
+    return when {
+        nodeHandle.isValid -> nodeHandle
+        else -> null
+    }
 }
 
 private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): Handle<E> = MutableTreeList.TreeListHandle(

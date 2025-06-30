@@ -35,6 +35,16 @@ interface MutableBalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, Col
     )
 }
 
+fun <PayloadT, ColorT> MutableBalancedBinaryTree<PayloadT, ColorT>.takeOut(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+): PayloadT {
+    val takenPayload = getPayload(nodeHandle = nodeHandle)
+
+    remove(nodeHandle = nodeHandle)
+
+    return takenPayload
+}
+
 fun <PayloadT, ColorT> MutableBalancedBinaryTree<PayloadT, ColorT>.insertRelative(
     nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
     side: BinaryTree.Side,

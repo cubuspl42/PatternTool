@@ -1,11 +1,13 @@
 package dev.toolkt.core.collections
 
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class MutableTreeListTests {
@@ -428,6 +430,18 @@ class MutableTreeListTests {
             actual = mutableTreeList.removeVia(
                 handle = mangoHandle,
             ),
+        )
+
+        assertNull(
+            actual = mutableTreeList.getVia(handle = mangoHandle),
+        )
+
+        assertNull(
+            actual = mutableTreeList.removeVia(handle = mangoHandle),
+        )
+
+        assertNull(
+            actual = mutableTreeList.indexOfVia(handle = mangoHandle),
         )
 
         mutableTreeList.verifyContent(

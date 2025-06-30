@@ -33,7 +33,7 @@ private class StableBagBackedStableAssociativeBag<K, V : Any>(
     }
 
     override fun resolveAll(key: K): Collection<EntryHandle<K, V>> = entries.handles.filter { entryHandle ->
-        val entry = entries.getVia(entryHandle)
+        val entry = entries.getVia(entryHandle) ?: throw AssertionError("The handle is already invalid")
         entry.key == key
     }.toList()
 
