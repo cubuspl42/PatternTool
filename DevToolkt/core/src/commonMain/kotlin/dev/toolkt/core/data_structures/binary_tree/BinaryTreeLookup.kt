@@ -11,7 +11,24 @@ interface Guide<in PayloadT> {
     /**
      * An instruction on how to proceed with the search in a binary tree.
      */
-    sealed interface Instruction {
+    sealed class Instruction {
+        sealed class Precise : Instruction()
+
+        /**
+         * An instruction to turn to (recurse to) a side of the tree.
+         */
+        data class Turn(
+            /**
+             * The side of the tree to turn to
+             */
+            val side: BinaryTree.Side,
+        ) : Precise()
+
+        /**
+         * An instruction to stop, meaning that the payload has been found
+         */
+        data object Stop : Precise()
+
         companion object {
             fun <T : Comparable<T>> comparing(
                 expected: T,
@@ -20,9 +37,9 @@ interface Guide<in PayloadT> {
                 val result = expected.compareTo(actual)
 
                 return when {
-                    result == 0 -> Guide.StopInstruction
+                    result == 0 -> Stop
 
-                    else -> Guide.TurnInstruction(
+                    else -> Instruction.Turn(
                         side = when {
                             result < 0 -> BinaryTree.Side.Left
                             else -> BinaryTree.Side.Right
@@ -32,21 +49,6 @@ interface Guide<in PayloadT> {
             }
         }
     }
-
-    /**
-     * An instruction to turn to (recurse to) a side of the tree.
-     */
-    data class TurnInstruction(
-        /**
-         * The side of the tree to turn to
-         */
-        val side: BinaryTree.Side,
-    ) : Instruction
-
-    /**
-     * An instruction to stop, meaning that the payload has been found
-     */
-    data object StopInstruction : Instruction
 
     /**
      * Instructs on how to proceed with the given [payload].
@@ -108,7 +110,7 @@ private class RandomGuide<PayloadT>(
 ) : Guide<PayloadT> {
     override fun instruct(
         payload: PayloadT,
-    ): Guide.Instruction = Guide.TurnInstruction(
+    ): Guide.Instruction = Guide.Instruction.Turn(
         side = random.nextSide(),
     )
 }
@@ -137,9 +139,9 @@ private tailrec fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocation
     )
 
     when (instruction) {
-        Guide.StopInstruction -> return location
+        Guide.Instruction.Stop -> return location
 
-        is Guide.TurnInstruction -> {
+        is Guide.Instruction.Turn -> {
             val childLocation = nodeHandle.getChildLocation(
                 side = instruction.side,
             )
