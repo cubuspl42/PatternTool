@@ -2,6 +2,7 @@ package dev.toolkt.core.data_structures.binary_tree.test_utils
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTree
+import kotlin.test.assertFalse
 
 fun <PayloadT : Comparable<PayloadT>, ColorT> MutableUnbalancedBinaryTree<PayloadT, ColorT>.attachVerified(
     location: BinaryTree.Location<PayloadT, ColorT>,
@@ -38,6 +39,10 @@ fun <PayloadT : Comparable<PayloadT>, ColorT> MutableUnbalancedBinaryTree<Payloa
         leafHandle = leafHandle,
     )
 
+    if (leafHandle.isValid) {
+        throw AssertionError("The leaf handle should be invalid after being cut off")
+    }
+
     verifyIntegrity()
 
     return cutOffLeafLocation
@@ -63,6 +68,10 @@ fun <PayloadT : Comparable<PayloadT>, ColorT> MutableUnbalancedBinaryTree<Payloa
     val elevatedChildHandle = this.collapse(
         nodeHandle = nodeHandle,
     )
+
+    if (nodeHandle.isValid) {
+        throw AssertionError("The node should be invalid after collapsing")
+    }
 
     verifyIntegrity()
 

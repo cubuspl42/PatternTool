@@ -89,6 +89,10 @@ private fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.verifySubtreeIntegri
 ): IntegrityVerificationResult {
     val actualParentHandle = getParent(nodeHandle = subtreeRootHandle)
 
+    if (!subtreeRootHandle.isValid) {
+        throw AssertionError("Invalid node handle: $subtreeRootHandle")
+    }
+
     if (actualParentHandle != expectedParentHandle) {
         throw AssertionError("Inconsistent parent")
     }
