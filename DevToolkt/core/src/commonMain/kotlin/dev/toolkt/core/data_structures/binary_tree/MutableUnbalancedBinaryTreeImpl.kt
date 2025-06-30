@@ -557,11 +557,8 @@ class MutableUnbalancedBinaryTreeImpl<PayloadT, ColorT> internal constructor(
     internal value class NodeHandleImpl<PayloadT, ColorT>(
         private val properNode: ProperNode<PayloadT, ColorT>,
     ) : BinaryTree.NodeHandle<PayloadT, ColorT> {
-        init {
-            require(properNode.isValid) {
-                "The node is already invalidated"
-            }
-        }
+        override val isValid: Boolean
+            get() = properNode.isValid
 
         fun resolve(): ProperNode<PayloadT, ColorT> {
             if (!properNode.isValid) {
