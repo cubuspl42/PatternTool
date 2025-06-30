@@ -2,6 +2,7 @@ package dev.toolkt.core.collections
 
 import dev.toolkt.core.collections.StableCollection.Handle
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.getNextInOrderFreeLocation
 import dev.toolkt.core.data_structures.binary_tree.getRank
@@ -23,7 +24,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
         val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
     ) : Handle<E>
 
-    private val elementTree = RedBlackTree<E>()
+    private val elementTree = MutableBalancedBinaryTree.redBlack<E>()
 
     override val size: Int
         get() = elementTree.size

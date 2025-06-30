@@ -2,6 +2,7 @@ package dev.toolkt.core.collections
 
 import dev.toolkt.core.collections.StableCollection.Handle
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.lookup.find
 import dev.toolkt.core.data_structures.binary_tree.traverse
@@ -13,15 +14,14 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
         internal val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
     ) : Handle<E>
 
-    private val elementTree = RedBlackTree<E>()
+    private val elementTree = MutableBalancedBinaryTree.redBlack<E>()
 
     override val size: Int
         get() = elementTree.size
 
-    override fun iterator(): MutableIterator<E> = RedBlackTreeIterator(
+    override fun iterator(): MutableIterator<E> = MutableBalancedBinaryTreeIterator(
         tree = elementTree,
     )
-
 
     override val handles: Sequence<Handle<E>>
         get() = elementTree.traverse().map { it.pack() }

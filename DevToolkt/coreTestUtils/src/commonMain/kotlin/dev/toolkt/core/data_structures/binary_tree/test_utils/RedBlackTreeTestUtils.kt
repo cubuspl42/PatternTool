@@ -1,6 +1,7 @@
 package dev.toolkt.core.data_structures.binary_tree.test_utils
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
 import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.getLeftChild
@@ -12,7 +13,7 @@ private data class ColorVerificationResult(
     val blackHeight: Int,
 )
 
-fun <PayloadT : Comparable<PayloadT>> RedBlackTree<PayloadT>.insertVerified(
+fun <PayloadT : Comparable<PayloadT>> MutableBalancedBinaryTree<PayloadT, RedBlackTree.Color>.insertVerified(
     location: BinaryTree.Location<PayloadT, RedBlackTree.Color>,
     payload: PayloadT,
 ): BinaryTree.NodeHandle<PayloadT, RedBlackTree.Color> {
@@ -26,7 +27,7 @@ fun <PayloadT : Comparable<PayloadT>> RedBlackTree<PayloadT>.insertVerified(
     return insertedNodeHandle
 }
 
-fun <PayloadT : Comparable<PayloadT>> RedBlackTree<PayloadT>.removeVerified(
+fun <PayloadT : Comparable<PayloadT>> MutableBalancedBinaryTree<PayloadT, RedBlackTree.Color>.removeVerified(
     nodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackTree.Color>,
 ) {
     remove(
@@ -38,14 +39,14 @@ fun <PayloadT : Comparable<PayloadT>> RedBlackTree<PayloadT>.removeVerified(
 
 fun <PayloadT> RedBlackTree.Companion.loadVerified(
     rootData: NodeData<PayloadT, RedBlackTree.Color>,
-): RedBlackTree<PayloadT> {
+): MutableBalancedBinaryTree<PayloadT, RedBlackTree.Color> {
     val internalTree = MutableUnbalancedBinaryTree.load(
         rootData = rootData,
     )
 
     internalTree.verify()
 
-    return RedBlackTree(
+    return MutableBalancedBinaryTree.redBlack(
         internalTree = internalTree,
     )
 }
