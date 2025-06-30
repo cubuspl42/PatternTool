@@ -1,6 +1,5 @@
 package dev.toolkt.core.data_structures.binary_tree
 
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree.Color
 import dev.toolkt.core.data_structures.binary_tree.lookup.findByVolatile
 import dev.toolkt.core.data_structures.binary_tree.test_utils.NodeData
 import dev.toolkt.core.data_structures.binary_tree.test_utils.getHandle
@@ -47,14 +46,14 @@ class MutableBalancedBinaryTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = entryA,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 leftChild = NodeData(
                     payload = entryB,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
                 rightChild = NodeData(
                     payload = entryC,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
             ),
         )
@@ -103,21 +102,21 @@ class MutableBalancedBinaryTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = entryA,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 leftChild = NodeData(
                     payload = entryB,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
                 rightChild = NodeData(
                     payload = entryC,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                     leftChild = NodeData(
                         payload = entryD,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     rightChild = NodeData(
                         payload = entryE,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
             ),

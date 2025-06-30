@@ -1,8 +1,8 @@
 package dev.toolkt.core.collections
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.RedBlackColor
 import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.lookup.findByVolatile
 import dev.toolkt.core.data_structures.binary_tree.takeOut
 import dev.toolkt.core.data_structures.binary_tree.traverse
@@ -10,7 +10,7 @@ import dev.toolkt.core.platform.PlatformWeakReference
 import kotlin.jvm.JvmInline
 
 class MutableWeakTreeMap<K : Comparable<K>, V> internal constructor(
-    private val entryTree: MutableBalancedBinaryTree<WeakMutableMapEntry<K, V>, RedBlackTree.Color> = MutableBalancedBinaryTree.redBlack(),
+    private val entryTree: MutableBalancedBinaryTree<WeakMutableMapEntry<K, V>, RedBlackColor> = MutableBalancedBinaryTree.redBlack(),
 ) : AbstractMutableStableMap<K, V>(
     MutableBalancedBinaryTreeWeakEntrySet(entryTree = entryTree),
 ) {
@@ -172,9 +172,9 @@ fun <K : Comparable<K>, V> mutableWeakTreeMapOf(
 
 internal typealias WeakMutableMapEntry<K, V> = MutableTreeMap.MutableMapEntry<PlatformWeakReference<K>, V>
 
-private typealias WeakEntryLocation<K, V> = BinaryTree.Location<WeakMutableMapEntry<K, V>, RedBlackTree.Color>
+private typealias WeakEntryLocation<K, V> = BinaryTree.Location<WeakMutableMapEntry<K, V>, RedBlackColor>
 
-private typealias WeakEntryNodeHandle<K, V> = BinaryTree.NodeHandle<WeakMutableMapEntry<K, V>, RedBlackTree.Color>
+private typealias WeakEntryNodeHandle<K, V> = BinaryTree.NodeHandle<WeakMutableMapEntry<K, V>, RedBlackColor>
 
 private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): WeakEntryNodeHandle<K, V>? {
     this as? MutableWeakTreeMap.WeakTreeMapHandle<K, V> ?: throw IllegalArgumentException(

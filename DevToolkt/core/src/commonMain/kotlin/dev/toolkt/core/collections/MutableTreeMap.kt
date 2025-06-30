@@ -1,14 +1,14 @@
 package dev.toolkt.core.collections
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.RedBlackColor
 import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.lookup.findBy
 import dev.toolkt.core.data_structures.binary_tree.traverse
 import kotlin.jvm.JvmInline
 
 class MutableTreeMap<K : Comparable<K>, V> internal constructor(
-    private val entryTree: MutableBalancedBinaryTree<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color> = MutableBalancedBinaryTree.redBlack(),
+    private val entryTree: MutableBalancedBinaryTree<MutableTreeMap.MutableMapEntry<K, V>, RedBlackColor> = MutableBalancedBinaryTree.redBlack(),
 ) : AbstractMutableStableMap<K, V>(
     MutableBalancedBinaryTreeEntrySet(entryTree = entryTree),
 ) {
@@ -162,9 +162,9 @@ fun <K : Comparable<K>, V> mutableTreeMapOf(
     return map
 }
 
-private typealias EntryLocation<K, V> = BinaryTree.Location<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color>
+private typealias EntryLocation<K, V> = BinaryTree.Location<MutableTreeMap.MutableMapEntry<K, V>, RedBlackColor>
 
-private typealias EntryNodeHandle<K, V> = BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color>
+private typealias EntryNodeHandle<K, V> = BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackColor>
 
 private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): EntryNodeHandle<K, V>? {
     this as? MutableTreeMap.TreeMapHandle<K, V> ?: throw IllegalArgumentException(

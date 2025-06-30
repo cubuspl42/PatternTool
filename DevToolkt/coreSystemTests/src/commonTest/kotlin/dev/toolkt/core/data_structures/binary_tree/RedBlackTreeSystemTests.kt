@@ -12,8 +12,8 @@ class RedBlackTreeSystemTests {
     fun testFuzzy() {
         val random = Random
 
-        val tree = RedBlackTree<Int>()
-        val nodeHandles = ArrayDeque<BinaryTree.NodeHandle<Int, RedBlackTree.Color>>()
+        val tree = MutableBalancedBinaryTree.redBlack<Int>()
+        val nodeHandles = ArrayDeque<BinaryTree.NodeHandle<Int, RedBlackColor>>()
 
         (0 until operationCount).forEach { operationIndex ->
             val progress = operationIndex.toDouble() / operationCount

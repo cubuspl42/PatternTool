@@ -1,6 +1,5 @@
 package dev.toolkt.core.data_structures.binary_tree
 
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree.Color
 import dev.toolkt.core.data_structures.binary_tree.test_utils.NodeData
 import dev.toolkt.core.data_structures.binary_tree.test_utils.buildBalance
 import dev.toolkt.core.data_structures.binary_tree.test_utils.dump
@@ -34,7 +33,7 @@ class RedBlackTreeTests {
         assertEquals(
             expected = NodeData(
                 payload = 100,
-                color = Color.Black,
+                color = RedBlackColor.Black,
             ),
             actual = tree.dump(),
         )
@@ -58,7 +57,7 @@ class RedBlackTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = 10,
-                color = Color.Black,
+                color = RedBlackColor.Black,
             ),
         )
 
@@ -81,14 +80,14 @@ class RedBlackTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = 100,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 leftChild = NodeData(
                     payload = 50,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
                 rightChild = NodeData(
                     payload = 150,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
             ),
         )
@@ -114,7 +113,7 @@ class RedBlackTreeTests {
             // Grandparent's grandparent
             rootData = NodeData(
                 payload = 100.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 leftChild = RedBlackTree.buildBalance(
                     requiredBlackDepth = 3,
                     payloadRange = 0.0..100.0,
@@ -122,20 +121,20 @@ class RedBlackTreeTests {
                 // Grandparent's parent
                 rightChild = NodeData(
                     payload = 500.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Grandparent
                     leftChild = NodeData(
                         payload = 250.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         // Parent
                         leftChild = NodeData(
                             payload = 150.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                         // Uncle
                         rightChild = NodeData(
                             payload = 400.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                     ),
                     rightChild = RedBlackTree.buildBalance(
@@ -171,11 +170,11 @@ class RedBlackTreeTests {
             // Grandparent's grandparent
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // Grandparent's parent
                 leftChild = NodeData(
                     payload = 500.0,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                     leftChild = RedBlackTree.buildBalance(
                         requiredBlackDepth = 2,
                         payloadRange = 0.0..500.0,
@@ -183,23 +182,23 @@ class RedBlackTreeTests {
                     // Grandparent
                     rightChild = NodeData(
                         payload = 750.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         // Parent
                         leftChild = NodeData(
                             payload = 600.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                         // Uncle
                         rightChild = NodeData(
                             payload = 850.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                     ),
                 ),
                 // Grandparent's uncle
                 rightChild = NodeData(
                     payload = 1500.0,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                     leftChild = RedBlackTree.buildBalance(
                         requiredBlackDepth = 2,
                         payloadRange = 1000.0..1500.0,
@@ -235,16 +234,16 @@ class RedBlackTreeTests {
             // Grandparent
             rootData = NodeData(
                 payload = 750.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // Uncle
                 leftChild = NodeData(
                     payload = 600.0,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                 ),
                 // Parent
                 rightChild = NodeData(
                     payload = 850.0,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                 ),
             ),
         )
@@ -272,7 +271,7 @@ class RedBlackTreeTests {
             // Grandparent's parent
             rootData = NodeData(
                 payload = 500.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 leftChild = RedBlackTree.buildBalance(
                     requiredBlackDepth = 2,
                     payloadRange = 0.0..500.0,
@@ -280,16 +279,16 @@ class RedBlackTreeTests {
                 // Grandparent
                 rightChild = NodeData(
                     payload = 1000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Uncle
                     leftChild = NodeData(
                         payload = 750.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                     ),
                     // Parent
                     rightChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                     ),
                 ),
             ),
@@ -318,29 +317,29 @@ class RedBlackTreeTests {
             // Grandparent's grandparent
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // Grandparent's uncle
                 leftChild = NodeData(
                     payload = 500.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
                 // Grandparent's parent
                 rightChild = NodeData(
                     payload = 2000.0,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                     // Grandparent
                     leftChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         // Parent
                         leftChild = NodeData(
                             payload = 1250.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                         // Uncle
                         rightChild = NodeData(
                             payload = 1750.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                     ),
                     rightChild = RedBlackTree.buildBalance(
@@ -373,16 +372,16 @@ class RedBlackTreeTests {
             // Grandparent's grandparent
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // Grandparent's uncle
                 leftChild = NodeData(
                     payload = 500.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
                 // Grandparent's parent
                 rightChild = NodeData(
                     payload = 2000.0,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                     leftChild = RedBlackTree.buildBalance(
                         requiredBlackDepth = 2,
                         payloadRange = 1000.0..2000.0,
@@ -390,16 +389,16 @@ class RedBlackTreeTests {
                     // Grandparent
                     rightChild = NodeData(
                         payload = 3000.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         // Parent
                         leftChild = NodeData(
                             payload = 2500.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                         // Uncle
                         rightChild = NodeData(
                             payload = 4000.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                     ),
                 ),
@@ -426,7 +425,7 @@ class RedBlackTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
             ),
         )
 
@@ -452,16 +451,16 @@ class RedBlackTreeTests {
             // Grandparent's parent
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 // Grandparent
                 leftChild = NodeData(
                     payload = 500.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Uncle: nil
                     // Parent
                     rightChild = NodeData(
                         payload = 750.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                     ),
                 ),
                 rightChild = RedBlackTree.buildBalance(
@@ -494,7 +493,7 @@ class RedBlackTreeTests {
             // Grandparent's parent
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 leftChild = RedBlackTree.buildBalance(
                     requiredBlackDepth = 2,
                     payloadRange = 0.0..1000.0,
@@ -502,11 +501,11 @@ class RedBlackTreeTests {
                 // Grandparent
                 rightChild = NodeData(
                     payload = 2000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Parent
                     leftChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                     ),
                     // Uncle: nil
                 ),
@@ -530,7 +529,7 @@ class RedBlackTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 leftChild = RedBlackTree.buildBalance(
                     requiredBlackDepth = 4,
                     payloadRange = 0.0..1000.0,
@@ -538,21 +537,21 @@ class RedBlackTreeTests {
                 // Removed node
                 rightChild = NodeData(
                     payload = 2000.0,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                     leftChild = RedBlackTree.buildBalance(
                         requiredBlackDepth = 4,
                         payloadRange = 1000.0..2000.0,
                     ),
                     rightChild = NodeData(
                         payload = 3000.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         leftChild = NodeData(
                             payload = 2800.0,
-                            color = Color.Black,
+                            color = RedBlackColor.Black,
                             // Successor
                             leftChild = NodeData(
                                 payload = 2500.0,
-                                color = Color.Black,
+                                color = RedBlackColor.Black,
                             ),
                             rightChild = RedBlackTree.buildBalance(
                                 requiredBlackDepth = 2,
@@ -584,7 +583,7 @@ class RedBlackTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 leftChild = RedBlackTree.buildBalance(
                     requiredBlackDepth = 3,
                     payloadRange = 0.0..1000.0,
@@ -592,21 +591,21 @@ class RedBlackTreeTests {
                 // Removed node
                 rightChild = NodeData(
                     payload = 2000.0,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                     leftChild = RedBlackTree.buildBalance(
                         requiredBlackDepth = 3,
                         payloadRange = 1000.0..2000.0,
                     ),
                     rightChild = NodeData(
                         payload = 3000.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         // Successor
                         leftChild = NodeData(
                             payload = 2800.0,
-                            color = Color.Black,
+                            color = RedBlackColor.Black,
                             rightChild = NodeData(
                                 payload = 2900.0,
-                                color = Color.Red,
+                                color = RedBlackColor.Red,
                             ),
                         ),
                         rightChild = RedBlackTree.buildBalance(
@@ -634,21 +633,21 @@ class RedBlackTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 leftChild = RedBlackTree.buildBalance(
                     requiredBlackDepth = 3,
                     payloadRange = 0.0..1000.0,
                 ),
                 rightChild = NodeData(
                     payload = 2000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Removed node
                     leftChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         leftChild = NodeData(
                             payload = 1250.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                     ),
                     rightChild = RedBlackTree.buildBalance(
@@ -674,7 +673,7 @@ class RedBlackTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
             ),
         )
 
@@ -693,7 +692,7 @@ class RedBlackTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = 2000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
             ),
         )
 
@@ -713,21 +712,21 @@ class RedBlackTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 leftChild = RedBlackTree.buildBalance(
                     requiredBlackDepth = 3,
                     payloadRange = 0.0..1000.0,
                 ),
                 rightChild = NodeData(
                     payload = 2000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     leftChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         // Removed node
                         leftChild = NodeData(
                             payload = 1200.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                     ),
                     rightChild = RedBlackTree.buildBalance(
@@ -757,14 +756,14 @@ class RedBlackTreeTests {
         val tree = RedBlackTree.loadVerified(
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 leftChild = RedBlackTree.buildBalance(
                     requiredBlackDepth = 2,
                     payloadRange = 0.0..1000.0,
                 ),
                 rightChild = NodeData(
                     payload = 2000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
             ),
         )
@@ -789,16 +788,16 @@ class RedBlackTreeTests {
             // Parent
             rootData = NodeData(
                 payload = 2000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // Removed node
                 leftChild = NodeData(
                     payload = 1500.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
                 // Sibling
                 rightChild = NodeData(
                     payload = 3000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
             ),
         )
@@ -824,35 +823,35 @@ class RedBlackTreeTests {
             // Parent's parent (grandparent)
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // Parent's sibling (uncle)
                 leftChild = NodeData(
                     payload = 500.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Parent's distant nephew
                     leftChild = NodeData(
                         payload = 250.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Parent's close nephew
                     rightChild = NodeData(
                         payload = 750.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
                 // Parent
                 rightChild = NodeData(
                     payload = 1500.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Removed node
                     leftChild = NodeData(
                         payload = 1250.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Sibling
                     rightChild = NodeData(
                         payload = 2000.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
             ),
@@ -878,30 +877,30 @@ class RedBlackTreeTests {
             // Parent's grandparent
             rootData = NodeData(
                 payload = 2000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 // Parent's parent (grandparent)
                 leftChild = NodeData(
                     payload = 1000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Parent
                     leftChild = NodeData(
                         payload = 500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         // Sibling
                         leftChild = NodeData(
                             payload = 250.0,
-                            color = Color.Black,
+                            color = RedBlackColor.Black,
                         ),
                         // Removed node
                         rightChild = NodeData(
                             payload = 750.0,
-                            color = Color.Black,
+                            color = RedBlackColor.Black,
                         ),
                     ),
                     // Parent's sibling (uncle)
                     rightChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                         // Parent's close nephew
                         leftChild = RedBlackTree.buildBalance(
                             requiredBlackDepth = 3,
@@ -941,35 +940,35 @@ class RedBlackTreeTests {
             // Parent's parent (grandparent)
             rootData = NodeData(
                 payload = 2000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 // Parent's sibling (uncle)
                 leftChild = NodeData(
                     payload = 1000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Parent's distant nephew
                     leftChild = NodeData(
                         payload = 500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Parent's close nephew
                     rightChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
                 // Parent
                 rightChild = NodeData(
                     payload = 3000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Removed node
                     leftChild = NodeData(
                         payload = 2500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Sibling
                     rightChild = NodeData(
                         payload = 3500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
             ),
@@ -995,20 +994,20 @@ class RedBlackTreeTests {
             // Parent's parent (grandparent)
             rootData = NodeData(
                 payload = 2000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 // Parent's sibling (uncle)
                 leftChild = NodeData(
                     payload = 1000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Parent's distant nephew
                     leftChild = NodeData(
                         payload = 500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Parent's close nephew
                     rightChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                         leftChild = RedBlackTree.buildBalance(
                             requiredBlackDepth = 2,
                             payloadRange = 1000.0..1500.0,
@@ -1022,16 +1021,16 @@ class RedBlackTreeTests {
                 // Parent
                 rightChild = NodeData(
                     payload = 3000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Sibling
                     leftChild = NodeData(
                         payload = 2500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Removed node
                     rightChild = NodeData(
                         payload = 3500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
             ),
@@ -1057,30 +1056,30 @@ class RedBlackTreeTests {
             // Parent's parent (grandparent)
             rootData = NodeData(
                 payload = 2000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // Parent
                 leftChild = NodeData(
                     payload = 1500.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Removed node
                     leftChild = NodeData(
                         payload = 1000.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Sibling
                     rightChild = NodeData(
                         payload = 1750.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
                 // Parent's sibling (uncle)
                 rightChild = NodeData(
                     payload = 3000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Parent's close nephew
                     leftChild = NodeData(
                         payload = 2500.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                         leftChild = RedBlackTree.buildBalance(
                             requiredBlackDepth = 2,
                             payloadRange = 2000.0..2500.0,
@@ -1093,7 +1092,7 @@ class RedBlackTreeTests {
                     // Parent's distant nephew
                     rightChild = NodeData(
                         payload = 3500.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                         leftChild = RedBlackTree.buildBalance(
                             requiredBlackDepth = 2,
                             payloadRange = 3000.0..3500.0,
@@ -1127,45 +1126,45 @@ class RedBlackTreeTests {
             // Grandparent
             rootData = NodeData(
                 payload = 2000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 // Parent
                 leftChild = NodeData(
                     payload = 1000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Sibling
                     leftChild = NodeData(
                         payload = 500.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                         // Distant nephew
                         leftChild = NodeData(
                             payload = 250.0,
-                            color = Color.Black,
+                            color = RedBlackColor.Black,
                         ),
                         // Close nephew
                         rightChild = NodeData(
                             payload = 750.0,
-                            color = Color.Black,
+                            color = RedBlackColor.Black,
                         ),
                     ),
                     // Removed node
                     rightChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
                 // Parent's sibling (uncle)
                 rightChild = NodeData(
                     payload = 3000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Parent's close nephew
                     leftChild = NodeData(
                         payload = 2500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Parent's distant nephew
                     rightChild = NodeData(
                         payload = 4000.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
             ),
@@ -1191,20 +1190,20 @@ class RedBlackTreeTests {
             // Grandparent
             rootData = NodeData(
                 payload = 2000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // Parent's sibling (uncle)
                 leftChild = NodeData(
                     payload = 1000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Parent's distant nephew
                     leftChild = NodeData(
                         payload = 500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Parent's close nephew
                     rightChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                         leftChild = RedBlackTree.buildBalance(
                             requiredBlackDepth = 2,
                             payloadRange = 1000.0..1500.0,
@@ -1218,16 +1217,16 @@ class RedBlackTreeTests {
                 // Parent
                 rightChild = NodeData(
                     payload = 3000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Removed node
                     leftChild = NodeData(
                         payload = 2500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Sibling
                     rightChild = NodeData(
                         payload = 4000.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                         // Close nephew
                         leftChild = RedBlackTree.buildBalance(
                             requiredBlackDepth = 2,
@@ -1263,15 +1262,15 @@ class RedBlackTreeTests {
             // Grandparent
             rootData = NodeData(
                 payload = 2000.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 // Parent
                 leftChild = NodeData(
                     payload = 1000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Sibling
                     leftChild = NodeData(
                         payload = 500.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                         leftChild = RedBlackTree.buildBalance(
                             requiredBlackDepth = 2,
                             payloadRange = 0.0..500.0,
@@ -1284,13 +1283,13 @@ class RedBlackTreeTests {
                     // Removed node
                     rightChild = NodeData(
                         payload = 1500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
                 // Parent's sibling
                 rightChild = NodeData(
                     payload = 3000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Parent's close nephew
                     leftChild = RedBlackTree.buildBalance(
                         requiredBlackDepth = 2,
@@ -1299,7 +1298,7 @@ class RedBlackTreeTests {
                     // Parent's distant nephew
                     rightChild = NodeData(
                         payload = 4000.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                         leftChild = RedBlackTree.buildBalance(
                             requiredBlackDepth = 2,
                             payloadRange = 3000.0..4000.0,
@@ -1331,20 +1330,20 @@ class RedBlackTreeTests {
             // Grandparent
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // Parent
                 leftChild = NodeData(
                     payload = 500.0,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                     // Removed node
                     leftChild = NodeData(
                         payload = 250.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Sibling
                     rightChild = NodeData(
                         payload = 750.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         // Nephews: nil
                     ),
                 ),
@@ -1373,7 +1372,7 @@ class RedBlackTreeTests {
             // Grandparent
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 leftChild = RedBlackTree.buildBalance(
                     requiredBlackDepth = 2,
                     payloadRange = 0.0..1000.0,
@@ -1381,22 +1380,22 @@ class RedBlackTreeTests {
                 // Parent
                 rightChild = NodeData(
                     payload = 3000.0,
-                    color = Color.Red,
+                    color = RedBlackColor.Red,
                     // Sibling
                     leftChild = NodeData(
                         payload = 2000.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         // Distant nephew: nil
                         // Close nephew
                         rightChild = NodeData(
                             payload = 2500.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                     ),
                     // Removed node
                     rightChild = NodeData(
                         payload = 3500.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                 ),
             ),
@@ -1421,25 +1420,25 @@ class RedBlackTreeTests {
             // Grandparent
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // parent
                 leftChild = NodeData(
                     payload = 500.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Removed node
                     leftChild = NodeData(
                         payload = 250.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                     ),
                     // Sibling
                     rightChild = NodeData(
                         payload = 750.0,
-                        color = Color.Black,
+                        color = RedBlackColor.Black,
                         // Close nephew: nil
                         // Distant nephew
                         rightChild = NodeData(
                             payload = 800.0,
-                            color = Color.Red,
+                            color = RedBlackColor.Red,
                         ),
                     ),
                 ),
@@ -1468,21 +1467,21 @@ class RedBlackTreeTests {
             // parent
             rootData = NodeData(
                 payload = 500.0,
-                color = Color.Red,
+                color = RedBlackColor.Red,
                 // Removed node
                 leftChild = NodeData(
                     payload = 250.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
                 // Sibling
                 rightChild = NodeData(
                     payload = 750.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                     // Close nephew: nil
                     // Distant nephew
                     rightChild = NodeData(
                         payload = 800.0,
-                        color = Color.Red,
+                        color = RedBlackColor.Red,
                     ),
                 ),
             ),

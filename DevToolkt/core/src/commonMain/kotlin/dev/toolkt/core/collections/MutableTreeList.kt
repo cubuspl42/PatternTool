@@ -2,8 +2,8 @@ package dev.toolkt.core.collections
 
 import dev.toolkt.core.collections.StableCollection.Handle
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.RedBlackColor
 import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.getNextInOrderFreeLocation
 import dev.toolkt.core.data_structures.binary_tree.getRank
 import dev.toolkt.core.data_structures.binary_tree.getSideMostFreeLocation
@@ -21,7 +21,7 @@ import kotlin.jvm.JvmInline
 class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
     @JvmInline
     internal value class TreeListHandle<E> internal constructor(
-        val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
+        val nodeHandle: BinaryTree.NodeHandle<E, RedBlackColor>,
     ) : Handle<E>
 
     private val elementTree = MutableBalancedBinaryTree.redBlack<E>()
@@ -320,7 +320,7 @@ fun <E> mutableTreeListOf(
     return mutableTreeList
 }
 
-private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color>? {
+private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackColor>? {
     this as? MutableTreeList.TreeListHandle<E> ?: throw IllegalArgumentException(
         "Handle is not a TreeListHandle: $this"
     )
@@ -331,6 +331,6 @@ private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color>
     }
 }
 
-private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): Handle<E> = MutableTreeList.TreeListHandle(
+private fun <E> BinaryTree.NodeHandle<E, RedBlackColor>.pack(): Handle<E> = MutableTreeList.TreeListHandle(
     nodeHandle = this,
 )

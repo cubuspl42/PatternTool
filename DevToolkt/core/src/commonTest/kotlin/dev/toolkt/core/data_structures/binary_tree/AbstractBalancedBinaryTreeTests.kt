@@ -1,13 +1,10 @@
 package dev.toolkt.core.data_structures.binary_tree
 
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree.Color
 import dev.toolkt.core.data_structures.binary_tree.test_utils.NodeData
-import dev.toolkt.core.data_structures.binary_tree.test_utils.dump
 import dev.toolkt.core.data_structures.binary_tree.test_utils.getHandle
 import dev.toolkt.core.data_structures.binary_tree.test_utils.loadVerified
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class AbstractBalancedBinaryTreeTests {
     @Test
@@ -16,16 +13,16 @@ class AbstractBalancedBinaryTreeTests {
             // Grandparent's grandparent
             rootData = NodeData(
                 payload = 1000.0,
-                color = Color.Black,
+                color = RedBlackColor.Black,
                 // Grandparent's uncle
                 leftChild = NodeData(
                     payload = 500.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
                 // Grandparent's parent
                 rightChild = NodeData(
                     payload = 2000.0,
-                    color = Color.Black,
+                    color = RedBlackColor.Black,
                 ),
             ),
         )

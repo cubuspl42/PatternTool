@@ -18,7 +18,7 @@ class RedBlackTreeRemoveBenchmark {
 
     private val random = Random(0)
 
-    private val handles = mutableListOf<BinaryTree.NodeHandle<Int, RedBlackTree.Color>>()
+    private val handles = mutableListOf<BinaryTree.NodeHandle<Int, RedBlackColor>>()
 
     private var index = 0
 
