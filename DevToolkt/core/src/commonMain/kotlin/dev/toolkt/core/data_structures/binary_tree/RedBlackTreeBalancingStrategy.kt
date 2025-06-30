@@ -2,25 +2,18 @@ package dev.toolkt.core.data_structures.binary_tree
 
 import dev.toolkt.core.errors.assert
 
-/**
- * @constructor The constructor that accepts an existing mutable [internalTree]
- * is a low-level functionality. The ownership of that tree passes to this object.
- * The given tree is assumed to initially be a valid red-black tree.
- */
-class RedBlackTree<PayloadT> internal constructor(
-    internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor> = MutableUnbalancedBinaryTree.create(),
-) : AbstractBalancedBinaryTree<PayloadT, RedBlackColor>(
-    internalTree = internalTree,
-) {
+class RedBlackTreeBalancingStrategy<PayloadT>() : BinaryTreeBalancingStrategy<PayloadT, RedBlackColor>() {
     override val defaultColor: RedBlackColor
         get() = RedBlackColor.Red
 
     companion object;
 
     override fun rebalanceAfterAttach(
-        putNodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackColor>,
+        internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor>,
+        attachedNodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackColor>,
     ): RebalanceResult<PayloadT, RedBlackColor> = fixPotentialRedViolationRecursively(
-        nodeHandle = putNodeHandle,
+        internalTree = internalTree,
+        nodeHandle = attachedNodeHandle,
     )
 
     /**
@@ -28,6 +21,7 @@ class RedBlackTree<PayloadT> internal constructor(
      * to the [nodeHandle].
      */
     private fun fixPotentialRedViolationRecursively(
+        internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor>,
         nodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackColor>,
     ): RebalanceResult<PayloadT, RedBlackColor> {
         val color = internalTree.getColor(nodeHandle = nodeHandle)
@@ -92,7 +86,7 @@ class RedBlackTree<PayloadT> internal constructor(
 
         val grandparentHandle = parentRelativeLocation.parentHandle
 
-        val grandparentLocation = locate(nodeHandle = grandparentHandle)
+        val grandparentLocation = internalTree.locate(nodeHandle = grandparentHandle)
 
         assert(internalTree.getColor(nodeHandle = grandparentHandle) == RedBlackColor.Black) {
             "The grandparent must be black, as the parent is red"
@@ -131,6 +125,7 @@ class RedBlackTree<PayloadT> internal constructor(
                 // While we fixed one red violation, we might've introduced
                 // another. Let's fix this recursively.
                 val recursiveResult = fixPotentialRedViolationRecursively(
+                    internalTree = internalTree,
                     nodeHandle = grandparentHandle,
                 )
 
@@ -184,10 +179,12 @@ class RedBlackTree<PayloadT> internal constructor(
     }
 
     override fun rebalanceAfterCutOff(
+        internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor>,
         cutOffLeafLocation: BinaryTree.RelativeLocation<PayloadT, RedBlackColor>,
         cutOffLeafColor: RedBlackColor,
     ): RebalanceResult<PayloadT, RedBlackColor> = when (cutOffLeafColor) {
         RedBlackColor.Black -> fixBlackViolationRecursively(
+            internalTree = internalTree,
             nodeHandle = null,
             relativeLocation = cutOffLeafLocation,
         )
@@ -199,6 +196,7 @@ class RedBlackTree<PayloadT> internal constructor(
     }
 
     private fun fixBlackViolationRecursively(
+        internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor>,
         /**
          * A handle to the node to be fixed, null represents a null node
          */
@@ -489,6 +487,7 @@ class RedBlackTree<PayloadT> internal constructor(
                 // Although the subtree is balanced (has the same black height on each path), it's still one less than
                 // all the other paths in the whole tree. We need to fix it recursively.
                 val recursiveResult = fixBlackViolationRecursively(
+                    internalTree = internalTree,
                     nodeHandle = parentHandle,
                     relativeLocation = parentRelativeLocation,
                 )
@@ -501,6 +500,7 @@ class RedBlackTree<PayloadT> internal constructor(
     }
 
     override fun rebalanceAfterCollapse(
+        internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor>,
         elevatedNodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackColor>,
     ): RebalanceResult<PayloadT, RedBlackColor> {
         // As the elevated node was a single child of its parent, it must be
@@ -510,7 +510,7 @@ class RedBlackTree<PayloadT> internal constructor(
             newColor = RedBlackColor.Black,
         )
 
-        val elevatedNodeLocation = locate(nodeHandle = elevatedNodeHandle)
+        val elevatedNodeLocation = internalTree.locate(nodeHandle = elevatedNodeHandle)
 
         return RebalanceResult(
             finalLocation = elevatedNodeLocation,

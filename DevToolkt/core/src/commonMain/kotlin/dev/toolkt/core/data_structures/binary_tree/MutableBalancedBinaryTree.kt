@@ -6,7 +6,10 @@ interface MutableBalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, Col
     companion object {
         fun <PayloadT> redBlack(
             internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor> = MutableUnbalancedBinaryTree.create(),
-        ): MutableBalancedBinaryTree<PayloadT, RedBlackColor> = RedBlackTree(internalTree = internalTree)
+        ): MutableBalancedBinaryTree<PayloadT, RedBlackColor> = BalancedBinaryTree(
+            internalTree = internalTree,
+            balancingStrategy = RedBlackTreeBalancingStrategy(),
+        )
     }
 
     /**
@@ -37,7 +40,9 @@ interface MutableBalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, Col
      * May result in the tree re-balancing.
      *
      * @throws IllegalArgumentException if the node is not a leaf
+     * @return the location of the highest subtree root that was rotated
      */
+    // TODO: Figure out if it's actually needed to return the location
     fun remove(
         nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
     ): BinaryTree.Location<PayloadT, ColorT>
