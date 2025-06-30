@@ -31,9 +31,9 @@ private class VolatileKeyOrderGuide<PayloadT, ColorT, KeyT : Comparable<KeyT>>(
     override fun instruct(
         payload: PayloadT,
     ): Guide.Instruction {
-        val payload = selector(payload)
+        val key = selector(payload)
 
-        if (payload == null) {
+        if (key == null) {
             // TODO: Swap with either in-order neighbour, cut-off otherwise
             // Currently, balanced trees don't expose the swap operation
         }
