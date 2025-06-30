@@ -1,0 +1,34 @@
+package dev.toolkt.core.data_structures.binary_tree.lookup
+
+import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
+
+fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> MutableBalancedBinaryTree<PayloadT, ColorT>.findByVolatile(
+    key: KeyT,
+    selector: (PayloadT) -> KeyT?,
+): BinaryTree.Location<PayloadT, ColorT> = findLocationGuided(
+    guide = VolatileKeyOrderGuide(
+        tree = this,
+        locatedKey = key,
+        selector = selector,
+    ),
+)
+
+private class VolatileKeyOrderGuide<PayloadT, ColorT, KeyT : Comparable<KeyT>>(
+    /**
+     * The tree that the guide is operating on.
+     */
+    private val tree: MutableBalancedBinaryTree<PayloadT, ColorT>,
+    /**
+     * The key that the guide is looking for.
+     */
+    private val locatedKey: KeyT,
+    /**
+     * A function extracting a key from the payload.
+     */
+    private val selector: (PayloadT) -> KeyT?,
+) : Guide<PayloadT> {
+    override fun instruct(
+        payload: PayloadT,
+    ): Guide.Instruction = TODO()
+}

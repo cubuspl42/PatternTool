@@ -1,5 +1,6 @@
 package dev.toolkt.core.data_structures.binary_tree
 
+import dev.toolkt.core.data_structures.binary_tree.lookup.getRandomFreeLocation
 import dev.toolkt.core.iterable.append
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Scope
