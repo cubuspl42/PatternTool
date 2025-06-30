@@ -9,52 +9,13 @@ import dev.toolkt.core.data_structures.binary_tree.getChildLocation
  * i.e. how the node's index in the order corresponds to its payload.
  */
 interface Guide<in PayloadT> {
-    /**
-     * An instruction on how to proceed with the search in a binary tree.
-     */
-    sealed class Instruction {
-        /**
-         * An instruction to turn to (recurse to) a side of the tree.
-         */
-        data class Turn(
-            /**
-             * The side of the tree to turn to
-             */
-            val side: BinaryTree.Side,
-        ) : Instruction()
-
-        /**
-         * An instruction to stop, meaning that the payload has been found
-         */
-        data object Stop : Instruction()
-
-        companion object {
-            fun <T : Comparable<T>> comparing(
-                expected: T,
-                actual: T,
-            ): Instruction {
-                val result = expected.compareTo(actual)
-
-                return when {
-                    result == 0 -> Stop
-
-                    else -> Instruction.Turn(
-                        side = when {
-                            result < 0 -> BinaryTree.Side.Left
-                            else -> BinaryTree.Side.Right
-                        },
-                    )
-                }
-            }
-        }
-    }
 
     /**
      * Instructs on how to proceed with the given [payload].
      */
     fun instruct(
         payload: PayloadT,
-    ): Instruction
+    ): GuideInstruction
 }
 
 fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocationGuided(
@@ -81,9 +42,9 @@ private tailrec fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocation
     )
 
     when (instruction) {
-        Guide.Instruction.Stop -> return location
+        GuideInstruction.Stop -> return location
 
-        is Guide.Instruction.Turn -> {
+        is GuideInstruction.Turn -> {
             val childLocation = nodeHandle.getChildLocation(
                 side = instruction.side,
             )
