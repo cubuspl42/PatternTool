@@ -1,5 +1,6 @@
 package dev.toolkt.core.collections
 
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -51,7 +52,6 @@ class MutableTreeMapTests {
             controlKeys = setOf(20, 30),
         )
     }
-
 
     @Test
     fun testPut_overwrite() {
@@ -266,7 +266,9 @@ class MutableTreeMapTests {
             actual = map.resolve(key = 20),
         )
 
-        val entry = map.removeVia(handle = handle)
+        val entry = assertNotNull(
+            actual = map.removeVia(handle = handle),
+        )
 
         assertEquals(
             expected = 20,
@@ -279,12 +281,11 @@ class MutableTreeMapTests {
         )
 
         assertNull(
-            actual = map[20],
+            actual = map.getVia(handle = handle),
         )
 
-        assertEquals(
-            expected = 2,
-            actual = map.size,
+        assertNull(
+            actual = map.removeVia(handle = handle),
         )
 
         map.verifyContent(
@@ -315,4 +316,3 @@ class MutableTreeMapTests {
         )
     }
 }
-

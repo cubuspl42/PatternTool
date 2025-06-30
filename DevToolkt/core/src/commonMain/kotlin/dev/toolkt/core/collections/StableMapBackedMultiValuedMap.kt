@@ -85,7 +85,7 @@ class StableMapBackedMultiValuedMap<K, V>(
 
         return bucket.add(value)
 
-         addEx(element)
+        addEx(element)
     }
 
     override val values: Collection<V>
@@ -94,8 +94,9 @@ class StableMapBackedMultiValuedMap<K, V>(
     override fun resolveAll(
         key: K,
     ): Collection<EntryHandle<K, V>> {
-        val bucketHandle: BucketHandle<K, V> = bucketMap.resolve(key = key) ?: return emptyList()
-        val bucket = bucketMap.getValueVia(handle = bucketHandle)
+        val (bucket, bucketHandle) = bucketMap.getWithHandle(
+            key = key,
+        ) ?: return emptyList()
 
         return bucket.handles.map { valueHandle ->
             StableMapBackedMultiValuedMap.pack(
@@ -108,6 +109,7 @@ class StableMapBackedMultiValuedMap<K, V>(
     override val handles: Sequence<EntryHandle<K, V>>
         get() = bucketMap.handles.flatMap { bucketHandle ->
             val bucket = bucketMap.getValueVia(handle = bucketHandle)
+                ?: throw AssertionError("The handle is immediately invalid")
 
             bucket.handles.map { valueHandle ->
                 pack(bucketHandle, valueHandle)
@@ -116,8 +118,8 @@ class StableMapBackedMultiValuedMap<K, V>(
 
     override fun getVia(
         handle: EntryHandle<K, V>,
-    ): Map.Entry<K, V> {
-        val (key, _, value) = handle.unpackFully()
+    ): Map.Entry<K, V>? {
+        val (key, _, value) = handle.unpackFully() ?: return null
 
         return MapEntry(
             key = key,
@@ -130,46 +132,42 @@ class StableMapBackedMultiValuedMap<K, V>(
     ): EntryHandle<K, V> {
         val (key, value) = element
 
-        when (val existingBucketHandle: BucketHandle<K, V>? = bucketMap.resolve(key = key)) {
-            null -> {
-                val newBucket = mutableStableBagOf<V>()
+        val (existingBucket, existingBucketHandle) = bucketMap.getWithHandle(
+            key = key,
+        ) ?: return run {
+            val newBucket = mutableStableBagOf<V>()
 
-                val newBucketHandle = bucketMap.addEx(
-                    key = key,
-                    value = newBucket,
-                ) ?: throw AssertionError("The new bucket wasn't effectively added")
+            val newBucketHandle = bucketMap.addEx(
+                key = key,
+                value = newBucket,
+            ) ?: throw AssertionError("The new bucket wasn't effectively added")
 
-                val addedValueHandle = newBucket.addEx(value)
+            val addedValueHandle = newBucket.addEx(value)
 
-                return pack(
-                    bucketHandle = newBucketHandle,
-                    valueHandle = addedValueHandle,
-                )
-            }
-
-            else -> {
-                val existingBucket = bucketMap.getValueVia(handle = existingBucketHandle)
-
-                val addedValueHandle = existingBucket.addEx(value)
-
-                return pack(
-                    bucketHandle = existingBucketHandle,
-                    valueHandle = addedValueHandle,
-                )
-            }
+            return@run pack(
+                bucketHandle = newBucketHandle,
+                valueHandle = addedValueHandle,
+            )
         }
+
+        val addedValueHandle = existingBucket.addEx(value)
+
+        return pack(
+            bucketHandle = existingBucketHandle,
+            valueHandle = addedValueHandle,
+        )
     }
 
     override fun removeVia(
         handle: EntryHandle<K, V>,
-    ): Map.Entry<K, V> {
+    ): Map.Entry<K, V>? {
         val handleImpl = handle.unpack()
         val bucketHandle = handleImpl.bucketHandle
         val valueHandle = handleImpl.valueHandle
 
-        val (key, bucket) = bucketMap.getVia(bucketHandle)
+        val (key, bucket) = bucketMap.getVia(bucketHandle) ?: return null
 
-        val removedValue = bucket.removeVia(handle = valueHandle)
+        val removedValue = bucket.removeVia(handle = valueHandle) ?: return null
 
         if (bucket.isEmpty()) {
             bucketMap.removeVia(handle = bucketHandle)
@@ -192,14 +190,20 @@ class StableMapBackedMultiValuedMap<K, V>(
         mutableStableListOf()
     }
 
-    private fun EntryHandle<K, V>.unpackFully(): UnpackedHandle<K, V> {
+    private fun EntryHandle<K, V>.unpackFully(): UnpackedHandle<K, V>? {
         val handleImpl = this.unpack()
 
-        val bucketEntry = bucketMap.getVia(handle = handleImpl.bucketHandle)
+        val bucketEntry = bucketMap.getVia(
+            handle = handleImpl.bucketHandle,
+        ) ?: return null
+
         val key = bucketEntry.key
 
         val bucket = bucketEntry.value
-        val value = bucket.getVia(handle = handleImpl.valueHandle)
+
+        val value = bucket.getVia(
+            handle = handleImpl.valueHandle,
+        ) ?: return null
 
         return UnpackedHandle(
             key = key,

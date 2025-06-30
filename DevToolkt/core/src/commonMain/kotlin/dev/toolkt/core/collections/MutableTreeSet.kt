@@ -32,8 +32,8 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
         return nodeHandle.pack()
     }
 
-    override fun getVia(handle: Handle<E>): E {
-        val nodeHandle = handle.unpack()
+    override fun getVia(handle: Handle<E>): E? {
+        val nodeHandle = handle.unpack() ?: return null
         return elementTree.getPayload(nodeHandle = nodeHandle)
     }
 
@@ -68,8 +68,8 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
         return true
     }
 
-    override fun removeVia(handle: Handle<E>): E {
-        val nodeHandle = handle.unpack()
+    override fun removeVia(handle: Handle<E>): E? {
+        val nodeHandle = handle.unpack() ?: return null
 
         val removedElement = elementTree.getPayload(nodeHandle = nodeHandle)
 
@@ -97,12 +97,15 @@ fun <E : Comparable<E>> mutableTreeSetOf(
     return set
 }
 
-private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color> {
+private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color>? {
     this as? MutableTreeSet.TreeSetHandle<E> ?: throw IllegalArgumentException(
         "Handle is not a TreeSetHandle: $this"
     )
 
-    return this.nodeHandle
+    return when {
+        nodeHandle.isValid -> nodeHandle
+        else -> null
+    }
 }
 
 private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): Handle<E> = MutableTreeSet.TreeSetHandle(

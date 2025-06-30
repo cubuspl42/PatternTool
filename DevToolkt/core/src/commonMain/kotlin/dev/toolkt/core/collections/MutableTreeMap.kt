@@ -110,8 +110,8 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
 
     override fun removeVia(
         handle: EntryHandle<K, V>,
-    ): Map.Entry<K, V> {
-        val nodeHandle = handle.unpack()
+    ): Map.Entry<K, V>? {
+        val nodeHandle = handle.unpack() ?: return null
         val removedEntry = entryTree.getPayload(nodeHandle = nodeHandle)
 
         entryTree.remove(nodeHandle = nodeHandle)
@@ -131,8 +131,8 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
 
     override fun getVia(
         handle: EntryHandle<K, V>,
-    ): Map.Entry<K, V> {
-        val nodeHandle = handle.unpack()
+    ): Map.Entry<K, V>? {
+        val nodeHandle = handle.unpack() ?: return null
         return entryTree.getPayload(nodeHandle = nodeHandle)
     }
 
@@ -178,12 +178,15 @@ private typealias EntryLocation<K, V> = BinaryTree.Location<MutableTreeMap.Mutab
 
 private typealias EntryNodeHandle<K, V> = BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color>
 
-private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): EntryNodeHandle<K, V> {
+private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): EntryNodeHandle<K, V>? {
     this as? MutableTreeMap.TreeMapHandle<K, V> ?: throw IllegalArgumentException(
         "Handle is not a TreeMapHandle: $this"
     )
 
-    return this.nodeHandle
+    return when {
+        nodeHandle.isValid -> nodeHandle
+        else -> null
+    }
 }
 
 private fun <K : Comparable<K>, V> EntryNodeHandle<K, V>.pack(): EntryHandle<K, V> =
