@@ -2,8 +2,8 @@ package dev.toolkt.core.collections
 
 import dev.toolkt.core.collections.StableCollection.Handle
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.RedBlackColor
 import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.lookup.find
 import dev.toolkt.core.data_structures.binary_tree.traverse
 import kotlin.jvm.JvmInline
@@ -11,7 +11,7 @@ import kotlin.jvm.JvmInline
 class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutableSet<E>(), MutableStableSet<E> {
     @JvmInline
     internal value class TreeSetHandle<E> internal constructor(
-        internal val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
+        internal val nodeHandle: BinaryTree.NodeHandle<E, RedBlackColor>,
     ) : Handle<E>
 
     private val elementTree = MutableBalancedBinaryTree.redBlack<E>()
@@ -97,7 +97,7 @@ fun <E : Comparable<E>> mutableTreeSetOf(
     return set
 }
 
-private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color>? {
+private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackColor>? {
     this as? MutableTreeSet.TreeSetHandle<E> ?: throw IllegalArgumentException(
         "Handle is not a TreeSetHandle: $this"
     )
@@ -108,6 +108,6 @@ private fun <E> Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color>
     }
 }
 
-private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): Handle<E> = MutableTreeSet.TreeSetHandle(
+private fun <E> BinaryTree.NodeHandle<E, RedBlackColor>.pack(): Handle<E> = MutableTreeSet.TreeSetHandle(
     nodeHandle = this,
 )

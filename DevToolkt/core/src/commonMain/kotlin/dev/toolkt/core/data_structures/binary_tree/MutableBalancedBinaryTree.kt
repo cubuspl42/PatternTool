@@ -1,13 +1,12 @@
 package dev.toolkt.core.data_structures.binary_tree
 
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree.Color
 import dev.toolkt.core.iterable.uncons
 
 interface MutableBalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, ColorT> {
     companion object {
         fun <PayloadT> redBlack(
-            internalTree: MutableUnbalancedBinaryTree<PayloadT, Color> = MutableUnbalancedBinaryTree.create(),
-        ): MutableBalancedBinaryTree<PayloadT, RedBlackTree.Color> = RedBlackTree(internalTree = internalTree)
+            internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor> = MutableUnbalancedBinaryTree.create(),
+        ): MutableBalancedBinaryTree<PayloadT, RedBlackColor> = RedBlackTree(internalTree = internalTree)
     }
 
     /**
