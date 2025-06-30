@@ -7,14 +7,14 @@ fun <PayloadT, KeyT : Comparable<KeyT>, ColorT> MutableBalancedBinaryTree<Payloa
     key: KeyT,
     selector: (PayloadT) -> KeyT?,
 ): BinaryTree.Location<PayloadT, ColorT> = findLocationGuided(
-    guide = VolatileKeyOrderGuide(
+    navigator = VolatileKeyOrderBinaryTreeNavigator(
         tree = this,
         locatedKey = key,
         selector = selector,
     ),
 )
 
-private class VolatileKeyOrderGuide<PayloadT, ColorT, KeyT : Comparable<KeyT>>(
+private class VolatileKeyOrderBinaryTreeNavigator<PayloadT, ColorT, KeyT : Comparable<KeyT>>(
     /**
      * The tree that the guide is operating on.
      */
@@ -27,7 +27,7 @@ private class VolatileKeyOrderGuide<PayloadT, ColorT, KeyT : Comparable<KeyT>>(
      * A function extracting a key from the payload.
      */
     private val selector: (PayloadT) -> KeyT?,
-) : Guide<PayloadT> {
+) : BinaryTreeNavigator<PayloadT> {
     override fun instruct(
         payload: PayloadT,
     ): BinaryTreeNavigationCommand {
