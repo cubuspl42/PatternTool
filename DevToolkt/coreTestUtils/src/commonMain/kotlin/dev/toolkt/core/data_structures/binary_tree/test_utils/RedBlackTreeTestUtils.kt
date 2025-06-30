@@ -36,8 +36,8 @@ fun <PayloadT : Comparable<PayloadT>> RedBlackTree<PayloadT>.removeVerified(
     verify()
 }
 
-fun <PayloadT : Comparable<PayloadT>> RedBlackTree.Companion.loadVerified(
-    rootData: NodeData<PayloadT, RedBlackTree.Color>
+fun <PayloadT> RedBlackTree.Companion.loadVerified(
+    rootData: NodeData<PayloadT, RedBlackTree.Color>,
 ): RedBlackTree<PayloadT> {
     val internalTree = MutableUnbalancedBinaryTree.load(
         rootData = rootData,
@@ -50,19 +50,19 @@ fun <PayloadT : Comparable<PayloadT>> RedBlackTree.Companion.loadVerified(
     )
 }
 
-fun <PayloadT : Comparable<PayloadT>> BinaryTree<PayloadT, RedBlackTree.Color>.verify() {
+fun <PayloadT> BinaryTree<PayloadT, RedBlackTree.Color>.verify() {
     verifyIntegrity()
     verifyBalance()
     verifyColor()
 }
 
-private fun <PayloadT : Comparable<PayloadT>> BinaryTree<PayloadT, RedBlackTree.Color>.verifyColor() {
+private fun <PayloadT> BinaryTree<PayloadT, RedBlackTree.Color>.verifyColor() {
     val rootHandle = this.currentRootHandle ?: return
 
     verifySubtreeColor(parentColor = null, rootHandle)
 }
 
-private fun <PayloadT : Comparable<PayloadT>> BinaryTree<PayloadT, RedBlackTree.Color>.verifySubtreeColor(
+private fun <PayloadT> BinaryTree<PayloadT, RedBlackTree.Color>.verifySubtreeColor(
     parentColor: RedBlackTree.Color?,
     nodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackTree.Color>,
 ): ColorVerificationResult {
