@@ -22,7 +22,7 @@ private class IntrinsicOrderGuide<PayloadT : Comparable<PayloadT>>(
 ) : Guide<PayloadT> {
     override fun instruct(
         payload: PayloadT,
-    ): GuideInstruction = GuideInstruction.comparing(
+    ): BinaryTreeNavigationCommand = BinaryTreeNavigationCommand.comparing(
         expected = locatedPayload,
         actual = payload,
     )

@@ -30,7 +30,7 @@ private class VolatileKeyOrderGuide<PayloadT, ColorT, KeyT : Comparable<KeyT>>(
 ) : Guide<PayloadT> {
     override fun instruct(
         payload: PayloadT,
-    ): GuideInstruction {
+    ): BinaryTreeNavigationCommand {
         val key = selector(payload)
 
         if (key == null) {

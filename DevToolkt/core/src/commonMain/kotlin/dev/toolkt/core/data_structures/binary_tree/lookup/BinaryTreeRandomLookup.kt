@@ -22,7 +22,7 @@ private class RandomGuide<PayloadT>(
 ) : Guide<PayloadT> {
     override fun instruct(
         payload: PayloadT,
-    ): GuideInstruction = GuideInstruction.Turn(
+    ): BinaryTreeNavigationCommand = BinaryTreeNavigationCommand.Turn(
         side = random.nextSide(),
     )
 }

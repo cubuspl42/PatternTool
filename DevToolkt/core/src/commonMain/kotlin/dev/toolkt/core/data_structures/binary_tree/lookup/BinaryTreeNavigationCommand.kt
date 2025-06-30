@@ -5,7 +5,7 @@ import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 /**
  * An instruction on how to proceed with the search in a binary tree.
  */
-sealed class GuideInstruction {
+sealed class BinaryTreeNavigationCommand {
     /**
      * An instruction to turn to (recurse to) a side of the tree.
      */
@@ -14,18 +14,18 @@ sealed class GuideInstruction {
          * The side of the tree to turn to
          */
         val side: BinaryTree.Side,
-    ) : GuideInstruction()
+    ) : BinaryTreeNavigationCommand()
 
     /**
      * An instruction to stop, meaning that the payload has been found
      */
-    data object Stop : GuideInstruction()
+    data object Stop : BinaryTreeNavigationCommand()
 
     companion object {
         fun <T : Comparable<T>> comparing(
             expected: T,
             actual: T,
-        ): GuideInstruction {
+        ): BinaryTreeNavigationCommand {
             val result = expected.compareTo(actual)
 
             return when {
