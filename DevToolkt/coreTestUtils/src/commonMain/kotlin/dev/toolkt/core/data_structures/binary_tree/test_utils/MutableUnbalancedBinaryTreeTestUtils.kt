@@ -2,7 +2,6 @@ package dev.toolkt.core.data_structures.binary_tree.test_utils
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTree
-import kotlin.test.assertFalse
 
 fun <PayloadT : Comparable<PayloadT>, ColorT> MutableUnbalancedBinaryTree<PayloadT, ColorT>.attachVerified(
     location: BinaryTree.Location<PayloadT, ColorT>,
