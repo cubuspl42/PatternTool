@@ -1,6 +1,7 @@
 package dev.toolkt.core.collections
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.lookup.findByVolatile
 import dev.toolkt.core.data_structures.binary_tree.takeOut
@@ -9,23 +10,10 @@ import dev.toolkt.core.platform.PlatformWeakReference
 import kotlin.jvm.JvmInline
 
 class MutableWeakTreeMap<K : Comparable<K>, V> internal constructor(
-    private val entryTree: RedBlackTree<WeakMutableMapEntry<K, V>> = RedBlackTree(),
+    private val entryTree: MutableBalancedBinaryTree<WeakMutableMapEntry<K, V>, RedBlackTree.Color> = MutableBalancedBinaryTree.redBlack(),
 ) : AbstractMutableStableMap<K, V>(
-    EntrySet(entryTree = entryTree),
+    MutableBalancedBinaryTreeWeakEntrySet(entryTree = entryTree),
 ) {
-    internal class EntrySet<K : Comparable<K>, V>(
-        private val entryTree: RedBlackTree<WeakMutableMapEntry<K, V>>,
-    ) : AbstractMutableCollection<MutableMap.MutableEntry<K, V>>(), MutableSet<MutableMap.MutableEntry<K, V>> {
-        override val size: Int
-            get() = entryTree.size
-
-        override fun iterator(): MutableIterator<MutableMap.MutableEntry<K, V>> = TODO() // Purging?
-
-        override fun add(element: MutableMap.MutableEntry<K, V>): Boolean {
-            throw UnsupportedOperationException()
-        }
-    }
-
     @JvmInline
     internal value class WeakTreeMapHandle<K : Comparable<K>, V> internal constructor(
         internal val nodeHandle: WeakEntryNodeHandle<K, V>,
@@ -182,7 +170,7 @@ fun <K : Comparable<K>, V> mutableWeakTreeMapOf(
     return map
 }
 
-private typealias WeakMutableMapEntry<K, V> = MutableTreeMap.MutableMapEntry<PlatformWeakReference<K>, V>
+internal typealias WeakMutableMapEntry<K, V> = MutableTreeMap.MutableMapEntry<PlatformWeakReference<K>, V>
 
 private typealias WeakEntryLocation<K, V> = BinaryTree.Location<WeakMutableMapEntry<K, V>, RedBlackTree.Color>
 

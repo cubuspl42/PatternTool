@@ -1,15 +1,16 @@
 package dev.toolkt.core.collections
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.lookup.findBy
 import dev.toolkt.core.data_structures.binary_tree.traverse
 import kotlin.jvm.JvmInline
 
 class MutableTreeMap<K : Comparable<K>, V> internal constructor(
-    private val entryTree: RedBlackTree<MutableTreeMap.MutableMapEntry<K, V>> = RedBlackTree(),
+    private val entryTree: MutableBalancedBinaryTree<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color> = MutableBalancedBinaryTree.redBlack(),
 ) : AbstractMutableStableMap<K, V>(
-    EntrySet(entryTree = entryTree),
+    MutableBalancedBinaryTreeEntrySet(entryTree = entryTree),
 ) {
     internal class MutableMapEntry<K, V>(
         override val key: K,
@@ -32,19 +33,6 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
             mutableValue = newValue
 
             return previousValue
-        }
-    }
-
-    internal class EntrySet<K : Comparable<K>, V>(
-        private val entryTree: RedBlackTree<MutableMapEntry<K, V>>,
-    ) : AbstractMutableCollection<MutableMap.MutableEntry<K, V>>(), MutableSet<MutableMap.MutableEntry<K, V>> {
-        override val size: Int
-            get() = entryTree.size
-
-        override fun iterator(): MutableIterator<MutableMap.MutableEntry<K, V>> = RedBlackTreeIterator(tree = entryTree)
-
-        override fun add(element: MutableMap.MutableEntry<K, V>): Boolean {
-            throw UnsupportedOperationException()
         }
     }
 

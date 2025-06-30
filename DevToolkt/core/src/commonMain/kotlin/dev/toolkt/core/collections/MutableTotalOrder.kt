@@ -1,6 +1,7 @@
 package dev.toolkt.core.collections
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
 import dev.toolkt.core.data_structures.binary_tree.getRank
 import dev.toolkt.core.data_structures.binary_tree.getSideMostFreeLocation
@@ -11,7 +12,7 @@ import dev.toolkt.core.order.OrderRelation
 import kotlin.jvm.JvmInline
 
 class MutableTotalOrder<E> {
-    private val tree = RedBlackTree<E>()
+    private val tree = MutableBalancedBinaryTree.redBlack<E>()
 
     @JvmInline
     value class Handle<E> internal constructor(

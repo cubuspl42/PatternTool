@@ -15,7 +15,7 @@ import kotlin.test.assertNull
 class RedBlackTreeTests {
     @Test
     fun testInitial() {
-        val tree = RedBlackTree<Int>()
+        val tree = MutableBalancedBinaryTree.redBlack<Int>()
 
         assertNull(
             actual = tree.dump(),
@@ -24,7 +24,7 @@ class RedBlackTreeTests {
 
     @Test
     fun testInsert_root() {
-        val tree = RedBlackTree<Int>()
+        val tree = MutableBalancedBinaryTree.redBlack<Int>()
 
         val handle100 = tree.insertVerified(
             location = BinaryTree.RootLocation,

@@ -1,6 +1,15 @@
 package dev.toolkt.core.data_structures.binary_tree
 
+import dev.toolkt.core.data_structures.binary_tree.RedBlackTree.Color
+import dev.toolkt.core.iterable.uncons
+
 interface MutableBalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, ColorT> {
+    companion object {
+        fun <PayloadT> redBlack(
+            internalTree: MutableUnbalancedBinaryTree<PayloadT, Color> = MutableUnbalancedBinaryTree.create(),
+        ): MutableBalancedBinaryTree<PayloadT, RedBlackTree.Color> = RedBlackTree(internalTree = internalTree)
+    }
+
     /**
      * Set the payload of the node corresponding to the given [nodeHandle].
      */
@@ -33,6 +42,26 @@ interface MutableBalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, Col
     fun remove(
         nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
     ): BinaryTree.Location<PayloadT, ColorT>
+}
+
+fun <PayloadT, ColorT> MutableBalancedBinaryTree<PayloadT, ColorT>.insertAll(
+    location: BinaryTree.Location<PayloadT, ColorT>,
+    payloads: List<PayloadT>,
+) {
+    val (firstPayload, trailingPayloads) = payloads.uncons() ?: return
+
+    val nodeHandle = insert(
+        location = location,
+        payload = firstPayload,
+    )
+
+    insertAll(
+        location = getNextInOrderFreeLocation(
+            nodeHandle = nodeHandle,
+            side = BinaryTree.Side.Right,
+        ),
+        payloads = trailingPayloads,
+    )
 }
 
 fun <PayloadT, ColorT> MutableBalancedBinaryTree<PayloadT, ColorT>.takeOut(
