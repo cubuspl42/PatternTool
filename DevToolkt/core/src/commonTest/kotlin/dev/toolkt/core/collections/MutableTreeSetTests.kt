@@ -145,7 +145,10 @@ class MutableTreeSetTests {
             actual = set.lookup(element = 15),
         )
 
-        set.removeVia(handle = handle15)
+        assertEquals(
+            expected = 15,
+            actual = set.removeVia(handle = handle15),
+        )
 
         set.verifyContent(
             elements = listOf(10, 20, 30),
