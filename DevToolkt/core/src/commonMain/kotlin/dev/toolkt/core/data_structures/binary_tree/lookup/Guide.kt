@@ -15,7 +15,7 @@ interface Guide<in PayloadT> {
      */
     fun instruct(
         payload: PayloadT,
-    ): GuideInstruction
+    ): BinaryTreeNavigationCommand
 }
 
 fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocationGuided(
@@ -42,9 +42,9 @@ private tailrec fun <PayloadT, ColorT> BinaryTree<PayloadT, ColorT>.findLocation
     )
 
     when (instruction) {
-        GuideInstruction.Stop -> return location
+        BinaryTreeNavigationCommand.Stop -> return location
 
-        is GuideInstruction.Turn -> {
+        is BinaryTreeNavigationCommand.Turn -> {
             val childLocation = nodeHandle.getChildLocation(
                 side = instruction.side,
             )
