@@ -3,7 +3,7 @@ package dev.toolkt.core.collections
 import dev.toolkt.core.collections.StableCollection.Handle
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
 import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
-import dev.toolkt.core.data_structures.binary_tree.find
+import dev.toolkt.core.data_structures.binary_tree.lookup.find
 import dev.toolkt.core.data_structures.binary_tree.traverse
 import kotlin.jvm.JvmInline
 

@@ -1,5 +1,7 @@
 package dev.toolkt.core.data_structures.binary_tree
 
+import dev.toolkt.core.data_structures.binary_tree.lookup.find
+import dev.toolkt.core.data_structures.binary_tree.lookup.findBy
 import dev.toolkt.core.data_structures.binary_tree.test_utils.NodeData
 import dev.toolkt.core.data_structures.binary_tree.test_utils.getHandle
 import dev.toolkt.core.data_structures.binary_tree.test_utils.load
