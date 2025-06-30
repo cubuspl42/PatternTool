@@ -1,10 +1,9 @@
 package dev.toolkt.core.data_structures.binary_tree.test_utils
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
-import dev.toolkt.core.data_structures.binary_tree.RedBlackColor
 import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
 import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTree
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
+import dev.toolkt.core.data_structures.binary_tree.RedBlackColor
 import dev.toolkt.core.data_structures.binary_tree.getLeftChild
 import dev.toolkt.core.data_structures.binary_tree.getRightChild
 import dev.toolkt.core.range.split
@@ -38,19 +37,6 @@ fun <PayloadT : Comparable<PayloadT>> MutableBalancedBinaryTree<PayloadT, RedBla
     verify()
 }
 
-fun <PayloadT> RedBlackTree.Companion.loadVerified(
-    rootData: NodeData<PayloadT, RedBlackColor>,
-): MutableBalancedBinaryTree<PayloadT, RedBlackColor> {
-    val internalTree = MutableUnbalancedBinaryTree.load(
-        rootData = rootData,
-    )
-
-    internalTree.verify()
-
-    return MutableBalancedBinaryTree.redBlack(
-        internalTree = internalTree,
-    )
-}
 
 fun <PayloadT> BinaryTree<PayloadT, RedBlackColor>.verify() {
     verifyIntegrity()
@@ -109,62 +95,78 @@ private fun <PayloadT> BinaryTree<PayloadT, RedBlackColor>.verifySubtreeColor(
     }
 }
 
-fun RedBlackTree.Companion.buildBalance(
-    requiredBlackDepth: Int,
-    payloadRange: ClosedFloatingPointRange<Double>,
-): NodeData<Double, RedBlackColor>? = buildBalance(
-    random = Random(seed = 0), // Pass an explicit seed to make things deterministic
-    requiredBlackDepth = requiredBlackDepth,
-    payloadRange = payloadRange,
-    parentColor = RedBlackColor.Red, // Assume a red parent to avoid red violation
-)
+object RedBlackTreeTestUtils {
+    fun <PayloadT> loadVerified(
+        rootData: NodeData<PayloadT, RedBlackColor>,
+    ): MutableBalancedBinaryTree<PayloadT, RedBlackColor> {
+        val internalTree = MutableUnbalancedBinaryTree.load(
+            rootData = rootData,
+        )
 
-private fun RedBlackTree.Companion.buildBalance(
-    random: Random,
-    requiredBlackDepth: Int,
-    payloadRange: ClosedFloatingPointRange<Double>,
-    parentColor: RedBlackColor = RedBlackColor.Red,
-): NodeData<Double, RedBlackColor>? {
-    require(requiredBlackDepth >= 1)
+        internalTree.verify()
 
-    if (requiredBlackDepth == 1) {
-        return null
+        return MutableBalancedBinaryTree.redBlack(
+            internalTree = internalTree,
+        )
     }
 
-    val (leftPayloadRange, rightPayloadRange) = payloadRange.split()
+    fun buildBalance(
+        requiredBlackDepth: Int,
+        payloadRange: ClosedFloatingPointRange<Double>,
+    ): NodeData<Double, RedBlackColor>? = buildBalance(
+        random = Random(seed = 0), // Pass an explicit seed to make things deterministic
+        requiredBlackDepth = requiredBlackDepth,
+        payloadRange = payloadRange,
+        parentColor = RedBlackColor.Red, // Assume a red parent to avoid red violation
+    )
 
-    val color = when (parentColor) {
-        RedBlackColor.Red -> RedBlackColor.Black
+    private fun buildBalance(
+        random: Random,
+        requiredBlackDepth: Int,
+        payloadRange: ClosedFloatingPointRange<Double>,
+        parentColor: RedBlackColor = RedBlackColor.Red,
+    ): NodeData<Double, RedBlackColor>? {
+        require(requiredBlackDepth >= 1)
 
-        else -> {
-            val x = random.nextDouble()
+        if (requiredBlackDepth == 1) {
+            return null
+        }
 
-            when {
-                x < 0.4 -> RedBlackColor.Red
-                else -> RedBlackColor.Black
+        val (leftPayloadRange, rightPayloadRange) = payloadRange.split()
+
+        val color = when (parentColor) {
+            RedBlackColor.Red -> RedBlackColor.Black
+
+            else -> {
+                val x = random.nextDouble()
+
+                when {
+                    x < 0.4 -> RedBlackColor.Red
+                    else -> RedBlackColor.Black
+                }
             }
         }
-    }
 
-    val newRequiredBlackDepth = when (color) {
-        RedBlackColor.Black -> requiredBlackDepth - 1
-        else -> requiredBlackDepth
-    }
+        val newRequiredBlackDepth = when (color) {
+            RedBlackColor.Black -> requiredBlackDepth - 1
+            else -> requiredBlackDepth
+        }
 
-    return NodeData(
-        payload = rightPayloadRange.start,
-        color = color,
-        leftChild = buildBalance(
-            random = random,
-            requiredBlackDepth = newRequiredBlackDepth,
-            payloadRange = leftPayloadRange,
-            parentColor = color,
-        ),
-        rightChild = buildBalance(
-            random = random,
-            requiredBlackDepth = newRequiredBlackDepth,
-            payloadRange = rightPayloadRange,
-            parentColor = color,
-        ),
-    )
+        return NodeData(
+            payload = rightPayloadRange.start,
+            color = color,
+            leftChild = buildBalance(
+                random = random,
+                requiredBlackDepth = newRequiredBlackDepth,
+                payloadRange = leftPayloadRange,
+                parentColor = color,
+            ),
+            rightChild = buildBalance(
+                random = random,
+                requiredBlackDepth = newRequiredBlackDepth,
+                payloadRange = rightPayloadRange,
+                parentColor = color,
+            ),
+        )
+    }
 }
