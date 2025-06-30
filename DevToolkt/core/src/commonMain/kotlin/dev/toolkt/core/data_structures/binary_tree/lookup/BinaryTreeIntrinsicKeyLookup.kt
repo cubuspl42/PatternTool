@@ -29,7 +29,7 @@ private class KeyOrderGuide<PayloadT, KeyT : Comparable<KeyT>>(
 ) : Guide<PayloadT> {
     override fun instruct(
         payload: PayloadT,
-    ): Guide.Instruction = Guide.Instruction.comparing(
+    ): GuideInstruction = GuideInstruction.comparing(
         expected = locatedKey,
         actual = selector(payload),
     )
