@@ -128,6 +128,10 @@ class MutableWeakTreeMap<K : Comparable<K>, V> internal constructor(
         }
     }
 
+    override fun stableIterator(): StableIterator<Map.Entry<K, V>>? {
+        TODO("Not yet implemented")
+    }
+
     private fun findByKey(
         key: K,
     ): Pair<WeakEntryLocation<K, V>, WeakEntryNodeHandle<K, V>?> {

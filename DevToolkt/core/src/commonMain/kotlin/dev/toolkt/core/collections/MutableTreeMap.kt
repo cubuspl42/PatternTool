@@ -124,6 +124,10 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
         return entryTree.getPayload(nodeHandle = nodeHandle)
     }
 
+    override fun stableIterator(): StableIterator<Map.Entry<K, V>>? {
+        TODO("Not yet implemented")
+    }
+
     private fun findByKey(
         key: K,
     ): Pair<EntryLocation<K, V>, EntryNodeHandle<K, V>?> {

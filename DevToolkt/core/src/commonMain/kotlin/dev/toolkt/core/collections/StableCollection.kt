@@ -19,4 +19,6 @@ interface StableCollection<out E> : Collection<E> {
     fun getVia(
         handle: Handle<@UnsafeVariance E>,
     ): E?
+
+    fun stableIterator(): StableIterator<E>?
 }
