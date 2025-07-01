@@ -5,8 +5,8 @@ package dev.toolkt.core.collections
  * many-to-many relation.
  *
  * See [AssociativeMap] for an implementation offering one-to-one relation.
- * See [MultiValuedMap] for an implementation offering one-to-many relation.
- * See [AssociativeBag] for an implementation offering many-to-many relation.
+ * See [MultiValuedMap] for a lookup-optimized implementation offering one-to-many relation.
+ * See [AssociativeBag] for an unoptimized implementation offering one-to-many relation.
  *
  * @param K the type of collection keys
  * @param V the type of collection values
