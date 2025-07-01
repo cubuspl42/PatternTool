@@ -1,5 +1,6 @@
 package dev.toolkt.core.collections
 
+// TODO: Nuke?
 interface MutableStableAssociativeBag<K, V> : MutableStableBag<Map.Entry<K, V>>,
     MutableStableAssociativeCollection<K, V>, StableAssociativeBag<K, V> {
     companion object {
