@@ -21,7 +21,7 @@ interface MutableStableMultiValuedMap<K, V> : StableMultiValuedMap<K, V>, Mutabl
         fun <K : Any, V> newWeakFromStableBag(
             weakEntryBag: MutableStableBag<Map.Entry<PlatformWeakReference<K>, V>>,
         ): MutableStableMultiValuedMap<K, V> = StableBagBackedWeakMultiValuedMap(
-            entryBag = weakEntryBag,
+            weakEntryBag = weakEntryBag,
         )
     }
 }
