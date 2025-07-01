@@ -5,7 +5,6 @@ package dev.toolkt.core.collections
  *
  * See [MutableAssociativeMap] for an implementation offering one-to-one relation.
  * See [MutableMultiValuedMap] for a lookup-optimized implementation offering one-to-many relation.
- * See [MutableAssociativeBag] for an unoptimized implementation offering one-to-many relation.
  *
  * @param K the type of collection keys
  * @param V the type of collection values
