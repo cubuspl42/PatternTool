@@ -9,7 +9,7 @@ import kotlin.test.assertTrue
 class MutableMultiValuedMapTests {
     @Test
     fun testNewFromStableMap_initial() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A", "B", "C", "A"),
                 20 to mutableStableBagOf("X", "W", "A"),
@@ -44,7 +44,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_add_existingKeyExistingValue() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
@@ -92,7 +92,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_add_existingKeyNewValue() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A", "B", "C", "A"),
                 20 to mutableStableBagOf("X", "W", "A"),
@@ -145,7 +145,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_add_newKey() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
@@ -193,7 +193,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_removeKey_existing() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
@@ -229,7 +229,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_removeKey_nonExisting() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 30 to mutableStableBagOf("C", "D"),
@@ -258,7 +258,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_removeEntry_existing() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
@@ -297,7 +297,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_removeEntry_nonExisting() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
@@ -333,7 +333,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_removeEntry_lastForKey() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
