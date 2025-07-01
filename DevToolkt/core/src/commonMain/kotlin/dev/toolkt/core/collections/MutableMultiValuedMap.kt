@@ -10,11 +10,6 @@ interface MutableMultiValuedMap<K, V> : MultiValuedMap<K, V>, MutableAssociative
             bucketMap = bucketMap,
         )
 
-        fun <K, V> newFromStableMap(
-            bucketMap: MutableStableMap<K, MutableStableBag<V>>,
-        ): MutableStableMultiValuedMap<K, V> = StableMapBackedMultiValuedMap(
-            bucketMap = bucketMap,
-        )
 
         fun <K, V> new(): MutableMultiValuedMap<K, V> = newFromMap(mutableMapOf())
     }
