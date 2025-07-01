@@ -72,6 +72,10 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
         return elementTree.getPayload(nodeHandle = nodeHandle)
     }
 
+    override fun stableIterator(): StableIterator<E>? {
+        TODO("Not yet implemented")
+    }
+
     /**
      * Replaces the element at the specified position in this list with the specified element.
      * Guarantees logarithmic time complexity.

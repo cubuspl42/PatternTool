@@ -37,6 +37,10 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
         return elementTree.getPayload(nodeHandle = nodeHandle)
     }
 
+    override fun stableIterator(): StableIterator<E>? {
+        TODO("Not yet implemented")
+    }
+
     override fun add(
         element: E,
     ): Boolean = addEx(element) != null

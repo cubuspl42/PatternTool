@@ -127,6 +127,10 @@ class StableMapBackedMultiValuedMap<K, V>(
         )
     }
 
+    override fun stableIterator(): StableIterator<Map.Entry<K, V>>? {
+        TODO("Not yet implemented")
+    }
+
     override fun addEx(
         element: Map.Entry<K, V>,
     ): EntryHandle<K, V> {
