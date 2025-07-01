@@ -18,17 +18,27 @@ interface MutableStableMultiValuedMap<K, V> : StableMultiValuedMap<K, V>, Mutabl
             entryBag: MutableStableBag<Map.Entry<K, V>>,
         ): MutableStableMultiValuedMap<K, V> = TODO()
 
-        fun <K: Any, V> newWeakFromStableBag(
+        fun <K : Any, V> newWeakFromStableBag(
             weakEntryBag: MutableStableBag<Map.Entry<PlatformWeakReference<K>, V>>,
-        ): MutableStableMultiValuedMap<K, V> = TODO()
+        ): MutableStableMultiValuedMap<K, V> = StableBagBackedWeakMultiValuedMap(
+            entryBag = weakEntryBag,
+        )
     }
 }
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun <K : Any, V : Any> mutableStableWeakMultiValuedMapOf(): MutableStableMultiValuedMap<K, V> =
-    MutableStableMultiValuedMap.newFromStableMap(
-        bucketMap = mutableStableWeakMapOf(),
+inline fun <K : Any, V : Any> mutableStableWeakMultiValuedMapOf(
+    vararg pairs: Pair<K, V>,
+): MutableStableMultiValuedMap<K, V> = MutableStableMultiValuedMap.newWeakFromStableBag(
+    weakEntryBag = mutableStableBagOf(
+        *pairs.map { (key, value) ->
+            MapEntry(
+                PlatformWeakReference(key),
+                value,
+            )
+        }.toTypedArray(),
     )
+)
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun <K : Any, V : Any> mutableStableWeakMapOf(): MutableStableMap<K, V> =
