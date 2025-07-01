@@ -100,6 +100,10 @@ class StableBagBackedWeakMultiValuedMap<K : Any, V>(
         TODO()
     }
 
+    override fun mutableStableIterator(): MutableStableIterator<Map.Entry<K, V>>? {
+        TODO("Not yet implemented")
+    }
+
     override fun removeKey(key: K): Boolean {
         TODO()
     }

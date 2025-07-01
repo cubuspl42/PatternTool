@@ -95,6 +95,10 @@ class MutableWeakTreeMap<K : Comparable<K>, V> internal constructor(
         }
     }
 
+    override fun mutableStableIterator(): MutableStableIterator<Map.Entry<K, V>>? {
+        TODO("Not yet implemented")
+    }
+
     override fun resolve(
         key: K,
     ): EntryHandle<K, V>? {
@@ -128,9 +132,7 @@ class MutableWeakTreeMap<K : Comparable<K>, V> internal constructor(
         }
     }
 
-    override fun stableIterator(): StableIterator<Map.Entry<K, V>>? {
-        TODO("Not yet implemented")
-    }
+    override fun stableIterator(): StableIterator<Map.Entry<K, V>>? = mutableStableIterator()
 
     private fun findByKey(
         key: K,
