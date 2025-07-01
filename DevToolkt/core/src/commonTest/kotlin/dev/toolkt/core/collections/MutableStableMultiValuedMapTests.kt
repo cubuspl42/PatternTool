@@ -6,7 +6,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class MutableMultiValuedMapTests {
+class MutableStableMultiValuedMapTests {
     @Test
     fun testNewFromStableMap_initial() {
         val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
