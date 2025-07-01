@@ -66,7 +66,7 @@ class StableBagBackedWeakMultiValuedMap<K : Any, V>(
     }
 
     override val values: Collection<V>
-        get() = entryBag.map { it.value }.toSet()
+        get() = entryBag.map { it.value }
 
     override fun resolveAll(
         key: K,
