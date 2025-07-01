@@ -38,4 +38,6 @@ interface MutableStableCollection<E> : MutableCollection<E>, StableCollection<E>
     fun removeVia(
         handle: Handle<E>,
     ): E?
+
+    fun mutableStableIterator(): MutableStableIterator<E>?
 }

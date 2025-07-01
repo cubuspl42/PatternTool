@@ -8,7 +8,7 @@ import dev.toolkt.core.data_structures.binary_tree.traverse
 import kotlin.jvm.JvmInline
 
 class MutableTreeMap<K : Comparable<K>, V> internal constructor(
-    private val entryTree: MutableBalancedBinaryTree<MutableTreeMap.MutableMapEntry<K, V>, RedBlackColor> = MutableBalancedBinaryTree.redBlack(),
+    private val entryTree: MutableBalancedBinaryTree<MutableMap.MutableEntry<K, V>, RedBlackColor> = MutableBalancedBinaryTree.redBlack(),
 ) : AbstractMutableStableMap<K, V>(
     MutableBalancedBinaryTreeEntrySet(entryTree = entryTree),
 ) {
@@ -18,7 +18,7 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
     ) : MutableMap.MutableEntry<K, V> {
         companion object {
             fun <K : Comparable<K>, V> selectKey(
-                entry: MutableMapEntry<K, V>,
+                entry: MutableMap.MutableEntry<K, V>,
             ): K = entry.key
         }
 
@@ -107,6 +107,11 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
         return removedEntry
     }
 
+    override fun mutableStableIterator(): MutableStableIterator<MutableMap.MutableEntry<K, V>>? =
+        MutableBalancedBinaryTreeStableIterator.iterate(
+            mutableTree = entryTree,
+        )
+
     override fun resolve(
         key: K,
     ): EntryHandle<K, V>? {
@@ -124,9 +129,7 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
         return entryTree.getPayload(nodeHandle = nodeHandle)
     }
 
-    override fun stableIterator(): StableIterator<Map.Entry<K, V>>? {
-        TODO("Not yet implemented")
-    }
+    override fun stableIterator(): StableIterator<MutableMap.MutableEntry<K, V>>? = mutableStableIterator()
 
     private fun findByKey(
         key: K,
@@ -166,9 +169,9 @@ fun <K : Comparable<K>, V> mutableTreeMapOf(
     return map
 }
 
-private typealias EntryLocation<K, V> = BinaryTree.Location<MutableTreeMap.MutableMapEntry<K, V>, RedBlackColor>
+private typealias EntryLocation<K, V> = BinaryTree.Location<MutableMap.MutableEntry<K, V>, RedBlackColor>
 
-private typealias EntryNodeHandle<K, V> = BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackColor>
+private typealias EntryNodeHandle<K, V> = BinaryTree.NodeHandle<MutableMap.MutableEntry<K, V>, RedBlackColor>
 
 private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): EntryNodeHandle<K, V>? {
     this as? MutableTreeMap.TreeMapHandle<K, V> ?: throw IllegalArgumentException(
@@ -181,8 +184,7 @@ private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): EntryNodeHandle<K
     }
 }
 
-private fun <K : Comparable<K>, V> EntryNodeHandle<K, V>.pack(): EntryHandle<K, V> =
-    MutableTreeMap.TreeMapHandle(
-        nodeHandle = this,
-    )
+private fun <K : Comparable<K>, V> EntryNodeHandle<K, V>.pack(): EntryHandle<K, V> = MutableTreeMap.TreeMapHandle(
+    nodeHandle = this,
+)
 

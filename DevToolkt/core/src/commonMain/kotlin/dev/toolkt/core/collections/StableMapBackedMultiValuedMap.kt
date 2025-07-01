@@ -10,6 +10,72 @@ class StableMapBackedMultiValuedMap<K, V>(
         val valueHandle: Handle<V>,
     ) : EntryHandle<K, V>
 
+    internal class StableIteratorImpl<K, V>(
+        val bucketIterator: MutableStableIterator<Map.Entry<K, MutableStableBag<V>>>,
+        val valueIterator: MutableStableIterator<V>,
+    ) : MutableStableIterator<Map.Entry<K, V>> {
+        companion object {
+            fun <K, V> iterate(
+                bucketMap: MutableStableMap<K, MutableStableBag<V>>,
+            ): MutableStableIterator<Map.Entry<K, V>>? {
+                val firstBucketIterator = bucketMap.mutableStableIterator() ?: return null
+                val (_, firstBucket) = firstBucketIterator.get()
+
+                val firstValueIterator =
+                    firstBucket.mutableStableIterator() ?: throw AssertionError("The first bucket should not be empty")
+
+                return StableIteratorImpl(
+                    bucketIterator = firstBucketIterator,
+                    valueIterator = firstValueIterator,
+                )
+            }
+        }
+
+        override fun remove() {
+            val (_, bucket) = bucketIterator.get()
+
+            valueIterator.remove()
+
+            if (bucket.isEmpty()) {
+                bucketIterator.remove()
+            }
+        }
+
+        override fun get(): Map.Entry<K, V> {
+            val (key, _) = bucketIterator.get()
+            val value = valueIterator.get()
+
+            return MapEntry(
+                key = key,
+                value = value,
+            )
+        }
+
+        override fun next(): MutableStableIterator<Map.Entry<K, V>>? {
+            when (val nextValueIterator = valueIterator.next()) {
+                null -> {
+                    val nextBucketIterator = bucketIterator.next() ?: return null
+                    val (_, nextBucket) = nextBucketIterator.get()
+
+                    val nextBucketValueIterator = nextBucket.mutableStableIterator()
+                        ?: throw AssertionError("The next bucket should not be empty")
+
+                    return StableIteratorImpl(
+                        bucketIterator = nextBucketIterator,
+                        valueIterator = nextBucketValueIterator,
+                    )
+                }
+
+                else -> {
+                    return StableIteratorImpl(
+                        bucketIterator = bucketIterator,
+                        valueIterator = nextValueIterator,
+                    )
+                }
+            }
+        }
+    }
+
     companion object {
         private fun <K, V> pack(
             bucketHandle: BucketHandle<K, V>,
@@ -84,8 +150,6 @@ class StableMapBackedMultiValuedMap<K, V>(
         val bucket = getFreshBucket(key = key)
 
         return bucket.add(value)
-
-        addEx(element)
     }
 
     override val values: Collection<V>
@@ -127,9 +191,7 @@ class StableMapBackedMultiValuedMap<K, V>(
         )
     }
 
-    override fun stableIterator(): StableIterator<Map.Entry<K, V>>? {
-        TODO("Not yet implemented")
-    }
+    override fun stableIterator(): StableIterator<Map.Entry<K, V>>? = mutableStableIterator()
 
     override fun addEx(
         element: Map.Entry<K, V>,
@@ -182,6 +244,10 @@ class StableMapBackedMultiValuedMap<K, V>(
             value = removedValue,
         )
     }
+
+    override fun mutableStableIterator(): MutableStableIterator<Map.Entry<K, V>>? = StableIteratorImpl.iterate(
+        bucketMap = bucketMap,
+    )
 
     override fun removeKey(key: K): Boolean {
         val removedBucket = bucketMap.remove(key)

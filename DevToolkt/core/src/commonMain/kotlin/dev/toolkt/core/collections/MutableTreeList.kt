@@ -72,9 +72,7 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
         return elementTree.getPayload(nodeHandle = nodeHandle)
     }
 
-    override fun stableIterator(): StableIterator<E>? {
-        TODO("Not yet implemented")
-    }
+    override fun stableIterator(): StableIterator<E>? = mutableStableIterator()
 
     /**
      * Replaces the element at the specified position in this list with the specified element.
@@ -283,6 +281,10 @@ class MutableTreeList<E>() : AbstractMutableList<E>(), MutableIndexedList<E> {
 
         return elementTree.takeOut(nodeHandle = nodeHandle)
     }
+
+    override fun mutableStableIterator(): MutableStableIterator<E>? = MutableBalancedBinaryTreeStableIterator.iterate(
+        mutableTree = elementTree,
+    )
 
     /**
      * Returns the index of the element corresponding to the given handle in the list.

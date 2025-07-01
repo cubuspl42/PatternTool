@@ -6,14 +6,15 @@ package dev.toolkt.core.collections
  */
 interface StableIterator<out E> {
     /**
-     * Returns the current element in the iteration.
+     * Returns the current element in the iteration. Specific implementations of this class may cache the element at
+     * the time of the iterator object creation.
      *
      * @throws IllegalStateException if the iterator is invalid
      */
     fun get(): E
 
     /**
-     * Returns the next iterator in the iteration, or `null` if there are no more elements. Does not invalidate other
+     * Returns the next iterator in the iteration, or `null` if there are no more elements. Does not invalidate any
      * iterators.
      *
      * @throws IllegalStateException if the iterator is invalid

@@ -37,9 +37,7 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
         return elementTree.getPayload(nodeHandle = nodeHandle)
     }
 
-    override fun stableIterator(): StableIterator<E>? {
-        TODO("Not yet implemented")
-    }
+    override fun stableIterator(): StableIterator<E>? = mutableStableIterator()
 
     override fun add(
         element: E,
@@ -81,6 +79,10 @@ class MutableTreeSet<E : Comparable<E>> internal constructor() : AbstractMutable
 
         return removedElement
     }
+
+    override fun mutableStableIterator(): MutableStableIterator<E>? = MutableBalancedBinaryTreeStableIterator.iterate(
+        mutableTree = elementTree,
+    )
 
     override fun contains(element: E): Boolean {
         val location = elementTree.find(element)
