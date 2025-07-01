@@ -14,4 +14,13 @@ interface MutableStableIterator<out E> : StableIterator<E> {
      * @throws IllegalStateException if the iterator is invalid
      */
     fun remove()
+
+}
+
+fun <E> MutableStableIterator<E>.nextAndRemove(): MutableStableIterator<E>? {
+    val nextIterator = next()
+
+    remove()
+
+    return nextIterator
 }
