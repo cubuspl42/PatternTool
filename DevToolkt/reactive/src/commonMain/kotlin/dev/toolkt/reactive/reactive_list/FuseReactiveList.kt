@@ -76,6 +76,7 @@ class FuseReactiveListOperator<E>(
                     target = newInnerHandle,
                 ) { innerHandle, newInnerValue ->
                     val currentIndex = innerSubscriptions.indexOfVia(handle = innerHandle)
+                        ?: throw AssertionError("No index found for handle $innerHandle.")
 
                     this@ChangesEventStream.notify(
                         ReactiveList.Change.single(
