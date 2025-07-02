@@ -6,6 +6,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertIs
+import kotlin.test.assertNotEquals
 
 /**
  * Tests of the fundamental [EventStream] operations
@@ -65,12 +66,13 @@ class EventStreamTests {
             // Create a dependent stream to make the system non-trivial
             val dependentStream = eventEmitter.map { it.toString() }
 
-            dependentStream.listen(listener)
+            val firstSubscription = dependentStream.listen(listener)
 
-            assertIs<IllegalStateException>(
-                assertFails {
-                    dependentStream.listen(listener)
-                },
+            val secondSubscription = dependentStream.listen(listener)
+
+            assertNotEquals(
+                illegal = firstSubscription,
+                actual = secondSubscription,
             )
         }
 
