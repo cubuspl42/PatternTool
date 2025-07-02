@@ -1,10 +1,10 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.core.collections.MutableAssociativeCollection
+import dev.toolkt.core.collections.MutableStableBag
 import dev.toolkt.core.collections.insertEffectively
-import dev.toolkt.core.collections.insertEffectivelyWeak
-import dev.toolkt.core.collections.mutableWeakMultiValuedMapOf
+import dev.toolkt.core.collections.mutableStableBagOf
 import dev.toolkt.core.collections.removeEffectively
+import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.Listener
 
 sealed class ListenerContainer<EventT> {
@@ -34,6 +34,8 @@ class StrongListenerContainer<EventT> : ListenerContainer<EventT>() {
         get() = listeners.size
 
     override fun notifyAll(event: EventT) {
+        val listeners = listeners.toList()
+
         listeners.forEach {
             it(event)
         }
@@ -60,18 +62,32 @@ class StrongListenerContainer<EventT> : ListenerContainer<EventT>() {
 }
 
 class WeakListenerContainer<EventT> : ListenerContainer<EventT>() {
+    interface ListenerEntry<EventT> {
+        fun notify(event: EventT)
+    }
+
+    private data class WeakTargetedListener<TargetT : Any, EventT>(
+        val weakTarget: PlatformWeakReference<TargetT>,
+        val listener: TargetingListener<TargetT, EventT>,
+    ) : ListenerEntry<EventT> {
+        override fun notify(event: EventT) {
+            val target = weakTarget.get() ?: return
+            listener(target, event)
+        }
+    }
+
     // The order of weak listeners invocation is non-deterministic (changing
     // this would require a new multivalued map implementation)
-    // TODO: Switch to `mutableStableWeakMultiValuedMapOf` and start using handles
-    private val weakListeners: MutableAssociativeCollection<Any, TargetingListener<Any, EventT>> =
-        mutableWeakMultiValuedMapOf()
+    private val weakListeners: MutableStableBag<ListenerEntry<EventT>> = mutableStableBagOf<ListenerEntry<EventT>>()
 
     override val listenerCount: Int
         get() = weakListeners.size
 
     override fun notifyAll(event: EventT) {
-        weakListeners.forEach { (target, weakListener) ->
-            weakListener(target, event)
+        val weakListeners = weakListeners.toList()
+
+        weakListeners.forEach {
+            it.notify(event = event)
         }
     }
 
@@ -79,16 +95,18 @@ class WeakListenerContainer<EventT> : ListenerContainer<EventT>() {
         target: TargetT,
         listener: TargetingListener<TargetT, EventT>,
     ): Handle {
-        val remover = weakListeners.insertEffectivelyWeak(
-            key = target,
-            value = @Suppress("UNCHECKED_CAST") (listener as TargetingListener<Any, EventT>),
+        val handle = weakListeners.addEx(
+            WeakTargetedListener(
+                weakTarget = PlatformWeakReference(target),
+                listener = listener,
+            ),
         )
 
         return object : Handle {
             override fun remove() {
                 // We don't check whether the entry was successfully removed,
                 // as the entry might've been purged if the target was collected
-                remover.remove()
+                weakListeners.removeVia(handle = handle)
             }
         }
     }
