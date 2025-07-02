@@ -1,39 +1,30 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.core.collections.MutableAssociativeCollection
-import dev.toolkt.core.collections.insertEffectively
-import dev.toolkt.core.collections.insertEffectivelyWeak
-import dev.toolkt.core.collections.mutableWeakMultiValuedMapOf
-import dev.toolkt.core.collections.removeEffectively
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
+
 
 abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
     enum class State {
         Paused, Resumed,
     }
 
-    // The order of listeners invocation is non-deterministic (this could be
-    // changed by using a linked mutable set, but that wouldn't give much
-    // without reworking the weak listeners too)
-    private val listeners = mutableSetOf<Listener<EventT>>()
+    private val strongListenerContainer = StrongListenerContainer<EventT>()
 
-    // The order of weak listeners invocation is non-deterministic (changing
-    // this would require a new multivalued map implementation)
-    // TODO: Switch to `mutableStableWeakMultiValuedMapOf` and start using handles
-    private val weakListeners: MutableAssociativeCollection<Any, TargetingListener<Any, EventT>> =
-        mutableWeakMultiValuedMapOf()
+    private val weakListenerContainer = WeakListenerContainer<EventT>()
 
     final override fun listen(
         listener: Listener<EventT>,
     ): Subscription {
-        val remover = listeners.insertEffectively(listener)
+        val handle = strongListenerContainer.insert(
+            listener = listener,
+        )
 
         potentiallyResume()
 
         return object : Subscription {
             override fun cancel() {
-                remover.removeEffectively()
+                handle.remove()
 
                 potentiallyPause()
             }
@@ -44,24 +35,22 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
         target: TargetT,
         listener: TargetingListener<TargetT, EventT>,
     ): Subscription {
-        val remover = weakListeners.insertEffectivelyWeak(
-            key = target,
-            value = @Suppress("UNCHECKED_CAST") (listener as TargetingListener<Any, EventT>),
+        val handle = weakListenerContainer.insertTargeted(
+            target = target,
+            listener = listener,
         )
 
         potentiallyResume()
 
         return object : Subscription {
             override fun cancel() {
-                // We don't check whether the entry was successfully removed,
-                // as the entry might've been purged if the target was collected
-                remover.remove()
+                handle.remove()
             }
         }
     }
 
     private val listenerCount: Int
-        get() = listeners.size + weakListeners.size
+        get() = strongListenerContainer.listenerCount + weakListenerContainer.listenerCount
 
     protected val state: State
         get() = when {
@@ -84,21 +73,15 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
     protected fun notify(
         event: @UnsafeVariance EventT,
     ) {
-        listeners.forEach {
-            it(event)
-        }
+        strongListenerContainer.notifyAll(event)
 
-        if (weakListeners.isEmpty()) {
-            return
-        }
+        if (weakListenerContainer.listenerCount > 0) {
+            weakListenerContainer.notifyAll(event)
 
-        weakListeners.forEach { (target, weakListener) ->
-            weakListener(target, event)
+            // Iterating over the weak map may trigger unreachable entry purging,
+            // the listener count may have reached zero
+            potentiallyPause()
         }
-
-        // Iterating over the weak map may trigger unreachable entry purging,
-        // the listener count may have reached zero
-        potentiallyPause()
     }
 
     protected abstract fun onResumed()
