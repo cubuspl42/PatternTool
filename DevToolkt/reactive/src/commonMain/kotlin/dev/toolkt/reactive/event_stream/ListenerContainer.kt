@@ -28,7 +28,7 @@ class StrongListenerContainer<EventT> : ListenerContainer<EventT>() {
     // The order of listeners invocation is non-deterministic (this could be
     // changed by using a linked mutable set, but that wouldn't give much
     // without reworking the weak listeners too)
-    private val listeners = mutableSetOf<Listener<EventT>>()
+    private val listeners = mutableStableBagOf<Listener<EventT>>()
 
     override val listenerCount: Int
         get() = listeners.size
@@ -51,11 +51,11 @@ class StrongListenerContainer<EventT> : ListenerContainer<EventT>() {
     fun insert(
         listener: Listener<EventT>,
     ): Handle {
-        val remover = listeners.insertEffectively(listener)
+        val handle = listeners.addEx(listener)
 
         return object : Handle {
             override fun remove() {
-                remover.removeEffectively()
+                listeners.removeVia(handle = handle)
             }
         }
     }
