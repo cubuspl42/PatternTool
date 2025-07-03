@@ -49,6 +49,14 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
         }
     }
 
+    fun <TargetT : Any> pinWeak(
+        target: TargetT,
+    ): Subscription = listenWeak(target) { _, _ ->
+        // The target and the actual event are not used when pinning. The pinning
+        // mechanism could be potentially improved not to store the extraneous
+        // lambda at all, but this is not a very big deal.
+    }
+
     private val listenerCount: Int
         get() = strongListenerContainer.listenerCount + weakListenerContainer.listenerCount
 
