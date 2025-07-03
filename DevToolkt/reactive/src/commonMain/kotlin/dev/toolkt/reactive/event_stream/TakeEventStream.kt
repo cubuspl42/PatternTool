@@ -2,9 +2,8 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Subscription
 
-// TODO: Extract FiniteEventStream?
 class TakeEventStream<E>(
-    source: EventStream<E>,
+    private val source: EventStream<E>,
     count: Int,
 ) : StatefulEventStream<E>() {
     init {
@@ -13,27 +12,20 @@ class TakeEventStream<E>(
 
     private var remainingCount: Int = count
 
-    private var sourceSubscription: Subscription? = source.listenWeak(
-        target = this,
-    ) { self, sourceEvent ->
-        val remainingCount = self.remainingCount
+    override fun observeStateful(): Subscription = source.listen { sourceEvent ->
+        val remainingCount = this.remainingCount
 
         if (remainingCount <= 0) {
             throw IllegalStateException("No more remaining events to take")
         }
 
         val newRemainingCount = remainingCount - 1
-        self.remainingCount = newRemainingCount
+        this.remainingCount = newRemainingCount
 
-        self.notify(event = sourceEvent)
+        this.notify(event = sourceEvent)
 
         if (newRemainingCount == 0) {
-            val sourceSubscription =
-                self.sourceSubscription ?: throw IllegalStateException("No active source subscription")
-
-            sourceSubscription.cancel()
-
-            self.sourceSubscription = null
+            abort()
         }
     }
 }

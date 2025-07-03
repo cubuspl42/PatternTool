@@ -22,6 +22,8 @@ sealed class ListenerContainer<EventT> {
         target: TargetT,
         listener: TargetingListener<TargetT, EventT>,
     ): Handle
+
+    abstract fun clear()
 }
 
 class StrongListenerContainer<EventT> : ListenerContainer<EventT>() {
@@ -46,6 +48,10 @@ class StrongListenerContainer<EventT> : ListenerContainer<EventT>() {
         listener: TargetingListener<TargetT, EventT>,
     ): Handle = insert {
         listener(target, it)
+    }
+
+    override fun clear() {
+        listeners.clear()
     }
 
     fun insert(
@@ -109,5 +115,9 @@ class WeakListenerContainer<EventT> : ListenerContainer<EventT>() {
                 weakListeners.removeVia(handle = handle)
             }
         }
+    }
+
+    override fun clear() {
+        weakListeners.clear()
     }
 }
