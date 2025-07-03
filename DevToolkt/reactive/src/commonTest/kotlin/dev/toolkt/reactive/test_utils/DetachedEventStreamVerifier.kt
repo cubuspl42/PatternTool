@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.test_utils
 
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.listenWeak
 
 /**
  * A verifier for an [EventStream] that collects all received events through a weak listener.

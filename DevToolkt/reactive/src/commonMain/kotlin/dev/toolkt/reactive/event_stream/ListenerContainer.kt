@@ -1,9 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.core.collections.MutableStableBag
-import dev.toolkt.core.collections.insertEffectively
 import dev.toolkt.core.collections.mutableStableBagOf
-import dev.toolkt.core.collections.removeEffectively
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.Listener
 
@@ -46,8 +44,11 @@ class StrongListenerContainer<EventT> : ListenerContainer<EventT>() {
     override fun <TargetT : Any> insertTargeted(
         target: TargetT,
         listener: TargetingListener<TargetT, EventT>,
-    ): Handle = insert {
-        listener(target, it)
+    ): Handle = insert { event ->
+        listener.handle(
+            target = target,
+            event = event,
+        )
     }
 
     override fun clear() {
@@ -78,7 +79,11 @@ class WeakListenerContainer<EventT> : ListenerContainer<EventT>() {
     ) : ListenerEntry<EventT> {
         override fun notify(event: EventT) {
             val target = weakTarget.get() ?: return
-            listener(target, event)
+
+            listener.handle(
+                target = target,
+                event = event,
+            )
         }
     }
 

@@ -9,7 +9,7 @@ interface WeakEventSource<out EventT> {
      * A helper object that's binding a target with an event lister that's
      * targeting it.
      */
-    data class TargetedListener<TargetT, EventT>(
+    data class TargetedListener<TargetT : Any, EventT>(
         val target: TargetT,
         val listener: TargetingListener<TargetT, EventT>,
     )
@@ -19,6 +19,14 @@ interface WeakEventSource<out EventT> {
         listener: TargetingListener<TargetT, EventT>,
     ): Subscription
 }
+
+fun <EventT, TargetT : Any> WeakEventSource<EventT>.listenWeak(
+    target: TargetT,
+    listener: TargetingListenerFn<TargetT, EventT>,
+): Subscription = listenWeak(
+    target,
+    TargetingListener.wrap(listener),
+)
 
 interface StrongEventSource<out EventT> {
     fun listen(

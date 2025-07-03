@@ -1,11 +1,8 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
-import kotlin.test.assertIs
 import kotlin.test.assertNotEquals
 
 /**
@@ -162,8 +159,15 @@ class EventStreamTests {
         // As the ::function operator doesn't return stable references on
         // JavaScript, we ensure that the weak listener is bound to a function
         // argument
-        test { target, value ->
-        }
+        test(
+            weakListener = object : TargetingListener<Any, Any> {
+                override fun handle(
+                    target: Any,
+                    event: Any,
+                ) {
+                }
+            },
+        )
     }
 
 

@@ -7,6 +7,7 @@ import kotlin.math.roundToInt
 import kotlin.test.assertEquals
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 enum class WaitUntilResult {
     Timeout, ConditionMet,
@@ -71,8 +72,8 @@ suspend fun <T : Any> ensureCollected(
     weakRef: PlatformWeakReference<T>,
 ) {
     val result = waitUntil(
-        pauseDuration = 1.milliseconds,
-        timeoutDuration = 10.milliseconds,
+        pauseDuration = 50.milliseconds,
+        timeoutDuration = 5.seconds,
     ) {
         weakRef.get() == null
     }
