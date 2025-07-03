@@ -1,5 +1,9 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.core.platform.PlatformSystem
+import dev.toolkt.core.platform.collectGarbageSuspend
+import dev.toolkt.core.platform.test_utils.runTestDefault
+import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -88,6 +92,38 @@ class EventStreamTakeTests {
         val changesVerifier = EventStreamVerifier(
             eventStream = takeStream,
         )
+
+        eventEmitter.emit(10)
+
+        assertEquals(
+            expected = listOf(10),
+            actual = changesVerifier.removeReceivedEvents(),
+        )
+
+        eventEmitter.emit(20)
+
+        assertEquals(
+            expected = listOf(20),
+            actual = changesVerifier.removeReceivedEvents(),
+        )
+
+        eventEmitter.emit(30)
+
+        assertEquals(
+            expected = emptyList(),
+            actual = changesVerifier.removeReceivedEvents(),
+        )
+    }
+
+    @Test
+    fun testTake_detached() = runTestDefault {
+        val eventEmitter = EventEmitter<Int>()
+
+        val changesVerifier = DetachedEventStreamVerifier(
+            eventStream = eventEmitter.take(2),
+        )
+
+        PlatformSystem.collectGarbageSuspend()
 
         eventEmitter.emit(10)
 
