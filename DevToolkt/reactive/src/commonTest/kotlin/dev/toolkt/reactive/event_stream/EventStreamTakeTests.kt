@@ -130,7 +130,6 @@ class EventStreamTakeTests {
     }
 
     @Test
-    @Ignore
     fun testTake_missed() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 

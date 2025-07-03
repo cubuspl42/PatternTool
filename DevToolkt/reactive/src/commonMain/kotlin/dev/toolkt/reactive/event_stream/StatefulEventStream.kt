@@ -6,4 +6,8 @@ abstract class StatefulEventStream<E>() : DependentEventStream<E>() {
     final override fun observe(): Subscription = observeStateful()
 
     abstract fun observeStateful(): Subscription
+
+    protected fun init() {
+        pinWeak(target = this)
+    }
 }
