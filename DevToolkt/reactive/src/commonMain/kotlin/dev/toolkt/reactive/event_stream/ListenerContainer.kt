@@ -36,20 +36,24 @@ class StrongListenerContainer<EventT> : ListenerContainer<EventT>() {
     override fun notifyAll(event: EventT) {
         val listeners = listeners.toList()
 
-        listeners.forEach {
-            it(event)
+        listeners.forEach { listener ->
+            listener.handle(event)
         }
     }
 
     override fun <TargetT : Any> insertTargeted(
         target: TargetT,
         listener: TargetingListener<TargetT, EventT>,
-    ): Handle = insert { event ->
-        listener.handle(
-            target = target,
-            event = event,
-        )
-    }
+    ): Handle = insert(
+        object : Listener<EventT> {
+            override fun handle(event: EventT) {
+                listener.handle(
+                    target = target,
+                    event = event,
+                )
+            }
+        }
+    )
 
     override fun clear() {
         listeners.clear()

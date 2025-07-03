@@ -8,6 +8,7 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.listen
 
 class ReactiveListFuse<ElementT>(
     private val source: ReactiveList<Cell<ElementT>>,

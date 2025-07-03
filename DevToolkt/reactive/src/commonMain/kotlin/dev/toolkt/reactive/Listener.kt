@@ -1,3 +1,24 @@
 package dev.toolkt.reactive
 
-typealias Listener<E> = (E) -> Unit
+typealias ListenerFn<E> = (E) -> Unit
+
+interface Listener<in EventT> {
+    companion object {
+        fun <TargetT : Any, EventT> wrap(
+            fn: ListenerFn<EventT>,
+        ): Listener<EventT> = object : Listener<EventT> {
+            override fun handle(
+                event: EventT,
+            ) {
+                fn(event)
+            }
+        }
+    }
+
+    /**
+     * A function that accepts an event.
+     */
+    fun handle(
+        event: EventT,
+    )
+}
