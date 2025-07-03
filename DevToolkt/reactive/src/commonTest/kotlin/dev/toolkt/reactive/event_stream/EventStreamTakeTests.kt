@@ -1,7 +1,9 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.core.platform.PlatformSystem
+import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.core.platform.collectGarbageSuspend
+import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
@@ -113,6 +115,17 @@ class EventStreamTakeTests {
             expected = emptyList(),
             actual = changesVerifier.removeReceivedEvents(),
         )
+    }
+
+    @Test
+    fun testTake_letItGo() = runTestDefault {
+        val eventEmitter = EventEmitter<Int>()
+
+        val eventStreamWeakRef = PlatformWeakReference(
+            eventEmitter.take(2),
+        )
+
+        ensureCollected(eventStreamWeakRef)
     }
 
     @Test
