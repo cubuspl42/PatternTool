@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.listenWeak
 
 abstract class CachingCell<V>(
     initialValue: V,

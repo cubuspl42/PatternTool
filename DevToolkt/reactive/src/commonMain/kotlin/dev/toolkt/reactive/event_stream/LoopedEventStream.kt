@@ -80,7 +80,10 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
                 if (initialEvent != null) {
                     val (target, weakListener) = bufferedListener
 
-                    weakListener(target, initialEvent)
+                    weakListener.handle(
+                        target = target,
+                        event = initialEvent,
+                    )
                 }
 
                 return eventStream.listenWeak(targetedWeakListener = bufferedListener)
@@ -168,8 +171,9 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
         eventStream: EventStream<E>,
         initialEvent: E? = null,
     ) {
-        val placeholderEventStream = this.innerEventStream as? PlaceholderEventStream<E>
-            ?: throw IllegalStateException("The stream is already looped")
+        val placeholderEventStream = this.innerEventStream as? PlaceholderEventStream<E> ?: throw IllegalStateException(
+            "The stream is already looped"
+        )
 
         placeholderEventStream.loop(
             eventStream = eventStream,
