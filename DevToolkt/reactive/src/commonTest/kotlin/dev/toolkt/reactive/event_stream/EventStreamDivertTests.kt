@@ -1,6 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.EventStreamVerifier
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.cell.MutableCell
 import kotlin.test.Test
 import kotlin.test.assertEquals
