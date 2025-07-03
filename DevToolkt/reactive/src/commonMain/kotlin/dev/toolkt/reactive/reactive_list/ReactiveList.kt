@@ -129,9 +129,9 @@ abstract class ReactiveList<out E> : ReactiveListView<E> {
 
         fun <E : Any> singleNotNull(
             element: Cell<E?>,
-        ): ReactiveList<E> = ReactiveListSingleNotNullOperator(
+        ): ReactiveList<E> = ReactiveListSingleNotNull(
             elementCell = element,
-        ).instantiateCaching()
+        )
 
         fun <E> fuse(
             cells: ReactiveList<Cell<E>>,

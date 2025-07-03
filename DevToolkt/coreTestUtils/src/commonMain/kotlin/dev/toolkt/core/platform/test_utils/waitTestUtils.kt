@@ -83,14 +83,22 @@ suspend fun <T : Any> ensureNotCollected(
         pauseDuration = 1.milliseconds,
         testDuration = 10.milliseconds,
     ) {
-        // Let's ensure that the test fails immediately if the reactive list
-        // is collected despite having an observer
-        //
-        // If it doesn't happen within the testing duration (even though
+        // If GC doesn't happen within the testing duration (even though
         // stress is applied on GC), it doesn't formally prove the correctness
         // of the system under test, but in practice it should be enough
 
         weakRef.get() != null
+    }
+}
+
+suspend fun <T : Any> ensureCollected(
+    weakRef: PlatformWeakReference<T>,
+) {
+    waitWhile(
+        pauseDuration = 1.milliseconds,
+        testDuration = 10.milliseconds,
+    ) {
+        weakRef.get() == null
     }
 }
 
