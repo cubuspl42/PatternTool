@@ -76,7 +76,6 @@ class ReactiveListSingleNotNullTests {
             eventStream = singleReactiveList.changes,
         )
 
-
         mutableCell.set(null)
 
         assertEquals(
@@ -196,13 +195,12 @@ class ReactiveListSingleNotNullTests {
     }
 
     @Test
-    @Ignore
     fun testSingleNotNull_unused() = runTestDefault {
         val mutableCell = MutableCell<Int?>(initialValue = 10)
 
         ReactiveList.singleNotNull(
             element = mutableCell,
-        )
+        ).changes
 
         assertTrue(mutableCell.hasListeners)
 
@@ -329,6 +327,29 @@ class ReactiveListSingleNotNullTests {
 
         // 2.
         //
+
+        // GC scenarios:
+
+        // Restorable accumulating stateful reactive entity (e.g. ReactiveList/singleNotNull):
+
+        // Entity is referred -> keep alive (we need the state up-to-date for sampling)
+        // Changes is referred (but not listened to!) -> let it go? We can recompute the state at any time, we just
+        // have to ensure not to ever emit double remove event. If there were no listeners, that's guaranteed.
+        // Otherwise -> let it go
+
+        // Accumulating stateful reactive entity (e.g. Cell/accum):
+
+        // Entity is referred -> keep alive (we need the state up-to-date for sampling)
+        // Changes is referred (even when not listened to!) -> keep alive (we have to keep the old state alive, as it
+        // can affect the next change and there's no way to recompute it)
+        // Otherwise -> let it go
+
+        // Does it introduce cycles that the GC can't break on its own? Do we really need a custom quasi-GC?
+
+        // Non-accumulating stateful reactive entity (e.g. Cell/hold):
+
+        // Entity is referred -> keep alive
+        // Otherwise -> let it go
 
         val mutableCell = MutableCell<Int?>(initialValue = 10)
 
