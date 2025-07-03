@@ -212,6 +212,38 @@ class ReactiveListSingleNotNullTests {
         )
     }
 
+    @Test
+    @Ignore
+    fun testSingleNotNull_changesOnly() = runTestDefault {
+        val mutableCell = MutableCell<Int?>(initialValue = null)
+
+        val singleReactiveListChanges = ReactiveList.singleNotNull(
+            element = mutableCell,
+        ).changes
+
+        PlatformSystem.collectGarbageSuspend()
+
+        mutableCell.set(10)
+
+        val changesVerifier = EventStreamVerifier(
+            eventStream = singleReactiveListChanges,
+        )
+
+        mutableCell.set(20)
+
+        assertEquals(
+            expected = listOf(
+                ReactiveList.Change.single(
+                    update = ReactiveList.Change.Update.change(
+                        indexRange = IntRange.single(0),
+                        changedElements = listOf(20),
+                    ),
+                ),
+            ),
+            actual = changesVerifier.removeReceivedEvents(),
+        )
+    }
+
     /**
      * [ReactiveList.singleNotNull] is a stateful operator, involving weak references, so it's reasonable to test
      * how it behaves when some stress is applied to the garbage collector.
