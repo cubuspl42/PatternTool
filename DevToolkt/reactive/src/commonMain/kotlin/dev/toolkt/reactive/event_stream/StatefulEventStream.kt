@@ -1,9 +1,9 @@
 package dev.toolkt.reactive.event_stream
 
-abstract class StatefulEventStream<out E>() : ManagedEventStream<E>() {
-    final override fun onResumed() {
-    }
+import dev.toolkt.reactive.Subscription
 
-    final override fun onPaused() {
-    }
+abstract class StatefulEventStream<E>() : DependentEventStream<E>() {
+    final override fun observe(): Subscription = observeStateful()
+
+    abstract fun observeStateful(): Subscription
 }

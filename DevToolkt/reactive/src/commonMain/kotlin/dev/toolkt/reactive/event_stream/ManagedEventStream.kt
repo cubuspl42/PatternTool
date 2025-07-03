@@ -6,7 +6,7 @@ import dev.toolkt.reactive.Subscription
 
 abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
     enum class State {
-        Paused, Resumed,
+        Paused, Resumed, Aborted,
     }
 
     private val strongListenerContainer = StrongListenerContainer<EventT>()
@@ -16,6 +16,10 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
     final override fun listen(
         listener: Listener<EventT>,
     ): Subscription {
+        if (state == State.Aborted) {
+            return Subscription.Noop
+        }
+
         val handle = strongListenerContainer.insert(
             listener = listener,
         )
@@ -35,6 +39,10 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
         target: TargetT,
         listener: TargetingListener<TargetT, EventT>,
     ): Subscription {
+        if (state == State.Aborted) {
+            return Subscription.Noop
+        }
+
         val handle = weakListenerContainer.insertTargeted(
             target = target,
             listener = listener,
@@ -62,20 +70,20 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
     protected val listenerCount: Int
         get() = strongListenerContainer.listenerCount + weakListenerContainer.listenerCount
 
-    protected val state: State
-        get() = when {
-            listenerCount > 0 -> State.Resumed
-            else -> State.Paused
-        }
+    private var state: State = State.Paused
 
     private fun potentiallyResume() {
-        if (listenerCount == 1) {
+        if (state == State.Paused) {
+            state = State.Resumed
+
             onResumed()
         }
     }
 
     private fun potentiallyPause() {
-        if (listenerCount == 0) {
+        if (state == State.Resumed) {
+            state = State.Paused
+
             onPaused()
         }
     }
@@ -86,6 +94,22 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
         strongListenerContainer.notifyAll(event)
 
         weakListenerContainer.notifyAll(event)
+    }
+
+    protected fun abort() {
+        if (state == State.Aborted) {
+            throw IllegalStateException("The event stream is already aborted")
+        }
+
+        if (state == State.Resumed) {
+            strongListenerContainer.clear()
+
+            weakListenerContainer.clear()
+
+            onPaused()
+        }
+
+        state = State.Aborted
     }
 
     protected abstract fun onResumed()

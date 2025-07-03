@@ -131,10 +131,33 @@ class EventStreamTakeTests {
 
     @Test
     @Ignore
+    fun testTake_missed() = runTestDefault {
+        val eventEmitter = EventEmitter<Int>()
+
+        val takeStream = eventEmitter.take(2)
+
+        eventEmitter.emit(10)
+        eventEmitter.emit(20)
+
+        val streamVerifier = EventStreamVerifier(
+            eventStream = takeStream,
+        )
+
+        eventEmitter.emit(30)
+        eventEmitter.emit(40)
+
+        assertEquals(
+            expected = emptyList(),
+            actual = streamVerifier.removeReceivedEvents(),
+        )
+    }
+
+
+    @Test
     fun testTake_detached() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
-        val changesVerifier = DetachedEventStreamVerifier(
+        val streamVerifier = DetachedEventStreamVerifier(
             eventStream = eventEmitter.take(2),
         )
 
@@ -144,21 +167,21 @@ class EventStreamTakeTests {
 
         assertEquals(
             expected = listOf(10),
-            actual = changesVerifier.removeReceivedEvents(),
+            actual = streamVerifier.removeReceivedEvents(),
         )
 
         eventEmitter.emit(20)
 
         assertEquals(
             expected = listOf(20),
-            actual = changesVerifier.removeReceivedEvents(),
+            actual = streamVerifier.removeReceivedEvents(),
         )
 
         eventEmitter.emit(30)
 
         assertEquals(
             expected = emptyList(),
-            actual = changesVerifier.removeReceivedEvents(),
+            actual = streamVerifier.removeReceivedEvents(),
         )
     }
 }

@@ -82,6 +82,26 @@ class EventStreamSingleTests {
 
     @Test
     @Ignore
+    fun testSingle_missed() = runTestDefault {
+        val eventEmitter = EventEmitter<Int>()
+
+        val singleEventStream = eventEmitter.single()
+
+        eventEmitter.emit(10)
+
+        val streamVerifier = DetachedEventStreamVerifier(
+            eventStream = singleEventStream,
+        )
+
+        eventEmitter.emit(20)
+
+        assertEquals(
+            expected = emptyList(),
+            actual = streamVerifier.removeReceivedEvents(),
+        )
+    }
+
+    @Test
     fun testSingle_detached() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
