@@ -2,43 +2,31 @@ package dev.toolkt.core.data_structures.binary_tree
 
 import dev.toolkt.core.errors.assert
 
-/**
- * @constructor The constructor that accepts an existing mutable [internalTree]
- * is a low-level functionality. The ownership of that tree passes to this object.
- * The given tree is assumed to initially be a valid red-black tree.
- */
-class RedBlackTree<PayloadT>(
-    internalTree: MutableUnbalancedBinaryTree<PayloadT, Color> = MutableUnbalancedBinaryTree.create(),
-) : AbstractBalancedBinaryTree<PayloadT, RedBlackTree.Color>(
-    internalTree = internalTree,
-) {
-    override val defaultColor: Color
-        get() = Color.Red
-
-    enum class Color {
-        Red, Black,
-    }
+class RedBlackTreeBalancingStrategy<PayloadT>() : BinaryTreeBalancingStrategy<PayloadT, RedBlackColor>() {
+    override val defaultColor: RedBlackColor
+        get() = RedBlackColor.Red
 
     companion object;
 
     override fun rebalanceAfterAttach(
-        putNodeHandle: BinaryTree.NodeHandle<PayloadT, Color>,
-    ) {
-        fixPotentialRedViolationRecursively(
-            nodeHandle = putNodeHandle,
-        )
-    }
+        internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor>,
+        attachedNodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackColor>,
+    ): RebalanceResult<PayloadT, RedBlackColor> = fixPotentialRedViolationRecursively(
+        internalTree = internalTree,
+        nodeHandle = attachedNodeHandle,
+    )
 
     /**
      * Fix a (potential) red violation in the subtree with the root corresponding
      * to the [nodeHandle].
      */
     private fun fixPotentialRedViolationRecursively(
-        nodeHandle: BinaryTree.NodeHandle<PayloadT, Color>,
-    ) {
+        internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor>,
+        nodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackColor>,
+    ): RebalanceResult<PayloadT, RedBlackColor> {
         val color = internalTree.getColor(nodeHandle = nodeHandle)
 
-        assert(color == Color.Red) {
+        assert(color == RedBlackColor.Red) {
             throw AssertionError("Red violation fixup must start with a red node")
         }
 
@@ -51,21 +39,27 @@ class RedBlackTree<PayloadT>(
 
             internalTree.paint(
                 nodeHandle = nodeHandle,
-                newColor = Color.Black,
+                newColor = RedBlackColor.Black,
             )
 
-            return
+            return RebalanceResult(
+                retractionHeight = 0,
+                finalLocation = BinaryTree.RootLocation,
+            )
         }
 
         val parentHandle = relativeLocation.parentHandle
 
         val side = relativeLocation.side
 
-        if (internalTree.getColor(nodeHandle = parentHandle) == Color.Black) {
+        if (internalTree.getColor(nodeHandle = parentHandle) == RedBlackColor.Black) {
             // Case #1
             // If the parent is black, there's no red violation between this
             // node and its parent
-            return
+            return RebalanceResult(
+                finalLocation = relativeLocation,
+                retractionHeight = 0,
+            )
         }
 
         // From now on, we know that the parent is red
@@ -80,15 +74,21 @@ class RedBlackTree<PayloadT>(
 
             internalTree.paint(
                 nodeHandle = parentHandle,
-                newColor = Color.Black,
+                newColor = RedBlackColor.Black,
             )
 
-            return
+            // Although we touched the parent's color, we didn't really move it
+            return RebalanceResult(
+                finalLocation = relativeLocation,
+                retractionHeight = 0,
+            )
         }
 
         val grandparentHandle = parentRelativeLocation.parentHandle
 
-        assert(internalTree.getColor(nodeHandle = grandparentHandle) == Color.Black) {
+        val grandparentLocation = internalTree.locate(nodeHandle = grandparentHandle)
+
+        assert(internalTree.getColor(nodeHandle = grandparentHandle) == RedBlackColor.Black) {
             "The grandparent must be black, as the parent is red"
         }
 
@@ -96,8 +96,8 @@ class RedBlackTree<PayloadT>(
         val uncleSide = parentRelativeLocation.siblingSide
         val uncleColor = uncleHandle?.let { internalTree.getColor(nodeHandle = it) }
 
-        when (uncleColor) {
-            Color.Red -> {
+        return when (uncleColor) {
+            RedBlackColor.Red -> {
                 // Case #2
 
                 // As the uncle is also red (like this node and its parent),
@@ -107,25 +107,30 @@ class RedBlackTree<PayloadT>(
 
                 internalTree.paint(
                     nodeHandle = parentHandle,
-                    newColor = Color.Black,
+                    newColor = RedBlackColor.Black,
                 )
 
                 internalTree.paint(
                     nodeHandle = uncleHandle,
-                    newColor = Color.Black,
+                    newColor = RedBlackColor.Black,
                 )
 
                 internalTree.paint(
                     nodeHandle = grandparentHandle,
-                    newColor = Color.Red,
+                    newColor = RedBlackColor.Red,
                 )
 
                 // The subtree starting at the fixed node is now balanced
 
                 // While we fixed one red violation, we might've introduced
                 // another. Let's fix this recursively.
-                fixPotentialRedViolationRecursively(
+                val recursiveResult = fixPotentialRedViolationRecursively(
+                    internalTree = internalTree,
                     nodeHandle = grandparentHandle,
+                )
+
+                recursiveResult.copy(
+                    retractionHeight = recursiveResult.retractionHeight + 1,
                 )
             }
 
@@ -156,46 +161,56 @@ class RedBlackTree<PayloadT>(
 
                 internalTree.paint(
                     nodeHandle = newSubtreeRootHandle,
-                    newColor = Color.Black,
+                    newColor = RedBlackColor.Black,
                 )
 
                 internalTree.paint(
                     nodeHandle = grandparentHandle,
-                    newColor = Color.Red,
+                    newColor = RedBlackColor.Red,
                 )
 
                 // The violation is fixed!
+                RebalanceResult(
+                    retractionHeight = 2,
+                    finalLocation = grandparentLocation,
+                )
             }
         }
     }
 
     override fun rebalanceAfterCutOff(
-        cutOffLeafLocation: BinaryTree.RelativeLocation<PayloadT, Color>,
-        cutOffLeafColor: Color,
-    ) {
-        if (cutOffLeafColor == Color.Black) {
-            fixBlackViolationRecursively(
-                nodeHandle = null,
-                relativeLocation = cutOffLeafLocation,
-            )
-        }
+        internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor>,
+        cutOffLeafLocation: BinaryTree.RelativeLocation<PayloadT, RedBlackColor>,
+        cutOffLeafColor: RedBlackColor,
+    ): RebalanceResult<PayloadT, RedBlackColor> = when (cutOffLeafColor) {
+        RedBlackColor.Black -> fixBlackViolationRecursively(
+            internalTree = internalTree,
+            nodeHandle = null,
+            relativeLocation = cutOffLeafLocation,
+        )
+
+        else -> RebalanceResult(
+            finalLocation = cutOffLeafLocation,
+            retractionHeight = 0,
+        )
     }
 
     private fun fixBlackViolationRecursively(
+        internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor>,
         /**
          * A handle to the node to be fixed, null represents a null node
          */
-        nodeHandle: BinaryTree.NodeHandle<PayloadT, Color>?,
+        nodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackColor>?,
         /**
          * The relative location of the node to be fixed
          */
-        relativeLocation: BinaryTree.RelativeLocation<PayloadT, Color>,
-    ) {
+        relativeLocation: BinaryTree.RelativeLocation<PayloadT, RedBlackColor>,
+    ): RebalanceResult<PayloadT, RedBlackColor> {
         val color = nodeHandle?.let {
             internalTree.getColor(nodeHandle = it)
         }
 
-        assert(color != Color.Red) {
+        assert(color != RedBlackColor.Red) {
             "Black violation fixup phase cannot start with a red node"
         }
 
@@ -224,7 +239,7 @@ class RedBlackTree<PayloadT>(
 
             val siblingColor = internalTree.getColor(nodeHandle = siblingHandle)
 
-            if (siblingColor != Color.Red) return@run false
+            if (siblingColor != RedBlackColor.Red) return@run false
 
             internalTree.rotate(
                 pivotNodeHandle = parentHandle,
@@ -233,12 +248,12 @@ class RedBlackTree<PayloadT>(
 
             internalTree.paint(
                 nodeHandle = parentHandle,
-                newColor = Color.Red,
+                newColor = RedBlackColor.Red,
             )
 
             internalTree.paint(
                 nodeHandle = siblingHandle,
-                newColor = Color.Black,
+                newColor = RedBlackColor.Black,
             )
 
             // Now the parent is red and the sibling (old close nephew) is black. Depending on the color of the nephews,
@@ -249,7 +264,7 @@ class RedBlackTree<PayloadT>(
         // Case #4: P is red (the sibling S is black) and S’s children are black
         run {
             val parentColor = internalTree.getColor(nodeHandle = parentHandle)
-            if (parentColor != Color.Red) return@run
+            if (parentColor != RedBlackColor.Red) return@run
 
             val siblingHandle = internalTree.getSibling(
                 location = relativeLocation,
@@ -257,7 +272,7 @@ class RedBlackTree<PayloadT>(
 
             val siblingColor = internalTree.getColor(nodeHandle = siblingHandle)
 
-            assert(siblingColor == Color.Black) {
+            assert(siblingColor == RedBlackColor.Black) {
                 "The sibling must be black, as the parent is red"
             }
 
@@ -274,21 +289,24 @@ class RedBlackTree<PayloadT>(
                 internalTree.getColor(nodeHandle = it)
             }
 
-            if (closeNephewColor == Color.Red) return@run
-            if (distantNephewColor == Color.Red) return@run
+            if (closeNephewColor == RedBlackColor.Red) return@run
+            if (distantNephewColor == RedBlackColor.Red) return@run
 
             internalTree.paint(
                 nodeHandle = parentHandle,
-                newColor = Color.Black,
+                newColor = RedBlackColor.Black,
             )
 
             internalTree.paint(
                 nodeHandle = siblingHandle,
-                newColor = Color.Red,
+                newColor = RedBlackColor.Red,
             )
 
             // The violation was fixed!
-            return
+            return RebalanceResult(
+                finalLocation = relativeLocation,
+                retractionHeight = 0,
+            )
         }
 
         // Case #5 S’s close child C is red (the sibling S is black), and S’s distant child D is black
@@ -312,12 +330,12 @@ class RedBlackTree<PayloadT>(
                 internalTree.getColor(nodeHandle = it)
             }
 
-            if (closeNephewColor != Color.Red) return@run false
-            if (distantNephewColor == Color.Red) return@run false
+            if (closeNephewColor != RedBlackColor.Red) return@run false
+            if (distantNephewColor == RedBlackColor.Red) return@run false
 
             // From now on, we know that the close nephew is red and the distant nephew is effectively black
 
-            assert(siblingColor == Color.Black) {
+            assert(siblingColor == RedBlackColor.Black) {
                 "The sibling must be black, as the close nephew is red"
             }
 
@@ -328,12 +346,12 @@ class RedBlackTree<PayloadT>(
 
             internalTree.paint(
                 nodeHandle = closeNephewHandle,
-                newColor = Color.Black,
+                newColor = RedBlackColor.Black,
             )
 
             internalTree.paint(
                 nodeHandle = siblingHandle,
-                newColor = Color.Red,
+                newColor = RedBlackColor.Red,
             )
 
             // Now the parent color is unchanged and the new sibling (old close nephew) is black. The distant nephew (old
@@ -360,11 +378,11 @@ class RedBlackTree<PayloadT>(
                 internalTree.getColor(nodeHandle = it)
             }
 
-            if (distantNephewColor != Color.Red) return@run
+            if (distantNephewColor != RedBlackColor.Red) return@run
 
             // From now on, we know that the distant nephew is red
 
-            assert(siblingColor == Color.Black) {
+            assert(siblingColor == RedBlackColor.Black) {
                 "The sibling must be black, as the distant nephew is red"
             }
 
@@ -375,7 +393,7 @@ class RedBlackTree<PayloadT>(
 
             internalTree.setColor(
                 nodeHandle = parentHandle,
-                newColor = Color.Black,
+                newColor = RedBlackColor.Black,
             )
 
             internalTree.setColor(
@@ -385,11 +403,14 @@ class RedBlackTree<PayloadT>(
 
             internalTree.paint(
                 nodeHandle = distantNephewHandle,
-                newColor = Color.Black,
+                newColor = RedBlackColor.Black,
             )
 
             // The violation was fixed!
-            return
+            return RebalanceResult(
+                finalLocation = relativeLocation,
+                retractionHeight = 0,
+            )
         }
 
         if (wasCase3Applied) {
@@ -404,7 +425,7 @@ class RedBlackTree<PayloadT>(
 
         val parentColor = internalTree.getColor(nodeHandle = parentHandle)
 
-        assert(parentColor == Color.Black) {
+        assert(parentColor == RedBlackColor.Black) {
             // If the parent was red, it should've triggered case #4 (if both nephews were black) or cases #5/#6 (otherwise)
             "The parent is not black, which is unexpected at this point"
         }
@@ -415,7 +436,7 @@ class RedBlackTree<PayloadT>(
 
         val siblingColor = internalTree.getColor(nodeHandle = siblingHandle)
 
-        assert(siblingColor == Color.Black) {
+        assert(siblingColor == RedBlackColor.Black) {
             // If the sibling was red, it should've triggered case #3 (and later one of the final cases)
             "The sibling is not black, which is unexpected at this point"
         }
@@ -433,12 +454,12 @@ class RedBlackTree<PayloadT>(
             internalTree.getColor(nodeHandle = it)
         }
 
-        assert(distantNephewColor != Color.Red) {
+        assert(distantNephewColor != RedBlackColor.Red) {
             // If the distant nephew was red, it should've triggered case #6 (a final case)
             "The distant nephew is red, which is unexpected at this point"
         }
 
-        assert(closeNephewColor != Color.Red) {
+        assert(closeNephewColor != RedBlackColor.Red) {
             // We just checked that the distant nephew is black
             // If the close nephew was red, it should've triggered case #5 (and later case #6)
             "The close nephew is red, which is unexpected at this point"
@@ -447,7 +468,7 @@ class RedBlackTree<PayloadT>(
         // Case #2: P, S, and S’s children are black
         internalTree.paint(
             nodeHandle = siblingHandle,
-            newColor = Color.Red,
+            newColor = RedBlackColor.Red,
         )
 
         // After paining the sibling red, the subtree starting at this node is balanced
@@ -456,28 +477,44 @@ class RedBlackTree<PayloadT>(
             null -> {
                 // Case #1: The parent is root
                 // The violation was fixed!
-                return
+                return RebalanceResult(
+                    finalLocation = relativeLocation,
+                    retractionHeight = 0,
+                )
             }
 
             else -> {
                 // Although the subtree is balanced (has the same black height on each path), it's still one less than
                 // all the other paths in the whole tree. We need to fix it recursively.
-                fixBlackViolationRecursively(
+                val recursiveResult = fixBlackViolationRecursively(
+                    internalTree = internalTree,
                     nodeHandle = parentHandle,
                     relativeLocation = parentRelativeLocation,
+                )
+
+                return recursiveResult.copy(
+                    retractionHeight = recursiveResult.retractionHeight + 1,
                 )
             }
         }
     }
 
     override fun rebalanceAfterCollapse(
-        elevatedNodeHandle: BinaryTree.NodeHandle<PayloadT, Color>,
-    ) {
+        internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor>,
+        elevatedNodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackColor>,
+    ): RebalanceResult<PayloadT, RedBlackColor> {
         // As the elevated node was a single child of its parent, it must be
         // a red node
         internalTree.paint(
             nodeHandle = elevatedNodeHandle,
-            newColor = Color.Black,
+            newColor = RedBlackColor.Black,
+        )
+
+        val elevatedNodeLocation = internalTree.locate(nodeHandle = elevatedNodeHandle)
+
+        return RebalanceResult(
+            finalLocation = elevatedNodeLocation,
+            retractionHeight = 0,
         )
     }
 }

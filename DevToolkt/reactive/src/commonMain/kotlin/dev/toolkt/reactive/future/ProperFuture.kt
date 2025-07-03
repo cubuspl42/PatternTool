@@ -5,20 +5,11 @@ import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.hold
 
 abstract class ProperFuture<out V> : Future<V>() {
-    final override val state: Cell<State<V>>
-        get() = when (val foundState = currentState) {
-            is Fulfilled<V> -> Cell.Companion.of(foundState)
+    final override val currentState: State<V>
+        get() = state.currentValue
 
-            Pending -> onFulfilled.hold(Pending)
-        }
-
-    override val onResult: EventStream<V>
-        get() = onFulfilled.map { it.result }
-
-    override val onFulfilled: EventStream<Fulfilled<V>>
-        get() = onResult.map { result ->
-            Fulfilled(result = result)
-        }
+    final override val onFulfilled: EventStream<Fulfilled<V>>
+        get() = onResult.map { Fulfilled(result = it) }
 
     final override fun <Vr> map(
         transform: (V) -> Vr,

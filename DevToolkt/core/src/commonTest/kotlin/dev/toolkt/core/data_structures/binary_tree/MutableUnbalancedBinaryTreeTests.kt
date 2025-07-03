@@ -11,6 +11,7 @@ import dev.toolkt.core.data_structures.binary_tree.test_utils.swapVerified
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 

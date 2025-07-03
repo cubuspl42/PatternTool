@@ -1,22 +1,11 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.Subscription
-import dev.toolkt.reactive.future.ManagedFuture
+import dev.toolkt.reactive.future.ProperFuture
 
 class NextFuture<E>(
     source: EventStream<E>,
-) : ManagedFuture<E>() {
-    private var sourceSubscription: Subscription? = source.listenWeak(
-        target = this,
-    ) { self, sourceEvent ->
-        self.completeInternally(
-            result = sourceEvent,
-        )
+) : ProperFuture<E>() {
+    override val onResult: EventStream<E> = source.single()
 
-        val sourceSubscription = self.sourceSubscription ?: throw IllegalStateException("No active source subscription")
-
-        sourceSubscription.cancel()
-
-        self.sourceSubscription = null
-    }
+    override val state = onFulfilled.hold(Pending)
 }

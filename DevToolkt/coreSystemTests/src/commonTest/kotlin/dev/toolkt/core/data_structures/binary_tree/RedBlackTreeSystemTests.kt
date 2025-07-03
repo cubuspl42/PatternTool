@@ -1,5 +1,6 @@
 package dev.toolkt.core.data_structures.binary_tree
 
+import dev.toolkt.core.data_structures.binary_tree.lookup.getRandomFreeLocation
 import dev.toolkt.core.data_structures.binary_tree.test_utils.verify
 import kotlin.random.Random
 import kotlin.test.Test
@@ -11,8 +12,8 @@ class RedBlackTreeSystemTests {
     fun testFuzzy() {
         val random = Random
 
-        val tree = RedBlackTree<Int>()
-        val nodeHandles = ArrayDeque<BinaryTree.NodeHandle<Int, RedBlackTree.Color>>()
+        val tree = MutableBalancedBinaryTree.redBlack<Int>()
+        val nodeHandles = ArrayDeque<BinaryTree.NodeHandle<Int, RedBlackColor>>()
 
         (0 until operationCount).forEach { operationIndex ->
             val progress = operationIndex.toDouble() / operationCount

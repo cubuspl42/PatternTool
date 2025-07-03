@@ -1,10 +1,17 @@
 package dev.toolkt.core.data_structures.binary_tree
 
+import dev.toolkt.core.data_structures.binary_tree.BinaryTreeBalancingStrategy.RebalanceResult
 import dev.toolkt.core.errors.assert
 import dev.toolkt.core.iterable.uncons
 
-abstract class AbstractBalancedBinaryTree<PayloadT, ColorT>(
-    protected val internalTree: MutableUnbalancedBinaryTree<PayloadT, ColorT>,
+/**
+ * @constructor The constructor that accepts an existing mutable [internalTree]
+ * is a low-level functionality. The ownership of that tree passes to this object.
+ * The given tree is assumed to initially be a properly balanced tree.
+ */
+class BalancedBinaryTree<PayloadT, ColorT>(
+    private val internalTree: MutableUnbalancedBinaryTree<PayloadT, ColorT>,
+    private val balancingStrategy: BinaryTreeBalancingStrategy<PayloadT, ColorT>,
 ) : MutableBalancedBinaryTree<PayloadT, ColorT>, BinaryTree<PayloadT, ColorT> by internalTree {
     override fun setPayload(
         nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
@@ -16,44 +23,52 @@ abstract class AbstractBalancedBinaryTree<PayloadT, ColorT>(
         )
     }
 
-    final override fun insert(
+    override fun insert(
         location: BinaryTree.Location<PayloadT, ColorT>,
         payload: PayloadT,
     ): BinaryTree.NodeHandle<PayloadT, ColorT> {
-        val insertedNodeHandle = internalTree.attach(
+        val attachedNodeHandle = internalTree.attach(
             location = location,
             payload = payload,
-            color = defaultColor,
+            color = balancingStrategy.defaultColor,
         )
 
         // Rebalance the tree after insertion
-        rebalanceAfterAttach(
-            putNodeHandle = insertedNodeHandle,
+        balancingStrategy.rebalanceAfterAttach(
+            internalTree = internalTree,
+            attachedNodeHandle = attachedNodeHandle,
         )
 
-        return insertedNodeHandle
+        return attachedNodeHandle
     }
 
-    final override fun remove(
+    override fun remove(
         nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
-    ) {
+    ): BinaryTree.Location<PayloadT, ColorT> {
         val leftChildHandle = internalTree.getLeftChild(nodeHandle = nodeHandle)
         val rightChildHandle = internalTree.getRightChild(nodeHandle = nodeHandle)
 
-        if (leftChildHandle != null && rightChildHandle != null) {
+        val swapResult = if (leftChildHandle != null && rightChildHandle != null) {
             // If the node has two children, we can't directly remove it, but we can swap it with its
             // successor
-
+            // After the swap, the node has at most one child (as the successor was guaranteed to have at most one child)
             internalTree.swap(
                 nodeHandle = nodeHandle,
                 side = BinaryTree.Side.Right,
             )
+        } else null
 
-            // After the swap, the node has at most one child (as the successor
-            // was guaranteed to have at most one child)
+        val rebalanceResult = removeDirectly(nodeHandle = nodeHandle)
+
+        return when (swapResult) {
+            null -> rebalanceResult.finalLocation
+
+            else -> when {
+                rebalanceResult.retractionHeight > swapResult.neighbourDepth -> rebalanceResult.finalLocation
+
+                else -> locate(swapResult.neighbourHandle)
+            }
         }
-
-        removeDirectly(nodeHandle = nodeHandle)
     }
 
     /**
@@ -61,7 +76,7 @@ abstract class AbstractBalancedBinaryTree<PayloadT, ColorT>(
      */
     private fun removeDirectly(
         nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
-    ) {
+    ): RebalanceResult<PayloadT, ColorT> {
         val leftChildHandle = internalTree.getLeftChild(nodeHandle = nodeHandle)
         val rightChildHandle = internalTree.getRightChild(nodeHandle = nodeHandle)
 
@@ -71,50 +86,41 @@ abstract class AbstractBalancedBinaryTree<PayloadT, ColorT>(
 
         val singleChildHandle = leftChildHandle ?: rightChildHandle
 
-        when (singleChildHandle) {
+        return when (singleChildHandle) {
             null -> {
                 val relativeLocation = internalTree.locateRelatively(nodeHandle = nodeHandle)
                 val leafColor = internalTree.getColor(nodeHandle = nodeHandle)
 
                 internalTree.cutOff(leafHandle = nodeHandle)
 
-                if (relativeLocation != null) {
-                    rebalanceAfterCutOff(
+                when {
+                    relativeLocation != null -> balancingStrategy.rebalanceAfterCutOff(
+                        internalTree = internalTree,
                         cutOffLeafLocation = relativeLocation,
                         cutOffLeafColor = leafColor,
                     )
-                } else {
+
                     // If we cut off the root, there's no need to rebalance
+                    else -> RebalanceResult(
+                        retractionHeight = 0,
+                        finalLocation = BinaryTree.RootLocation,
+                    )
                 }
             }
 
             else -> {
                 val elevatedNodeHandle = internalTree.collapse(nodeHandle = nodeHandle)
 
-                rebalanceAfterCollapse(
+                balancingStrategy.rebalanceAfterCollapse(
+                    internalTree = internalTree,
                     elevatedNodeHandle = elevatedNodeHandle,
                 )
             }
         }
     }
-
-    abstract val defaultColor: ColorT
-
-    abstract fun rebalanceAfterAttach(
-        putNodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
-    )
-
-    abstract fun rebalanceAfterCutOff(
-        cutOffLeafLocation: BinaryTree.RelativeLocation<PayloadT, ColorT>,
-        cutOffLeafColor: ColorT,
-    )
-
-    abstract fun rebalanceAfterCollapse(
-        elevatedNodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
-    )
 }
 
-fun <PayloadT, ColorT> AbstractBalancedBinaryTree<PayloadT, ColorT>.insertAll(
+fun <PayloadT, ColorT> BalancedBinaryTree<PayloadT, ColorT>.insertAll(
     location: BinaryTree.Location<PayloadT, ColorT>,
     payloads: List<PayloadT>,
 ) {

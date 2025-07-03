@@ -1,6 +1,17 @@
 package dev.toolkt.core.data_structures.binary_tree
 
+import dev.toolkt.core.iterable.uncons
+
 interface MutableBalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, ColorT> {
+    companion object {
+        fun <PayloadT> redBlack(
+            internalTree: MutableUnbalancedBinaryTree<PayloadT, RedBlackColor> = MutableUnbalancedBinaryTree.create(),
+        ): MutableBalancedBinaryTree<PayloadT, RedBlackColor> = BalancedBinaryTree(
+            internalTree = internalTree,
+            balancingStrategy = RedBlackTreeBalancingStrategy(),
+        )
+    }
+
     /**
      * Set the payload of the node corresponding to the given [nodeHandle].
      */
@@ -29,10 +40,42 @@ interface MutableBalancedBinaryTree<PayloadT, ColorT> : BinaryTree<PayloadT, Col
      * May result in the tree re-balancing.
      *
      * @throws IllegalArgumentException if the node is not a leaf
+     * @return the location of the highest subtree root that was rotated
      */
+    // TODO: Figure out if it's actually needed to return the location
     fun remove(
         nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+    ): BinaryTree.Location<PayloadT, ColorT>
+}
+
+fun <PayloadT, ColorT> MutableBalancedBinaryTree<PayloadT, ColorT>.insertAll(
+    location: BinaryTree.Location<PayloadT, ColorT>,
+    payloads: List<PayloadT>,
+) {
+    val (firstPayload, trailingPayloads) = payloads.uncons() ?: return
+
+    val nodeHandle = insert(
+        location = location,
+        payload = firstPayload,
     )
+
+    insertAll(
+        location = getNextInOrderFreeLocation(
+            nodeHandle = nodeHandle,
+            side = BinaryTree.Side.Right,
+        ),
+        payloads = trailingPayloads,
+    )
+}
+
+fun <PayloadT, ColorT> MutableBalancedBinaryTree<PayloadT, ColorT>.takeOut(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, ColorT>,
+): PayloadT {
+    val takenPayload = getPayload(nodeHandle = nodeHandle)
+
+    remove(nodeHandle = nodeHandle)
+
+    return takenPayload
 }
 
 fun <PayloadT, ColorT> MutableBalancedBinaryTree<PayloadT, ColorT>.insertRelative(

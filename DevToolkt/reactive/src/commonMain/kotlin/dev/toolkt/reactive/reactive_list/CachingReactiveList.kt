@@ -2,6 +2,7 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.listenWeak
 
 class CachingReactiveList<E>(
     operator: ReactiveListOperator<E>,

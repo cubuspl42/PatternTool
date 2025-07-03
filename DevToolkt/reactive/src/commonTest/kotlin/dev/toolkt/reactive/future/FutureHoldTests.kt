@@ -1,6 +1,6 @@
 package dev.toolkt.reactive.future
 
-import dev.toolkt.reactive.EventStreamVerifier
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

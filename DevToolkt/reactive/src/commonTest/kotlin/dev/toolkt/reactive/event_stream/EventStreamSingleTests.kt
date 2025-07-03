@@ -1,13 +1,15 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
+import dev.toolkt.core.platform.collectGarbageSuspend
+import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
-import dev.toolkt.reactive.EventStreamVerifier
-import kotlin.test.Ignore
+import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.Duration.Companion.seconds
 
 class EventStreamSingleTests {
     @Test
@@ -46,10 +48,7 @@ class EventStreamSingleTests {
     }
 
     @Test
-    @Ignore // FIXME: EventStream.single does not manage memory properly (no stateful streams do?)
-    fun testSingle_garbageCollection() = runTestDefault(
-        timeout = 10.seconds,
-    ) {
+    fun testSingle_keepAlive() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
         fun setup(): Pair<PlatformWeakReference<EventStream<Int>>, EventStreamVerifier<Int>> {
@@ -68,6 +67,56 @@ class EventStreamSingleTests {
         val (singleEventStreamWeakRef, streamVerifier) = setup()
 
         ensureNotCollected(weakRef = singleEventStreamWeakRef)
+
+        // Emit the single event
+        eventEmitter.emit(10)
+
+        assertEquals(
+            expected = listOf(10),
+            actual = streamVerifier.removeReceivedEvents(),
+        )
+    }
+
+    @Test
+    fun testSingle_letItGo() = runTestDefault {
+        val eventEmitter = EventEmitter<Int>()
+
+        val singleEventStreamWeakRef = PlatformWeakReference(eventEmitter.single())
+
+        eventEmitter.emit(10)
+
+        ensureCollected(weakRef = singleEventStreamWeakRef)
+    }
+
+    @Test
+    fun testSingle_missed() = runTestDefault {
+        val eventEmitter = EventEmitter<Int>()
+
+        val singleEventStream = eventEmitter.single()
+
+        eventEmitter.emit(10)
+
+        val streamVerifier = DetachedEventStreamVerifier(
+            eventStream = singleEventStream,
+        )
+
+        eventEmitter.emit(20)
+
+        assertEquals(
+            expected = emptyList(),
+            actual = streamVerifier.removeReceivedEvents(),
+        )
+    }
+
+    @Test
+    fun testSingle_detached() = runTestDefault {
+        val eventEmitter = EventEmitter<Int>()
+
+        val streamVerifier = DetachedEventStreamVerifier(
+            eventStream = eventEmitter.single(),
+        )
+
+        PlatformSystem.collectGarbageSuspend()
 
         // Emit the single event
         eventEmitter.emit(10)

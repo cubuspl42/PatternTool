@@ -1,11 +1,9 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
-import kotlin.test.assertIs
+import kotlin.test.assertNotEquals
 
 /**
  * Tests of the fundamental [EventStream] operations
@@ -65,19 +63,25 @@ class EventStreamTests {
             // Create a dependent stream to make the system non-trivial
             val dependentStream = eventEmitter.map { it.toString() }
 
-            dependentStream.listen(listener)
+            val firstSubscription = dependentStream.listen(listener)
 
-            assertIs<IllegalStateException>(
-                assertFails {
-                    dependentStream.listen(listener)
-                },
+            val secondSubscription = dependentStream.listen(listener)
+
+            assertNotEquals(
+                illegal = firstSubscription,
+                actual = secondSubscription,
             )
         }
 
         // As the ::function operator doesn't return stable references on
         // JavaScript, we ensure that the listener is bound to a function
         // argument
-        test {}
+        test(
+            object : Listener<Any> {
+                override fun handle(event: Any) {
+                }
+            },
+        )
     }
 
 
@@ -135,8 +139,6 @@ class EventStreamTests {
     }
 
     @Test
-    @Ignore // FIXME: This fails with AssertionError("The subscription is already present")
-    // Is this related to `MapBackedMultiValuedMap` size caching?
     fun testListenWeak_sameListener_sameTarget() {
         fun test(
             weakListener: TargetingListener<Any, String>,
@@ -153,21 +155,24 @@ class EventStreamTests {
                 listener = weakListener,
             )
 
-            assertIs<IllegalStateException>(
-                assertFails {
-                    dependentStream.listenWeak(
-                        target = target,
-                        listener = weakListener,
-                    )
-                },
+            dependentStream.listenWeak(
+                target = target,
+                listener = weakListener,
             )
         }
 
         // As the ::function operator doesn't return stable references on
         // JavaScript, we ensure that the weak listener is bound to a function
         // argument
-        test { target, value ->
-        }
+        test(
+            weakListener = object : TargetingListener<Any, Any> {
+                override fun handle(
+                    target: Any,
+                    event: Any,
+                ) {
+                }
+            },
+        )
     }
 
 

@@ -8,6 +8,12 @@ abstract class AbstractMutableStableMap<K, V>(
 
     final override fun isEmpty(): Boolean = size == 0
 
+    final override fun get(key: K): V? {
+        val entryHandle = resolve(key = key) ?: return null
+
+        return getVia(handle = entryHandle)?.value
+    }
+
     final override fun remove(
         element: Map.Entry<K, V>,
     ): Boolean = entries.remove(element)

@@ -1,15 +1,16 @@
 package dev.toolkt.core.collections
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
-import dev.toolkt.core.data_structures.binary_tree.findBy
+import dev.toolkt.core.data_structures.binary_tree.RedBlackColor
+import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
+import dev.toolkt.core.data_structures.binary_tree.lookup.findBy
 import dev.toolkt.core.data_structures.binary_tree.traverse
 import kotlin.jvm.JvmInline
 
 class MutableTreeMap<K : Comparable<K>, V> internal constructor(
-    private val entryTree: RedBlackTree<MutableTreeMap.MutableMapEntry<K, V>> = RedBlackTree(),
+    private val entryTree: MutableBalancedBinaryTree<MutableMap.MutableEntry<K, V>, RedBlackColor> = MutableBalancedBinaryTree.redBlack(),
 ) : AbstractMutableStableMap<K, V>(
-    EntrySet(entryTree = entryTree),
+    MutableBalancedBinaryTreeEntrySet(entryTree = entryTree),
 ) {
     internal class MutableMapEntry<K, V>(
         override val key: K,
@@ -17,7 +18,7 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
     ) : MutableMap.MutableEntry<K, V> {
         companion object {
             fun <K : Comparable<K>, V> selectKey(
-                entry: MutableMapEntry<K, V>,
+                entry: MutableMap.MutableEntry<K, V>,
             ): K = entry.key
         }
 
@@ -32,19 +33,6 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
             mutableValue = newValue
 
             return previousValue
-        }
-    }
-
-    internal class EntrySet<K : Comparable<K>, V>(
-        private val entryTree: RedBlackTree<MutableMapEntry<K, V>>,
-    ) : AbstractMutableCollection<MutableMap.MutableEntry<K, V>>(), MutableSet<MutableMap.MutableEntry<K, V>> {
-        override val size: Int
-            get() = entryTree.size
-
-        override fun iterator(): MutableIterator<MutableMap.MutableEntry<K, V>> = RedBlackTreeIterator(tree = entryTree)
-
-        override fun add(element: MutableMap.MutableEntry<K, V>): Boolean {
-            throw UnsupportedOperationException()
         }
     }
 
@@ -110,14 +98,19 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
 
     override fun removeVia(
         handle: EntryHandle<K, V>,
-    ): Map.Entry<K, V> {
-        val nodeHandle = handle.unpack()
+    ): Map.Entry<K, V>? {
+        val nodeHandle = handle.unpack() ?: return null
         val removedEntry = entryTree.getPayload(nodeHandle = nodeHandle)
 
         entryTree.remove(nodeHandle = nodeHandle)
 
         return removedEntry
     }
+
+    override fun mutableStableIterator(): MutableStableIterator<MutableMap.MutableEntry<K, V>>? =
+        MutableBalancedBinaryTreeStableIterator.iterate(
+            mutableTree = entryTree,
+        )
 
     override fun resolve(
         key: K,
@@ -131,10 +124,12 @@ class MutableTreeMap<K : Comparable<K>, V> internal constructor(
 
     override fun getVia(
         handle: EntryHandle<K, V>,
-    ): Map.Entry<K, V> {
-        val nodeHandle = handle.unpack()
+    ): Map.Entry<K, V>? {
+        val nodeHandle = handle.unpack() ?: return null
         return entryTree.getPayload(nodeHandle = nodeHandle)
     }
+
+    override fun stableIterator(): StableIterator<MutableMap.MutableEntry<K, V>>? = mutableStableIterator()
 
     private fun findByKey(
         key: K,
@@ -174,20 +169,22 @@ fun <K : Comparable<K>, V> mutableTreeMapOf(
     return map
 }
 
-private typealias EntryLocation<K, V> = BinaryTree.Location<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color>
+private typealias EntryLocation<K, V> = BinaryTree.Location<MutableMap.MutableEntry<K, V>, RedBlackColor>
 
-private typealias EntryNodeHandle<K, V> = BinaryTree.NodeHandle<MutableTreeMap.MutableMapEntry<K, V>, RedBlackTree.Color>
+private typealias EntryNodeHandle<K, V> = BinaryTree.NodeHandle<MutableMap.MutableEntry<K, V>, RedBlackColor>
 
-private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): EntryNodeHandle<K, V> {
+private fun <K : Comparable<K>, V> EntryHandle<K, V>.unpack(): EntryNodeHandle<K, V>? {
     this as? MutableTreeMap.TreeMapHandle<K, V> ?: throw IllegalArgumentException(
         "Handle is not a TreeMapHandle: $this"
     )
 
-    return this.nodeHandle
+    return when {
+        nodeHandle.isValid -> nodeHandle
+        else -> null
+    }
 }
 
-private fun <K : Comparable<K>, V> EntryNodeHandle<K, V>.pack(): EntryHandle<K, V> =
-    MutableTreeMap.TreeMapHandle(
-        nodeHandle = this,
-    )
+private fun <K : Comparable<K>, V> EntryNodeHandle<K, V>.pack(): EntryHandle<K, V> = MutableTreeMap.TreeMapHandle(
+    nodeHandle = this,
+)
 

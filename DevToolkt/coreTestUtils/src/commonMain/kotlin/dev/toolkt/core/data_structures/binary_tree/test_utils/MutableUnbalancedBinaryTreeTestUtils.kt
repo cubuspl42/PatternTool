@@ -38,6 +38,10 @@ fun <PayloadT : Comparable<PayloadT>, ColorT> MutableUnbalancedBinaryTree<Payloa
         leafHandle = leafHandle,
     )
 
+    if (leafHandle.isValid) {
+        throw AssertionError("The leaf handle should be invalid after being cut off")
+    }
+
     verifyIntegrity()
 
     return cutOffLeafLocation
@@ -63,6 +67,10 @@ fun <PayloadT : Comparable<PayloadT>, ColorT> MutableUnbalancedBinaryTree<Payloa
     val elevatedChildHandle = this.collapse(
         nodeHandle = nodeHandle,
     )
+
+    if (nodeHandle.isValid) {
+        throw AssertionError("The node should be invalid after collapsing")
+    }
 
     verifyIntegrity()
 

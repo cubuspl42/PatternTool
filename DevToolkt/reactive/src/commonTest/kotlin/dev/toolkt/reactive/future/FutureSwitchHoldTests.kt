@@ -1,6 +1,6 @@
 package dev.toolkt.reactive.future
 
-import dev.toolkt.reactive.EventStreamVerifier
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
 import kotlin.test.Test

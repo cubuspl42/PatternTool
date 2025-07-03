@@ -129,17 +129,15 @@ abstract class ReactiveList<out E> : ReactiveListView<E> {
 
         fun <E : Any> singleNotNull(
             element: Cell<E?>,
-        ): ReactiveList<E> = ReactiveListSingleNotNullOperator(
+        ): ReactiveList<E> = ReactiveListSingleNotNull(
             elementCell = element,
-        ).instantiateCaching()
+        )
 
         fun <E> fuse(
             cells: ReactiveList<Cell<E>>,
             behavior: Behavior = Behavior.Forward,
-        ): ReactiveList<E> = FuseReactiveListOperator(
+        ): ReactiveList<E> = ReactiveListFuse(
             source = cells,
-        ).instantiate(
-            behavior = behavior,
         )
 
         fun <E, R> looped(

@@ -1,8 +1,9 @@
 package dev.toolkt.core.data_structures.binary_tree.test_utils
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
+import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
 import dev.toolkt.core.data_structures.binary_tree.MutableUnbalancedBinaryTree
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
+import dev.toolkt.core.data_structures.binary_tree.RedBlackColor
 import dev.toolkt.core.data_structures.binary_tree.getLeftChild
 import dev.toolkt.core.data_structures.binary_tree.getRightChild
 import dev.toolkt.core.range.split
@@ -12,10 +13,10 @@ private data class ColorVerificationResult(
     val blackHeight: Int,
 )
 
-fun <PayloadT : Comparable<PayloadT>> RedBlackTree<PayloadT>.insertVerified(
-    location: BinaryTree.Location<PayloadT, RedBlackTree.Color>,
+fun <PayloadT : Comparable<PayloadT>> MutableBalancedBinaryTree<PayloadT, RedBlackColor>.insertVerified(
+    location: BinaryTree.Location<PayloadT, RedBlackColor>,
     payload: PayloadT,
-): BinaryTree.NodeHandle<PayloadT, RedBlackTree.Color> {
+): BinaryTree.NodeHandle<PayloadT, RedBlackColor> {
     val insertedNodeHandle = insert(
         location = location,
         payload = payload,
@@ -26,8 +27,8 @@ fun <PayloadT : Comparable<PayloadT>> RedBlackTree<PayloadT>.insertVerified(
     return insertedNodeHandle
 }
 
-fun <PayloadT : Comparable<PayloadT>> RedBlackTree<PayloadT>.removeVerified(
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackTree.Color>,
+fun <PayloadT : Comparable<PayloadT>> MutableBalancedBinaryTree<PayloadT, RedBlackColor>.removeVerified(
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackColor>,
 ) {
     remove(
         nodeHandle = nodeHandle,
@@ -36,39 +37,26 @@ fun <PayloadT : Comparable<PayloadT>> RedBlackTree<PayloadT>.removeVerified(
     verify()
 }
 
-fun <PayloadT : Comparable<PayloadT>> RedBlackTree.Companion.loadVerified(
-    rootData: NodeData<PayloadT, RedBlackTree.Color>
-): RedBlackTree<PayloadT> {
-    val internalTree = MutableUnbalancedBinaryTree.load(
-        rootData = rootData,
-    )
 
-    internalTree.verify()
-
-    return RedBlackTree(
-        internalTree = internalTree,
-    )
-}
-
-fun <PayloadT : Comparable<PayloadT>> BinaryTree<PayloadT, RedBlackTree.Color>.verify() {
+fun <PayloadT> BinaryTree<PayloadT, RedBlackColor>.verify() {
     verifyIntegrity()
     verifyBalance()
     verifyColor()
 }
 
-private fun <PayloadT : Comparable<PayloadT>> BinaryTree<PayloadT, RedBlackTree.Color>.verifyColor() {
+private fun <PayloadT> BinaryTree<PayloadT, RedBlackColor>.verifyColor() {
     val rootHandle = this.currentRootHandle ?: return
 
     verifySubtreeColor(parentColor = null, rootHandle)
 }
 
-private fun <PayloadT : Comparable<PayloadT>> BinaryTree<PayloadT, RedBlackTree.Color>.verifySubtreeColor(
-    parentColor: RedBlackTree.Color?,
-    nodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackTree.Color>,
+private fun <PayloadT> BinaryTree<PayloadT, RedBlackColor>.verifySubtreeColor(
+    parentColor: RedBlackColor?,
+    nodeHandle: BinaryTree.NodeHandle<PayloadT, RedBlackColor>,
 ): ColorVerificationResult {
     val nodeColor = getColor(nodeHandle = nodeHandle)
 
-    if (parentColor == RedBlackTree.Color.Red && nodeColor == RedBlackTree.Color.Red) {
+    if (parentColor == RedBlackColor.Red && nodeColor == RedBlackColor.Red) {
         throw AssertionError("Red node cannot have a red parent")
     }
 
@@ -94,8 +82,8 @@ private fun <PayloadT : Comparable<PayloadT>> BinaryTree<PayloadT, RedBlackTree.
     val rightSubtreeBlackHeight = rightSubtreeVerificationResult?.blackHeight ?: 1
 
     val ownBlackHeight = when (nodeColor) {
-        RedBlackTree.Color.Red -> 0
-        RedBlackTree.Color.Black -> 1
+        RedBlackColor.Red -> 0
+        RedBlackColor.Black -> 1
     }
 
     if (leftSubtreeBlackHeight != rightSubtreeBlackHeight) {
@@ -107,62 +95,78 @@ private fun <PayloadT : Comparable<PayloadT>> BinaryTree<PayloadT, RedBlackTree.
     }
 }
 
-fun RedBlackTree.Companion.buildBalance(
-    requiredBlackDepth: Int,
-    payloadRange: ClosedFloatingPointRange<Double>,
-): NodeData<Double, RedBlackTree.Color>? = buildBalance(
-    random = Random(seed = 0), // Pass an explicit seed to make things deterministic
-    requiredBlackDepth = requiredBlackDepth,
-    payloadRange = payloadRange,
-    parentColor = RedBlackTree.Color.Red, // Assume a red parent to avoid red violation
-)
+object RedBlackTreeTestUtils {
+    fun <PayloadT> loadVerified(
+        rootData: NodeData<PayloadT, RedBlackColor>,
+    ): MutableBalancedBinaryTree<PayloadT, RedBlackColor> {
+        val internalTree = MutableUnbalancedBinaryTree.load(
+            rootData = rootData,
+        )
 
-private fun RedBlackTree.Companion.buildBalance(
-    random: Random,
-    requiredBlackDepth: Int,
-    payloadRange: ClosedFloatingPointRange<Double>,
-    parentColor: RedBlackTree.Color = RedBlackTree.Color.Red,
-): NodeData<Double, RedBlackTree.Color>? {
-    require(requiredBlackDepth >= 1)
+        internalTree.verify()
 
-    if (requiredBlackDepth == 1) {
-        return null
+        return MutableBalancedBinaryTree.redBlack(
+            internalTree = internalTree,
+        )
     }
 
-    val (leftPayloadRange, rightPayloadRange) = payloadRange.split()
+    fun buildBalance(
+        requiredBlackDepth: Int,
+        payloadRange: ClosedFloatingPointRange<Double>,
+    ): NodeData<Double, RedBlackColor>? = buildBalance(
+        random = Random(seed = 0), // Pass an explicit seed to make things deterministic
+        requiredBlackDepth = requiredBlackDepth,
+        payloadRange = payloadRange,
+        parentColor = RedBlackColor.Red, // Assume a red parent to avoid red violation
+    )
 
-    val color = when (parentColor) {
-        RedBlackTree.Color.Red -> RedBlackTree.Color.Black
+    private fun buildBalance(
+        random: Random,
+        requiredBlackDepth: Int,
+        payloadRange: ClosedFloatingPointRange<Double>,
+        parentColor: RedBlackColor = RedBlackColor.Red,
+    ): NodeData<Double, RedBlackColor>? {
+        require(requiredBlackDepth >= 1)
 
-        else -> {
-            val x = random.nextDouble()
+        if (requiredBlackDepth == 1) {
+            return null
+        }
 
-            when {
-                x < 0.4 -> RedBlackTree.Color.Red
-                else -> RedBlackTree.Color.Black
+        val (leftPayloadRange, rightPayloadRange) = payloadRange.split()
+
+        val color = when (parentColor) {
+            RedBlackColor.Red -> RedBlackColor.Black
+
+            else -> {
+                val x = random.nextDouble()
+
+                when {
+                    x < 0.4 -> RedBlackColor.Red
+                    else -> RedBlackColor.Black
+                }
             }
         }
-    }
 
-    val newRequiredBlackDepth = when (color) {
-        RedBlackTree.Color.Black -> requiredBlackDepth - 1
-        else -> requiredBlackDepth
-    }
+        val newRequiredBlackDepth = when (color) {
+            RedBlackColor.Black -> requiredBlackDepth - 1
+            else -> requiredBlackDepth
+        }
 
-    return NodeData(
-        payload = rightPayloadRange.start,
-        color = color,
-        leftChild = buildBalance(
-            random = random,
-            requiredBlackDepth = newRequiredBlackDepth,
-            payloadRange = leftPayloadRange,
-            parentColor = color,
-        ),
-        rightChild = buildBalance(
-            random = random,
-            requiredBlackDepth = newRequiredBlackDepth,
-            payloadRange = rightPayloadRange,
-            parentColor = color,
-        ),
-    )
+        return NodeData(
+            payload = rightPayloadRange.start,
+            color = color,
+            leftChild = buildBalance(
+                random = random,
+                requiredBlackDepth = newRequiredBlackDepth,
+                payloadRange = leftPayloadRange,
+                parentColor = color,
+            ),
+            rightChild = buildBalance(
+                random = random,
+                requiredBlackDepth = newRequiredBlackDepth,
+                payloadRange = rightPayloadRange,
+                parentColor = color,
+            ),
+        )
+    }
 }

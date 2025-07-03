@@ -65,7 +65,16 @@ interface BinaryTree<out PayloadT, out ColorT> {
      * removed through this handle. If two handles correspond to the same node,
      * they compare equal.
      */
-    interface NodeHandle<out PayloadT, out ColorT>
+    interface NodeHandle<out PayloadT, out ColorT> {
+        /**
+         * Check whether this handle is valid, i.e. the node it refers to
+         * is still present in the tree. Invalid handles cannot be used,
+         * even for read-only operations. All node handles returned by
+         * [BinaryTree] operations are valid right after the operation
+         * is completed.
+         */
+        val isValid: Boolean
+    }
 
     sealed interface Location<out PayloadT, out ColorT> {
         val parentHandle: NodeHandle<PayloadT, ColorT>?
@@ -100,6 +109,9 @@ interface BinaryTree<out PayloadT, out ColorT> {
 
     val size: Int
 
+    /**
+     * Resolve the [location] to a stable handle to the node in the tree.
+     */
     fun resolve(
         location: Location<@UnsafeVariance PayloadT, @UnsafeVariance ColorT>,
     ): NodeHandle<PayloadT, ColorT>?

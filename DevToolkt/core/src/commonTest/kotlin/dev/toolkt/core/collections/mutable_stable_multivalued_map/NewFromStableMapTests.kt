@@ -1,11 +1,20 @@
-package dev.toolkt.core.collections
+package dev.toolkt.core.collections.mutable_stable_multivalued_map
 
+import dev.toolkt.core.collections.MapEntry
+import dev.toolkt.core.collections.MutableStableMultiValuedMap
+import dev.toolkt.core.collections.mutableStableBagOf
+import dev.toolkt.core.collections.mutableStableMapOf
+import dev.toolkt.core.collections.verifyIntegrity
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
-class MutableMultiValuedMapTests {
+class NewFromStableMapTests {
     @Test
     fun testNewFromStableMap_initial() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A", "B", "C", "A"),
                 20 to mutableStableBagOf("X", "W", "A"),
@@ -40,7 +49,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_add_existingKeyExistingValue() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
@@ -48,11 +57,21 @@ class MutableMultiValuedMapTests {
             ),
         )
 
-        mutableMultiValuedMap.addEx(
-            MapEntry(
+        val entryHandle = assertNotNull(
+            actual = mutableMultiValuedMap.addEx(
+                MapEntry(
+                    key = 20,
+                    value = "X",
+                ),
+            ),
+        )
+
+        assertEquals(
+            expected = MapEntry(
                 key = 20,
                 value = "X",
             ),
+            actual = mutableMultiValuedMap.getVia(handle = entryHandle),
         )
 
         mutableMultiValuedMap.verifyIntegrity(
@@ -78,7 +97,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_add_existingKeyNewValue() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A", "B", "C", "A"),
                 20 to mutableStableBagOf("X", "W", "A"),
@@ -86,11 +105,21 @@ class MutableMultiValuedMapTests {
             ),
         )
 
-        mutableMultiValuedMap.addEx(
-            MapEntry(
+        val entryHandle = assertNotNull(
+            actual = mutableMultiValuedMap.addEx(
+                MapEntry(
+                    key = 10,
+                    value = "J",
+                ),
+            ),
+        )
+
+        assertEquals(
+            expected = MapEntry(
                 key = 10,
                 value = "J",
             ),
+            actual = mutableMultiValuedMap.getVia(handle = entryHandle),
         )
 
         mutableMultiValuedMap.verifyIntegrity(
@@ -121,7 +150,7 @@ class MutableMultiValuedMapTests {
 
     @Test
     fun testNewFromStableMap_add_newKey() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
@@ -129,11 +158,21 @@ class MutableMultiValuedMapTests {
             ),
         )
 
-        mutableMultiValuedMap.addEx(
-            MapEntry(
+        val entryHandle = assertNotNull(
+            actual = mutableMultiValuedMap.addEx(
+                MapEntry(
+                    key = 40,
+                    value = "L",
+                ),
+            ),
+        )
+
+        assertEquals(
+            expected = MapEntry(
                 key = 40,
                 value = "L",
             ),
+            actual = mutableMultiValuedMap.getVia(handle = entryHandle),
         )
 
         mutableMultiValuedMap.verifyIntegrity(
@@ -158,8 +197,8 @@ class MutableMultiValuedMapTests {
     }
 
     @Test
-    fun testNewFromStableMap_removeKey() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+    fun testNewFromStableMap_removeKey_existing() {
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
@@ -168,7 +207,9 @@ class MutableMultiValuedMapTests {
             ),
         )
 
-        mutableMultiValuedMap.removeKey(key = 20)
+        assertTrue(
+            actual = mutableMultiValuedMap.removeKey(key = 20),
+        )
 
         mutableMultiValuedMap.verifyIntegrity(
             expectedEntries = listOf(
@@ -192,8 +233,37 @@ class MutableMultiValuedMapTests {
     }
 
     @Test
-    fun testNewFromStableMap_removeEntry() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+    fun testNewFromStableMap_removeKey_nonExisting() {
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
+            bucketMap = mutableStableMapOf(
+                10 to mutableStableBagOf("A"),
+                30 to mutableStableBagOf("C", "D"),
+            ),
+        )
+
+        assertFalse(
+            actual = mutableMultiValuedMap.removeKey(key = 20),
+        )
+
+        mutableMultiValuedMap.verifyIntegrity(
+            expectedEntries = listOf(
+                MapEntry(10, "A"),
+                MapEntry(30, "C"),
+                MapEntry(30, "D"),
+            ),
+            controlKeys = setOf(
+                -10, 0, 20,
+            ),
+            controlEntries = setOf(
+                MapEntry(30, "L"),
+                MapEntry(40, "X"),
+            ),
+        )
+    }
+
+    @Test
+    fun testNewFromStableMap_removeEntry_existing() {
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),
@@ -201,10 +271,12 @@ class MutableMultiValuedMapTests {
             ),
         )
 
-        mutableMultiValuedMap.remove(
-            MapEntry(
-                key = 20,
-                value = "X",
+        assertTrue(
+            actual = mutableMultiValuedMap.remove(
+                MapEntry(
+                    key = 20,
+                    value = "X",
+                ),
             ),
         )
 
@@ -229,8 +301,44 @@ class MutableMultiValuedMapTests {
     }
 
     @Test
+    fun testNewFromStableMap_removeEntry_nonExisting() {
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
+            bucketMap = mutableStableMapOf(
+                10 to mutableStableBagOf("A"),
+                20 to mutableStableBagOf("X", "W"),
+                30 to mutableStableBagOf("K"),
+            ),
+        )
+
+        assertFalse(
+            actual = mutableMultiValuedMap.remove(
+                MapEntry(
+                    key = 20,
+                    value = "Y",
+                ),
+            ),
+        )
+
+        mutableMultiValuedMap.verifyIntegrity(
+            expectedEntries = listOf(
+                MapEntry(10, "A"),
+                MapEntry(20, "X"),
+                MapEntry(20, "W"),
+
+                MapEntry(30, "K"),
+            ),
+            controlKeys = setOf(
+                -10, 0, 40, 50,
+            ),
+            controlEntries = setOf(
+                MapEntry(10, "U"),
+            ),
+        )
+    }
+
+    @Test
     fun testNewFromStableMap_removeEntry_lastForKey() {
-        val mutableMultiValuedMap = MutableMultiValuedMap.newFromStableMap(
+        val mutableMultiValuedMap = MutableStableMultiValuedMap.newFromStableMap(
             bucketMap = mutableStableMapOf(
                 10 to mutableStableBagOf("A"),
                 20 to mutableStableBagOf("X", "W"),

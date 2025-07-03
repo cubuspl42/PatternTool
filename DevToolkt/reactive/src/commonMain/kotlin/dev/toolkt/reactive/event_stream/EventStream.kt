@@ -5,12 +5,46 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.HoldCell
 import dev.toolkt.reactive.future.Future
 
-/**
- * A type alias for a function that accepts two parameter:
- * - A target (an object it's bound to)
- * - An event
- */
-typealias TargetingListener<TargetT, EventT> = (TargetT, EventT) -> Unit
+typealias TargetingListenerFn<TargetT, EventT> = (TargetT, EventT) -> Unit
+
+interface TargetingListener<in TargetT : Any, in EventT> {
+    companion object {
+        fun <TargetT : Any, EventT> wrap(
+            fn: TargetingListenerFn<TargetT, EventT>,
+        ): TargetingListener<TargetT, EventT> = object : TargetingListener<TargetT, EventT> {
+            override fun handle(
+                target: TargetT,
+                event: EventT,
+            ) {
+                fn(target, event)
+            }
+        }
+    }
+
+    /**
+     * A function that accepts a target and an event.
+     */
+    fun handle(
+        target: TargetT,
+        event: EventT,
+    )
+}
+
+fun <TargetT : Any, EventT> TargetingListener<TargetT, EventT>.bind(
+    source: EventSource<EventT>,
+    target: TargetT,
+): WeakEventSource.BoundTargetedListener<TargetT, EventT> = bindTarget(
+    target = target,
+).bindSource(
+    source = source,
+)
+
+fun <TargetT : Any, EventT> TargetingListener<TargetT, EventT>.bindTarget(
+    target: TargetT,
+): WeakEventSource.TargetedListener<TargetT, EventT> = WeakEventSource.TargetedListener(
+    target = target,
+    listener = this,
+)
 
 abstract class EventStream<out E> : EventSource<E> {
     companion object {

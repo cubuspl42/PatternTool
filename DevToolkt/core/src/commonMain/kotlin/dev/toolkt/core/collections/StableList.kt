@@ -20,6 +20,8 @@ interface StableList<out E> : StableCollection<E>, List<E> {
     /**
      * Returns the handle to the element at the specified [index] in the list.
      * Guarantees linear time complexity or better.
+     *
+     * @return the handle to the element or `null` if the index is out of bounds
      */
     fun getEx(
         index: Int,

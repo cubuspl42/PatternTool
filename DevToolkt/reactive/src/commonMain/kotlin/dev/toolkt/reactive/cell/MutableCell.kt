@@ -10,6 +10,9 @@ class MutableCell<V>(
 
     private var mutableValue: V = initialValue
 
+    val hasListeners: Boolean
+        get() = newValueEmitter.hasListeners
+
     override val newValues: EventStream<V>
         get() = newValueEmitter
 

@@ -1,5 +1,6 @@
 package dev.toolkt.core.data_structures.binary_tree
 
+import dev.toolkt.core.data_structures.binary_tree.lookup.getRandomFreeLocation
 import dev.toolkt.core.iterable.append
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Scope
@@ -13,11 +14,11 @@ class RedBlackTreeRemoveBenchmark {
         private const val treeMaxSize = 10_000_000
     }
 
-    private val tree = RedBlackTree<Int>()
+    private val tree = MutableBalancedBinaryTree.redBlack<Int>()
 
     private val random = Random(0)
 
-    private val handles = mutableListOf<BinaryTree.NodeHandle<Int, RedBlackTree.Color>>()
+    private val handles = mutableListOf<BinaryTree.NodeHandle<Int, RedBlackColor>>()
 
     private var index = 0
 

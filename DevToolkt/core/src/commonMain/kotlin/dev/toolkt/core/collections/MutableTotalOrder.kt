@@ -1,7 +1,8 @@
 package dev.toolkt.core.collections
 
 import dev.toolkt.core.data_structures.binary_tree.BinaryTree
-import dev.toolkt.core.data_structures.binary_tree.RedBlackTree
+import dev.toolkt.core.data_structures.binary_tree.RedBlackColor
+import dev.toolkt.core.data_structures.binary_tree.MutableBalancedBinaryTree
 import dev.toolkt.core.data_structures.binary_tree.getRank
 import dev.toolkt.core.data_structures.binary_tree.getSideMostFreeLocation
 import dev.toolkt.core.data_structures.binary_tree.insertRelative
@@ -11,11 +12,11 @@ import dev.toolkt.core.order.OrderRelation
 import kotlin.jvm.JvmInline
 
 class MutableTotalOrder<E> {
-    private val tree = RedBlackTree<E>()
+    private val tree = MutableBalancedBinaryTree.redBlack<E>()
 
     @JvmInline
     value class Handle<E> internal constructor(
-        internal val nodeHandle: BinaryTree.NodeHandle<E, RedBlackTree.Color>,
+        internal val nodeHandle: BinaryTree.NodeHandle<E, RedBlackColor>,
     )
 
     companion object;
@@ -102,9 +103,9 @@ private val OrderRelation.Inequal.side: BinaryTree.Side
         OrderRelation.Smaller -> BinaryTree.Side.Left
     }
 
-private fun <E> MutableTotalOrder.Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackTree.Color> = this.nodeHandle
+private fun <E> MutableTotalOrder.Handle<E>.unpack(): BinaryTree.NodeHandle<E, RedBlackColor> = this.nodeHandle
 
-private fun <E> BinaryTree.NodeHandle<E, RedBlackTree.Color>.pack(): MutableTotalOrder.Handle<E> =
+private fun <E> BinaryTree.NodeHandle<E, RedBlackColor>.pack(): MutableTotalOrder.Handle<E> =
     MutableTotalOrder.Handle(
         nodeHandle = this,
     )

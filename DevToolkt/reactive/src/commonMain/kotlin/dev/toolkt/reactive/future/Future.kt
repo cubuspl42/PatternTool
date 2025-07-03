@@ -5,7 +5,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.NeverEventStream
 import dev.toolkt.reactive.event_stream.hold
 
-sealed class Future<out V> {
+abstract class Future<out V> {
     sealed class State<out V>
 
     data object Pending : State<Nothing>()

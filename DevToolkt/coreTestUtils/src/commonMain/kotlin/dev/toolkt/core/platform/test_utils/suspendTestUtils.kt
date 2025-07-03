@@ -26,7 +26,7 @@ suspend fun <T> assertEqualsEventually(
             throw AssertionError("Expected value to eventually become $expected, but it is at ${actual()} after checking every $pauseDuration for $timeoutDuration")
         }
 
-        WaitUntilResult.Success -> {}
+        WaitUntilResult.ConditionMet -> {}
     }
 }
 
