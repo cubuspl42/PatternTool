@@ -1,6 +1,8 @@
 package dev.toolkt.reactive.reactive_list
 
+import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
+import dev.toolkt.core.platform.collectGarbageSuspend
 import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.core.range.single
@@ -186,6 +188,27 @@ class ReactiveListSingleNotNullTests {
         assertEquals(
             expected = emptyList(),
             actual = changesVerifier.removeReceivedEvents(),
+        )
+    }
+
+    /**
+     * Ensure that a stateful operator keeps an up-to-date state even when it has no observers
+     */
+    @Test
+    fun testSingleNotNull_sampleOnly() = runTestDefault {
+        val mutableCell = MutableCell<Int?>(initialValue = null)
+
+        val singleReactiveList = ReactiveList.singleNotNull(
+            element = mutableCell,
+        )
+
+        PlatformSystem.collectGarbageSuspend()
+
+        mutableCell.set(10)
+
+        assertEquals(
+            expected = listOf(10),
+            actual = singleReactiveList.currentElements,
         )
     }
 
