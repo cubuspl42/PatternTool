@@ -13,12 +13,17 @@ abstract class StatefulEventStream<E>() : DependentEventStream<E>() {
 }
 
 abstract class HybridEventStream<E>() : ManagedEventStream<E>() {
-
     override fun onResumed() {
         TODO("Not yet implemented")
     }
 
     override fun onPaused() {
         TODO("Not yet implemented")
+    }
+
+    abstract fun bindUpstream(): BoundListener
+
+    protected fun init() {
+        pinWeak(target = this)
     }
 }
