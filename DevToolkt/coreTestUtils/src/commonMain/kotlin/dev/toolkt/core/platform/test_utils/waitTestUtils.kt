@@ -4,18 +4,19 @@ import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
+import kotlin.test.assertEquals
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 enum class WaitUntilResult {
-    Timeout, Success,
+    Timeout, ConditionMet,
 }
 
 /**
  * Waits until the [predicate] returns `true`, checking it every [pauseDuration] for a maximum of [timeoutDuration].
  * Puts stress on the garbage collector.
  *
- * @return [WaitUntilResult.Success] if the predicate returned `true` within the timeout, or [WaitUntilResult.Timeout] if it did not.
+ * @return [WaitUntilResult.ConditionMet] if the predicate returned `true` within the timeout, or [WaitUntilResult.Timeout] if it did not.
  */
 suspend fun waitUntil(
     pauseDuration: Duration,
@@ -29,44 +30,11 @@ suspend fun waitUntil(
         PlatformSystem.collectGarbage()
 
         if (predicate()) {
-            return WaitUntilResult.Success
+            return WaitUntilResult.ConditionMet
         }
     }
 
     return WaitUntilResult.Timeout
-}
-
-enum class WaitWhileResult {
-    Passed, Failure,
-}
-
-/**
- * Waits while the [predicate] returns `true`, checking it every [pauseDuration] for [testDuration].
- * Puts stress on the garbage collector.
- *
- * @return [WaitWhileResult.Passed] if the predicate kept returning `true` within the timeout, or [WaitWhileResult.Failure]
- * if it returned `false` at least one time within the timeout.
- */
-suspend fun waitWhile(
-    pauseDuration: Duration,
-    testDuration: Duration,
-    predicate: () -> Boolean,
-): WaitWhileResult {
-    val tryCount = (testDuration / pauseDuration).roundToInt()
-
-    (tryCount downTo 0).forEach { tryIndex ->
-        println("Waiting...")
-
-        PlatformSystem.collectGarbage()
-
-        if (!predicate()) {
-            return WaitWhileResult.Failure
-        }
-
-        delay(pauseDuration)
-    }
-
-    return WaitWhileResult.Passed
 }
 
 /**
@@ -74,32 +42,45 @@ suspend fun waitWhile(
  */
 suspend fun <T : Any> ensureNotCollected(
     weakRef: PlatformWeakReference<T>,
-) {
+): T {
     // It was empirically proven that a system under test which does NOT
     // correctly ensure that the object is not collected fails this test
     // virtually immediately (after a single iteration)
 
-    waitWhile(
+    val result = waitUntil(
         pauseDuration = 1.milliseconds,
-        testDuration = 10.milliseconds,
+        timeoutDuration = 10.milliseconds,
     ) {
         // If GC doesn't happen within the testing duration (even though
         // stress is applied on GC), it doesn't formally prove the correctness
         // of the system under test, but in practice it should be enough
 
-        weakRef.get() != null
+        weakRef.get() == null
     }
+
+    assertEquals(
+        expected = WaitUntilResult.Timeout,
+        actual = result,
+    )
+
+    // TODO: Improve it, remove the null assertion
+    return weakRef.get()!!
 }
 
 suspend fun <T : Any> ensureCollected(
     weakRef: PlatformWeakReference<T>,
 ) {
-    waitWhile(
+    val result = waitUntil(
         pauseDuration = 1.milliseconds,
-        testDuration = 10.milliseconds,
+        timeoutDuration = 10.milliseconds,
     ) {
         weakRef.get() == null
     }
+
+    assertEquals(
+        expected = WaitUntilResult.ConditionMet,
+        actual = result,
+    )
 }
 
 /**
