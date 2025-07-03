@@ -2,6 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.event_stream.WeakEventSource.TargetedListener
 
 interface WeakEventSource<out EventT> {
@@ -34,6 +35,16 @@ interface StrongEventSource<out EventT> {
     ): Subscription
 }
 
+fun <EventT> StrongEventSource<EventT>.listen(
+    listener: ListenerFn<EventT>,
+): Subscription = listen(
+    object : Listener<EventT> {
+        override fun handle(event: EventT) {
+            listener(event)
+        }
+    },
+)
+
 interface EventSource<out EventT> : WeakEventSource<EventT>, StrongEventSource<EventT>
 
 fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
@@ -42,4 +53,3 @@ fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
     target = targetedWeakListener.target,
     listener = targetedWeakListener.listener,
 )
-

@@ -76,7 +76,12 @@ class EventStreamTests {
         // As the ::function operator doesn't return stable references on
         // JavaScript, we ensure that the listener is bound to a function
         // argument
-        test {}
+        test(
+            object : Listener<Any> {
+                override fun handle(event: Any) {
+                }
+            },
+        )
     }
 
 

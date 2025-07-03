@@ -25,7 +25,7 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
                 val bufferedListener = this.bufferedListener ?: return null
 
                 if (initialEvent != null) {
-                    bufferedListener(initialEvent)
+                    bufferedListener.handle(event = initialEvent)
                 }
 
                 return eventStream.listen(listener = bufferedListener)
