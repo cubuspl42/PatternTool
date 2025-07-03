@@ -137,8 +137,6 @@ class EventStreamTests {
     }
 
     @Test
-    @Ignore // FIXME: This fails with AssertionError("The subscription is already present")
-    // Is this related to `MapBackedMultiValuedMap` size caching?
     fun testListenWeak_sameListener_sameTarget() {
         fun test(
             weakListener: TargetingListener<Any, String>,
@@ -155,13 +153,9 @@ class EventStreamTests {
                 listener = weakListener,
             )
 
-            assertIs<IllegalStateException>(
-                assertFails {
-                    dependentStream.listenWeak(
-                        target = target,
-                        listener = weakListener,
-                    )
-                },
+            dependentStream.listenWeak(
+                target = target,
+                listener = weakListener,
             )
         }
 

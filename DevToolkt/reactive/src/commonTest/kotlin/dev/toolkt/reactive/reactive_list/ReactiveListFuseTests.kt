@@ -2,13 +2,12 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.iterable.splitBefore
 import dev.toolkt.core.platform.PlatformWeakReference
-import dev.toolkt.core.platform.test_utils.ensureNotCollected
+import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.EventStreamVerifier
 import dev.toolkt.reactive.cell.MutableCell
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
@@ -718,7 +717,7 @@ class ReactiveListFuseTests {
     }
 
     @Test
-    @Ignore // FIXME: fuse does not manage memory properly (no stateful entities do?)
+//    @Ignore // FIXME: fuse does not manage memory properly (no stateful entities do?)
     fun testFuse_garbageCollection() = runTestDefault(
         timeout = 2.seconds,
     ) {
@@ -745,7 +744,7 @@ class ReactiveListFuseTests {
 
         val (outReactiveListWeakRef, changesVerifier) = setup()
 
-        ensureNotCollected(weakRef = outReactiveListWeakRef)
+        ensureCollected(weakRef = outReactiveListWeakRef)
 
         mutableCell1.set(11)
 

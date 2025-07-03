@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.collections.mutableIndexedListOf
+import dev.toolkt.core.delegates.weakLazy
 import dev.toolkt.core.iterable.removeRange
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.Subscription
@@ -8,9 +9,9 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 
-class FuseReactiveListOperator<E>(
-    private val source: ReactiveList<Cell<E>>,
-) : ReactiveListPureOperator<E>() {
+class ReactiveListFuse<ElementT>(
+    private val source: ReactiveList<Cell<ElementT>>,
+) : ActiveReactiveList<ElementT>() {
     class ChangesEventStream<E>(
         private val source: ReactiveList<Cell<E>>,
     ) : DependentEventStream<ReactiveList.Change<E>>() {
@@ -72,11 +73,9 @@ class FuseReactiveListOperator<E>(
                     element = Subscription.Noop, // A temporary value
                 )
 
-                val newInnerSubscription = innerCell.newValues.listenWeak(
-                    target = newInnerHandle,
-                ) { innerHandle, newInnerValue ->
-                    val currentIndex = innerSubscriptions.indexOfVia(handle = innerHandle)
-                        ?: throw AssertionError("No index found for handle $innerHandle.")
+                val newInnerSubscription = innerCell.newValues.listen { newInnerValue ->
+                    val currentIndex = innerSubscriptions.indexOfVia(handle = newInnerHandle)
+                        ?: throw AssertionError("No index found for handle $newInnerHandle.")
 
                     this@ChangesEventStream.notify(
                         ReactiveList.Change.single(
@@ -104,11 +103,12 @@ class FuseReactiveListOperator<E>(
         }
     }
 
-    override fun getCurrentContent(): List<E> = source.currentElements.map {
-        it.currentValue
+    override val changes: EventStream<Change<ElementT>> by weakLazy {
+        ChangesEventStream(source = source)
     }
 
-    override fun getChanges(): EventStream<ReactiveList.Change<E>> = ChangesEventStream(
-        source = source,
-    )
+    override val currentElements: List<ElementT>
+        get() = source.currentElements.map {
+            it.currentValue
+        }
 }
