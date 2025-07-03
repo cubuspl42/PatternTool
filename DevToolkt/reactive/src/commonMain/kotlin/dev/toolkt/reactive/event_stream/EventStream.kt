@@ -33,7 +33,7 @@ interface TargetingListener<in TargetT : Any, in EventT> {
 fun <TargetT : Any, EventT> TargetingListener<TargetT, EventT>.bind(
     source: EventSource<EventT>,
     target: TargetT,
-): WeakEventSource.BoundTargetedListener<TargetT, EventT> = bindTarget(
+): BoundTargetedListener<TargetT, EventT> = bindTarget(
     target = target,
 ).bindSource(
     source = source,
@@ -41,7 +41,7 @@ fun <TargetT : Any, EventT> TargetingListener<TargetT, EventT>.bind(
 
 fun <TargetT : Any, EventT> TargetingListener<TargetT, EventT>.bindTarget(
     target: TargetT,
-): WeakEventSource.TargetedListener<TargetT, EventT> = WeakEventSource.TargetedListener(
+): TargetedListener<TargetT, EventT> = TargetedListener(
     target = target,
     listener = this,
 )
