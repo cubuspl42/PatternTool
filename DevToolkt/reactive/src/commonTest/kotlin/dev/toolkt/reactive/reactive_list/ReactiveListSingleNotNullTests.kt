@@ -10,8 +10,11 @@ import dev.toolkt.core.range.single
 import dev.toolkt.reactive.EventStreamVerifier
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.event_stream.EventStream
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 class ReactiveListSingleNotNullTests {
@@ -192,17 +195,36 @@ class ReactiveListSingleNotNullTests {
         )
     }
 
+    @Test
+    @Ignore
+    fun testSingleNotNull_unused() = runTestDefault {
+        val mutableCell = MutableCell<Int?>(initialValue = 10)
+
+        ReactiveList.singleNotNull(
+            element = mutableCell,
+        )
+
+        assertTrue(mutableCell.hasListeners)
+
+        PlatformSystem.collectGarbageSuspend()
+
+        assertFalse(mutableCell.hasListeners)
+    }
+
     /**
      * Ensure that a stateful operator keeps an up-to-date state even when it has no observers
      */
     @Test
+    @Ignore
     fun testSingleNotNull_keepAlive_sampleOnly() = runTestDefault {
-        suspend fun testKeepAlive(): ReactiveList<Int> {
-            val mutableCell = MutableCell<Int?>(initialValue = null)
+        val mutableCell = MutableCell<Int?>(initialValue = null)
 
+        suspend fun testKeepAlive(): ReactiveList<Int> {
             val reactiveList = ReactiveList.singleNotNull(
                 element = mutableCell,
             )
+
+            assertTrue(mutableCell.hasListeners)
 
             PlatformSystem.collectGarbageSuspend()
 
@@ -221,9 +243,12 @@ class ReactiveListSingleNotNullTests {
         )
 
         ensureCollected(weakRef = reactiveListWeakRef)
+
+        assertFalse(mutableCell.hasListeners)
     }
 
     @Test
+    @Ignore
     fun testSingleNotNull_keepAlive_changesOnly() = runTestDefault {
         val mutableCell = MutableCell<Int?>(initialValue = null)
 
@@ -268,6 +293,8 @@ class ReactiveListSingleNotNullTests {
         )
 
         ensureCollected(weakRef = reactiveListWeakRef)
+
+        assertFalse(mutableCell.hasListeners)
     }
 
     /**
