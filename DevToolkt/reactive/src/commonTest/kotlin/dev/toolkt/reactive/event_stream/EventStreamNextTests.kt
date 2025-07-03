@@ -1,11 +1,9 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.core.platform.PlatformWeakReference
-import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
-import dev.toolkt.reactive.EventStreamVerifier
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.future.Future
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds

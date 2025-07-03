@@ -3,7 +3,7 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.collectGarbageSuspend
 import dev.toolkt.core.platform.test_utils.runTestDefault
-import dev.toolkt.reactive.EventStreamVerifier
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.cell.Cell
 import kotlin.test.Test
 import kotlin.test.assertEquals

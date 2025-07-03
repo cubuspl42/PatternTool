@@ -6,7 +6,7 @@ import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
-import dev.toolkt.reactive.EventStreamVerifier
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.cell.MutableCell
 import kotlin.test.Test
 import kotlin.test.assertEquals
