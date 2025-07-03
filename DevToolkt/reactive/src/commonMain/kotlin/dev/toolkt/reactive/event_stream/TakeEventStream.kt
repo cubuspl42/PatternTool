@@ -25,15 +25,15 @@ class TakeEventStream<E>(
         val newRemainingCount = remainingCount - 1
         self.remainingCount = newRemainingCount
 
-        notify(event = sourceEvent)
+        self.notify(event = sourceEvent)
 
         if (newRemainingCount == 0) {
             val sourceSubscription =
-                this.sourceSubscription ?: throw IllegalStateException("No active source subscription")
+                self.sourceSubscription ?: throw IllegalStateException("No active source subscription")
 
             sourceSubscription.cancel()
 
-            this.sourceSubscription = null
+            self.sourceSubscription = null
         }
     }
 }
