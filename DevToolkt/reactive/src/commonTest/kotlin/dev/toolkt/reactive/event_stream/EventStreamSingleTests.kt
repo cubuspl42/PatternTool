@@ -1,9 +1,13 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
+import dev.toolkt.core.platform.collectGarbageSuspend
 import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
+import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
@@ -66,6 +70,26 @@ class EventStreamSingleTests {
         val (singleEventStreamWeakRef, streamVerifier) = setup()
 
         ensureNotCollected(weakRef = singleEventStreamWeakRef)
+
+        // Emit the single event
+        eventEmitter.emit(10)
+
+        assertEquals(
+            expected = listOf(10),
+            actual = streamVerifier.removeReceivedEvents(),
+        )
+    }
+
+    @Test
+    @Ignore
+    fun testSingle_detached() = runTestDefault {
+        val eventEmitter = EventEmitter<Int>()
+
+        val streamVerifier = DetachedEventStreamVerifier(
+            eventStream = eventEmitter.single(),
+        )
+
+        PlatformSystem.collectGarbageSuspend()
 
         // Emit the single event
         eventEmitter.emit(10)
