@@ -6,10 +6,6 @@ class TakeEventStream<E>(
     private val source: EventStream<E>,
     count: Int,
 ) : StatefulEventStream<E>() {
-    init {
-        require(count > 0)
-    }
-
     private var remainingCount: Int = count
 
     override fun observeStateful(): Subscription = source.listen { sourceEvent ->
@@ -27,5 +23,11 @@ class TakeEventStream<E>(
         if (newRemainingCount == 0) {
             abort()
         }
+    }
+
+    init {
+        require(count > 0)
+
+        init()
     }
 }

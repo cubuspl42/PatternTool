@@ -65,6 +65,7 @@ private fun createRootElement(): HTMLDivElement {
         ),
         children = ReactiveList.of(
             createRootElement2(),
+            createTextInputRow(),
             createTopBar(
                 mouseOverGesture = primaryViewport.trackMouseOverGesture(),
             ),

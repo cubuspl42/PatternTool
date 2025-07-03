@@ -16,4 +16,8 @@ class SingleEventStream<E>(
 
         abort()
     }
+
+    init {
+        init()
+    }
 }
