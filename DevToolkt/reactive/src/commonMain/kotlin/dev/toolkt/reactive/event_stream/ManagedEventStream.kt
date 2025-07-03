@@ -57,7 +57,7 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
         // lambda at all, but this is not a very big deal.
     }
 
-    private val listenerCount: Int
+    protected val listenerCount: Int
         get() = strongListenerContainer.listenerCount + weakListenerContainer.listenerCount
 
     protected val state: State
