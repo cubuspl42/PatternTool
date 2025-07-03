@@ -45,6 +45,8 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
         return object : Subscription {
             override fun cancel() {
                 handle.remove()
+
+                potentiallyPause()
             }
         }
     }
@@ -83,13 +85,7 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
     ) {
         strongListenerContainer.notifyAll(event)
 
-        if (weakListenerContainer.listenerCount > 0) {
-            weakListenerContainer.notifyAll(event)
-
-            // Iterating over the weak map may trigger unreachable entry purging,
-            // the listener count may have reached zero
-            potentiallyPause()
-        }
+        weakListenerContainer.notifyAll(event)
     }
 
     protected abstract fun onResumed()

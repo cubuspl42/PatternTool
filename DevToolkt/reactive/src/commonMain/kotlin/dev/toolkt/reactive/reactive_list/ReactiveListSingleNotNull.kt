@@ -1,32 +1,25 @@
 package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.event_stream.EventStream
 
 class ReactiveListSingleNotNull<ElementT : Any>(
-    elementCell: Cell<ElementT?>,
-) : AccumulatingReactiveList<ElementT?, ElementT>(
-    source = elementCell.newValues,
-    initialContent = listOfNotNull(elementCell.currentValue),
-) {
-    override fun accumulate(
-        sourceEvent: ElementT?,
-        currentElements: List<ElementT>,
-    ): Change<ElementT>? {
-        val newValue = sourceEvent
-
-        val isEmpty = currentElements.isEmpty()
+    private val elementCell: Cell<ElementT?>,
+) : ActiveReactiveList<ElementT>() {
+    override val changes: EventStream<Change<ElementT>> = elementCell.newValues.mapNotNull { newValue ->
+        val oldValue = elementCell.currentValue
 
         val update = when (newValue) {
-            null -> when {
-                isEmpty -> null
+            null -> when (oldValue) {
+                null -> null
 
                 else -> Change.Update.remove(
                     index = 0,
                 )
             }
 
-            else -> when {
-                isEmpty -> Change.Update.insert(
+            else -> when (oldValue) {
+                null -> Change.Update.insert(
                     index = 0,
                     newElement = newValue,
                 )
@@ -36,8 +29,11 @@ class ReactiveListSingleNotNull<ElementT : Any>(
                     newValue = newValue,
                 )
             }
-        } ?: return null
+        } ?: return@mapNotNull null
 
-        return Change.single(update = update)
+        Change.single(update = update)
     }
+
+    override val currentElements: List<ElementT>
+        get() = listOfNotNull(elementCell.currentValue)
 }

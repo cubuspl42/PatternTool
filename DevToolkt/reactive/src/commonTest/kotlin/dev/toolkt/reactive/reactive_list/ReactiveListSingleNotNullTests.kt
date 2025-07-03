@@ -202,8 +202,6 @@ class ReactiveListSingleNotNullTests {
             element = mutableCell,
         ).changes
 
-        assertTrue(mutableCell.hasListeners)
-
         PlatformSystem.collectGarbageSuspend()
 
         assertFalse(mutableCell.hasListeners)
@@ -213,16 +211,13 @@ class ReactiveListSingleNotNullTests {
      * Ensure that a stateful operator keeps an up-to-date state even when it has no observers
      */
     @Test
-    @Ignore
-    fun testSingleNotNull_keepAlive_sampleOnly() = runTestDefault {
+    fun testSingleNotNull_sampleOnly() = runTestDefault {
         val mutableCell = MutableCell<Int?>(initialValue = null)
 
         suspend fun testKeepAlive(): ReactiveList<Int> {
             val reactiveList = ReactiveList.singleNotNull(
                 element = mutableCell,
             )
-
-            assertTrue(mutableCell.hasListeners)
 
             PlatformSystem.collectGarbageSuspend()
 
@@ -246,8 +241,7 @@ class ReactiveListSingleNotNullTests {
     }
 
     @Test
-    @Ignore
-    fun testSingleNotNull_keepAlive_changesOnly() = runTestDefault {
+    fun testSingleNotNull_changesOnly() = runTestDefault {
         val mutableCell = MutableCell<Int?>(initialValue = null)
 
         fun setup(): Pair<
@@ -289,6 +283,8 @@ class ReactiveListSingleNotNullTests {
             ),
             actual = changesVerifier.removeReceivedEvents(),
         )
+
+        changesVerifier.cancel()
 
         ensureCollected(weakRef = reactiveListWeakRef)
 
