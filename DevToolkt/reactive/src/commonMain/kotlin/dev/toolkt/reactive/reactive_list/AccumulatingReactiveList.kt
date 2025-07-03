@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.reactive_list
 
+import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.event_stream.EventStream
 
 abstract class AccumulatingReactiveList<SourceEventT, ElementT>(
@@ -8,17 +9,19 @@ abstract class AccumulatingReactiveList<SourceEventT, ElementT>(
 ) : ActiveReactiveList<ElementT>() {
     private class AppliedListChangeStream<ElementT>(
         changes: EventStream<Change<ElementT>>,
-        private val mutableList: MutableList<ElementT>,
+        mutableList: MutableList<ElementT>,
     ) : ProxyEventStream<Change<ElementT>>(
         source = changes,
     ) {
-        // TODO: Pin this stream _somehow_ based on a weak observation of `accumulatedElements`
-        // Otherwise, `onNotified` won't be called when there are no listeners, which will break the use case when
-        // this reactive list is kept for sampling purposes
+        private val mutableListWeakRef = PlatformWeakReference(mutableList)
 
         override fun onNotified(event: Change<ElementT>) {
-            // TODO: Ensure not to store a strong reference that would keep the list alive unnecessarily
-            event.applyTo(mutableList)
+            val mutableList = mutableListWeakRef.get() ?: return
+            event.applyTo(mutableList = mutableList)
+        }
+
+        init {
+            pinWeak(target = mutableList)
         }
     }
 
