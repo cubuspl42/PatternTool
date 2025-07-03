@@ -56,7 +56,7 @@ class EventStreamNextTests {
     }
 
     @Test
-    @Ignore // FIXME: next does not manage memory properly (no stateful entities do?)
+    @Ignore // FIXME: next does not manage memory properly
     fun testNext_garbageCollection() = runTestDefault(
         timeout = 10.seconds,
     ) {
