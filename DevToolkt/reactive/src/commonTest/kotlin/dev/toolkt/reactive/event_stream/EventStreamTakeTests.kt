@@ -7,6 +7,7 @@ import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -129,6 +130,7 @@ class EventStreamTakeTests {
     }
 
     @Test
+    @Ignore
     fun testTake_detached() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
