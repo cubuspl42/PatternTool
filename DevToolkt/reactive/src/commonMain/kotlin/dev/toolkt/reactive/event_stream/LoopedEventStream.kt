@@ -86,7 +86,7 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
                     )
                 }
 
-                return eventStream.listenWeak(targetedWeakListener = bufferedListener)
+                return eventStream.listenWeak(targetedListener = bufferedListener)
             }
 
             override fun cancel() {
