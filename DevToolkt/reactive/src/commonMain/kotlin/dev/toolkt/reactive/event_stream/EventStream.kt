@@ -38,13 +38,13 @@ interface TargetingListener<in TargetT : Any, in EventT> {
     )
 }
 
-fun <TargetT : Any, EventT> TargetingListener<TargetT, EventT>.bind(
-    source: EventSource<EventT>,
+fun <TargetT : Any, EventT> EventSource<EventT>.bind(
     target: TargetT,
-): BoundTargetedListener<TargetT, EventT> = bindTarget(
+    listener: TargetingListener<TargetT, EventT>,
+): BoundTargetedListener<TargetT, EventT> = listener.bindTarget(
     target = target,
 ).bindSource(
-    source = source,
+    source = this,
 )
 
 fun <TargetT : Any, EventT> TargetingListener<TargetT, EventT>.bindTarget(

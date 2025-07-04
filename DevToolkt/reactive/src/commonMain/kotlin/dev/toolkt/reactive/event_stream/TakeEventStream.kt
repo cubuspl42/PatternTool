@@ -1,33 +1,40 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.Subscription
-
 class TakeEventStream<E>(
     private val source: EventStream<E>,
-    count: Int,
+    totalCount: Int,
 ) : StatefulEventStream<E>() {
-    private var remainingCount: Int = count
+    private var remainingCount: Int = totalCount
 
-    override fun observeStateful(): Subscription = source.listen { sourceEvent ->
-        val remainingCount = this.remainingCount
+    override fun bind(): BoundListener = source.bind(
+        // The targeting listener cannot capture a strong reference to the outer stream. It's very important and
+        // extremely easy to miss.
+        listener = object : TargetingListener<TakeEventStream<E>, E> {
+            override fun handle(
+                target: TakeEventStream<E>,
+                event: E,
+            ) {
+                val oldRemainingCount = target.remainingCount
 
-        if (remainingCount <= 0) {
-            throw IllegalStateException("No more remaining events to take")
-        }
+                if (oldRemainingCount <= 0) {
+                    // Abortion failed (?)
+                    throw AssertionError("No more remaining events to take")
+                }
 
-        val newRemainingCount = remainingCount - 1
-        this.remainingCount = newRemainingCount
+                val newRemainingCount = oldRemainingCount - 1
+                target.remainingCount = newRemainingCount
 
-        this.notify(event = sourceEvent)
+                target.notify(event = event)
 
-        if (newRemainingCount == 0) {
-            abort()
-        }
-    }
+                if (newRemainingCount == 0) {
+                    target.abort()
+                }
+            }
+        },
+        target = this,
+    )
 
     init {
-        require(count > 0)
-
         init()
     }
 }

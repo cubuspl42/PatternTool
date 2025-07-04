@@ -1,29 +1,50 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.HybridSubscription
 
-abstract class StatefulEventStream<E>() : DependentEventStream<E>() {
-    final override fun observe(): Subscription = observeStateful()
+/**
+ * An event stream that maintains some internal state which might affect future event occurrences.
+ *
+ * When this stream has listeners, we need a subscription (which is clear), but it has to be strong one. In a corner case
+ * all its listeners might be weak. In such a case, there's no down-to-up chain of strong references from down. To keep
+ * the system alive, the strong reference chain must start at the upstream.
+ *
+ * When this stream doesn't have listeners, we still need an upstream subscription, as some object might have a reference
+ * to this stream, but haven't installed a listener (yet?). As the inherent internal stream state might affect all future
+ * event occurrences, it must be kept up-to-date. At the same time, that subscription _cannot_ be strong, as it would keep
+ * this stream alive indefinitely, even when no other objects have a proper reference to it (and, in consequence, can't
+ * start listening).
+ */
+abstract class StatefulEventStream<E>() : ManagedEventStream<E>() {
+    private lateinit var hybridSubscription: HybridSubscription
 
-    abstract fun observeStateful(): Subscription
+    final override fun onResumed() {
+        when (hybridSubscription.strengthen()) {
+            HybridSubscription.StrengthenResult.Strengthened -> {
+                // All good
+            }
+
+            HybridSubscription.StrengthenResult.Collected -> {
+                abort()
+            }
+        }
+    }
+
+    final override fun onPaused() {
+        hybridSubscription.weaken()
+    }
+
+    final override fun onAborted() {
+        hybridSubscription.cancel()
+    }
 
     protected fun init() {
-        pinWeak(target = this)
-    }
-}
+        if (this::hybridSubscription.isInitialized) {
+            throw AssertionError("The hybrid subscription is already initialized")
+        }
 
-abstract class HybridEventStream<E>() : ManagedEventStream<E>() {
-    override fun onResumed() {
-        TODO("Not yet implemented")
+        hybridSubscription = bind().listenHybrid()
     }
 
-    override fun onPaused() {
-        TODO("Not yet implemented")
-    }
-
-    abstract fun bindUpstream(): BoundListener
-
-    protected fun init() {
-        pinWeak(target = this)
-    }
+    abstract fun bind(): BoundListener
 }

@@ -1,11 +1,9 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.core.collections.mutableStableBagOf
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 
-
-abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
+abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
     enum class State {
         Paused, Resumed, Aborted,
     }
@@ -56,7 +54,7 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
     }
 
     protected fun notify(
-        event: @UnsafeVariance EventT,
+        event: EventT,
     ) {
         strongListenerContainer.notifyAll(event)
     }
@@ -72,10 +70,14 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
             onPaused()
         }
 
+        onAborted()
+
         state = State.Aborted
     }
 
     protected abstract fun onResumed()
 
     protected abstract fun onPaused()
+
+    protected abstract fun onAborted()
 }

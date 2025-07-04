@@ -2,10 +2,22 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Subscription
 
-abstract class DependentEventStream<E> : ManagedEventStream<E>() {
+abstract class DependentEventStream<EventT> : ManagedEventStream<EventT>() {
     private var subscription: Subscription? = null
 
     final override fun onResumed() {
+        startObserving()
+    }
+
+    final override fun onPaused() {
+        stopObserving()
+    }
+
+    final override fun onAborted() {
+        stopObserving()
+    }
+
+    private fun startObserving() {
         if (subscription != null) {
             throw AssertionError("The subscription is already present")
         }
@@ -13,7 +25,7 @@ abstract class DependentEventStream<E> : ManagedEventStream<E>() {
         subscription = observe()
     }
 
-    final override fun onPaused() {
+    private fun stopObserving() {
         val subscription = this.subscription ?: throw AssertionError("There's no subscription")
 
         subscription.cancel()

@@ -718,8 +718,6 @@ class ReactiveListFuseTests {
     }
 
     @Test
-    @Ignore // FIXME: Hybrid subscriptions
-    // This fails on JS and, but passes on JVM
     fun testFuse_garbageCollection() = runTestDefault(
         timeout = 2.seconds,
     ) {

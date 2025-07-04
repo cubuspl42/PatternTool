@@ -35,7 +35,7 @@ abstract class ProperEventStream<out E> : EventStream<E>() {
 
             else -> TakeEventStream(
                 source = this,
-                count = count,
+                totalCount = count,
             )
         }
     }
