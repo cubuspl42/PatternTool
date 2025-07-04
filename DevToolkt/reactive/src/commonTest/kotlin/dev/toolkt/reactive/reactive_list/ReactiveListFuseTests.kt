@@ -8,10 +8,8 @@ import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.time.Duration.Companion.seconds
 
 class ReactiveListFuseTests {
     /**
@@ -718,9 +716,7 @@ class ReactiveListFuseTests {
     }
 
     @Test
-    fun testFuse_garbageCollection() = runTestDefault(
-        timeout = 2.seconds,
-    ) {
+    fun testFuse_garbageCollection() = runTestDefault {
         val mutableCell0 = MutableCell(initialValue = 0)
         val mutableCell1 = MutableCell(initialValue = 10)
 
