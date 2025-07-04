@@ -34,9 +34,4 @@ object NeverEventStream : EventStream<Nothing>() {
     override fun listen(
         listener: Listener<Nothing>,
     ): Subscription = Subscription.Noop
-
-    override fun <T : Any> listenWeak(
-        target: T,
-        listener: TargetingListener<T, Nothing>,
-    ): Subscription = Subscription.Noop
 }

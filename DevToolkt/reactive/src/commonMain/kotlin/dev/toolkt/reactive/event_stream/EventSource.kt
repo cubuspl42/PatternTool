@@ -1,30 +1,47 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
 
-interface WeakEventSource<out EventT> {
-
-    fun <TargetT : Any> listenWeak(
-        target: TargetT,
-        listener: TargetingListener<TargetT, EventT>,
-    ): Subscription
-}
-
-fun <EventT, TargetT : Any> WeakEventSource<EventT>.pinWeak(
+fun <TargetT : Any, EventT> EventSource<EventT>.pinWeak(
     target: TargetT,
 ): Subscription = listenWeak(
     target = target,
     listener = TargetingListener.Noop,
 )
-fun <EventT, TargetT : Any> WeakEventSource<EventT>.listenWeak(
+
+fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
     target: TargetT,
     listener: TargetingListenerFn<TargetT, EventT>,
 ): Subscription = listenWeak(
-    target,
-    TargetingListener.wrap(listener),
+    target = target,
+    listener = TargetingListener.wrap(listener),
 )
+
+fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
+    target: TargetT,
+    listener: TargetingListener<TargetT, EventT>,
+): Subscription {
+    val targetWeakRef = PlatformWeakReference(target)
+
+    return this.listen(
+        listener = object : Listener<EventT> {
+            override fun handle(event: EventT) {
+                // If the target was collected, we assume that this listener
+                // will soon be removed. For now, let's just ignore the event.
+                // TODO: Actually implement finalization registry listener removal
+                val target = targetWeakRef.get() ?: return
+
+                listener.handle(
+                    target = target,
+                    event = event,
+                )
+            }
+        },
+    )
+}
 
 interface StrongEventSource<out EventT> {
     fun listen(
@@ -42,11 +59,11 @@ fun <EventT> StrongEventSource<EventT>.listen(
     },
 )
 
-interface EventSource<out EventT> : WeakEventSource<EventT>, StrongEventSource<EventT>
+interface EventSource<out EventT> : StrongEventSource<EventT>
 
 fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
     targetedListener: TargetedListener<TargetT, EventT>,
-): Subscription = listenWeak(
+): Subscription = this@listenWeak.listenWeak(
     target = targetedListener.target,
     listener = targetedListener.listener,
 )

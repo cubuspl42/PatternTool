@@ -133,24 +133,6 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
             return placeholderSubscription
         }
 
-        override fun <T : Any> listenWeak(
-            target: T,
-            listener: TargetingListener<T, E>,
-        ): Subscription {
-            val targetedWeakListener = TargetedListener(
-                target = target,
-                listener = listener,
-            )
-
-            @Suppress("UNCHECKED_CAST") val placeholderSubscription = PlaceholderWeakSubscription(
-                initialBufferedListener = targetedWeakListener as TargetedListener<Any, E>,
-            )
-
-            placeholderSubscriptions.add(placeholderSubscription)
-
-            return placeholderSubscription
-        }
-
         fun loop(
             eventStream: EventStream<E>,
             initialEvent: E?,
@@ -185,14 +167,6 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
     override fun listen(
         listener: Listener<E>,
     ): Subscription = innerEventStream.listen(
-        listener = listener,
-    )
-
-    override fun <T : Any> listenWeak(
-        target: T,
-        listener: TargetingListener<T, E>,
-    ): Subscription = innerEventStream.listenWeak(
-        target = target,
         listener = listener,
     )
 }

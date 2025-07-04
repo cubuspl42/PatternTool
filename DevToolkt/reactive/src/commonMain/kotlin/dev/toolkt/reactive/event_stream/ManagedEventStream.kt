@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.core.collections.mutableStableBagOf
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 
@@ -10,8 +11,6 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
     }
 
     private val strongListenerContainer = StrongListenerContainer<EventT>()
-
-    private val weakListenerContainer = WeakListenerContainer<EventT>()
 
     final override fun listen(
         listener: Listener<EventT>,
@@ -35,40 +34,8 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
         }
     }
 
-    final override fun <TargetT : Any> listenWeak(
-        target: TargetT,
-        listener: TargetingListener<TargetT, EventT>,
-    ): Subscription {
-        if (state == State.Aborted) {
-            return Subscription.Noop
-        }
-
-        val handle = weakListenerContainer.insertTargeted(
-            target = target,
-            listener = listener,
-        )
-
-        potentiallyResume()
-
-        return object : Subscription {
-            override fun cancel() {
-                handle.remove()
-
-                potentiallyPause()
-            }
-        }
-    }
-
-    fun <TargetT : Any> pinWeak(
-        target: TargetT,
-    ): Subscription = listenWeak(target) { _, _ ->
-        // The target and the actual event are not used when pinning. The pinning
-        // mechanism could be potentially improved not to store the extraneous
-        // lambda at all, but this is not a very big deal.
-    }
-
     protected val listenerCount: Int
-        get() = strongListenerContainer.listenerCount + weakListenerContainer.listenerCount
+        get() = strongListenerContainer.listenerCount
 
     private var state: State = State.Paused
 
@@ -92,8 +59,6 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
         event: @UnsafeVariance EventT,
     ) {
         strongListenerContainer.notifyAll(event)
-
-        weakListenerContainer.notifyAll(event)
     }
 
     protected fun abort() {
@@ -103,8 +68,6 @@ abstract class ManagedEventStream<out EventT> : ProperEventStream<EventT>() {
 
         if (state == State.Resumed) {
             strongListenerContainer.clear()
-
-            weakListenerContainer.clear()
 
             onPaused()
         }
