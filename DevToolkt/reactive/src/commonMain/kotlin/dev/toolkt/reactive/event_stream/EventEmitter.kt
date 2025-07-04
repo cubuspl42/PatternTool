@@ -13,4 +13,7 @@ class EventEmitter<E> : ManagedEventStream<E>() {
 
     override fun onPaused() {
     }
+
+    override fun onAborted() {
+    }
 }

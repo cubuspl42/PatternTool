@@ -1,21 +1,32 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.Subscription
-
 class SingleEventStream<E>(
     private val source: EventStream<E>,
 ) : StatefulEventStream<E>() {
     private var wasEmitted = false
 
-    override fun observeStateful(): Subscription = source.listen { sourceEvent ->
-        if (this.wasEmitted) {
-            throw IllegalStateException("The single event was already emitted")
-        }
+    override fun bind(): BoundListener = source.bind(
+        // The targeting listener cannot capture a strong reference to the outer stream. It's very important and
+        // extremely easy to miss.
+        listener = object : TargetingListener<SingleEventStream<E>, E> {
+            override fun handle(
+                target: SingleEventStream<E>,
+                event: E,
+            ) {
+                if (target.wasEmitted) {
+                    // Abortion failed (?)
+                    throw AssertionError("The single event was already emitted")
+                }
 
-        this.notify(event = sourceEvent)
+                target.notify(event = event)
 
-        abort()
-    }
+                target.wasEmitted = true
+
+                target.abort()
+            }
+        },
+        target = this,
+    )
 
     init {
         init()

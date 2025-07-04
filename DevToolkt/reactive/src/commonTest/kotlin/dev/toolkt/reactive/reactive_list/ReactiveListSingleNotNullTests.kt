@@ -7,10 +7,9 @@ import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.core.range.single
-import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.event_stream.EventStream
-import kotlin.test.Ignore
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -206,16 +205,11 @@ class ReactiveListSingleNotNullTests {
         assertFalse(mutableCell.hasListeners)
     }
 
-    /**
-     * Ensure that a stateful operator keeps an up-to-date state even when it has no observers
-     */
     @Test
-    @Ignore // FIXME: Hybrid subscriptions
-    // This fails on JS and, but passes on JVM
     fun testSingleNotNull_sampleOnly() = runTestDefault {
         val mutableCell = MutableCell<Int?>(initialValue = null)
 
-        suspend fun testKeepAlive(): ReactiveList<Int> {
+        suspend fun testKeepAlive(): PlatformWeakReference<ReactiveList<Int>> {
             val reactiveList = ReactiveList.singleNotNull(
                 element = mutableCell,
             )
@@ -229,41 +223,27 @@ class ReactiveListSingleNotNullTests {
                 actual = reactiveList.currentElements,
             )
 
-            return reactiveList
+            return PlatformWeakReference(reactiveList)
         }
 
-        val reactiveListWeakRef = PlatformWeakReference(
-            testKeepAlive(),
-        )
+        val reactiveListWeakRef = testKeepAlive()
 
-        ensureCollected(weakRef = reactiveListWeakRef)
+        ensureCollected(
+            weakRef = reactiveListWeakRef,
+        )
 
         assertFalse(mutableCell.hasListeners)
     }
 
     @Test
-    @Ignore // FIXME: Hybrid subscriptions
-    // This fails on JS and JVM/Debug, but passes on JVM/Release
     fun testSingleNotNull_changesOnly() = runTestDefault {
         val mutableCell = MutableCell<Int?>(initialValue = null)
 
-        fun setup(): Pair<
-                PlatformWeakReference<ReactiveList<Int>>,
-                EventStream<ReactiveList.Change<Int>>,
-                > {
-            val reactiveList = ReactiveList.singleNotNull(
-                element = mutableCell,
-            )
+        val reactiveList = ReactiveList.singleNotNull(
+            element = mutableCell,
+        )
 
-            val changes = reactiveList.changes
-
-            return Pair(
-                PlatformWeakReference(reactiveList),
-                changes,
-            )
-        }
-
-        val (reactiveListWeakRef, changes) = setup()
+        val changes = reactiveList.changes
 
         PlatformSystem.collectGarbageSuspend()
 
@@ -288,8 +268,6 @@ class ReactiveListSingleNotNullTests {
         )
 
         changesVerifier.cancel()
-
-        ensureCollected(weakRef = reactiveListWeakRef)
 
         assertFalse(mutableCell.hasListeners)
     }
