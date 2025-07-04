@@ -1,7 +1,7 @@
 [versions]
-kotlinx-benchmark = "0.4.13"
-kotlin = "2.2.0-RC"
-kotlinx-serialization = "1.6.0"
+kotlinx-benchmark = "0.4.14"
+kotlin = "2.2.0"
+kotlinx-serialization = "1.9.0"
 kotlinx-coroutines = "1.10.2"
 
 [libraries]
@@ -15,7 +15,7 @@ clikt = { module = "com.github.ajalt.clikt:clikt", version = "5.0.3" }
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version = "2.1.20" }
+kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 kotlinx-benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinx-benchmark" }
 shadow = { id = "com.gradleup.shadow", version = "9.0.0-beta12" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinx-serialization" }
