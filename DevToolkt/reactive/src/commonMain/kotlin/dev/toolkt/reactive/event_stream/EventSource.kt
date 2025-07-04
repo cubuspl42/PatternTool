@@ -12,6 +12,12 @@ interface WeakEventSource<out EventT> {
     ): Subscription
 }
 
+fun <EventT, TargetT : Any> WeakEventSource<EventT>.pinWeak(
+    target: TargetT,
+): Subscription = listenWeak(
+    target = target,
+    listener = TargetingListener.Noop,
+)
 fun <EventT, TargetT : Any> WeakEventSource<EventT>.listenWeak(
     target: TargetT,
     listener: TargetingListenerFn<TargetT, EventT>,
