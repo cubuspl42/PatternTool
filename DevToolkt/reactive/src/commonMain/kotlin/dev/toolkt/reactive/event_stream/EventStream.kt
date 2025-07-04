@@ -54,6 +54,13 @@ fun <TargetT : Any, EventT> TargetingListener<TargetT, EventT>.bindTarget(
     listener = this,
 )
 
+fun <TargetT : Any, EventT> EventSource<EventT>.bind(
+    listener: TargetingListener<TargetT, EventT>,
+): SourcedListener<TargetT, EventT> = SourcedListener(
+    source = this,
+    listener = listener,
+)
+
 abstract class EventStream<out E> : EventSource<E> {
     companion object {
         val Never: EventStream<Nothing> = NeverEventStream

@@ -23,3 +23,18 @@ data class TargetedListener<TargetT : Any, EventT>(
         }
     }
 }
+
+data class SourcedListener<TargetT : Any, EventT>(
+    val source: EventSource<EventT>,
+    val listener: TargetingListener<TargetT, EventT>,
+) {
+    fun bindTarget(
+        target: TargetT,
+    ): BoundTargetedListener<TargetT, EventT> = BoundTargetedListener(
+        source = source,
+        targetedListener = TargetedListener(
+            target = target,
+            listener = listener,
+        ),
+    )
+}
