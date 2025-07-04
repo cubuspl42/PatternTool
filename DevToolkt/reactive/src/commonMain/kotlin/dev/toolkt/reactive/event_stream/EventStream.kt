@@ -8,6 +8,14 @@ import dev.toolkt.reactive.future.Future
 typealias TargetingListenerFn<TargetT, EventT> = (TargetT, EventT) -> Unit
 
 interface TargetingListener<in TargetT : Any, in EventT> {
+    object Noop : TargetingListener<Any, Any?> {
+        override fun handle(
+            target: Any,
+            event: Any?,
+        ) {
+        }
+    }
+
     companion object {
         fun <TargetT : Any, EventT> wrap(
             fn: TargetingListenerFn<TargetT, EventT>,
