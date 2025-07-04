@@ -15,7 +15,7 @@ import dev.toolkt.reactive.HybridSubscription
  * this stream alive indefinitely, even when no other objects have a proper reference to it (and, in consequence, can't
  * start listening).
  */
-abstract class StatefulEventStream<E>() : ManagedEventStream<E>() {
+abstract class StatefulEventStream<TargetT : Any, EventT>() : ManagedEventStream<EventT>() {
     private lateinit var hybridSubscription: HybridSubscription
 
     final override fun onResumed() {
@@ -25,6 +25,7 @@ abstract class StatefulEventStream<E>() : ManagedEventStream<E>() {
             }
 
             HybridSubscription.StrengthenResult.Collected -> {
+                // FIXME: Aborting hold/newValues is not right; is hold/newValues a proper stateful stream?>
                 abort()
             }
         }
@@ -38,13 +39,17 @@ abstract class StatefulEventStream<E>() : ManagedEventStream<E>() {
         hybridSubscription.cancel()
     }
 
-    protected fun init() {
+    protected fun init(
+        target: TargetT,
+    ) {
         if (this::hybridSubscription.isInitialized) {
             throw AssertionError("The hybrid subscription is already initialized")
         }
 
-        hybridSubscription = bind().listenHybrid()
+        hybridSubscription = bind().bindTarget(
+            target = target,
+        ).listenHybrid()
     }
 
-    abstract fun bind(): BoundListener
+    abstract fun bind(): SourcedListener<TargetT, EventT>
 }

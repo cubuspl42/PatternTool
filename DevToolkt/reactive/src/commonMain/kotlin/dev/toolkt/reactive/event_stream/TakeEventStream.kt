@@ -1,18 +1,18 @@
 package dev.toolkt.reactive.event_stream
 
-class TakeEventStream<E>(
-    private val source: EventStream<E>,
+class TakeEventStream<EventT>(
+    private val source: EventStream<EventT>,
     totalCount: Int,
-) : StatefulEventStream<E>() {
+) : StatefulEventStream<TakeEventStream<EventT>, EventT>() {
     private var remainingCount: Int = totalCount
 
-    override fun bind(): BoundListener = source.bind(
+    override fun bind(): SourcedListener<TakeEventStream<EventT>, EventT> = source.bind(
         // The targeting listener cannot capture a strong reference to the outer stream. It's very important and
         // extremely easy to miss.
-        listener = object : TargetingListener<TakeEventStream<E>, E> {
+        listener = object : TargetingListener<TakeEventStream<EventT>, EventT> {
             override fun handle(
-                target: TakeEventStream<E>,
-                event: E,
+                target: TakeEventStream<EventT>,
+                event: EventT,
             ) {
                 val oldRemainingCount = target.remainingCount
 
@@ -31,10 +31,9 @@ class TakeEventStream<E>(
                 }
             }
         },
-        target = this,
     )
 
     init {
-        init()
+        init(target = this)
     }
 }

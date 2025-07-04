@@ -64,11 +64,7 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
             throw IllegalStateException("The event stream is already aborted")
         }
 
-        if (state == State.Resumed) {
-            strongListenerContainer.clear()
-
-            onPaused()
-        }
+        strongListenerContainer.clear()
 
         onAborted()
 
