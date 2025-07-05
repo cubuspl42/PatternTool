@@ -1,6 +1,5 @@
 package diy.lingerie.web_tool
 
-import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureUnit
 import dev.toolkt.dom.pure.input.PureInputType
@@ -138,8 +137,6 @@ private fun createPrimaryViewport(
 
     val children = ReactiveList.singleNotNull(
         mouseOverGesture.map { mouseOverGestureOrNull ->
-            PlatformSystem.collectGarbage()
-
             mouseOverGestureOrNull?.let {
                 document.createReactiveSvgCircleElement(
                     position = it.offsetPosition,
