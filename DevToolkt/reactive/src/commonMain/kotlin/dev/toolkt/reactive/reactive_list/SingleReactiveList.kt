@@ -3,7 +3,7 @@ package dev.toolkt.reactive.reactive_list
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 
-class ReactiveListSingle<ElementT>(
+class SingleReactiveList<ElementT>(
     private val elementCell: Cell<ElementT>,
 ) : ActiveReactiveList<ElementT>() {
     override val changes: EventStream<Change<ElementT>> = elementCell.newValues.mapNotNull { newValue ->
@@ -18,5 +18,3 @@ class ReactiveListSingle<ElementT>(
     override val currentElements: List<ElementT>
         get() = listOf(elementCell.currentValue)
 }
-
-

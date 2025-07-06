@@ -120,20 +120,20 @@ abstract class ReactiveList<out E> {
 
         fun <E> single(
             element: Cell<E>,
-        ): ReactiveList<E> = ReactiveListSingle(
+        ): ReactiveList<E> = SingleReactiveList(
             elementCell = element,
         )
 
         fun <E : Any> singleNotNull(
             element: Cell<E?>,
-        ): ReactiveList<E> = ReactiveListSingleNotNull(
+        ): ReactiveList<E> = SingleNotNullReactiveList(
             elementCell = element,
         )
 
         fun <E> fuse(
             cells: ReactiveList<Cell<E>>,
             behavior: Behavior = Behavior.Forward,
-        ): ReactiveList<E> = ReactiveListFuse(
+        ): ReactiveList<E> = FuseReactiveList(
             source = cells,
         )
 

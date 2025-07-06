@@ -10,7 +10,7 @@ import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.listen
 
-class ReactiveListFuse<ElementT>(
+class FuseReactiveList<ElementT>(
     private val source: ReactiveList<Cell<ElementT>>,
 ) : ActiveReactiveList<ElementT>() {
     class ChangesEventStream<E>(
