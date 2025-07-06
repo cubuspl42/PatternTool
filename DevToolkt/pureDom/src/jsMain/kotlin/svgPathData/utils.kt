@@ -6,21 +6,20 @@ import org.w3c.dom.svg.SVGPathElement
 inline fun SVGPathSegment(
     type: String,
     values: Array<Number> = emptyArray(),
-): SVGPathSegment {
-    val o = js("({})")
-    o["type"] = type
-    o["values"] = values
-    return o
+): SVGPathSegment = jsObject().also { it ->
+    it["type"] = type
+    it["values"] = values
 }
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun SVGPathDataSettings(
     normalize: Boolean = false,
-): SVGPathDataSettings {
-    val o = js("({})")
-    o["normalize"] = normalize
-    return o
+): SVGPathDataSettings = jsObject().also { it ->
+    it["normalize"] = normalize
 }
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun jsObject(): dynamic = js("({})")
 
 fun SVGPathElement.getPathData(
     settings: SVGPathDataSettings? = null,
