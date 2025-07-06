@@ -13,14 +13,18 @@ import dev.toolkt.dom.pure.style.PureFlexJustifyContent
 import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
-import dev.toolkt.dom.reactive.utils.gestures.MouseOverGesture
+import dev.toolkt.dom.reactive.utils.gestures.MouseGesture
+import dev.toolkt.dom.reactive.utils.gestures.onMouseDragGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.trackMouseOverGesture
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlInputElement
 import dev.toolkt.dom.reactive.utils.html.getValueCell
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
+import dev.toolkt.geometry.Point
+import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
@@ -60,7 +64,7 @@ private fun createRootElement(): HTMLDivElement {
 }
 
 private fun createTopBar(
-    trackedMouseOverGesture: Cell<MouseOverGesture?>,
+    trackedMouseOverGesture: Cell<MouseGesture?>,
 ): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
         displayStyle = Cell.of(
@@ -81,7 +85,7 @@ private fun createTopBar(
 )
 
 private fun createMouseOverGesturePreview(
-    mouseOverGestureNow: MouseOverGesture?,
+    mouseOverGestureNow: MouseGesture?,
 ): HTMLDivElement = when (mouseOverGestureNow) {
     null -> document.createReactiveHtmlDivElement(
         style = ReactiveStyle(
@@ -112,7 +116,7 @@ private fun createMouseOverGesturePreview(
 
 data class PrimaryViewport(
     val element: HTMLDivElement,
-    val trackedMouseOverGesture: Cell<MouseOverGesture?>,
+    val trackedMouseOverGesture: Cell<MouseGesture?>,
 )
 
 private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { childrenLooped ->
@@ -126,15 +130,24 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
 
     val trackedMouseOverGesture = svgElement.trackMouseOverGesture()
 
-    val children = ReactiveList.singleNotNull(
-        trackedMouseOverGesture.map { mouseOverGestureOrNull ->
-            mouseOverGestureOrNull?.let {
-                document.createReactiveSvgCircleElement(
-                    position = it.offsetPosition,
-                    radius = 4.0,
+    val savedPosition = PropertyCell(initialValue = Point.origin)
+
+    svgElement.onMouseDragGestureStarted(button = 0).listen(
+        listener = object : Listener<MouseGesture> {
+            override fun handle(event: MouseGesture) {
+                savedPosition.bindUntil(
+                    boundValue = event.offsetPosition,
+                    until = event.onFinished,
                 )
             }
         },
+    )
+
+    val children = ReactiveList.of(
+        document.createReactiveSvgCircleElement(
+            position = savedPosition,
+            radius = 4.0,
+        )
     )
 
     return@looped Pair(

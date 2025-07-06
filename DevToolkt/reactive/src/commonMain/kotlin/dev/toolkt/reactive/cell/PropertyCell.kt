@@ -4,11 +4,11 @@ import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.future.Future
 
-class PropertyCell<ValueT : Any>(
+class PropertyCell<ValueT>(
     initialValue: ValueT,
 ) : ProperCell<ValueT>() {
-    sealed class State<out ValueT : Any> {
-        class Unbound<ValueT : Any>(
+    sealed class State<out ValueT> {
+        class Unbound<ValueT>(
             initialValue: ValueT,
         ) : State<ValueT>() {
             private val mutableValue = MutableCell(initialValue = initialValue)
@@ -21,7 +21,7 @@ class PropertyCell<ValueT : Any>(
             }
         }
 
-        class Bound<ValueT : Any>(
+        class Bound<ValueT>(
             private val boundValue: Cell<ValueT>,
         ) : State<ValueT>() {
             override val exposedValue: Cell<ValueT>
