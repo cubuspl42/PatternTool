@@ -18,3 +18,5 @@ class ReactiveListSingle<ElementT>(
     override val currentElements: List<ElementT>
         get() = listOf(elementCell.currentValue)
 }
+
+

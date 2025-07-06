@@ -21,7 +21,7 @@ abstract class StatefulCell<V>(
         // when maintaining state is not needed anymore (as no objects have a proper reference to that cell anymore).
         private val weakCell = PlatformWeakReference(this@StatefulCell)
 
-        private val self = this // Kotlin doesn't ofer a label for `this@HybridStatefulEventStream` (why?)
+        private val self = this // Kotlin doesn't ofer a label for `this@DependentEventStream` (why?)
 
         override fun observe(): Subscription = givenValues.listen { newValue ->
             // Notify the listeners about the new value...
