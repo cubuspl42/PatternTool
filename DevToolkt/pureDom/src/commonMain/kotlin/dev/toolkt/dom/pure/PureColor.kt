@@ -9,11 +9,16 @@ data class PureColor(
 ) : PurePropertyValue() {
     companion object {
         val black = PureColor(0, 0, 0)
+
         val red = PureColor(255, 0, 0)
+
         val green = PureColor(0, 255, 0)
+
         val blue = PureColor(0, 0, 255)
 
         val lightGray = PureColor(211, 211, 211)
+
+        val darkGray = PureColor(169, 169, 169)
     }
 
     init {

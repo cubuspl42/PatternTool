@@ -5,6 +5,8 @@ import dev.toolkt.dom.pure.PureUnit
 import dev.toolkt.dom.pure.input.PureInputType
 import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.px
+import dev.toolkt.dom.pure.style.PureBorderStyle
+import dev.toolkt.dom.pure.style.PureBoxSizing
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexJustifyContent
@@ -22,7 +24,6 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.svg.SVGSVGElement
 
 fun main() {
     val rootElement = createRootElement()
@@ -110,7 +111,7 @@ private fun createMouseOverGesturePreview(
 }
 
 data class PrimaryViewport(
-    val element: SVGSVGElement,
+    val element: HTMLDivElement,
     val trackedMouseOverGesture: Cell<MouseOverGesture?>,
 )
 
@@ -138,7 +139,22 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
 
     return@looped Pair(
         PrimaryViewport(
-            element = svgElement,
+            element = document.createReactiveHtmlDivElement(
+                style = ReactiveStyle(
+                    boxSizing = PureBoxSizing.BorderBox,
+                    width = Cell.of(100.percent),
+                    height = Cell.of(100.percent),
+                    displayStyle = Cell.of(
+                        PureFlexStyle(),
+                    ),
+                    borderStyle = PureBorderStyle(
+                        width = 4.px,
+                        color = PureColor.darkGray,
+                        style = PureBorderStyle.Style.Solid,
+                    ),
+                ),
+                children = ReactiveList.of(svgElement),
+            ),
             trackedMouseOverGesture = trackedMouseOverGesture,
         ),
         children,

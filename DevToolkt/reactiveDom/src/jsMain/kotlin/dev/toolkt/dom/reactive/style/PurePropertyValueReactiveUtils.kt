@@ -18,3 +18,13 @@ fun Cell<PurePropertyValue>.bind(
         value = propertyValue,
     )
 }
+
+fun PurePropertyValue.applyTo(
+    styleDeclaration: CSSStyleDeclaration,
+    kind: PurePropertyKind,
+) {
+    styleDeclaration.setOrRemoveProperty(
+        kind = kind,
+        value = this,
+    )
+}

@@ -2,6 +2,8 @@ package dev.toolkt.dom.reactive.style
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureDimension
+import dev.toolkt.dom.pure.style.PureBorderStyle
+import dev.toolkt.dom.pure.style.PureBoxSizing
 import dev.toolkt.dom.pure.style.PureDisplayStyle
 import dev.toolkt.dom.pure.style.PurePropertyKind
 import dev.toolkt.dom.pure.style.PurePropertyValue
@@ -18,6 +20,8 @@ data class ReactiveStyle(
     val margin: Cell<PurePropertyValue.Dynamic>? = null,
     val textAlign: Cell<PureTextAlign>? = null,
     val verticalAlign: Cell<PureVerticalAlign>? = null,
+    val borderStyle: PureBorderStyle? = null,
+    val boxSizing: PureBoxSizing? = null,
 ) {
     companion object {
         val Default = ReactiveStyle()
@@ -58,6 +62,15 @@ data class ReactiveStyle(
         verticalAlign?.bind(
             styleDeclaration = styleDeclaration,
             kind = PurePropertyKind.VerticalAlign,
+        )
+
+        borderStyle?.applyTo(
+            styleDeclaration = styleDeclaration,
+        )
+
+        boxSizing?.applyTo(
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.BoxSizing,
         )
     }
 }
