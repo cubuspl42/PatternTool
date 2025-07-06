@@ -35,15 +35,7 @@ fun main() {
 }
 
 private fun createRootElement(): HTMLDivElement {
-    val (primaryViewport, trackedMouseOverGesture) = Cell.loopedPair(
-        placeholderValue = null,
-    ) { mouseOverGestureLooped: Cell<MouseOverGesture?> ->
-        val primaryViewport = createPrimaryViewport(
-            mouseOverGesture = mouseOverGestureLooped,
-        )
-
-        Pair(primaryViewport, primaryViewport.trackMouseOverGesture())
-    }
+    val primaryViewport = createPrimaryViewport()
 
     return document.createReactiveHtmlDivElement(
         style = ReactiveStyle(
@@ -59,15 +51,15 @@ private fun createRootElement(): HTMLDivElement {
         ),
         children = ReactiveList.of(
             createTopBar(
-                mouseOverGesture = trackedMouseOverGesture,
+                trackedMouseOverGesture = primaryViewport.trackedMouseOverGesture,
             ),
-            primaryViewport,
+            primaryViewport.element,
         ),
     )
 }
 
 private fun createTopBar(
-    mouseOverGesture: Cell<MouseOverGesture?>,
+    trackedMouseOverGesture: Cell<MouseOverGesture?>,
 ): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
         displayStyle = Cell.of(
@@ -81,7 +73,7 @@ private fun createTopBar(
         backgroundColor = Cell.of(PureColor.lightGray),
     ),
     children = ReactiveList.single(
-        mouseOverGesture.map {
+        trackedMouseOverGesture.map {
             createMouseOverGesturePreview(mouseOverGestureNow = it)
         },
     ),
@@ -117,9 +109,12 @@ private fun createMouseOverGesturePreview(
     )
 }
 
-private fun createPrimaryViewport(
-    mouseOverGesture: Cell<MouseOverGesture?>,
-): SVGSVGElement = ReactiveList.looped { childrenLooped ->
+data class PrimaryViewport(
+    val element: SVGSVGElement,
+    val trackedMouseOverGesture: Cell<MouseOverGesture?>,
+)
+
+private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { childrenLooped ->
     val svgElement = document.createReactiveSvgSvgElement(
         style = ReactiveStyle(
             width = Cell.of(100.percent),
@@ -128,8 +123,10 @@ private fun createPrimaryViewport(
         children = childrenLooped,
     )
 
+    val trackedMouseOverGesture = svgElement.trackMouseOverGesture()
+
     val children = ReactiveList.singleNotNull(
-        mouseOverGesture.map { mouseOverGestureOrNull ->
+        trackedMouseOverGesture.map { mouseOverGestureOrNull ->
             mouseOverGestureOrNull?.let {
                 document.createReactiveSvgCircleElement(
                     position = it.offsetPosition,
@@ -139,7 +136,13 @@ private fun createPrimaryViewport(
         },
     )
 
-    return@looped Pair(svgElement, children)
+    return@looped Pair(
+        PrimaryViewport(
+            element = svgElement,
+            trackedMouseOverGesture = trackedMouseOverGesture,
+        ),
+        children,
+    )
 }
 
 private data class TextInput(
