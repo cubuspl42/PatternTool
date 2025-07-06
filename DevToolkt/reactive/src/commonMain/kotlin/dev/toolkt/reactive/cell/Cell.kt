@@ -2,6 +2,8 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.hold
+import dev.toolkt.reactive.event_stream.takeUntilNull
 import dev.toolkt.reactive.reactive_list.LoopedCell
 
 sealed class Cell<out V> {
@@ -117,6 +119,13 @@ sealed class Cell<out V> {
     ): EventStream<Er> = EventStream.divert(
         nestedEventStream = map(transform),
     )
+}
+
+fun <V : Any> Cell<V?>.separateNonNull(): Cell<Cell<V>?> = this.map { value ->
+    when (value) {
+        null -> null
+        else -> newValues.takeUntilNull().hold(value)
+    }
 }
 
 fun <V, T : Any> Cell<V>.bindNested(

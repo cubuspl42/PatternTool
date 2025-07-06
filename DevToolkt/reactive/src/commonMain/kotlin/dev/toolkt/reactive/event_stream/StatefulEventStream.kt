@@ -51,5 +51,5 @@ abstract class StatefulEventStream<TargetT : Any, EventT>() : ManagedEventStream
         ).listenHybrid()
     }
 
-    abstract fun bind(): SourcedListener<TargetT, EventT>
+    abstract fun bind(): ISourcedListener<TargetT>
 }

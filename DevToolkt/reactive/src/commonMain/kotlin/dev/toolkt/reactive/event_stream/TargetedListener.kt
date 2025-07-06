@@ -24,13 +24,19 @@ data class TargetedListener<TargetT : Any, EventT>(
     }
 }
 
+interface ISourcedListener<TargetT : Any> {
+    fun bindTarget(
+        target: TargetT,
+    ): BoundListener
+}
+
 data class SourcedListener<TargetT : Any, EventT>(
     val source: EventSource<EventT>,
     val listener: TargetingListener<TargetT, EventT>,
-) {
-    fun bindTarget(
+) : ISourcedListener<TargetT> {
+    override fun bindTarget(
         target: TargetT,
-    ): BoundTargetedListener<TargetT, EventT> = BoundTargetedListener(
+    ): BoundListener = BoundTargetedListener(
         source = source,
         targetedListener = TargetedListener(
             target = target,
