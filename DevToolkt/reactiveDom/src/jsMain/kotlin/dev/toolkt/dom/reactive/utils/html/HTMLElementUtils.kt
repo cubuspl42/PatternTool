@@ -3,6 +3,7 @@ package dev.toolkt.dom.reactive.utils.html
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveElement
 import dev.toolkt.dom.reactive.utils.event.offsetPoint
+import dev.toolkt.dom.reactive.widget.Button
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
@@ -50,10 +51,21 @@ fun Element.getMouseEnterEventStream(): EventStream<MouseEvent> = this.getEventS
     type = "mouseenter",
 ).cast()
 
-
 fun Element.getMouseDownEventStream(): EventStream<MouseEvent> = this.getEventStream(
     type = "mousedown",
 ).cast()
+
+fun Element.getMouseDownEventStream(
+    button: Short,
+): EventStream<MouseEvent> = this.getMouseDownEventStream().filter { it.button == button }
+
+fun Element.getMouseUpEventStream(): EventStream<MouseEvent> = this.getEventStream(
+    type = "mouseup",
+).cast()
+
+fun Element.getMouseUpEventStream(
+    button: Short,
+): EventStream<MouseEvent> = this.getMouseUpEventStream().filter { it.button == button }
 
 fun Element.getMouseMoveEventStream(): EventStream<MouseEvent> = this.getEventStream(
     type = "mousemove",
