@@ -118,14 +118,10 @@ abstract class ReactiveList<out E> {
             constElements = children.toList(),
         )
 
-        // TODO: Extract a separate class?
         fun <E> single(
             element: Cell<E>,
-            behavior: Behavior = Behavior.Forward,
-        ): ReactiveList<E> = ReactiveListSingleOperator(
+        ): ReactiveList<E> = ReactiveListSingle(
             elementCell = element,
-        ).instantiate(
-            behavior = behavior,
         )
 
         fun <E : Any> singleNotNull(
