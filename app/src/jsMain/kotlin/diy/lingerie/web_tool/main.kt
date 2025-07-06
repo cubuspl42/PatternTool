@@ -63,8 +63,6 @@ private fun createRootElement(): HTMLDivElement {
             backgroundColor = Cell.of(PureColor.lightGray),
         ),
         children = ReactiveList.of(
-            createRootElement2(),
-            createTextInputRow(),
             createTopBar(
                 mouseOverGesture = primaryViewport.trackMouseOverGesture(),
             ),
@@ -147,89 +145,6 @@ private fun createPrimaryViewport(
     )
 
     return@looped Pair(svgElement, children)
-}
-
-private fun createRootElement2(): HTMLDivElement {
-    val textInput = createTextInput()
-
-    val intData = textInput.data.map { it.toIntOrNull() }
-
-    return document.createReactiveHtmlDivElement(
-        style = ReactiveStyle(
-            backgroundColor = Cell.of(PureColor.lightGray),
-        ),
-        children = ReactiveList.of(
-            textInput.element,
-            document.createReactiveHtmlDivElement(
-                children = ReactiveList.singleNotNull(
-                    intData.map { integer ->
-                        integer?.let {
-                            document.createTextNode("Int: $it")
-                        }
-                    },
-                ),
-            ),
-        ),
-    )
-}
-
-private fun createTextInputRow(): HTMLDivElement {
-    val textInputs = ReactiveList.of(
-        createTextInput(),
-        createTextInput(),
-        createTextInput(),
-        createTextInput(),
-    )
-
-    val fusedChildren = textInputs.fuseOf { textInput ->
-        textInput.data.map {
-            document.createReactiveHtmlDivElement(
-                style = ReactiveStyle(
-                    displayStyle = Cell.of(PureTableDisplayStyle.Cell),
-                    textAlign = Cell.of(PureTextAlign.Center),
-                    verticalAlign = Cell.of(PureVerticalAlign.Middle),
-                ),
-                children = ReactiveList.of(
-                    document.createTextNode(it),
-                ),
-            )
-        }
-    }
-
-    return document.createReactiveHtmlDivElement(
-        style = ReactiveStyle(
-            displayStyle = Cell.of(
-                PureTableDisplayStyle(
-                    borderCollapse = PureTableDisplayStyle.BorderCollapse.Separate,
-                    borderSpacing = 10.px,
-                ),
-            ),
-            margin = Cell.of(PurePropertyValue.Dynamic("0 auto")),
-        ),
-        children = ReactiveList.of(
-            document.createReactiveHtmlDivElement(
-                style = ReactiveStyle(
-                    displayStyle = Cell.of(PureTableDisplayStyle.Row),
-                ),
-                children = textInputs.map {
-                    document.createReactiveHtmlDivElement(
-                        style = ReactiveStyle(
-                            displayStyle = Cell.of(PureTableDisplayStyle.Cell),
-                            textAlign = Cell.of(PureTextAlign.Center),
-                            verticalAlign = Cell.of(PureVerticalAlign.Middle),
-                        ),
-                        children = ReactiveList.of(it.element),
-                    )
-                },
-            ),
-            document.createReactiveHtmlDivElement(
-                style = ReactiveStyle(
-                    displayStyle = Cell.of(PureTableDisplayStyle.Row),
-                ),
-                children = fusedChildren,
-            ),
-        ),
-    )
 }
 
 private data class TextInput(
