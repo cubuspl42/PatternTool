@@ -229,4 +229,7 @@ enum class PurePropertyKind(val cssName: String) {
     WordWrap("word-wrap"),
     WritingMode("writing-mode"),
     ZIndex("z-index"),
+
+    // SVG
+    Fill("fill"),
 }

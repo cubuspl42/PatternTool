@@ -1,5 +1,6 @@
 package dev.toolkt.dom.reactive.utils.svg
 
+import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.svg.PureSvg
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveElement
@@ -35,6 +36,7 @@ fun Document.createReactiveSvgSvgElement(
 
 fun Document.createReactiveSvgCircleElement(
     style: ReactiveStyle? = null,
+    fill: Cell<PureColor>? = null,
     position: Cell<Point>,
     radius: Double,
     children: ReactiveList<SVGElement>? = null,
@@ -44,6 +46,13 @@ fun Document.createReactiveSvgCircleElement(
         style = style,
         children = children,
     ) as SVGCircleElement
+
+    fill?.bind(
+        target = circleElement,
+    ) {
+        element, color ->
+
+    }
 
     position.bind(
         target = circleElement,
