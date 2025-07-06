@@ -2,6 +2,7 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
+import dev.toolkt.reactive.event_stream.listen
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -162,6 +163,40 @@ class ReactiveListMapTests {
                 "20",
                 "30",
             ),
+            actual = mappedList.currentElements,
+        )
+    }
+
+    @Test
+    fun testMap_changeApplication() {
+        val mutableReactiveList = MutableReactiveList(
+            initialContent = listOf(
+                0,
+                10,
+                20,
+            ),
+        )
+
+        val mappedList = mutableReactiveList.map { it.toString() }
+
+        var observedCurrentElements: List<String> = listOf()
+
+        mappedList.changes.listen {
+            observedCurrentElements = mappedList.currentElements
+        }
+
+        mutableReactiveList.set(
+            index = 1,
+            newValue = 11,
+        )
+
+        assertEquals(
+            expected = listOf("0", "10", "20"),
+            actual = observedCurrentElements,
+        )
+
+        assertEquals(
+            expected = listOf("0", "11", "20"),
             actual = mappedList.currentElements,
         )
     }
