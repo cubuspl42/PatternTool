@@ -25,6 +25,7 @@ import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
+import dev.toolkt.reactive.cell.separateNonNull
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
@@ -129,7 +130,9 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
         children = childrenLooped,
     )
 
-    val savedPosition = PropertyCell(initialValue = Point.origin)
+    val savedPosition = PropertyCell<Point?>(
+        initialValue = null,
+    )
 
     svgElement.onMouseDragGestureStarted(button = 0).forEach { gesture ->
         savedPosition.bindUntil(
@@ -137,10 +140,6 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
             until = gesture.onFinished,
         )
     }
-
-    val circleElement = createCircleElement(
-        position = savedPosition,
-    )
 
     return@looped Pair(
         PrimaryViewport(
@@ -162,14 +161,20 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
             ),
             trackedMouseOverGesture = svgElement.onMouseOverGestureStarted().track(),
         ),
-        ReactiveList.of(
-            circleElement
+        ReactiveList.singleNotNull(
+            savedPosition.separateNonNull().map { savedPositionOrNull ->
+                savedPositionOrNull?.let { savedPosition ->
+                    createCircleElement(
+                        position = savedPosition,
+                    )
+                }
+            }
         ),
     )
 }
 
 private fun createCircleElement(
-    position: PropertyCell<Point>,
+    position: Cell<Point>,
 ): SVGCircleElement = Cell.looped(
     placeholderValue = null,
 ) { mouseOverGesture: Cell<MouseGesture?> ->

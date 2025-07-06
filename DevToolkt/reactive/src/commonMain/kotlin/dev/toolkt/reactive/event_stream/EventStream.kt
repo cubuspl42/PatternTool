@@ -139,6 +139,10 @@ abstract class EventStream<out E> : EventSource<E> {
     fun units(): EventStream<Unit> = map { }
 }
 
+fun <E : Any> EventStream<E?>.takeUntilNull(): EventStream<E> = TakeUntilNullStream(
+    source = this,
+)
+
 fun <E> EventStream<E>.mergeWith(
     other: EventStream<E>,
 ): EventStream<E> = EventStream.merge(
