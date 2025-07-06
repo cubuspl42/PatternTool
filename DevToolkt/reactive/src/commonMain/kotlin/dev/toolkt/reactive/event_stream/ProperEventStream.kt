@@ -1,9 +1,10 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.future.Future
 
-abstract class ProperEventStream<out E> : EventStream<E>() {
+abstract class ProperEventStream<E> : EventStream<E>() {
     final override fun <Er> map(
         transform: (E) -> Er,
     ): EventStream<Er> = MapEventStream(
@@ -51,4 +52,16 @@ abstract class ProperEventStream<out E> : EventStream<E>() {
         target = target,
         listener = forward,
     )
+
+    override fun forEach(
+        effect: (E) -> Unit,
+    ) {
+        listen(
+            listener = object : Listener<E> {
+                override fun handle(event: E) {
+                    effect(event)
+                }
+            },
+        )
+    }
 }

@@ -26,6 +26,11 @@ object NeverEventStream : EventStream<Nothing>() {
 
     override fun next(): Future<Nothing> = Future.Hang
 
+    override fun forEach(
+        effect: (Nothing) -> Unit,
+    ) {
+    }
+
     override fun <T : Any> pipe(
         target: T,
         forward: (T, Nothing) -> Unit,
