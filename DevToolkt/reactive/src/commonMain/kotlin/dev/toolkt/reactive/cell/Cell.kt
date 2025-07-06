@@ -15,13 +15,25 @@ sealed class Cell<out V> {
             placeholderValue: V,
             block: (Cell<V>) -> Pair<R, Cell<V>>,
         ): R {
-            val loopedCell = LoopedCell(placeholderValue = placeholderValue)
-
-            val (result, eventStream) = block(loopedCell)
-
-            loopedCell.loop(eventStream)
+            val (result, _) = loopedPair(
+                placeholderValue = placeholderValue,
+                block = block,
+            )
 
             return result
+        }
+
+        fun <V, R> loopedPair(
+            placeholderValue: V,
+            block: (Cell<V>) -> Pair<R, Cell<V>>,
+        ): Pair<R, Cell<V>> {
+            val loopedCell = LoopedCell(placeholderValue = placeholderValue)
+
+            val (result, cell) = block(loopedCell)
+
+            loopedCell.loop(cell)
+
+            return Pair(result, cell)
         }
 
         fun <V> switch(
