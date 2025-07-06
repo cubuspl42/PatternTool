@@ -28,6 +28,7 @@ import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.svg.SVGCircleElement
 
 fun main() {
     val rootElement = createRootElement()
@@ -137,11 +138,8 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
         )
     }
 
-    val children = ReactiveList.of(
-        document.createReactiveSvgCircleElement(
-            position = savedPosition,
-            radius = 4.0,
-        )
+    val circleElement = createCircleElement(
+        position = savedPosition,
     )
 
     return@looped Pair(
@@ -164,7 +162,33 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
             ),
             trackedMouseOverGesture = svgElement.onMouseOverGestureStarted().track(),
         ),
-        children,
+        ReactiveList.of(
+            circleElement
+        ),
+    )
+}
+
+private fun createCircleElement(
+    position: PropertyCell<Point>,
+): SVGCircleElement = Cell.looped(
+    placeholderValue = null,
+) { mouseOverGesture: Cell<MouseGesture?> ->
+    val circleElement = document.createReactiveSvgCircleElement(
+        style = ReactiveStyle(
+            fill = mouseOverGesture.map {
+                when (it) {
+                    null -> PureColor.black
+                    else -> PureColor.blue
+                }
+            },
+        ),
+        position = position,
+        radius = 4.0,
+    )
+
+    Pair(
+        circleElement,
+        circleElement.onMouseOverGestureStarted().track(),
     )
 }
 

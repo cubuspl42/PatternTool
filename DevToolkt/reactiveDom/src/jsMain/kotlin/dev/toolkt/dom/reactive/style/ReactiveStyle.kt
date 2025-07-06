@@ -22,6 +22,7 @@ data class ReactiveStyle(
     val verticalAlign: Cell<PureVerticalAlign>? = null,
     val borderStyle: PureBorderStyle? = null,
     val boxSizing: PureBoxSizing? = null,
+    val fill: Cell<PureColor>? = null,
 ) {
     companion object {
         val Default = ReactiveStyle()
@@ -71,6 +72,11 @@ data class ReactiveStyle(
         boxSizing?.applyTo(
             styleDeclaration = styleDeclaration,
             kind = PurePropertyKind.BoxSizing,
+        )
+
+        fill?.bind(
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.Fill,
         )
     }
 }
