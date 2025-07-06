@@ -9,10 +9,6 @@ import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexJustifyContent
 import dev.toolkt.dom.pure.style.PureFlexStyle
-import dev.toolkt.dom.pure.style.PurePropertyValue
-import dev.toolkt.dom.pure.style.PureTableDisplayStyle
-import dev.toolkt.dom.pure.style.PureTextAlign
-import dev.toolkt.dom.pure.style.PureVerticalAlign
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.gestures.MouseOverGesture
@@ -24,7 +20,6 @@ import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
-import dev.toolkt.reactive.reactive_list.fuseOf
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.svg.SVGSVGElement
@@ -40,7 +35,7 @@ fun main() {
 }
 
 private fun createRootElement(): HTMLDivElement {
-    val primaryViewport = Cell.looped(
+    val (primaryViewport, trackedMouseOverGesture) = Cell.loopedPair(
         placeholderValue = null,
     ) { mouseOverGestureLooped: Cell<MouseOverGesture?> ->
         val primaryViewport = createPrimaryViewport(
@@ -64,7 +59,7 @@ private fun createRootElement(): HTMLDivElement {
         ),
         children = ReactiveList.of(
             createTopBar(
-                mouseOverGesture = primaryViewport.trackMouseOverGesture(),
+                mouseOverGesture = trackedMouseOverGesture,
             ),
             primaryViewport,
         ),
