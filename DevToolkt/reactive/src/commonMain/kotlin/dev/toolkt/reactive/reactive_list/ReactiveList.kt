@@ -6,7 +6,7 @@ import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 
-abstract class ReactiveList<out E> : ReactiveListView<E> {
+abstract class ReactiveList<out E> {
     data class Change<out E>(
         /**
          * The update this change consists of. In the future, a change might
@@ -152,6 +152,8 @@ abstract class ReactiveList<out E> : ReactiveListView<E> {
             return result
         }
     }
+
+    abstract val currentElements: List<E>
 
     abstract val changes: EventStream<Change<E>>
 
