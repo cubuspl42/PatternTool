@@ -35,10 +35,6 @@ fun Element.onMouseOverGestureStarted(): EventStream<MouseGesture> =
         )
     }
 
-fun Element.trackMouseOverGesture(): Cell<MouseGesture?> = trackMouseGesture(
-    onGestureStarted = this.onMouseOverGestureStarted(),
-)
-
 fun Element.onMouseDragGestureStarted(
     button: Short,
 ): EventStream<MouseGesture> = this.getMouseDownEventStream(
@@ -54,25 +50,9 @@ fun Element.onMouseDragGestureStarted(
     )
 }
 
-fun Element.trackMouseDragGesture(
-    button: Short,
-): Cell<MouseGesture?> = trackMouseGesture(
-    onGestureStarted = this.onMouseDragGestureStarted(button = button),
-)
 
-private fun Element.trackMouseGesture(
-    onGestureStarted: EventStream<MouseGesture>,
-): Cell<MouseGesture?> = Future.oscillate(
+fun EventStream<MouseGesture>.track(): Cell<MouseGesture?> = Future.oscillate(
     initialValue = null,
-    switchPhase1 = { onGestureStarted.next() },
+    switchPhase1 = { next() },
     switchPhase2 = { gesture -> gesture.onFinished.null_() },
 )
-
-private fun Element.trackMouseGesture2(
-    onGestureStarted: EventStream<MouseGesture>,
-): Cell<MouseGesture?> = Future.oscillate(
-    initialValue = null,
-    switchPhase1 = { onGestureStarted.next() },
-    switchPhase2 = { gesture -> gesture.onFinished.null_() },
-)
-

@@ -116,11 +116,14 @@ abstract class EventStream<out E> : EventSource<E> {
 
     abstract fun next(): Future<E>
 
+    abstract fun forEach(
+        effect: (E) -> Unit,
+    )
+
     abstract fun <T : Any> pipe(
         target: T,
         forward: (T, E) -> Unit,
     ): Subscription
-
 
     fun <T : Any> pipeAndForget(
         target: T,
