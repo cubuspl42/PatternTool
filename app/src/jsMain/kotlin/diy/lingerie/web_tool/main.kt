@@ -168,7 +168,7 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
                         position = savedPosition,
                     )
                 }
-            }
+            },
         ),
     )
 }
