@@ -152,6 +152,10 @@ abstract class ReactiveList<out E> {
 
     abstract val currentElements: List<E>
 
+    abstract val elements: Cell<List<E>>
+
+    abstract val newElements: EventStream<List<E>>
+
     abstract val changes: EventStream<Change<E>>
 
     abstract fun <Er> map(
