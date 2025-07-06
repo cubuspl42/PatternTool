@@ -1,6 +1,5 @@
 package dev.toolkt.dom.reactive.utils.svg
 
-import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.svg.PureSvg
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveElement
@@ -12,7 +11,9 @@ import org.w3c.dom.Node
 import org.w3c.dom.svg.SVGAnimatedLength
 import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGElement
+import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGSVGElement
+import svgPathData.setPathData
 
 fun Document.createReactiveSvgElement(
     localSvgName: String,
@@ -36,7 +37,6 @@ fun Document.createReactiveSvgSvgElement(
 
 fun Document.createReactiveSvgCircleElement(
     style: ReactiveStyle? = null,
-    fill: Cell<PureColor>? = null,
     position: Cell<Point>,
     radius: Double,
     children: ReactiveList<SVGElement>? = null,
@@ -47,13 +47,6 @@ fun Document.createReactiveSvgCircleElement(
         children = children,
     ) as SVGCircleElement
 
-    fill?.bind(
-        target = circleElement,
-    ) {
-        element, color ->
-
-    }
-
     position.bind(
         target = circleElement,
         xAnimatedLength = circleElement.cx,
@@ -63,6 +56,21 @@ fun Document.createReactiveSvgCircleElement(
     circleElement.r.baseValue = radius
 
     return circleElement
+}
+
+fun Document.createReactiveSvgPathElement(
+    style: ReactiveStyle? = null,
+): SVGPathElement {
+    val pathElement = createReactiveSvgElement(
+        localSvgName = "path",
+        style = style,
+    ) as SVGPathElement
+
+    pathElement.setPathData(
+        pathData = arrayOf(),
+    )
+
+    return pathElement
 }
 
 var SVGAnimatedLength.baseValue: Double
