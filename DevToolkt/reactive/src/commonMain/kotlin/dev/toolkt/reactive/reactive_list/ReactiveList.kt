@@ -137,6 +137,12 @@ abstract class ReactiveList<out E> {
             source = cells,
         )
 
+        fun <ElementT> concatAll(
+            lists: ReactiveList<ReactiveList<ElementT>>,
+        ): ReactiveList<ElementT> = ConcatAllReactiveList(
+            lists = lists,
+        )
+
         fun <E, R> looped(
             block: (ReactiveList<E>) -> Pair<R, ReactiveList<E>>,
         ): R {
@@ -163,6 +169,13 @@ abstract class ReactiveList<out E> {
         transform: (E) -> Er,
     ): ReactiveList<Er>
 }
+
+val <E> ReactiveList<E>.sizeNow: Int
+    get() = currentElements.size
+
+fun <E> ReactiveList<E>.getNow(
+    index: Int,
+): E = currentElements[index]
 
 fun <E, Er> ReactiveList<E>.fuseOf(
     behavior: ReactiveList.Behavior = ReactiveList.Behavior.Forward,

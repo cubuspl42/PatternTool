@@ -4,7 +4,7 @@ package dev.toolkt.core.collections
  * An indexed list of integers providing an additional efficient operation for
  * calculating the prefix sum.
  */
-interface PrefixSumIndexedList : IndexedList<Int> {
+interface PrefixSumIndexedList<out ElementT> : IndexedList<ElementT> {
     /**
      * Calculates the sum of the first [count] elements in the list.
      * Guarantees logarithmic time complexity.

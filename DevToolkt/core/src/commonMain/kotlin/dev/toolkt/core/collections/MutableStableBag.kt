@@ -11,6 +11,7 @@ interface MutableStableBag<E> : MutableBag<E>, StableBag<E>, MutableStableCollec
      */
     fun setVia(
         handle: Handle<E>,
+        // TODO: Rename to `newElement`?
         element: E,
     ): E?
 
@@ -21,6 +22,14 @@ interface MutableStableBag<E> : MutableBag<E>, StableBag<E>, MutableStableCollec
      * @return the handle to the added element
      */
     override fun addEx(element: E): Handle<E>
+}
+
+// TODO: Make this a proper method
+fun <E> MutableStableBag<E>.updateVia(
+    handle: Handle<E>,
+    update: (E) -> E,
+): E? {
+    TODO()
 }
 
 @Suppress("NOTHING_TO_INLINE")
