@@ -22,6 +22,8 @@ class ConstCell<V>(
         constValue = transform(constValue),
     )
 
+    override fun calm(): Cell<V> = this
+
     override fun <T : Any> form(
         create: (V) -> T,
         update: (T, V) -> Unit,

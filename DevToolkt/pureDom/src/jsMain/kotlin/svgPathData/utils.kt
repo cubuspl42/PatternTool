@@ -6,16 +6,20 @@ import org.w3c.dom.svg.SVGPathElement
 inline fun SVGPathSegment(
     type: String,
     values: Array<Number> = emptyArray(),
-): SVGPathSegment = jsObject().also { it ->
-    it["type"] = type
-    it["values"] = values
+): SVGPathSegment {
+    val obj = jsObject()
+    obj["type"] = type
+    obj["values"] = values
+    return obj
 }
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun SVGPathDataSettings(
     normalize: Boolean = false,
-): SVGPathDataSettings = jsObject().also { it ->
-    it["normalize"] = normalize
+): SVGPathDataSettings {
+    val obj = jsObject()
+    obj["normalize"] = normalize
+    return obj
 }
 
 @Suppress("NOTHING_TO_INLINE")

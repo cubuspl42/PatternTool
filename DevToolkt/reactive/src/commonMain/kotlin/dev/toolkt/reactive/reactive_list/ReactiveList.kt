@@ -131,10 +131,33 @@ abstract class ReactiveList<out E> {
         )
 
         fun <E> fuse(
+            vararg cells: Cell<E>,
+        ): ReactiveList<E> = fuse(
+            cells = cells.toList(),
+        )
+
+        fun <E> fuse(
+            cells: List<Cell<E>>,
+        ): ReactiveList<E> = fuse(
+            ReactiveList.of(*cells.toTypedArray()),
+        )
+
+        fun <E> fuse(
             cells: ReactiveList<Cell<E>>,
-            behavior: Behavior = Behavior.Forward,
         ): ReactiveList<E> = FuseReactiveList(
             source = cells,
+        )
+
+        fun <ElementT> concatAll(
+            vararg lists: ReactiveList<ElementT>,
+        ): ReactiveList<ElementT> = concatAll(
+            lists = lists.toList(),
+        )
+
+        fun <ElementT> concatAll(
+            lists: List<ReactiveList<ElementT>>,
+        ): ReactiveList<ElementT> = concatAll(
+            lists = ReactiveList.of(*lists.toTypedArray()),
         )
 
         fun <ElementT> concatAll(
@@ -178,11 +201,9 @@ fun <E> ReactiveList<E>.getNow(
 ): E = currentElements[index]
 
 fun <E, Er> ReactiveList<E>.fuseOf(
-    behavior: ReactiveList.Behavior = ReactiveList.Behavior.Forward,
     transform: (E) -> Cell<Er>,
 ): ReactiveList<Er> = ReactiveList.fuse(
     cells = this.map(transform = transform),
-    behavior = behavior,
 )
 
 internal fun <E> ReactiveList<E>.copyNow(

@@ -19,6 +19,10 @@ abstract class ProperCell<out V> : Cell<V>() {
         transform = transform,
     )
 
+    override fun calm(): Cell<V> = CalmCell(
+        source = this,
+    )
+
     final override fun <T : Any> form(
         create: (V) -> T,
         update: (T, V) -> Unit,

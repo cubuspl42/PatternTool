@@ -11,6 +11,7 @@ import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexJustifyContent
 import dev.toolkt.dom.pure.style.PureFlexStyle
+import dev.toolkt.dom.pure.style.PureStrokeStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.gestures.MouseGesture
@@ -21,8 +22,10 @@ import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlInputElement
 import dev.toolkt.dom.reactive.utils.html.getValueCell
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
+import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgPathElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.cell.separateNonNull
@@ -30,6 +33,7 @@ import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.svg.SVGCircleElement
+import svgPathData.SVGPathSegment
 
 fun main() {
     val rootElement = createRootElement()
@@ -141,6 +145,17 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
         )
     }
 
+    val bezierCurve = ReactiveBezierCurve.diff(
+        savedPosition.map {
+            BezierCurve(
+                start = Point.origin,
+                firstControl = Point(100.0, 100.0),
+                secondControl = Point(200.0, 100.0),
+                end = it ?: Point(300.0, 0.0),
+            )
+        },
+    )
+
     return@looped Pair(
         PrimaryViewport(
             element = document.createReactiveHtmlDivElement(
@@ -161,14 +176,26 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
             ),
             trackedMouseOverGesture = svgElement.onMouseOverGestureStarted().track(),
         ),
-        ReactiveList.singleNotNull(
-            savedPosition.separateNonNull().map { savedPositionOrNull ->
-                savedPositionOrNull?.let { savedPosition ->
-                    createCircleElement(
-                        position = savedPosition,
-                    )
-                }
-            },
+        ReactiveList.concatAll(
+            ReactiveList.of(
+                bezierCurve.createReactiveSvgPathElement(
+                    style = ReactiveStyle(
+                        strokeStyle = PureStrokeStyle(
+                            color = PureColor.black,
+                            width = 4.px,
+                        ),
+                    ),
+                ),
+            ),
+            ReactiveList.singleNotNull(
+                savedPosition.separateNonNull().map { savedPositionOrNull ->
+                    savedPositionOrNull?.let { savedPosition ->
+                        createCircleElement(
+                            position = savedPosition,
+                        )
+                    }
+                },
+            ),
         ),
     )
 }
@@ -188,7 +215,7 @@ private fun createCircleElement(
             },
         ),
         position = position,
-        radius = 4.0,
+        radius = 8.0,
     )
 
     Pair(
