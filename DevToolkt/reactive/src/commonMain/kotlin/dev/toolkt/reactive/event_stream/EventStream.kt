@@ -94,6 +94,18 @@ abstract class EventStream<out E> : EventSource<E> {
                 source2 = source2,
             )
         }
+
+        fun <E> mergeAll(
+            vararg sources: EventStream<E>,
+        ): EventStream<E> = mergeAll(
+            sources = sources.toList(),
+        )
+
+        fun <E> mergeAll(
+            sources: List<EventStream<E>>,
+        ): EventStream<E> = MergeAllEventStream(
+            sources = sources,
+        )
     }
 
     abstract fun <Er> map(

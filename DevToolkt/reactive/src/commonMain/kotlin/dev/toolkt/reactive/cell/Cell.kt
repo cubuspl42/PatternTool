@@ -38,21 +38,47 @@ sealed class Cell<out V> {
             return Pair(result, cell)
         }
 
+        fun <V1, V2, Vr> map2(
+            cell1: Cell<V1>,
+            cell2: Cell<V2>,
+            transform: (V1, V2) -> Vr,
+        ): Cell<Vr> = Map2Cell(
+            source1 = cell1,
+            source2 = cell2,
+            transform = transform,
+        )
+
+        fun <V1, V2, V3, Vr> map3(
+            cell1: Cell<V1>,
+            cell2: Cell<V2>,
+            cell3: Cell<V3>,
+            transform: (V1, V2, V3) -> Vr,
+        ): Cell<Vr> = Map3Cell(
+            source1 = cell1,
+            source2 = cell2,
+            source3 = cell3,
+            transform = transform,
+        )
+
+        fun <V1, V2, V3, V4, Vr> map4(
+            cell1: Cell<V1>,
+            cell2: Cell<V2>,
+            cell3: Cell<V3>,
+            cell4: Cell<V4>,
+            transform: (V1, V2, V3, V4) -> Vr,
+        ): Cell<Vr> = Map4Cell(
+            source1 = cell1,
+            source2 = cell2,
+            source3 = cell3,
+            source4 = cell4,
+            transform = transform,
+        )
+
         fun <V> switch(
             nestedCell: Cell<Cell<V>>,
         ): Cell<V> = SwitchCell(
             nestedCell = nestedCell,
         )
-
-        fun <V1, V2, Vr> map2(
-            cell1: Cell<V1>,
-            cell2: Cell<V2>,
-            transform: (V1, V2) -> Cell<Vr>,
-        ): Cell<Vr> = cell1.switchOf { value1 ->
-            cell2.switchOf { value2 ->
-                transform(value1, value2)
-            }
-        }
 
         fun <Vr1, Vr2> zip2(
             cell1: Cell<Vr1>,
