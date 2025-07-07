@@ -2,11 +2,11 @@ package dev.toolkt.core.collections
 
 /**
  * An indexed list of integers providing an additional efficient operation for
- * calculating the prefix sum.
+ * calculating the prefix sum of selected elements.
  */
 interface PrefixSumIndexedList<out ElementT> : IndexedList<ElementT> {
     /**
-     * Calculates the sum of the first [count] elements in the list.
+     * Calculates the sum of the first [count] selected elements in the list.
      * Guarantees logarithmic time complexity.
      */
     fun calculatePrefixSum(

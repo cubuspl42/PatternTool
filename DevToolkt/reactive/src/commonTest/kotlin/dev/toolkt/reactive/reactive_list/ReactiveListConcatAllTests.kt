@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.reactive_list
 
+import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
@@ -191,7 +192,7 @@ class ReactiveListConcatAllTests {
             expected = listOf(
                 ReactiveList.Change.single(
                     update = ReactiveList.Change.Update.change(
-                        indexRange = IntRange.single(5),
+                        indexRange = IntRange.empty(5),
                         changedElements = listOf(121, 122),
                     ),
                 ),
@@ -292,8 +293,8 @@ class ReactiveListConcatAllTests {
             expected = listOf(
                 ReactiveList.Change.single(
                     update = ReactiveList.Change.Update.change(
-                        indexRange = IntRange.single(5),
-                        changedElements = listOf(121, 122),
+                        indexRange = 4..5,
+                        changedElements = listOf(),
                     ),
                 ),
             ),
@@ -400,7 +401,7 @@ class ReactiveListConcatAllTests {
             expected = listOf(
                 ReactiveList.Change.single(
                     update = ReactiveList.Change.Update.change(
-                        indexRange = 4..6,
+                        indexRange = 3..5,
                         changedElements = listOf(-110, -120, -130),
                     ),
                 ),
@@ -486,7 +487,7 @@ class ReactiveListConcatAllTests {
             expected = listOf(
                 ReactiveList.Change.single(
                     update = ReactiveList.Change.Update.change(
-                        indexRange = 4..6,
+                        indexRange = IntRange.empty(3),
                         changedElements = listOf(40, 50, 60),
                     ),
                 ),
