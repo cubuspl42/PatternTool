@@ -39,7 +39,6 @@ class ReactiveListFuseTests {
 
         val fuseReactiveList = ReactiveList.fuse(
             cells = mutableCells,
-            behavior = ReactiveList.Behavior.Forward,
         )
 
         val changesVerifier = EventStreamVerifier(
@@ -134,7 +133,6 @@ class ReactiveListFuseTests {
 
         val fuseReactiveList = ReactiveList.fuse(
             cells = mutableCells,
-            behavior = ReactiveList.Behavior.Cache,
         )
 
         mutableCells.replaceAll(
@@ -267,7 +265,6 @@ class ReactiveListFuseTests {
 
         val fuseReactiveList = ReactiveList.fuse(
             cells = mutableCells,
-            behavior = ReactiveList.Behavior.Forward,
         )
 
         val changesVerifier = EventStreamVerifier(
@@ -399,7 +396,6 @@ class ReactiveListFuseTests {
 
         val fuseReactiveList = ReactiveList.fuse(
             cells = mutableCells,
-            behavior = ReactiveList.Behavior.Cache,
         )
 
         val changesVerifier = EventStreamVerifier(
@@ -485,7 +481,6 @@ class ReactiveListFuseTests {
 
         val fuseReactiveList = ReactiveList.fuse(
             cells = mutableCells,
-            behavior = ReactiveList.Behavior.Forward,
         )
 
         val changesVerifier = EventStreamVerifier(
@@ -572,7 +567,6 @@ class ReactiveListFuseTests {
 
         val fuseReactiveList = ReactiveList.fuse(
             cells = mutableCells,
-            behavior = ReactiveList.Behavior.Cache,
         )
 
         val changesVerifier = EventStreamVerifier(
@@ -662,7 +656,6 @@ class ReactiveListFuseTests {
 
         val fuseReactiveList = ReactiveList.fuse(
             cells = mutableCells,
-            behavior = ReactiveList.Behavior.Cache,
         )
 
         val changesVerifier1 = EventStreamVerifier(

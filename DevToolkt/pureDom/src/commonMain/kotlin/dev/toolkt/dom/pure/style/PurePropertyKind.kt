@@ -232,4 +232,6 @@ enum class PurePropertyKind(val cssName: String) {
 
     // SVG
     Fill("fill"),
+    Stroke("stroke"),
+    StrokeWidth("stroke-width"),
 }

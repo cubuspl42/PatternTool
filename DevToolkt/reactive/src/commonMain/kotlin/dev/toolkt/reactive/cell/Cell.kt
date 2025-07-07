@@ -78,6 +78,8 @@ sealed class Cell<out V> {
         transform: (V) -> Vr,
     ): Cell<Vr>
 
+    abstract fun calm(): Cell<V>
+
     abstract fun <T : Any> form(
         create: (V) -> T,
         update: (T, V) -> Unit,

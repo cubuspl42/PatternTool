@@ -1,5 +1,6 @@
 package dev.toolkt.dom.reactive.utils.svg
 
+import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.dom.pure.svg.PureSvg
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveElement
@@ -13,6 +14,7 @@ import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGElement
 import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGSVGElement
+import svgPathData.SVGPathSegment
 import svgPathData.setPathData
 
 fun Document.createReactiveSvgElement(
@@ -60,15 +62,24 @@ fun Document.createReactiveSvgCircleElement(
 
 fun Document.createReactiveSvgPathElement(
     style: ReactiveStyle? = null,
+    pathSegments: ReactiveList<SVGPathSegment>,
 ): SVGPathElement {
     val pathElement = createReactiveSvgElement(
         localSvgName = "path",
         style = style,
     ) as SVGPathElement
 
-    pathElement.setPathData(
-        pathData = arrayOf(),
-    )
+    pathSegments.elements.bind(
+        target = pathElement,
+    ) { pathElement, pathSegments ->
+        val pathData = pathSegments.toTypedArray()
+
+        PlatformSystem.log(pathData)
+
+        pathElement.setPathData(
+            pathData = pathData,
+        )
+    }
 
     return pathElement
 }
