@@ -33,10 +33,21 @@ data class ReactiveBezierCurve(
         style = style,
         pathSegments = ReactiveList.fuse(
             start.map {
-                SVGPathSegment(type = "M", values = it.toArray())
+                SVGPathSegment(
+                    type = "M",
+                    values = it.toArray(),
+                )
             },
-            // TODO
-            // SVGPathSegment(type = "C", values = arrayOf(...)),
+            Cell.map3(
+                cell1 = firstControl,
+                cell2 = secondControl,
+                cell3 = end,
+            ) { firstControlNow, secondControlNow, lastControlNow ->
+                SVGPathSegment(
+                    type = "C",
+                    values = firstControlNow.toArray() + secondControlNow.toArray() + lastControlNow.toArray(),
+                )
+            },
         ),
     )
 }
