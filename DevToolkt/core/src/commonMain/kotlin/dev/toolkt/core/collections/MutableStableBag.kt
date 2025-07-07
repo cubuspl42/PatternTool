@@ -29,7 +29,14 @@ fun <E> MutableStableBag<E>.updateVia(
     handle: Handle<E>,
     update: (E) -> E,
 ): E? {
-    TODO()
+    val oldValue = getVia(handle = handle) ?: return null
+
+    val newValue = update(oldValue)
+
+    return setVia(
+        handle = handle,
+        element = newValue
+    )
 }
 
 @Suppress("NOTHING_TO_INLINE")

@@ -81,7 +81,9 @@ class ConcatAllReactiveList<ElementT>(
             }
 
             private val innerSubscriptionEntries: MutablePrefixSumIndexedList<SubscriptionEntry> =
-                mutablePrefixSumIndexedListOf()
+                mutablePrefixSumIndexedListOf(
+                    selector = SubscriptionEntry::listSize,
+                )
 
             init {
                 lists.currentElements.forEachIndexed { index, reactiveList ->
