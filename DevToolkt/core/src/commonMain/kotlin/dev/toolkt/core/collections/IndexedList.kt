@@ -19,7 +19,7 @@ interface IndexedList<out E> : StableList<E> {
 
     /**
      * Returns the index of the element corresponding to the given handle in the list.
-     * Guarantees logarithmic time complexity or better.
+     * Guarantees logarithmic time complexity.
      *
      * @return the index of the element or null if the corresponding element has
      * already been removed
