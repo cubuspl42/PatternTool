@@ -130,6 +130,12 @@ abstract class ReactiveList<out E> {
             elementCell = element,
         )
 
+        fun <E> diff(
+            listCell: Cell<List<E>>,
+        ): ReactiveList<E> {
+            TODO()
+        }
+
         fun <E> fuse(
             vararg cells: Cell<E>,
         ): ReactiveList<E> = fuse(
