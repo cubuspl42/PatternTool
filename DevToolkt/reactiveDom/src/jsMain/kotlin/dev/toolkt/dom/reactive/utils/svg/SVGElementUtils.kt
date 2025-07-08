@@ -13,6 +13,7 @@ import org.w3c.dom.svg.SVGAnimatedLength
 import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGElement
 import org.w3c.dom.svg.SVGGElement
+import org.w3c.dom.svg.SVGLineElement
 import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGSVGElement
 import svgPathData.SVGPathSegment
@@ -83,6 +84,31 @@ fun Document.createReactiveSvgPathElement(
     }
 
     return pathElement
+}
+
+fun Document.createReactiveSvgLineElement(
+    style: ReactiveStyle? = null,
+    start: Cell<Point>,
+    end: Cell<Point>,
+): SVGLineElement {
+    val lineElement = createReactiveSvgElement(
+        localSvgName = "line",
+        style = style,
+    ) as SVGLineElement
+
+    start.bind(
+        target = lineElement,
+        xAnimatedLength = lineElement.x1,
+        yAnimatedLength = lineElement.y1,
+    )
+
+    end.bind(
+        target = lineElement,
+        xAnimatedLength = lineElement.x2,
+        yAnimatedLength = lineElement.y2,
+    )
+
+    return lineElement
 }
 
 fun Document.createReactiveSvgGroupElement(
