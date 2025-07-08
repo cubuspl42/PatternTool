@@ -4,14 +4,10 @@ import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import dev.toolkt.dom.pure.PureDimension
-import dev.toolkt.geometry.transformations.Transformation
-import dev.toolkt.dom.pure.utils.xml.childElements
-import dev.toolkt.dom.pure.utils.xml.getAttributeOrNull
-import dev.toolkt.dom.pure.utils.xml.svg.documentSvgElement
 import dev.toolkt.dom.pure.utils.xml.writeToFile
+import dev.toolkt.geometry.transformations.Transformation
 import org.w3c.dom.Document
 import org.w3c.dom.Element
-import org.w3c.dom.svg.SVGDocument
 import java.nio.file.Path
 
 data class PureSvgRoot(
@@ -30,7 +26,7 @@ data class PureSvgRoot(
         fun toViewBoxString(): String = "$x $y $width $height"
 
         override fun equalsWithTolerance(
-            other: NumericObject, tolerance: NumericObject.Tolerance
+            other: NumericObject, tolerance: NumericObject.Tolerance,
         ): Boolean = when {
             other !is ViewBox -> false
             !x.equalsWithTolerance(other.x, tolerance) -> false
@@ -137,27 +133,4 @@ data class PureSvgRoot(
     ): List<PureSvgShape> = graphicsElements.flatMap {
         it.flatten(baseTransformation = baseTransformation)
     }
-}
-
-fun SVGDocument.toPure(): PureSvgRoot {
-    val widthString =
-        documentSvgElement.getAttributeOrNull("width") ?: throw IllegalArgumentException("Width is not set")
-    val heightString =
-        documentSvgElement.getAttributeOrNull("height") ?: throw IllegalArgumentException("Height is not set")
-
-    val width = PureDimension.parse(widthString)
-    val height = PureDimension.parse(heightString)
-
-    val viewBox = documentSvgElement.getAttributeOrNull("viewBox")?.let { viewBoxString ->
-        PureSvgRoot.ViewBox.parse(viewBoxString)
-    }
-
-    return PureSvgRoot(
-        width = width,
-        height = height,
-        viewBox = viewBox,
-        graphicsElements = documentSvgElement.childElements.mapNotNull {
-            it.toSvgGraphicsElements()
-        },
-    )
 }
