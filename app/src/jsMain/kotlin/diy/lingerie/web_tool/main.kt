@@ -2,7 +2,6 @@ package diy.lingerie.web_tool
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureUnit
-import dev.toolkt.dom.pure.input.PureInputType
 import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureBorderStyle
@@ -20,8 +19,6 @@ import dev.toolkt.dom.reactive.utils.gestures.onMouseDragGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.onMouseOverGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.track
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
-import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlInputElement
-import dev.toolkt.dom.reactive.utils.html.getValueCell
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
@@ -205,35 +202,5 @@ private fun createCircleElement(
     Pair(
         circleElement,
         circleElement.onMouseOverGestureStarted().track(),
-    )
-}
-
-private data class TextInput(
-    val element: HTMLDivElement,
-    val data: Cell<String>,
-)
-
-private fun createTextInput(): TextInput {
-    val textInput = document.createReactiveHtmlInputElement(
-        style = ReactiveStyle(
-            displayStyle = Cell.of(
-                PureFlexStyle(
-                    alignItems = PureFlexAlignItems.Start,
-                ),
-            ),
-            width = Cell.of(24.px),
-        ),
-        type = PureInputType.Text,
-    )
-
-    textInput.value = "0"
-
-    return TextInput(
-        element = document.createReactiveHtmlDivElement(
-            children = ReactiveList.of(
-                textInput,
-            ),
-        ),
-        data = textInput.getValueCell(),
     )
 }
