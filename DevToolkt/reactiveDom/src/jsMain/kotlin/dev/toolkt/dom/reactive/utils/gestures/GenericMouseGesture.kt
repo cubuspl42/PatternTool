@@ -15,11 +15,16 @@ import dev.toolkt.reactive.event_stream.mergeWith
 import dev.toolkt.reactive.future.Future
 import org.w3c.dom.Element
 import org.w3c.dom.events.MouseEvent
+import org.w3c.dom.svg.SVGElement
 
-class MouseGesture(
+interface MouseGesture {
+    val onFinished: Future<Unit>
+}
+
+class GenericMouseGesture(
     private val newestMouseEvent: Cell<MouseEvent>,
-    val onFinished: Future<Unit>,
-) {
+    override val onFinished: Future<Unit>,
+) : MouseGesture {
     val clientPosition: Cell<Point>
         get() = newestMouseEvent.map { it.clientPoint }
 
@@ -27,9 +32,14 @@ class MouseGesture(
         get() = newestMouseEvent.map { it.offsetPoint }
 }
 
-fun Element.onMouseOverGestureStarted(): EventStream<MouseGesture> =
+class SvgMouseGesture(
+    val point: Cell<Point>,
+    override val onFinished: Future<Unit>,
+) : MouseGesture
+
+fun Element.onMouseOverGestureStarted(): EventStream<GenericMouseGesture> =
     this.getMouseEnterEventStream().map { mouseEnterEvent ->
-        MouseGesture(
+        GenericMouseGesture(
             newestMouseEvent = getMouseMoveEventStream().hold(mouseEnterEvent),
             onFinished = getMouseLeaveEventStream().next().unit(),
         )
@@ -37,21 +47,40 @@ fun Element.onMouseOverGestureStarted(): EventStream<MouseGesture> =
 
 fun Element.onMouseDragGestureStarted(
     button: Short,
-): EventStream<MouseGesture> = this.getMouseDownEventStream(
+): EventStream<GenericMouseGesture> = this.getMouseDownEventStream(
     button = button,
 ).map { mouseDownEvent ->
     val terminatingEventStream = getMouseUpEventStream(button = button).mergeWith(
         getMouseLeaveEventStream(),
     )
 
-    MouseGesture(
+    GenericMouseGesture(
         newestMouseEvent = getMouseMoveEventStream().hold(mouseDownEvent),
         onFinished = terminatingEventStream.next().unit(),
     )
 }
 
+fun Element.onSvgDragGestureStarted(
+    container: SVGElement,
+    button: Short,
+): EventStream<SvgMouseGesture> = this.getMouseDownEventStream(
+    button = button,
+).map { targetMouseDownEvent ->
+    val initialTargetOffsetPoint = targetMouseDownEvent.offsetPoint
 
-fun EventStream<MouseGesture>.track(): Cell<MouseGesture?> = Future.oscillate(
+    val terminatingEventStream = container.getMouseUpEventStream(button = button).mergeWith(
+        container.getMouseLeaveEventStream(),
+    )
+
+    SvgMouseGesture(
+        point = container.getMouseMoveEventStream().map {
+            it.offsetPoint
+        }.hold(initialTargetOffsetPoint),
+        onFinished = terminatingEventStream.next().unit(),
+    )
+}
+
+fun <MouseGestureT : MouseGesture> EventStream<MouseGestureT>.track(): Cell<MouseGestureT?> = Future.oscillate(
     initialValue = null,
     switchPhase1 = { next() },
     switchPhase2 = { gesture -> gesture.onFinished.null_() },

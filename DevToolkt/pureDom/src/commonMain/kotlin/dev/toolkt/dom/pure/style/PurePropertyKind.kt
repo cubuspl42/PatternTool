@@ -179,6 +179,7 @@ enum class PurePropertyKind(val cssName: String) {
     Perspective("perspective"),
     PerspectiveOrigin("perspective-origin"),
     Phonemes("phonemes"),
+    PointerEvents("pointer-events"),
     Position("position"),
     Quotes("quotes"),
     Resize("resize"),

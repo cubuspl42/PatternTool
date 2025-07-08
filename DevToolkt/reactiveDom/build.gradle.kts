@@ -21,6 +21,7 @@ kotlin {
             implementation(npm("path-data-polyfill", "1.0.10"))
 
             implementation(project(":core"))
+            implementation(project(":math"))
             implementation(project(":geometry"))
             implementation(project(":pureDom"))
             implementation(project(":reactive"))

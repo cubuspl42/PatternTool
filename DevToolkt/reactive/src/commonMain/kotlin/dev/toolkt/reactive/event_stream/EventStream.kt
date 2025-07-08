@@ -151,6 +151,8 @@ abstract class EventStream<out E> : EventSource<E> {
     fun units(): EventStream<Unit> = map { }
 }
 
+fun <E : Any> EventStream<E?>.filterNotNull(): EventStream<E> = mapNotNull { it }
+
 fun <E : Any> EventStream<E?>.takeUntilNull(): EventStream<E> = TakeUntilNullStream(
     source = this,
 )
