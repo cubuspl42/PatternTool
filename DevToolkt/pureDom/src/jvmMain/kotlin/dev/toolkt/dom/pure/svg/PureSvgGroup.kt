@@ -1,14 +1,10 @@
 package dev.toolkt.dom.pure.svg
 
-import dev.toolkt.geometry.transformations.PrimitiveTransformation
-import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
-import dev.toolkt.dom.pure.utils.xml.childElements
+import dev.toolkt.geometry.transformations.Transformation
 import org.w3c.dom.Document
 import org.w3c.dom.Element
-import org.w3c.dom.svg.SVGGElement
-import org.w3c.dom.svg.SVGTransformList
 
 data class PureSvgGroup(
     val id: String? = null,
@@ -54,27 +50,4 @@ data class PureSvgGroup(
             it.flatten(baseTransformation = newTransformation)
         }
     }
-}
-
-fun SVGGElement.toPureGroup(): PureSvgGroup = PureSvgGroup(
-    id = id,
-    transformation = Transformation.fromSvgTransformList(
-        transformList = transform.baseVal,
-    ),
-    children = childElements.mapNotNull { it.toSvgGraphicsElements() },
-)
-
-fun Transformation.Companion.fromSvgTransformList(
-    transformList: SVGTransformList,
-): Transformation {
-    val consolidatedMatrix = transformList.consolidate().matrix
-
-    return PrimitiveTransformation.Universal(
-        a = consolidatedMatrix.a.toDouble(),
-        b = consolidatedMatrix.b.toDouble(),
-        c = consolidatedMatrix.c.toDouble(),
-        d = consolidatedMatrix.d.toDouble(),
-        tx = consolidatedMatrix.e.toDouble(),
-        ty = consolidatedMatrix.f.toDouble(),
-    )
 }

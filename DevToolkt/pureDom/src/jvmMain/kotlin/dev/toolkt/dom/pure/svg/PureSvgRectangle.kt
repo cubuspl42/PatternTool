@@ -7,7 +7,6 @@ import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import org.w3c.dom.Document
 import org.w3c.dom.Element
-import org.w3c.dom.svg.SVGRectElement
 
 data class PureSvgRectangle(
     val position: Point,
@@ -59,16 +58,4 @@ data class PureSvgRectangle(
         return point.x in xMin..xMax && point.y in yMin..yMax
     }
 }
-
-fun SVGRectElement.toPureRect(): PureSvgRectangle = PureSvgRectangle(
-    position = Point(
-        x = x.baseVal.value.toDouble(),
-        y = y.baseVal.value.toDouble(),
-    ),
-    size = Size(
-        width = width.baseVal.value.toDouble(),
-        height = height.baseVal.value.toDouble(),
-    ),
-    stroke = extractStroke(),
-)
 
