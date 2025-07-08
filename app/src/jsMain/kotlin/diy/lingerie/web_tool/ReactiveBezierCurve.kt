@@ -27,6 +27,20 @@ data class ReactiveBezierCurve(
         )
     }
 
+    val bezierCurve: Cell<BezierCurve> = Cell.map4(
+        cell1 = start,
+        cell2 = firstControl,
+        cell3 = secondControl,
+        cell4 = end,
+    ) { startNow, firstControlNow, secondControlNow, endNow ->
+        BezierCurve(
+            start = startNow,
+            firstControl = firstControlNow,
+            secondControl = secondControlNow,
+            end = endNow,
+        )
+    }
+
     fun createReactiveSvgPathElement(
         style: ReactiveStyle,
     ): SVGPathElement = document.createReactiveSvgPathElement(

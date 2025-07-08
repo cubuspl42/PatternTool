@@ -26,15 +26,8 @@ import org.w3c.dom.svg.SVGSVGElement
 
 fun createControlledSvgBezierCurve(
     svgElement: SVGSVGElement,
-    initialBezierCurve: BezierCurve,
+    userBezierCurve: UserBezierCurve,
 ): SVGGElement {
-    val userBezierCurve = UserBezierCurve(
-        start = PropertyCell(initialValue = initialBezierCurve.start),
-        firstControl = PropertyCell(initialValue = initialBezierCurve.firstControl),
-        secondControl = PropertyCell(initialValue = initialBezierCurve.secondControl),
-        end = PropertyCell(initialValue = initialBezierCurve.end),
-    )
-
     return document.createReactiveSvgGroupElement(
         children = ReactiveList.Companion.of(
             createControlLineElement(
