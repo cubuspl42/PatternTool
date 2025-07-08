@@ -3,8 +3,8 @@ package dev.toolkt.dom.pure.style
 import dev.toolkt.dom.pure.PureDimension
 
 data class PureTableDisplayStyle(
-    val borderCollapse: BorderCollapse,
-    val borderSpacing: PureDimension<*>,
+    val borderCollapse: BorderCollapse? = null,
+    val borderSpacing: PureDimension<*>? = null,
 ) : PureDisplayStyle() {
     data object Row : PureDisplayStyle() {
         override val displayType = PureDisplayType.TableRow

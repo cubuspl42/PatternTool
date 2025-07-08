@@ -20,7 +20,6 @@ data class ReactiveStyle(
     val width: Cell<PureDimension<*>>? = null,
     val height: Cell<PureDimension<*>>? = null,
     val backgroundColor: Cell<PureColor>? = null,
-    val margin: Cell<PurePropertyValue.Dynamic>? = null,
     val textAlign: Cell<PureTextAlign>? = null,
     val verticalAlign: Cell<PureVerticalAlign>? = null,
     val borderStyle: PureBorderStyle? = null,
@@ -28,6 +27,8 @@ data class ReactiveStyle(
     val fill: Cell<PureFill>? = null,
     val strokeStyle: PureStrokeStyle? = null,
     val pointerEvents: Cell<PurePointerEvents>? = null,
+    val padding: PureEdgeInsets? = null,
+    val margin: PureEdgeInsets? = null,
 ) {
     companion object {
         val Default = ReactiveStyle()
@@ -53,11 +54,6 @@ data class ReactiveStyle(
         backgroundColor?.bind(
             styleDeclaration = styleDeclaration,
             kind = PurePropertyKind.BackgroundColor,
-        )
-
-        margin?.bind(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.Margin,
         )
 
         textAlign?.bind(
@@ -91,6 +87,20 @@ data class ReactiveStyle(
         pointerEvents?.bind(
             styleDeclaration = styleDeclaration,
             kind = PurePropertyKind.PointerEvents,
+        )
+
+        margin?.applyProperties(
+            insetKind = PureEdgeInsets.InsetKind.Margin,
+            applier = StyleDeclarationApplier(
+                styleDeclaration = styleDeclaration,
+            ),
+        )
+
+        padding?.applyProperties(
+            insetKind = PureEdgeInsets.InsetKind.Padding,
+            applier = StyleDeclarationApplier(
+                styleDeclaration = styleDeclaration,
+            ),
         )
     }
 }

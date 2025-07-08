@@ -8,6 +8,7 @@ data class PureFlexStyle(
     val alignItems: PureFlexAlignItems? = null,
     val justifyContent: PureFlexJustifyContent? = null,
     val gap: PureDimension<*>? = null,
+    val grow: Double? = null,
 ) : PureDualDisplayStyle() {
     override val insideType: PureDisplayInsideType = PureDisplayInsideType.Flex
 
@@ -32,6 +33,11 @@ data class PureFlexStyle(
         applier.applyProperty(
             kind = PurePropertyKind.Gap,
             value = gap,
+        )
+
+        applier.applyProperty(
+            kind = PurePropertyKind.FlexGrow,
+            value = grow?.let { PurePropertyValue.Number(it) },
         )
     }
 }
