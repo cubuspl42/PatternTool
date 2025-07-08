@@ -12,6 +12,7 @@ import org.w3c.dom.Node
 import org.w3c.dom.svg.SVGAnimatedLength
 import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGElement
+import org.w3c.dom.svg.SVGGElement
 import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGSVGElement
 import svgPathData.SVGPathSegment
@@ -83,6 +84,15 @@ fun Document.createReactiveSvgPathElement(
 
     return pathElement
 }
+
+fun Document.createReactiveSvgGroupElement(
+    style: ReactiveStyle? = null,
+    children: ReactiveList<SVGElement>,
+): SVGGElement = createReactiveSvgElement(
+    localSvgName = "g",
+    style = style,
+    children = children,
+) as SVGGElement
 
 var SVGAnimatedLength.baseValue: Double
     get() = this.baseVal.value.toDouble()

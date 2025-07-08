@@ -19,8 +19,11 @@ import dev.toolkt.dom.reactive.utils.gestures.onMouseOverGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.track
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
+import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgGroupElement
+import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgPathElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.reactive_list.ReactiveList
@@ -28,6 +31,8 @@ import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGElement
+import org.w3c.dom.svg.SVGGElement
+import org.w3c.dom.svg.SVGSVGElement
 
 fun main() {
     val rootElement = createRootElement()
@@ -128,13 +133,6 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
         children = childrenLooped,
     )
 
-    val userBezierCurve = UserBezierCurve(
-        start = PropertyCell(initialValue = Point.origin),
-        firstControl = PropertyCell(initialValue = Point(100.0, 100.0)),
-        secondControl = PropertyCell(initialValue = Point(200.0, 100.0)),
-        end = PropertyCell(initialValue = Point(300.0, 100.0)),
-    )
-
     return@looped Pair(
         PrimaryViewport(
             element = document.createReactiveHtmlDivElement(
@@ -156,6 +154,32 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
             trackedMouseOverGesture = svgElement.onMouseOverGestureStarted().track(),
         ),
         ReactiveList.of(
+            createControlledSvgBezierCurve(
+                svgElement = svgElement,
+                initialBezierCurve = BezierCurve(
+                    start = Point(100.0, 100.0),
+                    firstControl = Point(200.0, 50.0),
+                    secondControl = Point(300.0, 150.0),
+                    end = Point(400.0, 100.0),
+                ),
+            ),
+        ),
+    )
+}
+
+private fun createControlledSvgBezierCurve(
+    svgElement: SVGSVGElement,
+    initialBezierCurve: BezierCurve,
+): SVGGElement {
+    val userBezierCurve = UserBezierCurve(
+        start = PropertyCell(initialValue = initialBezierCurve.start),
+        firstControl = PropertyCell(initialValue = initialBezierCurve.firstControl),
+        secondControl = PropertyCell(initialValue = initialBezierCurve.secondControl),
+        end = PropertyCell(initialValue = initialBezierCurve.end),
+    )
+
+    return document.createReactiveSvgGroupElement(
+        children = ReactiveList.of(
             userBezierCurve.reactiveBezierCurve.createReactiveSvgPathElement(
                 style = ReactiveStyle(
                     fill = Cell.of(PureFill.None),
