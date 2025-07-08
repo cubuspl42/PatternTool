@@ -129,31 +129,19 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
         children = childrenLooped,
     )
 
-    val userBezierCurve1 = UserBezierCurve(
-        start = PropertyCell(initialValue = Point(1547.0, 893.0)),
-        firstControl = PropertyCell(initialValue = Point(964.0, 592.0)),
-        secondControl = PropertyCell(initialValue = Point(1044.0, 207.0)),
-        end = PropertyCell(initialValue = Point(1808.0, 680.0)),
-    )
-
-    val userBezierCurve2 = UserBezierCurve(
-        start = PropertyCell(initialValue = Point(1407.0, 904.0)),
-        firstControl = PropertyCell(initialValue = Point(2176.0, 201.0)),
-        secondControl = PropertyCell(initialValue = Point(1018.0, 402.0)),
-        end = PropertyCell(initialValue = Point(1707.0, 855.0)),
-    )
-
-    val intersections = ReactiveList.diff(
-        Cell.map2(
-            cell1 = userBezierCurve1.bezierCurve,
-            cell2 = userBezierCurve2.bezierCurve,
-        ) { bezierCurve1, bezierCurve2 ->
-            BezierCurve.findIntersections(
-                subjectBezierCurve = bezierCurve1,
-                objectBezierCurve = bezierCurve2,
-                tolerance = SpatialObject.SpatialTolerance.default
-            ).toList()
-        },
+    val userCurveSystem = UserCurveSystem(
+        userBezierCurve1 = UserBezierCurve(
+            start = PropertyCell(initialValue = Point(1547.0, 893.0)),
+            firstControl = PropertyCell(initialValue = Point(964.0, 592.0)),
+            secondControl = PropertyCell(initialValue = Point(1044.0, 207.0)),
+            end = PropertyCell(initialValue = Point(1808.0, 680.0)),
+        ),
+        userBezierCurve2 = UserBezierCurve(
+            start = PropertyCell(initialValue = Point(1407.0, 904.0)),
+            firstControl = PropertyCell(initialValue = Point(2176.0, 201.0)),
+            secondControl = PropertyCell(initialValue = Point(1018.0, 402.0)),
+            end = PropertyCell(initialValue = Point(1707.0, 855.0)),
+        ),
     )
 
     return@looped Pair(
@@ -179,14 +167,14 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
         ReactiveList.of(
             createControlledSvgBezierCurve(
                 svgElement = svgElement,
-                userBezierCurve = userBezierCurve1,
+                userBezierCurve = userCurveSystem.userBezierCurve1,
             ),
             createControlledSvgBezierCurve(
                 svgElement = svgElement,
-                userBezierCurve = userBezierCurve2,
+                userBezierCurve = userCurveSystem.userBezierCurve2,
             ),
             document.createReactiveSvgGroupElement(
-                children = intersections.map { intersection ->
+                children = userCurveSystem.intersections.map { intersection ->
                     document.createReactiveSvgCircleElement(
                         style = ReactiveStyle(
                             fill = Cell.of(PureFill.Colored(PureColor.red)),
