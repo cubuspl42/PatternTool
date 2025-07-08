@@ -7,6 +7,7 @@ import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureBorderStyle
 import dev.toolkt.dom.pure.style.PureBoxSizing
+import dev.toolkt.dom.pure.style.PureFill
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexJustifyContent
@@ -22,7 +23,6 @@ import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlInputElement
 import dev.toolkt.dom.reactive.utils.html.getValueCell
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
-import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgPathElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.curves.BezierCurve
@@ -33,7 +33,6 @@ import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.svg.SVGCircleElement
-import svgPathData.SVGPathSegment
 
 fun main() {
     val rootElement = createRootElement()
@@ -180,6 +179,7 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
             ReactiveList.of(
                 bezierCurve.createReactiveSvgPathElement(
                     style = ReactiveStyle(
+                        fill = Cell.of(PureFill.None),
                         strokeStyle = PureStrokeStyle(
                             color = PureColor.black,
                             width = 4.px,
@@ -207,11 +207,13 @@ private fun createCircleElement(
 ) { mouseOverGesture: Cell<MouseGesture?> ->
     val circleElement = document.createReactiveSvgCircleElement(
         style = ReactiveStyle(
-            fill = mouseOverGesture.map {
-                when (it) {
-                    null -> PureColor.black
-                    else -> PureColor.blue
-                }
+            fill = mouseOverGesture.map { mouseOverGestureNow ->
+                PureFill.Colored(
+                    color = when (mouseOverGestureNow) {
+                        null -> PureColor.black
+                        else -> PureColor.blue
+                    },
+                )
             },
         ),
         position = position,

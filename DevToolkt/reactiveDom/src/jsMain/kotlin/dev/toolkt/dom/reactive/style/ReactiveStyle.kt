@@ -5,6 +5,7 @@ import dev.toolkt.dom.pure.PureDimension
 import dev.toolkt.dom.pure.style.PureBorderStyle
 import dev.toolkt.dom.pure.style.PureBoxSizing
 import dev.toolkt.dom.pure.style.PureDisplayStyle
+import dev.toolkt.dom.pure.style.PureFill
 import dev.toolkt.dom.pure.style.PurePropertyKind
 import dev.toolkt.dom.pure.style.PurePropertyValue
 import dev.toolkt.dom.pure.style.PureStrokeStyle
@@ -23,7 +24,7 @@ data class ReactiveStyle(
     val verticalAlign: Cell<PureVerticalAlign>? = null,
     val borderStyle: PureBorderStyle? = null,
     val boxSizing: PureBoxSizing? = null,
-    val fill: Cell<PureColor>? = null,
+    val fill: Cell<PureFill>? = null,
     val strokeStyle: PureStrokeStyle? = null,
 ) {
     companion object {
