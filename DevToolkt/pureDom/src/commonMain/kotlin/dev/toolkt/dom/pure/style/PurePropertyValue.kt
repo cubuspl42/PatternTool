@@ -5,5 +5,12 @@ abstract class PurePropertyValue {
         override val cssString: String,
     ) : PurePropertyValue()
 
+    data class Number(
+        val value: Double,
+    ) : PurePropertyValue() {
+        override val cssString: String
+            get() = value.toString()
+    }
+
     abstract val cssString: String
 }

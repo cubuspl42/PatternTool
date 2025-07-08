@@ -17,7 +17,7 @@ fun PurePropertyGroup.applyTo(
     )
 }
 
-private class StyleDeclarationApplier(
+internal class StyleDeclarationApplier(
     private val styleDeclaration: CSSStyleDeclaration,
 ) : PurePropertyApplier {
     override fun applyProperty(
