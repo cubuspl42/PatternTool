@@ -60,7 +60,7 @@ fun Element.onMouseDragGestureStarted(
     )
 }
 
-fun Element.onSvgDragGestureStarted(
+fun SVGElement.onSvgDragGestureStarted(
     container: SVGElement,
     button: Short,
 ): EventStream<SvgMouseGesture> = this.getMouseDownEventStream(

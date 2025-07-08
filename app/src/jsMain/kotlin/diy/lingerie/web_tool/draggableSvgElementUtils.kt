@@ -16,9 +16,9 @@ fun <ElementT : SVGElement> createDraggableSvgElement(
 ): ElementT = Cell.looped(
     placeholderValue = PurePointerEvents.Auto,
 ) { pointerEventsLooped: Cell<PurePointerEvents> ->
-    val element = create(position)
+    val draggableElement = create(position)
 
-    val trackedDragGesture = element.onSvgDragGestureStarted(
+    val trackedDragGesture = draggableElement.onSvgDragGestureStarted(
         container = container,
         button = 0,
     ).track()
@@ -38,7 +38,7 @@ fun <ElementT : SVGElement> createDraggableSvgElement(
     }
 
     Pair(
-        element,
+        draggableElement,
         pointerEvents,
     )
 }

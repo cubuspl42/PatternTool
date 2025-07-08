@@ -6,7 +6,6 @@ import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureBorderStyle
 import dev.toolkt.dom.pure.style.PureBoxSizing
-import dev.toolkt.dom.pure.style.PureFill
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexJustifyContent
@@ -17,17 +16,13 @@ import dev.toolkt.dom.reactive.utils.gestures.GenericMouseGesture
 import dev.toolkt.dom.reactive.utils.gestures.onMouseOverGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.track
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
-import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.svg.SVGCircleElement
-import org.w3c.dom.svg.SVGElement
 
 fun main() {
     val rootElement = createRootElement()
