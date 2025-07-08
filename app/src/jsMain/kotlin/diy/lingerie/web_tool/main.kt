@@ -16,10 +16,13 @@ import dev.toolkt.dom.reactive.utils.gestures.GenericMouseGesture
 import dev.toolkt.dom.reactive.utils.gestures.onMouseOverGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.track
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
+import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgGroupElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.SpatialObject
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
@@ -123,6 +126,32 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
         children = childrenLooped,
     )
 
+    val userBezierCurve1 = UserBezierCurve(
+        start = PropertyCell(initialValue = Point(100.0, 100.0)),
+        firstControl = PropertyCell(initialValue = Point(200.0, 50.0)),
+        secondControl = PropertyCell(initialValue = Point(300.0, 150.0)),
+        end = PropertyCell(initialValue = Point(400.0, 100.0)),
+    )
+
+    val userBezierCurve2 = UserBezierCurve(
+        start = PropertyCell(initialValue = Point(100.0, 300.0)),
+        firstControl = PropertyCell(initialValue = Point(200.0, 250.0)),
+        secondControl = PropertyCell(initialValue = Point(300.0, 350.0)),
+        end = PropertyCell(initialValue = Point(400.0, 300.0)),
+    )
+
+    // TODO: Use it
+    val intersections = Cell.map2(
+        cell1 = userBezierCurve1.bezierCurve,
+        cell2 = userBezierCurve2.bezierCurve,
+    ) { bezierCurve1, bezierCurve2 ->
+        BezierCurve.findIntersections(
+            subjectBezierCurve = bezierCurve1,
+            objectBezierCurve = bezierCurve2,
+            tolerance = SpatialObject.SpatialTolerance.default
+        )
+    }
+
     return@looped Pair(
         PrimaryViewport(
             element = document.createReactiveHtmlDivElement(
@@ -146,14 +175,12 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
         ReactiveList.of(
             createControlledSvgBezierCurve(
                 svgElement = svgElement,
-                initialBezierCurve = BezierCurve(
-                    start = Point(100.0, 100.0),
-                    firstControl = Point(200.0, 50.0),
-                    secondControl = Point(300.0, 150.0),
-                    end = Point(400.0, 100.0),
-                ),
+                userBezierCurve = userBezierCurve1,
+            ),
+            createControlledSvgBezierCurve(
+                svgElement = svgElement,
+                userBezierCurve = userBezierCurve2,
             ),
         ),
     )
 }
-
