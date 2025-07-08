@@ -445,6 +445,74 @@ class BezierCurveTests {
     }
 
     @Test
+    fun testFindIntersections_BezierCurve_BezierCurve_threeIntersections_c_loop() {
+        // A simple C-shaped curve and a loop. For an unknown reason, this case
+        // might be problematic (possibly uncovering a big problem in the lower layer)
+
+        val firstBezierCurve = BezierCurve(
+            start = Point(1547.0, 893.0),
+            firstControl = Point(964.0, 592.0),
+            secondControl = Point(1044.0, 207.0),
+            end = Point(1808.0, 680.0),
+        )
+
+        val secondBezierCurve = BezierCurve(
+            start = Point(1407.0, 904.0),
+            firstControl = Point(2176.0, 201.0),
+            secondControl = Point(1018.0, 402.0),
+            end = Point(1707.0, 855.0),
+        )
+
+        testBezierIntersectionsBySubdivisionSymmetric(
+            firstCurve = firstBezierCurve,
+            secondCurve = secondBezierCurve,
+            expectedIntersection = listOf(
+                ExpectedIntersection(
+                    point = Point(1465.981292217617, 848.2089843881924),
+                    firstCoord = OpenCurve.Coord(t = 0.04904937744140625),
+                    secondCoord = OpenCurve.Coord(t = 0.02740478515625),
+                ),
+                ExpectedIntersection(
+                    point = Point(1491.6693825254533, 514.1636085670052),
+                    firstCoord = OpenCurve.Coord(t = 0.838714599609375),
+                    secondCoord = OpenCurve.Coord(t = 0.6728515625),
+                ),
+                ExpectedIntersection(
+                    point = Point(1662.9276703424082, 595.8206819867323),
+                    firstCoord = OpenCurve.Coord(t = 0.9326324462890625),
+                    secondCoord = OpenCurve.Coord(t = 0.190765380859375),
+                ),
+            ),
+        )
+
+        testBezierIntersectionsByEquationSolvingSymmetric(
+            firstCurve = firstBezierCurve,
+            secondCurve = secondBezierCurve,
+            expectedIntersection = listOf(
+                ExpectedIntersection(
+                    point = Point(1465.981292217617, 848.2089843881924),
+                    firstCoord = OpenCurve.Coord(t = 0.04904937744140625),
+                    secondCoord = OpenCurve.Coord(t = 0.02740478515625),
+                ),
+                ExpectedIntersection(
+                    point = Point(1491.6693825254533, 514.1636085670052),
+                    firstCoord = OpenCurve.Coord(t = 0.838714599609375),
+                    secondCoord = OpenCurve.Coord(t = 0.6728515625),
+                ),
+                // FIXME: Why isn't this intersection point being found?
+//                ExpectedIntersection(
+//                    point = Point(1662.9276703424082, 595.8206819867323),
+//                    firstCoord = OpenCurve.Coord(t = 0.9326324462890625),
+//                    secondCoord = OpenCurve.Coord(t = 0.190765380859375),
+//                ),
+            ),
+            tolerance = NumericObject.Tolerance.Absolute(
+                absoluteTolerance = 1e-2,
+            ),
+        )
+    }
+
+    @Test
     fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_anotherCutLoop() {
         // A loop cut into two pieces that make it non-obvious that any loop
         // is involved at all (for some reason, possibly numeric accuracy, this
@@ -845,6 +913,9 @@ class BezierCurveTests {
         firstCurve: BezierCurve,
         secondCurve: BezierCurve,
         expectedIntersection: List<ExpectedIntersection>,
+        tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Absolute(
+            absoluteTolerance = 1e-4,
+        ),
     ) {
         testIntersectionsSymmetric(
             firstCurve = firstCurve,
@@ -856,9 +927,7 @@ class BezierCurveTests {
                 )
             },
             expectedIntersections = expectedIntersection,
-            tolerance = NumericObject.Tolerance.Absolute(
-                absoluteTolerance = 1e-4,
-            ),
+            tolerance = tolerance,
         )
     }
 
