@@ -13,7 +13,7 @@ class DiffReactiveList<ElementT>(
             update = Change.Update.change(
                 indexRange = source.currentValue.indices,
                 changedElements = newElements,
-            )
+            ),
         )
     }
 

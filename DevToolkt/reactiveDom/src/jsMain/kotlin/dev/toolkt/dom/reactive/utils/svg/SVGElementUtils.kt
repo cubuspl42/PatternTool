@@ -76,8 +76,6 @@ fun Document.createReactiveSvgPathElement(
     ) { pathElement, pathSegments ->
         val pathData = pathSegments.toTypedArray()
 
-        PlatformSystem.log(pathData)
-
         pathElement.setPathData(
             pathData = pathData,
         )
