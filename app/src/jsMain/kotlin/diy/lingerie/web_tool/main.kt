@@ -6,16 +6,19 @@ import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureBorderStyle
 import dev.toolkt.dom.pure.style.PureBoxSizing
+import dev.toolkt.dom.pure.style.PureFill
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexJustifyContent
 import dev.toolkt.dom.pure.style.PureFlexStyle
+import dev.toolkt.dom.pure.style.PurePointerEvents
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.gestures.GenericMouseGesture
 import dev.toolkt.dom.reactive.utils.gestures.onMouseOverGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.track
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
+import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgGroupElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
@@ -127,30 +130,31 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
     )
 
     val userBezierCurve1 = UserBezierCurve(
-        start = PropertyCell(initialValue = Point(100.0, 100.0)),
-        firstControl = PropertyCell(initialValue = Point(200.0, 50.0)),
-        secondControl = PropertyCell(initialValue = Point(300.0, 150.0)),
-        end = PropertyCell(initialValue = Point(400.0, 100.0)),
+        start = PropertyCell(initialValue = Point(1547.0, 893.0)),
+        firstControl = PropertyCell(initialValue = Point(964.0, 592.0)),
+        secondControl = PropertyCell(initialValue = Point(1044.0, 207.0)),
+        end = PropertyCell(initialValue = Point(1808.0, 680.0)),
     )
 
     val userBezierCurve2 = UserBezierCurve(
-        start = PropertyCell(initialValue = Point(100.0, 300.0)),
-        firstControl = PropertyCell(initialValue = Point(200.0, 250.0)),
-        secondControl = PropertyCell(initialValue = Point(300.0, 350.0)),
-        end = PropertyCell(initialValue = Point(400.0, 300.0)),
+        start = PropertyCell(initialValue = Point(1407.0, 904.0)),
+        firstControl = PropertyCell(initialValue = Point(2176.0, 201.0)),
+        secondControl = PropertyCell(initialValue = Point(1018.0, 402.0)),
+        end = PropertyCell(initialValue = Point(1707.0, 855.0)),
     )
 
-    // TODO: Use it
-    val intersections = Cell.map2(
-        cell1 = userBezierCurve1.bezierCurve,
-        cell2 = userBezierCurve2.bezierCurve,
-    ) { bezierCurve1, bezierCurve2 ->
-        BezierCurve.findIntersections(
-            subjectBezierCurve = bezierCurve1,
-            objectBezierCurve = bezierCurve2,
-            tolerance = SpatialObject.SpatialTolerance.default
-        )
-    }
+    val intersections = ReactiveList.diff(
+        Cell.map2(
+            cell1 = userBezierCurve1.bezierCurve,
+            cell2 = userBezierCurve2.bezierCurve,
+        ) { bezierCurve1, bezierCurve2 ->
+            BezierCurve.findIntersections(
+                subjectBezierCurve = bezierCurve1,
+                objectBezierCurve = bezierCurve2,
+                tolerance = SpatialObject.SpatialTolerance.default
+            ).toList()
+        },
+    )
 
     return@looped Pair(
         PrimaryViewport(
@@ -180,6 +184,18 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
             createControlledSvgBezierCurve(
                 svgElement = svgElement,
                 userBezierCurve = userBezierCurve2,
+            ),
+            document.createReactiveSvgGroupElement(
+                children = intersections.map { intersection ->
+                    document.createReactiveSvgCircleElement(
+                        style = ReactiveStyle(
+                            fill = Cell.of(PureFill.Colored(PureColor.red)),
+                            pointerEvents = Cell.of(PurePointerEvents.None),
+                        ),
+                        position = Cell.of(intersection.point),
+                        radius = 4.0,
+                    )
+                },
             ),
         ),
     )

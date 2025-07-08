@@ -71,9 +71,6 @@ abstract class ReactiveList<out E> {
                 indexRange = indexRange,
                 updatedElements = updatedElements.map(transform),
             )
-
-            val isEffective: Boolean
-                get() = !indexRange.isEmpty() || updatedElements.isNotEmpty()
         }
 
         companion object {
@@ -101,10 +98,6 @@ abstract class ReactiveList<out E> {
         ): Change<Er> = Change(
             update = update.map(transform),
         )
-
-        init {
-            require(update.isEffective)
-        }
     }
 
     enum class Behavior {
