@@ -2,6 +2,7 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.future.Future
 
 class PropertyCell<ValueT>(
@@ -65,6 +66,16 @@ class PropertyCell<ValueT>(
         )
 
         mutableState.set(newBoundState)
+    }
+
+    fun bindUntil(
+        newValues: EventStream<ValueT>,
+        until: Future<Unit>,
+    ) {
+        bindUntil(
+            boundValue = newValues.hold(currentValue),
+            until = until,
+        )
     }
 
     override val newValues: EventStream<ValueT>

@@ -6,6 +6,7 @@ import dev.toolkt.dom.pure.style.PureBorderStyle
 import dev.toolkt.dom.pure.style.PureBoxSizing
 import dev.toolkt.dom.pure.style.PureDisplayStyle
 import dev.toolkt.dom.pure.style.PureFill
+import dev.toolkt.dom.pure.style.PurePointerEvents
 import dev.toolkt.dom.pure.style.PurePropertyKind
 import dev.toolkt.dom.pure.style.PurePropertyValue
 import dev.toolkt.dom.pure.style.PureStrokeStyle
@@ -26,6 +27,7 @@ data class ReactiveStyle(
     val boxSizing: PureBoxSizing? = null,
     val fill: Cell<PureFill>? = null,
     val strokeStyle: PureStrokeStyle? = null,
+    val pointerEvents: Cell<PurePointerEvents>? = null,
 ) {
     companion object {
         val Default = ReactiveStyle()
@@ -84,6 +86,11 @@ data class ReactiveStyle(
 
         strokeStyle?.applyTo(
             styleDeclaration = styleDeclaration,
+        )
+
+        pointerEvents?.bind(
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.PointerEvents,
         )
     }
 }

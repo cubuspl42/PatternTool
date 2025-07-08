@@ -14,8 +14,7 @@ import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.pure.style.PureStrokeStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
-import dev.toolkt.dom.reactive.utils.gestures.MouseGesture
-import dev.toolkt.dom.reactive.utils.gestures.onMouseDragGestureStarted
+import dev.toolkt.dom.reactive.utils.gestures.GenericMouseGesture
 import dev.toolkt.dom.reactive.utils.gestures.onMouseOverGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.track
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
@@ -28,6 +27,7 @@ import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.svg.SVGCircleElement
+import org.w3c.dom.svg.SVGElement
 
 fun main() {
     val rootElement = createRootElement()
@@ -64,7 +64,7 @@ private fun createRootElement(): HTMLDivElement {
 }
 
 private fun createTopBar(
-    trackedMouseOverGesture: Cell<MouseGesture?>,
+    trackedMouseOverGesture: Cell<GenericMouseGesture?>,
 ): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
         displayStyle = Cell.of(
@@ -85,7 +85,7 @@ private fun createTopBar(
 )
 
 private fun createMouseOverGesturePreview(
-    mouseOverGestureNow: MouseGesture?,
+    mouseOverGestureNow: GenericMouseGesture?,
 ): HTMLDivElement = when (mouseOverGestureNow) {
     null -> document.createReactiveHtmlDivElement(
         style = ReactiveStyle(
@@ -116,7 +116,7 @@ private fun createMouseOverGesturePreview(
 
 data class PrimaryViewport(
     val element: HTMLDivElement,
-    val trackedMouseOverGesture: Cell<MouseGesture?>,
+    val trackedMouseOverGesture: Cell<GenericMouseGesture?>,
 )
 
 private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { childrenLooped ->
@@ -134,13 +134,6 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
         secondControl = PropertyCell(initialValue = Point(200.0, 100.0)),
         end = PropertyCell(initialValue = Point(300.0, 100.0)),
     )
-
-    svgElement.onMouseDragGestureStarted(button = 0).forEach { gesture ->
-        userBezierCurve.end.bindUntil(
-            boundValue = gesture.offsetPosition,
-            until = gesture.onFinished,
-        )
-    }
 
     return@looped Pair(
         PrimaryViewport(
@@ -172,35 +165,54 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
                     ),
                 ),
             ),
-            createCircleElement(
+            createCircleHandleElement(
+                container = svgElement,
+                position = userBezierCurve.start,
+            ),
+            createCircleHandleElement(
+                container = svgElement,
+                position = userBezierCurve.firstControl,
+            ),
+            createCircleHandleElement(
+                container = svgElement,
+                position = userBezierCurve.secondControl,
+            ),
+            createCircleHandleElement(
+                container = svgElement,
                 position = userBezierCurve.end,
             ),
         ),
     )
 }
 
-private fun createCircleElement(
-    position: Cell<Point>,
-): SVGCircleElement = Cell.looped(
-    placeholderValue = null,
-) { mouseOverGesture: Cell<MouseGesture?> ->
-    val circleElement = document.createReactiveSvgCircleElement(
-        style = ReactiveStyle(
-            fill = mouseOverGesture.map { mouseOverGestureNow ->
-                PureFill.Colored(
-                    color = when (mouseOverGestureNow) {
-                        null -> PureColor.black
-                        else -> PureColor.blue
-                    },
-                )
-            },
-        ),
-        position = position,
-        radius = 8.0,
-    )
+private fun createCircleHandleElement(
+    container: SVGElement,
+    position: PropertyCell<Point>,
+): SVGCircleElement = createDraggableSvgElement(
+    container = container,
+    position = position,
+) { position ->
+    Cell.looped(
+        placeholderValue = null,
+    ) { mouseOverGesture: Cell<GenericMouseGesture?> ->
+        val circleElement = document.createReactiveSvgCircleElement(
+            style = ReactiveStyle(
+                fill = mouseOverGesture.map { mouseOverGestureNow ->
+                    PureFill.Colored(
+                        color = when (mouseOverGestureNow) {
+                            null -> PureColor.black
+                            else -> PureColor.blue
+                        },
+                    )
+                },
+            ),
+            position = position,
+            radius = 8.0,
+        )
 
-    Pair(
-        circleElement,
-        circleElement.onMouseOverGestureStarted().track(),
-    )
+        Pair(
+            circleElement,
+            circleElement.onMouseOverGestureStarted().track(),
+        )
+    }
 }
