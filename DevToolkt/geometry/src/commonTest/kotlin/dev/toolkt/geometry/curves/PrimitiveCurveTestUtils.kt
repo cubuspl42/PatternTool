@@ -53,15 +53,19 @@ internal fun assertIntersectionsEqual(
     actualIntersections: Set<OpenCurve.Intersection>,
     tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
 ) {
+    val expected = expectedIntersections.map { intersection ->
+        object : OpenCurve.Intersection() {
+            override val point: Point = intersection.point
+            override val subjectCoord: OpenCurve.Coord = intersection.firstCoord
+            override val objectCoord: OpenCurve.Coord = intersection.secondCoord
+        }
+    }
+
+    val actual = actualIntersections.sortedBy { it.point.x }
+
     assertEqualsWithTolerance(
-        expected = expectedIntersections.map { intersection ->
-            object : OpenCurve.Intersection() {
-                override val point: Point = intersection.point
-                override val subjectCoord: OpenCurve.Coord = intersection.firstCoord
-                override val objectCoord: OpenCurve.Coord = intersection.secondCoord
-            }
-        },
-        actual = actualIntersections.sortedBy { it.point.x },
+        expected = expected,
+        actual = actual,
         tolerance = tolerance,
     )
 }

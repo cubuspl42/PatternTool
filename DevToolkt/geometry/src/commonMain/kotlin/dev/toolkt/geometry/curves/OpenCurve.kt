@@ -111,7 +111,7 @@ abstract class OpenCurve : NumericObject, ReprObject {
         val t: Double,
     ) : NumericObject, ReprObject, Comparable<Coord> {
         companion object {
-            private val tRange = 0.0..1.0
+            val tRange = 0.0..1.0
 
             val start = Coord(t = 0.0)
 

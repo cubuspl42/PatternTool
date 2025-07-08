@@ -37,7 +37,7 @@ private fun createRootElement(): HTMLDivElement {
             start = PropertyCell(initialValue = Point(1547.0, 893.0)),
             firstControl = PropertyCell(initialValue = Point(964.0, 592.0)),
             secondControl = PropertyCell(initialValue = Point(1044.0, 207.0)),
-            end = PropertyCell(initialValue = Point(1808.0, 680.0)),
+            end = PropertyCell(initialValue = Point(1829.0, 625.0)),
         ),
         userBezierCurve2 = UserBezierCurve(
             start = PropertyCell(initialValue = Point(1407.0, 904.0)),
@@ -143,7 +143,7 @@ private fun createSideBar(
         intersection: OpenCurve.Intersection,
     ): HTMLDivElement = createEntryTableRow(
         key = "Intersection",
-        value = Cell.of(intersection.point.toReprString()),
+        value = Cell.of("${intersection.point.toReprString()} [t_s = ${intersection.subjectCoord.t}, t_o = ${intersection.objectCoord.t}]"),
     )
 
     return document.createReactiveHtmlDivElement(

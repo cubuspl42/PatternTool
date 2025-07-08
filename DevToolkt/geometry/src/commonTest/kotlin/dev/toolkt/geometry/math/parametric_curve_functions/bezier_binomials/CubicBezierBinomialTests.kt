@@ -6,6 +6,7 @@ import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.BoundingBox
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import kotlin.random.Random
 import kotlin.test.Ignore
@@ -208,6 +209,66 @@ class CubicBezierBinomialTests {
                 closerPoints.none { it.t in range },
             )
         }
+    }
+
+    @Test
+    fun testSolveIntersections_cubicBezierBinomials_threeIntersections_1() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            Vector2(1547.0, 893.0),
+            Vector2(964.0, 592.0),
+            Vector2(1044.0, 207.0),
+            Vector2(1829.0, 625.0),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            Vector2(1407.0, 904.0),
+            Vector2(2176.0, 201.0),
+            Vector2(1018.0, 402.0),
+            Vector2(1707.0, 855.0),
+        )
+
+        val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
+            other = secondCubicBezierBinomial,
+        ).sorted()
+
+        assertEqualsWithTolerance(
+            expected = listOf(
+                0.04905890129108739,
+                0.8442338406224985,
+                0.9320151200357478,
+            ),
+            actual = tValues.filter { it in OpenCurve.Coord.tRange },
+        )
+    }
+
+    @Test
+    // FIXME: This is nearly exactly the same setup as above, but one of the intersections is not found!
+    fun testSolveIntersections_cubicBezierBinomials_threeIntersections_2() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            Vector2(1547.0, 893.0),
+            Vector2(964.0, 592.0),
+            Vector2(1044.0, 207.0),
+            Vector2(1830.0, 624.0),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            Vector2(1407.0, 904.0),
+            Vector2(2176.0, 201.0),
+            Vector2(1018.0, 402.0),
+            Vector2(1707.0, 855.0),
+        )
+
+        val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
+            other = secondCubicBezierBinomial,
+        ).sorted()
+
+        assertEqualsWithTolerance(
+            expected = listOf(
+                0.04905890122916942,
+                0.8442322789685169,
+            ),
+            actual = tValues.filter { it in OpenCurve.Coord.tRange },
+        )
     }
 
     @Test
