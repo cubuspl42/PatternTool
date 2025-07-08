@@ -8,4 +8,9 @@ sealed class PurePointerEvents : PurePropertyValue() {
     data object None : PurePointerEvents() {
         override val cssString: String = "none"
     }
+
+    // SVG-only
+    data object All : PurePointerEvents() {
+        override val cssString: String = "all"
+    }
 }

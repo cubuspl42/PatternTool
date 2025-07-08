@@ -11,7 +11,6 @@ import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexJustifyContent
 import dev.toolkt.dom.pure.style.PureFlexStyle
-import dev.toolkt.dom.pure.style.PureStrokeStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.gestures.GenericMouseGesture
@@ -19,8 +18,6 @@ import dev.toolkt.dom.reactive.utils.gestures.onMouseOverGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.track
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
-import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgGroupElement
-import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgPathElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.curves.BezierCurve
@@ -31,8 +28,6 @@ import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGElement
-import org.w3c.dom.svg.SVGGElement
-import org.w3c.dom.svg.SVGSVGElement
 
 fun main() {
     val rootElement = createRootElement()
@@ -167,76 +162,3 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
     )
 }
 
-private fun createControlledSvgBezierCurve(
-    svgElement: SVGSVGElement,
-    initialBezierCurve: BezierCurve,
-): SVGGElement {
-    val userBezierCurve = UserBezierCurve(
-        start = PropertyCell(initialValue = initialBezierCurve.start),
-        firstControl = PropertyCell(initialValue = initialBezierCurve.firstControl),
-        secondControl = PropertyCell(initialValue = initialBezierCurve.secondControl),
-        end = PropertyCell(initialValue = initialBezierCurve.end),
-    )
-
-    return document.createReactiveSvgGroupElement(
-        children = ReactiveList.of(
-            userBezierCurve.reactiveBezierCurve.createReactiveSvgPathElement(
-                style = ReactiveStyle(
-                    fill = Cell.of(PureFill.None),
-                    strokeStyle = PureStrokeStyle(
-                        color = PureColor.black,
-                        width = 4.px,
-                    ),
-                ),
-            ),
-            createCircleHandleElement(
-                container = svgElement,
-                position = userBezierCurve.start,
-            ),
-            createCircleHandleElement(
-                container = svgElement,
-                position = userBezierCurve.firstControl,
-            ),
-            createCircleHandleElement(
-                container = svgElement,
-                position = userBezierCurve.secondControl,
-            ),
-            createCircleHandleElement(
-                container = svgElement,
-                position = userBezierCurve.end,
-            ),
-        ),
-    )
-}
-
-private fun createCircleHandleElement(
-    container: SVGElement,
-    position: PropertyCell<Point>,
-): SVGCircleElement = createDraggableSvgElement(
-    container = container,
-    position = position,
-) { position ->
-    Cell.looped(
-        placeholderValue = null,
-    ) { mouseOverGesture: Cell<GenericMouseGesture?> ->
-        val circleElement = document.createReactiveSvgCircleElement(
-            style = ReactiveStyle(
-                fill = mouseOverGesture.map { mouseOverGestureNow ->
-                    PureFill.Colored(
-                        color = when (mouseOverGestureNow) {
-                            null -> PureColor.black
-                            else -> PureColor.blue
-                        },
-                    )
-                },
-            ),
-            position = position,
-            radius = 8.0,
-        )
-
-        Pair(
-            circleElement,
-            circleElement.onMouseOverGestureStarted().track(),
-        )
-    }
-}
