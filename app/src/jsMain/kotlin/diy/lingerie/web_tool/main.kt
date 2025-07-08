@@ -25,10 +25,8 @@ import dev.toolkt.dom.reactive.utils.html.getValueCell
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.Point
-import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
-import dev.toolkt.reactive.cell.separateNonNull
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
@@ -133,27 +131,19 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
         children = childrenLooped,
     )
 
-    val savedPosition = PropertyCell<Point?>(
-        initialValue = null,
+    val userBezierCurve = UserBezierCurve(
+        start = PropertyCell(initialValue = Point.origin),
+        firstControl = PropertyCell(initialValue = Point(100.0, 100.0)),
+        secondControl = PropertyCell(initialValue = Point(200.0, 100.0)),
+        end = PropertyCell(initialValue = Point(300.0, 100.0)),
     )
 
     svgElement.onMouseDragGestureStarted(button = 0).forEach { gesture ->
-        savedPosition.bindUntil(
+        userBezierCurve.end.bindUntil(
             boundValue = gesture.offsetPosition,
             until = gesture.onFinished,
         )
     }
-
-    val bezierCurve = ReactiveBezierCurve.diff(
-        savedPosition.map {
-            BezierCurve(
-                start = Point.origin,
-                firstControl = Point(100.0, 100.0),
-                secondControl = Point(200.0, 100.0),
-                end = it ?: Point(300.0, 0.0),
-            )
-        },
-    )
 
     return@looped Pair(
         PrimaryViewport(
@@ -175,26 +165,18 @@ private fun createPrimaryViewport(): PrimaryViewport = ReactiveList.looped { chi
             ),
             trackedMouseOverGesture = svgElement.onMouseOverGestureStarted().track(),
         ),
-        ReactiveList.concatAll(
-            ReactiveList.of(
-                bezierCurve.createReactiveSvgPathElement(
-                    style = ReactiveStyle(
-                        fill = Cell.of(PureFill.None),
-                        strokeStyle = PureStrokeStyle(
-                            color = PureColor.black,
-                            width = 4.px,
-                        ),
+        ReactiveList.of(
+            userBezierCurve.reactiveBezierCurve.createReactiveSvgPathElement(
+                style = ReactiveStyle(
+                    fill = Cell.of(PureFill.None),
+                    strokeStyle = PureStrokeStyle(
+                        color = PureColor.black,
+                        width = 4.px,
                     ),
                 ),
             ),
-            ReactiveList.singleNotNull(
-                savedPosition.separateNonNull().map { savedPositionOrNull ->
-                    savedPositionOrNull?.let { savedPosition ->
-                        createCircleElement(
-                            position = savedPosition,
-                        )
-                    }
-                },
+            createCircleElement(
+                position = userBezierCurve.end,
             ),
         ),
     )
