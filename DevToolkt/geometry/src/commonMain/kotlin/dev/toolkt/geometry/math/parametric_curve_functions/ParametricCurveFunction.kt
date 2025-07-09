@@ -58,7 +58,6 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         guessedTValue: Double,
         tolerance: NumericObject.Tolerance.Absolute,
     ): List<Double> = this.findRoots(
-        guessedRoot = guessedTValue,
         tolerance = tolerance,
     )
 

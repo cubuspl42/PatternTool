@@ -169,7 +169,6 @@ sealed class LowPolynomial : Polynomial {
 
     override fun findRoots(
         maxDepth: Int,
-        guessedRoot: Double,
         tolerance: NumericObject.Tolerance.Absolute,
     ): List<Double> = findRootsAnalytically()
 

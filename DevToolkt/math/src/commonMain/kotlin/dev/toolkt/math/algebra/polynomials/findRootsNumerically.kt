@@ -8,14 +8,13 @@ import kotlin.math.sqrt
 
 fun Polynomial.findRootsNumerically(
     maxDepth: Int,
-    guessedRoot: Double,
     tolerance: NumericObject.Tolerance.Absolute,
     areClose: (x0: Double, x1: Double) -> Boolean,
 ): List<Double> {
     val primaryRoot = findPrimaryRootNumerically(
         maxDepth = maxDepth,
         tolerance = tolerance,
-        guessedRoot = guessedRoot,
+        guessedRoot = 0.5,
         areClose = areClose,
     ) ?: return emptyList()
 
@@ -32,7 +31,6 @@ fun Polynomial.findRootsNumerically(
 
     val lowerDegreeRoots = deflatedPolynomial.findRoots(
         maxDepth = maxDepth,
-        guessedRoot = guessedRoot,
         tolerance = tolerance,
     )
 
