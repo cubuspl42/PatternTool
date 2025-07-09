@@ -2,7 +2,6 @@ package dev.toolkt.geometry.math.parametric_curve_functions
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.math.algebra.RealFunction
-import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.sample
@@ -61,12 +60,6 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     ): List<Double> = this.findRoots(
         guessedRoot = guessedTValue,
         tolerance = tolerance,
-        areClose = { t0, t1 ->
-            val p0 = this@ParametricCurveFunction.apply(t0)
-            val p1 = this@ParametricCurveFunction.apply(t1)
-
-            (p0 - p1).magnitude.equalsWithTolerance(0.0)
-        },
     )
 
     val primaryArcLengthApproximate: Double

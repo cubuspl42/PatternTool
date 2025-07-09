@@ -34,7 +34,6 @@ fun Polynomial.findRootsNumerically(
         maxDepth = maxDepth,
         guessedRoot = guessedRoot,
         tolerance = tolerance,
-        areClose = areClose,
     )
 
     return listOf(primaryRoot) + lowerDegreeRoots

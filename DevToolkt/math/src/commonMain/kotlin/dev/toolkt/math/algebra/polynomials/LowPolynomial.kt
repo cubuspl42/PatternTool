@@ -171,7 +171,6 @@ sealed class LowPolynomial : Polynomial {
         maxDepth: Int,
         guessedRoot: Double,
         tolerance: NumericObject.Tolerance.Absolute,
-        areClose: (Double, Double) -> Boolean,
     ): List<Double> = findRootsAnalytically()
 
     abstract val symmetryAxis: Double?
