@@ -266,6 +266,8 @@ class CubicBezierBinomialTests {
             expected = listOf(
                 0.04905890122916942,
                 0.8442322789685169,
+                // FIXME: Find this solution
+                // 0.9320151200357478,
             ),
             actual = tValues.filter { it in OpenCurve.Coord.tRange },
         )
