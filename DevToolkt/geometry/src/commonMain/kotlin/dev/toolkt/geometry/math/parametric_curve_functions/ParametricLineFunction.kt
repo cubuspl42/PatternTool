@@ -56,7 +56,7 @@ data class ParametricLineFunction(
      */
     fun solveIntersection(
         other: ParametricLineFunction,
-    ): Double? = solveIntersectionEquation(other).singleOrNull()
+    ): Double? = solveIntersectionEquation(other, NumericObject.Tolerance.Default).singleOrNull()
 
     /**
      * Solve the equation s + d * t = p for t

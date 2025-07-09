@@ -51,6 +51,7 @@ abstract class PrimitiveCurve : OpenCurve() {
             // Solve the intersection equation for the curves (for t ∈ ℝ)
             val tValues = simpleSubjectCurve.basisFunction.solveIntersectionEquation(
                 other = complexObjectCurve.basisFunction,
+                tolerance = NumericObject.Tolerance.Default,
             )
 
             // Filter out intersections outside either curve

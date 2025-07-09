@@ -227,8 +227,11 @@ class CubicBezierBinomialTests {
             Vector2(1707.0, 855.0),
         )
 
+        val tolerance = NumericObject.Tolerance.Default
+
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
+            tolerance = tolerance,
         ).sorted()
 
         assertEqualsWithTolerance(
@@ -238,11 +241,11 @@ class CubicBezierBinomialTests {
                 0.9320151200357478,
             ),
             actual = tValues.filter { it in OpenCurve.Coord.tRange },
+            tolerance = tolerance,
         )
     }
 
     @Test
-    // FIXME: This is nearly exactly the same setup as above, but one of the intersections is not found!
     fun testSolveIntersections_cubicBezierBinomials_threeIntersections_2() {
         val firstCubicBezierBinomial = CubicBezierBinomial(
             Vector2(1547.0, 893.0),
@@ -258,18 +261,23 @@ class CubicBezierBinomialTests {
             Vector2(1707.0, 855.0),
         )
 
+        val tolerance = NumericObject.Tolerance.Absolute(
+            absoluteTolerance = 1e-5,
+        )
+
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
+            tolerance = tolerance,
         ).sorted()
 
         assertEqualsWithTolerance(
             expected = listOf(
-                0.04905890122916942,
-                0.8442322789685169,
-                // FIXME: Find this solution
-                // 0.9320151200357478,
+                0.049059,
+                0.844232,
+                0.931743,
             ),
             actual = tValues.filter { it in OpenCurve.Coord.tRange },
+            tolerance = tolerance,
         )
     }
 
@@ -291,6 +299,7 @@ class CubicBezierBinomialTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
+            tolerance = NumericObject.Tolerance.Default,
         ).sorted()
 
         // For the most complex case, the equation solving finds all intersections
@@ -322,6 +331,7 @@ class CubicBezierBinomialTests {
 
         val tValues = cubicBezierBinomial.solveIntersectionEquation(
             other = cubicBezierBinomial,
+            tolerance = NumericObject.Tolerance.Default,
         )
 
         // The equation solving doesn't seem to behave reasonably when
@@ -366,6 +376,7 @@ class CubicBezierBinomialTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
+            tolerance = NumericObject.Tolerance.Default,
         )
 
         // The equation solving doesn't seem to be capable of finding the
