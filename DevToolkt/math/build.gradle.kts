@@ -36,7 +36,9 @@ kotlin {
 
         jvmMain.dependencies {}
 
-        jvmTest.dependencies {}
+        jvmTest.dependencies {
+            implementation(libs.commons.math)
+        }
     }
 }
 

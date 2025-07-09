@@ -9,6 +9,7 @@ import dev.toolkt.math.algebra.times
 import dev.toolkt.math.algebra.toComplex
 import dev.toolkt.core.iterable.uncons
 import dev.toolkt.core.iterable.untrail
+import kotlin.jvm.JvmName
 
 data class ComplexPolynomial internal constructor(
     val coefficients: List<Complex>,
@@ -16,6 +17,13 @@ data class ComplexPolynomial internal constructor(
     companion object {
         val zero = ComplexPolynomial(
             coefficients = listOf(Complex.Companion.Zero),
+        )
+
+        @JvmName("normalizedDouble")
+        fun normalized(
+            coefficients: List<Double>,
+        ): ComplexPolynomial = normalized(
+            coefficients = coefficients.map { it.toComplex() },
         )
 
         fun normalized(

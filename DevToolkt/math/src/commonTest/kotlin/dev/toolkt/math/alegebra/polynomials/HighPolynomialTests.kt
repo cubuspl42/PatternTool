@@ -320,7 +320,7 @@ class HighPolynomialTests {
     }
 
     @Test
-    fun testFindRoots() {
+    fun testFindRoots_1() {
         val highPolynomial = HighPolynomial(
             a0 = -4.05318211480636e+17,
             1.33720916235669e+19,
@@ -344,6 +344,68 @@ class HighPolynomialTests {
             0.8142156752930875,
             0.9147383049567882,
             0.9785368635066114,
+        )
+
+        val roots = highPolynomial.findRoots()
+
+        assertEqualsWithTolerance(
+            expected = expectedRoots,
+            actual = roots.sorted(),
+        )
+    }
+
+    @Test
+    fun testFindRoots_2a() {
+        val highPolynomial = HighPolynomial(
+            5.175541418768466E17,
+            -1.0372432085308752E19,
+            -5.474884235995861E18,
+            4.392080274877001E19,
+            -1.3146540532484955E20,
+            2.060050320165035E20,
+            -3.860760518134989E17,
+            -1.5420517441468118E20,
+            1.181540478430117E19,
+            3.8440694030350025E19,
+        )
+
+        val expectedRoots = listOf(
+            -0.31445032692326347,
+            0.049058901291087996,
+            0.8442338406224976,
+            0.9320151200357489,
+        )
+
+        val roots = highPolynomial.findRoots()
+
+        assertEqualsWithTolerance(
+            expected = expectedRoots,
+            actual = roots.sorted(),
+        )
+    }
+
+    @Test
+    fun testFindRoots_2b() {
+        val highPolynomial = HighPolynomial(
+            5.175541418768466E17,
+            -1.0372432085308752E19,
+            -5.474884235995861E18,
+            4.39142932110886E19,
+            -1.3132101840405886E20,
+            2.0573425073610706E20,
+            -4.1905315718014566E17,
+            -1.5391888998561504E20,
+            1.1793555015861604E19,
+            3.8334113022231994E19,
+        )
+
+        val expectedRoots = listOf(
+            // This root is not found, which is not perfect for a general solver:
+//            -0.31445032692326347,
+            0.049058901291087996,
+            0.8442338406224976,
+            // FIXME: Find this root:
+//            0.9320151200357489,
         )
 
         val roots = highPolynomial.findRoots()
