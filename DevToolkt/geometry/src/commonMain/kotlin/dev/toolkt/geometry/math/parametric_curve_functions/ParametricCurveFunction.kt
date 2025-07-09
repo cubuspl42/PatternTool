@@ -19,9 +19,14 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         val point: Vector2,
     )
 
-    fun findCriticalPoints(): ParametricPolynomial.RootSet = findDerivative().findRoots()
+    fun findCriticalPoints(
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): ParametricPolynomial.RootSet = findDerivative().findRoots(
+        range = primaryTRange,
+        tolerance = tolerance,
+    )
 
-    fun findRoots(): ParametricPolynomial.RootSet = toParametricPolynomial().findRoots()
+//    fun findRoots(): ParametricPolynomial.RootSet = toParametricPolynomial().findRoots()
 
     /**
      * Solve the intersection of this parametric curve with another parametric curve.
@@ -41,7 +46,6 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         // is unreliable
 
         return intersectionPolynomial.findTValueRoots(
-            guessedTValue = 0.5,
             tolerance = NumericObject.Tolerance.Default,
         )
     }
@@ -55,9 +59,9 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     fun findDerivative(): ParametricPolynomial<*> = toParametricPolynomial().findDerivative()
 
     protected fun Polynomial.findTValueRoots(
-        guessedTValue: Double,
         tolerance: NumericObject.Tolerance.Absolute,
     ): List<Double> = this.findRoots(
+        range = primaryTRange,
         tolerance = tolerance,
     )
 

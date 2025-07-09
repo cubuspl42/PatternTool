@@ -414,7 +414,6 @@ data class CubicBezierBinomial(
         ) ?: 0.5
 
         val roots = projectionPolynomial.findTValueRoots(
-            guessedTValue = guessedTValue,
             tolerance = tolerance,
         )
 

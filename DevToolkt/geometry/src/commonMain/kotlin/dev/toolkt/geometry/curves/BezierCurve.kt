@@ -350,7 +350,9 @@ data class BezierCurve private constructor(
         val startPoint = pathFunction.start
         val endPoint = pathFunction.end
 
-        val criticalPointSet = basisFunction.findCriticalPoints()
+        val criticalPointSet = basisFunction.findCriticalPoints(
+            tolerance = NumericObject.Tolerance.Default,
+        )
 
         val criticalXValues = criticalPointSet.xRoots.mapNotNull { t ->
             Coord.of(t = t)?.let { evaluate(it).x }
