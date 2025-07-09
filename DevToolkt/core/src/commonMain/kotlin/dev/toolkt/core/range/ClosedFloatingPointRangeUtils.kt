@@ -1,7 +1,10 @@
 package dev.toolkt.core.range
 
+import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.math.avgOf
 import dev.toolkt.core.math.linearlyInterpolate
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.equalsZeroWithTolerance
 
 /**
  * Normalizes the value to the range [start, end].
@@ -38,12 +41,28 @@ fun ClosedFloatingPointRange<Double>.rescaleTo(
 val ClosedFloatingPointRange<Double>.width: Double
     get() = endInclusive - start
 
-val ClosedFloatingPointRange<Double>.mid: Double
+val ClosedFloatingPointRange<Double>.midpoint: Double
     get() = avgOf(start, endInclusive)
 
+val OpenEndRange<Double>.midpoint: Double
+    get() = avgOf(start, endExclusive)
+
 fun ClosedFloatingPointRange<Double>.split(): Pair<ClosedFloatingPointRange<Double>, ClosedFloatingPointRange<Double>> {
-    val mid = this.mid
-    return start..mid to mid..endInclusive
+    val midpoint = this.midpoint
+
+    return Pair(
+        start..midpoint,
+        midpoint..endInclusive,
+    )
+}
+
+fun OpenEndRange<Double>.split(): Pair<OpenEndRange<Double>, OpenEndRange<Double>> {
+    val midpoint = this.midpoint
+
+    return Pair(
+        start.rangeUntil(midpoint),
+        midpoint.rangeUntil(endExclusive),
+    )
 }
 
 fun ClosedFloatingPointRange<Double>.extend(
@@ -58,3 +77,22 @@ fun ClosedFloatingPointRange<Double>.copy(
     endInclusive: Double = this.endInclusive,
 ): ClosedFloatingPointRange<Double> = start..endInclusive
 
+fun OpenEndRange<Double>.subdivide(
+    segmentCount: Int,
+): Sequence<OpenEndRange<Double>> = LinSpace(
+    range = this.withEndIncluded(),
+    sampleCount = segmentCount + 1,
+).generateOpenSubRanges()
+
+fun ClosedFloatingPointRange<Double>.withEndExcluded(): OpenEndRange<Double> = start.rangeUntil(endInclusive)
+
+val OpenEndRange<Double>.width: Double
+    get() = endExclusive - start
+
+fun OpenEndRange<Double>.withEndIncluded(): ClosedFloatingPointRange<Double> = start..endExclusive
+
+fun OpenEndRange<Double>.isEmptyWithTolerance(
+    tolerance: NumericObject.Tolerance.Absolute,
+): Boolean = this.width.equalsZeroWithTolerance(
+    tolerance = tolerance,
+)

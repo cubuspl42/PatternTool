@@ -1,13 +1,15 @@
 package dev.toolkt.math.alegebra.polynomials
 
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.math.algebra.polynomials.ConstantPolynomial
 import dev.toolkt.math.algebra.polynomials.CubicPolynomial
 import dev.toolkt.math.algebra.polynomials.HighPolynomial
 import dev.toolkt.math.algebra.polynomials.LinearPolynomial
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.polynomials.QuadraticPolynomial
+import dev.toolkt.math.algebra.polynomials.findRootsNumericallyInRange
 import dev.toolkt.math.algebra.polynomials.times
-import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -400,19 +402,24 @@ class HighPolynomialTests {
         )
 
         val expectedRoots = listOf(
-            // This root is not found, which is not perfect for a general solver:
-//            -0.31445032692326347,
             0.049058901291087996,
             0.8442338406224976,
-            // FIXME: Find this root:
-//            0.9320151200357489,
+            0.9320151200357489,
         )
 
-        val roots = highPolynomial.findRoots()
+        val roots = highPolynomial.findRootsNumericallyInRange(
+            range = 0.0..1.0,
+            tolerance = NumericObject.Tolerance.Absolute(
+                absoluteTolerance = 1e-4,
+            ),
+        )
 
         assertEqualsWithTolerance(
             expected = expectedRoots,
             actual = roots.sorted(),
+            tolerance = NumericObject.Tolerance.Absolute(
+                absoluteTolerance = 1e-3,
+            ),
         )
     }
 }
