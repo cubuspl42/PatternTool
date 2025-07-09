@@ -41,3 +41,13 @@ fun linearlyInterpolate(
 
     return x0 + (t * (x1 - x0))
 }
+
+/**
+ * Checks if two floating point numbers have different signs, assuming that
+ * negative numbers have a "minus" sign, positive numbers have a "plus" sign,
+ * and ±0 has a "null" sign.
+ */
+fun Double.Companion.haveDifferentSigns(
+    a: Double,
+    b: Double,
+): Boolean = a * b < 0.0

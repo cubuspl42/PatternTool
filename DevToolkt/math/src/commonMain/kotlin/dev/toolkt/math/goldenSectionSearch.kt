@@ -4,7 +4,7 @@ import dev.toolkt.core.Sample
 import dev.toolkt.core.invokeSampling
 import dev.toolkt.core.range.copy
 import dev.toolkt.core.range.linearlyInterpolate
-import dev.toolkt.core.range.mid
+import dev.toolkt.core.range.midpoint
 import dev.toolkt.core.range.width
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
@@ -65,7 +65,7 @@ private tailrec fun <T : Comparable<T>> minByUnimodalWithSelecteeRecursive(
     upperPoint: Sample<Double, T> = function.invokeSampling(searchRange.linearlyInterpolate(t = invPhi)),
 ): Pair<Double, T> {
     if (searchRange.width.equalsWithTolerance(0.0, tolerance = tolerance)) {
-        return Pair(searchRange.mid, lowerPoint.value)
+        return Pair(searchRange.midpoint, lowerPoint.value)
     }
 
     return when {

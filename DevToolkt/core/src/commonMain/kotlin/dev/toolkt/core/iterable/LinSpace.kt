@@ -41,6 +41,10 @@ data class LinSpace(
         x0..x1
     }
 
+    fun generateOpenSubRanges(): Sequence<OpenEndRange<Double>> = generate().zipWithNext { x0, x1 ->
+        x0.rangeUntil(x1)
+    }
+
     val step: Double
         get() = (x1 - x0) / (sampleCount - 1)
 

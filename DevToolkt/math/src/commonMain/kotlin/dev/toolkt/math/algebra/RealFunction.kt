@@ -5,7 +5,7 @@ import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import dev.toolkt.core.range.copy
 import dev.toolkt.core.range.extend
 import dev.toolkt.core.iterable.LinSpace
-import dev.toolkt.core.range.mid
+import dev.toolkt.core.range.midpoint
 import dev.toolkt.core.range.width
 
 interface RealFunction<out B> : Function<Double, B> {
@@ -87,7 +87,7 @@ fun RealFunction<Double>.findRootByBisection(
         iterationCount: Int,
     ): Double? {
         val start = narrowedRange.start
-        val mid = narrowedRange.mid
+        val mid = narrowedRange.midpoint
 
         if (narrowedRange.width.equalsZeroWithTolerance(tolerance = tolerance) || iterationCount >= maxIterationCount) {
             return mid
