@@ -245,6 +245,129 @@ class CubicBezierBinomialTests {
         )
     }
 
+
+    /**
+     * This is a tricky setup with one curve shaped like a C and one loop. There
+     * are two clear intersection points, including one that nearly overlaps
+     * with the loop's self-intersection.
+     */
+    @Test
+    fun testSolveIntersections_cubicBezierBinomials_c_loop_multipleIntersections_1() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            Vector2(1547.0, 893.0),
+            Vector2(964.0, 592.0),
+            Vector2(1044.0, 207.0),
+            Vector2(1621.0, 797.0),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            Vector2(1407.0, 904.0),
+            Vector2(2176.0, 201.0),
+            Vector2(1018.0, 402.0),
+            Vector2(1707.0, 855.0),
+        )
+
+        val tolerance = NumericObject.Tolerance.Absolute(
+            absoluteTolerance = 1e-5,
+        )
+
+        val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
+            other = secondCubicBezierBinomial,
+            tolerance = tolerance,
+        ).sorted()
+
+        assertEqualsWithTolerance(
+            expected = listOf(
+                // FIXME: One of these intersections is obviously correct, the other might be acceptable, but one
+                //  obviously correct intersection is definitely missing
+                0.049060821533203125,
+                0.9793510437011719,
+            ),
+            actual = tValues.filter { it in OpenCurve.Coord.tRange },
+            tolerance = tolerance,
+        )
+    }
+
+    /**
+     * A very similar setup, but now both obvious intersections are found.
+     */
+    @Test
+    fun testSolveIntersections_cubicBezierBinomials_c_loop_multipleIntersections_2() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            Vector2(1547.0, 893.0),
+            Vector2(964.0, 592.0),
+            Vector2(1044.0, 207.0),
+            Vector2(1621.0, 797.0),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            Vector2(1407.0, 904.0),
+            Vector2(2176.0, 201.0),
+            Vector2(1018.0, 402.0),
+            Vector2(1705.0, 855.0),
+        )
+
+        val tolerance = NumericObject.Tolerance.Absolute(
+            absoluteTolerance = 1e-5,
+        )
+
+        val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
+            other = secondCubicBezierBinomial,
+            tolerance = tolerance,
+        ).sorted()
+
+        assertEqualsWithTolerance(
+            expected = listOf(
+                // This the first obvious intersection
+                0.049060821533203125,
+                // This is a "bonus" but reasonable intersection (overlap)
+                0.9576683044433594,
+                // This the second obvious intersection
+                0.9669990539550781,
+                // This is another "bonus" but reasonable intersection (overlap)
+                0.9886283874511719,
+            ),
+            actual = tValues.filter { it in OpenCurve.Coord.tRange },
+            tolerance = tolerance,
+        )
+    }
+
+    /**
+     * At least one intersection should be found
+     */
+    @Test
+    fun testSolveIntersections_cubicBezierBinomials_c_loop_multipleIntersections_3() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            Vector2(516.0, 340.0),
+            Vector2(522.0, 400.0),
+            Vector2(466.0, 494.0),
+            Vector2(369.0, 614.0),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            Vector2(264.0, 538.0),
+            Vector2(1078.0, 235.0),
+            Vector2(53.0, 59.0),
+            Vector2(626.0, 564.0),
+        )
+
+        val tolerance = NumericObject.Tolerance.Absolute(
+            absoluteTolerance = 1e-5,
+        )
+
+        val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
+            other = secondCubicBezierBinomial,
+            tolerance = tolerance,
+        ).sorted()
+
+        assertEqualsWithTolerance(
+            // FIXME: Find _any_ intersections!
+            expected = emptyList(),
+            actual = tValues.filter { it in OpenCurve.Coord.tRange },
+            tolerance = tolerance,
+        )
+    }
+
     @Test
     fun testSolveIntersections_cubicBezierBinomials_threeIntersections_2() {
         val firstCubicBezierBinomial = CubicBezierBinomial(
