@@ -169,8 +169,11 @@ sealed class LowPolynomial : Polynomial {
 
     override fun findRoots(
         maxDepth: Int,
+        range: ClosedFloatingPointRange<Double>,
         tolerance: NumericObject.Tolerance.Absolute,
-    ): List<Double> = findRootsAnalytically()
+    ): List<Double> = findRootsAnalytically().filter {
+        it in range
+    }
 
     abstract val symmetryAxis: Double?
 

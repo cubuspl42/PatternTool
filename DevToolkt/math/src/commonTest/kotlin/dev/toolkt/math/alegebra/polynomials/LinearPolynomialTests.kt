@@ -116,7 +116,7 @@ class LinearPolynomialTests {
             a1 = -3.0,
         )
 
-        val roots = pa.findRoots().sorted()
+        val roots = pa.findRootsAnalytically().sorted()
 
         assertEqualsWithTolerance(
             expected = listOf(0.66666),

@@ -262,7 +262,7 @@ class CubicPolynomialTests {
             a3 = 1.0,
         )
 
-        val roots = polynomial.findRoots().toSet()
+        val roots = polynomial.findRootsAnalytically().toSet()
 
         assertEquals(
             expected = setOf(1.0),
@@ -279,7 +279,7 @@ class CubicPolynomialTests {
             a3 = 1.0,
         )
 
-        val roots = polynomial.findRoots().sorted()
+        val roots = polynomial.findRootsAnalytically().sorted()
 
         assertEqualsWithTolerance(
             expected = listOf(-2.0, 1.0),
@@ -296,7 +296,7 @@ class CubicPolynomialTests {
             a3 = 1.0,
         )
 
-        val roots = polynomial.findRoots().sorted()
+        val roots = polynomial.findRootsAnalytically().sorted()
 
         assertEqualsWithTolerance(
             expected = listOf(1.0, 2.0, 3.0),

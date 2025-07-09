@@ -348,7 +348,9 @@ class HighPolynomialTests {
             0.9785368635066114,
         )
 
-        val roots = highPolynomial.findRoots()
+        val roots = highPolynomial.findRoots(
+            range = 0.0.rangeTo(1.0),
+        )
 
         assertEqualsWithTolerance(
             expected = expectedRoots,
@@ -372,13 +374,14 @@ class HighPolynomialTests {
         )
 
         val expectedRoots = listOf(
-            -0.31445032692326347,
             0.049058901291087996,
             0.8442338406224976,
             0.9320151200357489,
         )
 
-        val roots = highPolynomial.findRoots()
+        val roots = highPolynomial.findRoots(
+            range = 0.0.rangeTo(1.0),
+        )
 
         assertEqualsWithTolerance(
             expected = expectedRoots,

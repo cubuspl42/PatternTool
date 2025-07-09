@@ -97,9 +97,18 @@ data class ParametricPolynomial<P : LowPolynomial>(
         )
     }
 
-    fun findRoots(): RootSet = RootSet(
-        xRoots = xPolynomial.findRoots().toSet(),
-        yRoots = yPolynomial.findRoots().toSet(),
+    fun findRoots(
+        range: ClosedFloatingPointRange<Double>,
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): RootSet = RootSet(
+        xRoots = xPolynomial.findRoots(
+            range = range,
+            tolerance = tolerance,
+        ).toSet(),
+        yRoots = yPolynomial.findRoots(
+            range = range,
+            tolerance = tolerance,
+        ).toSet(),
     )
 
     override fun apply(x: Double): Vector2 = Vector2(

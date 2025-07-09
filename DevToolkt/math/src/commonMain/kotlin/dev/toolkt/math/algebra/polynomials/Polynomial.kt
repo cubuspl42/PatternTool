@@ -94,10 +94,11 @@ sealed interface Polynomial : NumericObject, RealFunction<Double> {
     val a0: Double
 
     /**
-     * Find the roots using the strategy appropriate for the polynomial's degree
+     * Find the roots in the given [range] using the strategy appropriate for the polynomial's degree
      */
     fun findRoots(
         maxDepth: Int = 20,
+        range: ClosedFloatingPointRange<Double>,
         tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
     ): List<Double>
 
