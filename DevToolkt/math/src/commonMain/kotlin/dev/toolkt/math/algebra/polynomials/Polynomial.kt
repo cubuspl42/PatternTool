@@ -6,7 +6,7 @@ import dev.toolkt.math.algebra.complex_polynomials.ComplexPolynomial
 import dev.toolkt.math.algebra.toComplex
 import kotlin.math.max
 
-private fun areCloseNever(
+internal fun areCloseNever(
     x0: Double,
     x1: Double,
 ): Boolean = false
@@ -100,7 +100,6 @@ sealed interface Polynomial : NumericObject, RealFunction<Double> {
         maxDepth: Int = 20,
         guessedRoot: Double = 0.5,
         tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
-        areClose: (x0: Double, x1: Double) -> Boolean = ::areCloseNever,
     ): List<Double>
 
     /**
