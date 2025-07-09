@@ -36,6 +36,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
      */
     fun solveIntersectionEquation(
         other: ParametricCurveFunction,
+        tolerance: NumericObject.Tolerance.Absolute,
     ): List<Double> {
         val otherImplicit = other.implicitize()
         val thisParametric = this.toParametricPolynomial()
@@ -46,7 +47,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         // is unreliable
 
         return intersectionPolynomial.findTValueRoots(
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = tolerance,
         )
     }
 
