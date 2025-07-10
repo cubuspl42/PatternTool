@@ -1,7 +1,7 @@
 package dev.toolkt.geometry.curves
 
 import dev.toolkt.core.ReprObject
-import dev.toolkt.geometry.BoundingBox
+import dev.toolkt.geometry.Rectangle
 import dev.toolkt.geometry.Direction
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
@@ -329,7 +329,7 @@ abstract class OpenCurve : NumericObject, ReprObject {
         offset: Double,
     ): OpenCurve
 
-    abstract fun findBoundingBox(): BoundingBox
+    abstract fun findBoundingBox(): Rectangle
 
     /**
      * Find the intersections of this curve (also referred to as the "subject

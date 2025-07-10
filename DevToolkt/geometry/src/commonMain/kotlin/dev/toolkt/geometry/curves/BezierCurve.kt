@@ -1,6 +1,6 @@
 package dev.toolkt.geometry.curves
 
-import dev.toolkt.geometry.BoundingBox
+import dev.toolkt.geometry.Rectangle
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.SpatialObject
@@ -346,7 +346,7 @@ data class BezierCurve private constructor(
         ),
     )
 
-    override fun findBoundingBox(): BoundingBox {
+    override fun findBoundingBox(): Rectangle {
         val startPoint = pathFunction.start
         val endPoint = pathFunction.end
 
@@ -370,7 +370,7 @@ data class BezierCurve private constructor(
         val yMin = potentialYExtrema.min()
         val yMax = potentialYExtrema.max()
 
-        return BoundingBox.Companion.of(
+        return Rectangle.Companion.of(
             xMin = xMin,
             xMax = xMax,
             yMin = yMin,

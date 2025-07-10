@@ -101,7 +101,7 @@ data class LineSegment(
         )
     }
 
-    override fun findBoundingBox(): BoundingBox = BoundingBox.of(
+    override fun findBoundingBox(): Rectangle = Rectangle.of(
         pointA = start,
         pointB = end,
     )

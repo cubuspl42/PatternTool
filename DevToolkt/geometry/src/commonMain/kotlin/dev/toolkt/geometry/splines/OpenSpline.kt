@@ -1,6 +1,6 @@
 package dev.toolkt.geometry.splines
 
-import dev.toolkt.geometry.BoundingBox
+import dev.toolkt.geometry.Rectangle
 import dev.toolkt.geometry.Direction
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.core.numeric.NumericObject
@@ -138,8 +138,8 @@ data class OpenSpline(
         },
     )
 
-    override fun findBoundingBox(): BoundingBox = BoundingBox.unionAll(
-        boundingBoxes = segmentCurves.map { it.findBoundingBox() },
+    override fun findBoundingBox(): Rectangle = Rectangle.unionAll(
+        rectangles = segmentCurves.map { it.findBoundingBox() },
     )
 
     override fun findIntersections(

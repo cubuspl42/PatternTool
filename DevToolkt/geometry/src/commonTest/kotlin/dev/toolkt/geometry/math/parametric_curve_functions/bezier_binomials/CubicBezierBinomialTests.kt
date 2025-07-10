@@ -4,7 +4,7 @@ import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
-import dev.toolkt.geometry.BoundingBox
+import dev.toolkt.geometry.Rectangle
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.math.algebra.linear.vectors.Vector2
@@ -155,7 +155,7 @@ class CubicBezierBinomialTests {
             absoluteTolerance = 2e-1,
         )
 
-        val boundingBox = BoundingBox(
+        val rectangle = Rectangle(
             origin = Point(180.0, 250.0),
             width = 420.0,
             height = 350.0,
@@ -170,8 +170,8 @@ class CubicBezierBinomialTests {
 
         generateSequence {
             Vector2(
-                random.nextDouble(boundingBox.xRange),
-                random.nextDouble(boundingBox.yRange),
+                random.nextDouble(rectangle.xRange),
+                random.nextDouble(rectangle.yRange),
             )
         }.take(128).forEach { point ->
             val foundProjection = cubicBezierBinomial.projectPointIteratively(

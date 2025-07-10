@@ -12,7 +12,7 @@ import dev.toolkt.dom.pure.svg.PureSvgMarker
 import dev.toolkt.dom.pure.svg.PureSvgPath
 import dev.toolkt.dom.pure.svg.PureSvgRoot
 import dev.toolkt.dom.pure.svg.PureSvgShape
-import dev.toolkt.geometry.BoundingBox
+import dev.toolkt.geometry.Rectangle
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Size
@@ -32,11 +32,11 @@ data class Playground(
 
         abstract fun toSvgElement(): PureSvgGraphicsElement
 
-        abstract fun findBoundingBox(): BoundingBox
+        abstract fun findBoundingBox(): Rectangle
     }
 
     sealed class OpenCurveItem : Item() {
-        final override fun findBoundingBox(): BoundingBox = openCurve.findBoundingBox()
+        final override fun findBoundingBox(): Rectangle = openCurve.findBoundingBox()
 
         abstract val openCurve: OpenCurve
     }
@@ -150,7 +150,7 @@ data class Playground(
             ),
         )
 
-        override fun findBoundingBox(): BoundingBox {
+        override fun findBoundingBox(): Rectangle {
             TODO("Not yet implemented")
         }
 
@@ -226,7 +226,7 @@ data class Playground(
             ),
         )
 
-        override fun findBoundingBox(): BoundingBox = BoundingBox.Companion.of(
+        override fun findBoundingBox(): Rectangle = Rectangle.Companion.of(
             pointA = point,
             pointB = point,
         )
@@ -293,7 +293,7 @@ data class Playground(
         )
     }
 
-    private fun findTrueBoundingBox(): BoundingBox = BoundingBox.Companion.unionAll(
+    private fun findTrueBoundingBox(): Rectangle = Rectangle.Companion.unionAll(
         items.map { it.findBoundingBox() },
     )
 

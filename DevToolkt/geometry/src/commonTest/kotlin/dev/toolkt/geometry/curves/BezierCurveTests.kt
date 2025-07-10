@@ -1,6 +1,6 @@
 package dev.toolkt.geometry.curves
 
-import dev.toolkt.geometry.BoundingBox
+import dev.toolkt.geometry.Rectangle
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Span
@@ -115,7 +115,7 @@ class BezierCurveTests {
 
         assertEqualsWithTolerance(
             actual = boundingBox,
-            expected = BoundingBox(
+            expected = Rectangle(
                 origin = Point(273.80049324035645, 312.1176405539444),
                 width = 397.6180114746094,
                 height = 178.08746808863373,
