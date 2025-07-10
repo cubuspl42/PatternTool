@@ -14,6 +14,7 @@ rootProject.name = "DevToolkt"
 include(
     "core",
     "coreSystemTests",
+    "domApiCompatExtra",
     "math",
     "geometry",
     "pureDom",

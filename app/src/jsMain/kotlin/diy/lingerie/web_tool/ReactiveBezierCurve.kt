@@ -7,8 +7,8 @@ import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
+import org.w3c.dom.extra.svg.SVGPathSegment
 import org.w3c.dom.svg.SVGPathElement
-import svg.SVGPathSegment
 
 data class ReactiveBezierCurve(
     val start: Cell<Point>,

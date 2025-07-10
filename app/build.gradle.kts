@@ -48,6 +48,7 @@ kotlin {
         }
 
         jsMain.dependencies {
+            implementation("dev.toolkt:domApiCompatExtra")
             implementation("dev.toolkt:reactiveDom")
         }
     }
