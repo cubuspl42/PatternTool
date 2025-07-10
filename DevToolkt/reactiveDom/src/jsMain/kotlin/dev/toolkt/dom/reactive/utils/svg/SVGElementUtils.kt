@@ -1,12 +1,14 @@
 package dev.toolkt.dom.reactive.utils.svg
 
-import dev.toolkt.core.platform.PlatformSystem
+import dev.toolkt.dom.pure.collections.pointList
 import dev.toolkt.dom.pure.svg.PureSvg
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveElement
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
+import dev.toolkt.reactive.reactive_list.bind
+import org.w3c.dom.DOMPoint
 import org.w3c.dom.Document
 import org.w3c.dom.Node
 import org.w3c.dom.svg.SVGAnimatedLength
@@ -15,9 +17,11 @@ import org.w3c.dom.svg.SVGElement
 import org.w3c.dom.svg.SVGGElement
 import org.w3c.dom.svg.SVGLineElement
 import org.w3c.dom.svg.SVGPathElement
+import org.w3c.dom.svg.SVGPolylineElement
 import org.w3c.dom.svg.SVGSVGElement
-import svgPathData.SVGPathSegment
-import svgPathData.setPathData
+import svg.SVGPathSegment
+import svg.SVGPoint
+import svg.setPathData
 
 fun Document.createReactiveSvgElement(
     localSvgName: String,
@@ -82,6 +86,23 @@ fun Document.createReactiveSvgPathElement(
     }
 
     return pathElement
+}
+
+fun Document.createReactiveSvgPolylineElement(
+    style: ReactiveStyle? = null,
+    points: ReactiveList<SVGPoint>,
+): SVGElement {
+    val polylineElement = createReactiveSvgElement(
+        localSvgName = "polyline",
+        style = style,
+    ) as SVGPolylineElement
+
+    points.bind(
+        target = polylineElement,
+        extract = SVGPolylineElement::pointList,
+    )
+
+    return polylineElement
 }
 
 fun Document.createReactiveSvgLineElement(

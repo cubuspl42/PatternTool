@@ -1,4 +1,4 @@
-package svgPathData
+package svg
 
 import org.w3c.dom.svg.SVGPathElement
 

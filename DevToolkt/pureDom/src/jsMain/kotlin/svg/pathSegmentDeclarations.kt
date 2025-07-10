@@ -4,7 +4,7 @@
  * External declarations for [SVG PathData](https://developer.mozilla.org/en-US/docs/Web/API/SVGPathElement/getPathData),
  * which needs a polyfill on some browsers.
  */
-package svgPathData
+package svg
 
 external interface SVGPathDataSettings {
     var normalize: Boolean
