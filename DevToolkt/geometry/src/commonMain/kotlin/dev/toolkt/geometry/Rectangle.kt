@@ -8,7 +8,7 @@ import dev.toolkt.core.numeric.equalsWithTolerance
 /**
  * An axis-aligned rectangle
  */
-data class BoundingBox(
+data class Rectangle(
     /**
      * The origin point
      */
@@ -26,7 +26,7 @@ data class BoundingBox(
         fun of(
             pointA: Point,
             pointB: Point,
-        ): BoundingBox {
+        ): Rectangle {
             val xMin = minOf(pointA.x, pointB.x)
             val xMax = maxOf(pointA.x, pointB.x)
             val yMin = minOf(pointA.y, pointB.y)
@@ -45,11 +45,11 @@ data class BoundingBox(
             xMax: Double,
             yMin: Double,
             yMax: Double,
-        ): BoundingBox {
+        ): Rectangle {
             require(xMin <= xMax)
             require(yMin <= yMax)
 
-            return BoundingBox(
+            return Rectangle(
                 origin = Point(
                     x = xMin,
                     y = yMin,
@@ -60,14 +60,14 @@ data class BoundingBox(
         }
 
         fun unionAll(
-            boundingBoxes: List<BoundingBox>,
-        ): BoundingBox {
-            require(boundingBoxes.isNotEmpty())
+            rectangles: List<Rectangle>,
+        ): Rectangle {
+            require(rectangles.isNotEmpty())
 
-            val xMin = boundingBoxes.minOf { it.xMin }
-            val xMax = boundingBoxes.maxOf { it.xMax }
-            val yMin = boundingBoxes.minOf { it.yMin }
-            val yMax = boundingBoxes.maxOf { it.yMax }
+            val xMin = rectangles.minOf { it.xMin }
+            val xMax = rectangles.maxOf { it.xMax }
+            val yMin = rectangles.minOf { it.yMin }
+            val yMax = rectangles.maxOf { it.yMax }
 
             return of(
                 xMin = xMin,
@@ -120,8 +120,8 @@ data class BoundingBox(
         get() = bottomRight.y
 
     fun unionWith(
-        other: BoundingBox,
-    ): BoundingBox {
+        other: Rectangle,
+    ): Rectangle {
         val xMin = minOf(xMin, other.xMin)
         val xMax = maxOf(xMax, other.xMax)
         val yMin = minOf(yMin, other.yMin)
@@ -137,13 +137,13 @@ data class BoundingBox(
 
     fun transformVia(
         transformation: Transformation,
-    ): BoundingBox = of(
+    ): Rectangle = of(
         pointA = transformation.transform(origin),
         pointB = transformation.transform(bottomRight),
     )
 
     fun overlaps(
-        other: BoundingBox,
+        other: Rectangle,
     ): Boolean {
         val overlapsHorizontally = xMin <= other.xMax && xMax >= other.xMin
         val overlapsVertically = yMin <= other.yMax && yMax >= other.yMin
@@ -152,7 +152,7 @@ data class BoundingBox(
 
     fun expand(
         bleed: Double,
-    ): BoundingBox = of(
+    ): Rectangle = of(
         xMin = xMin - bleed,
         xMax = xMax + bleed,
         yMin = yMin - bleed,
@@ -163,7 +163,7 @@ data class BoundingBox(
         other: NumericObject,
         tolerance: NumericObject.Tolerance,
     ): Boolean = when {
-        other !is BoundingBox -> false
+        other !is Rectangle -> false
         !origin.equalsWithTolerance(other.origin, tolerance = tolerance) -> false
         !width.equalsWithTolerance(other.width, tolerance = tolerance) -> false
         !height.equalsWithTolerance(other.height, tolerance = tolerance) -> false
