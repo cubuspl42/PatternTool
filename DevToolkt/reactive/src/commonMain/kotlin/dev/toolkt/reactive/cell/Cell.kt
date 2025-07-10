@@ -149,6 +149,15 @@ sealed class Cell<out V> {
     )
 }
 
+fun <V : Any, Vr : Any> Cell<V?>.mapNotNull(
+    transform: (V) -> Vr,
+): Cell<Vr?> = map {
+    when (it) {
+        null -> null
+        else -> transform(it)
+    }
+}
+
 fun <V : Any> Cell<V?>.separateNonNull(): Cell<Cell<V>?> = this.map { value ->
     when (value) {
         null -> null
