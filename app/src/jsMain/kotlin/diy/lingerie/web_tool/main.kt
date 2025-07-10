@@ -90,9 +90,12 @@ private fun createRootElement(): HTMLDivElement {
                     ),
                 ),
                 children = ReactiveList.of(
-                    createSideBar(
-                        userCurveSystem = userCurveSystem,
+                    createPolynomialPlot(
+                        polynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial1 },
                     ),
+//                    createSideBar(
+//                        userCurveSystem = userCurveSystem,
+//                    ),
                 ),
             ),
         ),

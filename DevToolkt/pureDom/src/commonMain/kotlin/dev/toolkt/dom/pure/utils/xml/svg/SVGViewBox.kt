@@ -17,10 +17,10 @@ data class SVGViewBox(
             val (xMin, yMin, width, height) = parts
 
             return SVGViewBox(
-                xMin.toDouble(),
-                yMin.toDouble(),
-                width.toDouble(),
-                height.toDouble(),
+                xMin = xMin.toDouble(),
+                yMin = yMin.toDouble(),
+                width = width.toDouble(),
+                height = height.toDouble(),
             )
         }
     }

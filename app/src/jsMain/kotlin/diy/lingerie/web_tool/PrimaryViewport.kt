@@ -28,13 +28,36 @@ data class PrimaryViewport(
 
 internal fun createPrimaryViewport(
     userCurveSystem: UserCurveSystem,
-): PrimaryViewport = ReactiveList.Companion.looped { childrenLooped ->
+): PrimaryViewport = ReactiveList.looped { childrenLooped ->
     val svgElement = document.createReactiveSvgSvgElement(
         style = ReactiveStyle(
             width = Cell.of(100.percent),
             height = Cell.of(100.percent),
         ),
         children = childrenLooped,
+    )
+
+    val children = ReactiveList.of(
+        createControlledSvgBezierCurve(
+            svgElement = svgElement,
+            userBezierCurve = userCurveSystem.userBezierCurve1,
+        ),
+        createControlledSvgBezierCurve(
+            svgElement = svgElement,
+            userBezierCurve = userCurveSystem.userBezierCurve2,
+        ),
+        document.createReactiveSvgGroupElement(
+            children = userCurveSystem.intersections.map { intersection ->
+                document.createReactiveSvgCircleElement(
+                    style = ReactiveStyle(
+                        fill = Cell.of(PureFill.Colored(PureColor.red)),
+                        pointerEvents = Cell.of(PurePointerEvents.None),
+                    ),
+                    position = Cell.of(intersection.point),
+                    radius = 4.0,
+                )
+            },
+        ),
     )
 
     return@looped Pair(
@@ -49,35 +72,14 @@ internal fun createPrimaryViewport(
                     ),
                     borderStyle = PureBorderStyle(
                         width = 4.px,
-                        color = PureColor.Companion.darkGray,
+                        color = PureColor.darkGray,
                         style = PureBorderStyle.Style.Solid,
                     ),
                 ),
-                children = ReactiveList.Companion.of(svgElement),
+                children = ReactiveList.of(svgElement),
             ),
             trackedMouseOverGesture = svgElement.onMouseOverGestureStarted().track(),
         ),
-        ReactiveList.Companion.of(
-            createControlledSvgBezierCurve(
-                svgElement = svgElement,
-                userBezierCurve = userCurveSystem.userBezierCurve1,
-            ),
-            createControlledSvgBezierCurve(
-                svgElement = svgElement,
-                userBezierCurve = userCurveSystem.userBezierCurve2,
-            ),
-            document.createReactiveSvgGroupElement(
-                children = userCurveSystem.intersections.map { intersection ->
-                    document.createReactiveSvgCircleElement(
-                        style = ReactiveStyle(
-                            fill = Cell.of(PureFill.Colored(PureColor.Companion.red)),
-                            pointerEvents = Cell.of(PurePointerEvents.None),
-                        ),
-                        position = Cell.of(intersection.point),
-                        radius = 4.0,
-                    )
-                },
-            ),
-        ),
+        children,
     )
 }

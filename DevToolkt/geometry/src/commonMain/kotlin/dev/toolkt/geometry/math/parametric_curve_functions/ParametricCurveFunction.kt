@@ -26,7 +26,13 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         tolerance = tolerance,
     )
 
-//    fun findRoots(): ParametricPolynomial.RootSet = toParametricPolynomial().findRoots()
+    fun findIntersectionPolynomial(
+        other: ParametricCurveFunction,
+    ): Polynomial {
+        val otherImplicit = other.implicitize()
+        val thisParametric = this.toParametricPolynomial()
+        return otherImplicit.substitute(thisParametric)
+    }
 
     /**
      * Solve the intersection of this parametric curve with another parametric curve.
@@ -38,9 +44,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         other: ParametricCurveFunction,
         tolerance: NumericObject.Tolerance.Absolute,
     ): List<Double> {
-        val otherImplicit = other.implicitize()
-        val thisParametric = this.toParametricPolynomial()
-        val intersectionPolynomial = otherImplicit.substitute(thisParametric)
+        val intersectionPolynomial = findIntersectionPolynomial(other = other)
 
         // If this curve and the other curve are _the same curve_ (curves
         // sharing the counter-domain of points), the intersection polynomial
