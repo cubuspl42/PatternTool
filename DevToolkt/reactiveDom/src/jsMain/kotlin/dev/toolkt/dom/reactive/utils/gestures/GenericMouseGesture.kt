@@ -2,11 +2,11 @@ package dev.toolkt.dom.reactive.utils.gestures
 
 import dev.toolkt.dom.reactive.utils.event.clientPoint
 import dev.toolkt.dom.reactive.utils.event.offsetPoint
-import dev.toolkt.dom.reactive.utils.html.getMouseDownEventStream
-import dev.toolkt.dom.reactive.utils.html.getMouseEnterEventStream
-import dev.toolkt.dom.reactive.utils.html.getMouseLeaveEventStream
-import dev.toolkt.dom.reactive.utils.html.getMouseMoveEventStream
-import dev.toolkt.dom.reactive.utils.html.getMouseUpEventStream
+import dev.toolkt.dom.reactive.utils.getMouseDownEventStream
+import dev.toolkt.dom.reactive.utils.getMouseEnterEventStream
+import dev.toolkt.dom.reactive.utils.getMouseLeaveEventStream
+import dev.toolkt.dom.reactive.utils.getMouseMoveEventStream
+import dev.toolkt.dom.reactive.utils.getMouseUpEventStream
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream

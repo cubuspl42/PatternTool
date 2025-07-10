@@ -1,45 +1,41 @@
 package dev.toolkt.dom.reactive.utils
 
-import dev.toolkt.dom.pure.collections.childNodesList
-import dev.toolkt.dom.reactive.style.ReactiveStyle
-import dev.toolkt.reactive.reactive_list.ReactiveList
-import dev.toolkt.reactive.reactive_list.bind
-import org.w3c.dom.Document
+import dev.toolkt.dom.reactive.utils.event.offsetPoint
+import dev.toolkt.geometry.Point
+import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.cast
+import dev.toolkt.reactive.event_stream.getEventStream
+import dev.toolkt.reactive.event_stream.hold
 import org.w3c.dom.Element
-import org.w3c.dom.Node
-import org.w3c.dom.css.ElementCSSInlineStyle
+import org.w3c.dom.events.MouseEvent
 
-fun Document.createReactiveElement(
-    namespace: String? = null,
-    /**
-     * A name of a styleable element
-     */
-    name: String,
-    style: ReactiveStyle? = null,
-    children: ReactiveList<Node>? = null,
-): Element {
-    val element = when {
-        namespace != null -> this.createElementNS(
-            namespace = namespace,
-            qualifiedName = name,
-        )
+fun Element.getMouseEnterEventStream(): EventStream<MouseEvent> = this.getEventStream(
+    type = "mouseenter",
+).cast()
 
-        else -> this.createElement(
-            localName = name,
-        )
+fun Element.getMouseDownEventStream(): EventStream<MouseEvent> = this.getEventStream(
+    type = "mousedown",
+).cast()
 
-    }
+fun Element.getMouseDownEventStream(
+    button: Short,
+): EventStream<MouseEvent> = this.getMouseDownEventStream().filter { it.button == button }
 
-    @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE") (element as ElementCSSInlineStyle)
+fun Element.getMouseUpEventStream(): EventStream<MouseEvent> = this.getEventStream(
+    type = "mouseup",
+).cast()
 
-    style?.bind(
-        styleDeclaration = element.style,
-    )
+fun Element.getMouseUpEventStream(
+    button: Short,
+): EventStream<MouseEvent> = this.getMouseUpEventStream().filter { it.button == button }
 
-    children?.bind(
-        target = element,
-        extract = Node::childNodesList,
-    )
+fun Element.getMouseMoveEventStream(): EventStream<MouseEvent> = this.getEventStream(
+    type = "mousemove",
+).cast()
 
-    return element
-}
+fun Element.getMouseLeaveEventStream(): EventStream<MouseEvent> = this.getEventStream(
+    type = "mouseleave",
+).cast()
+
+fun Element.getMouseOffsetCell(): Cell<Point?> = getMouseMoveEventStream().map { it.offsetPoint }.hold(null)
