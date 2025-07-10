@@ -116,7 +116,7 @@ class BezierCurveTests {
         assertEqualsWithTolerance(
             actual = boundingBox,
             expected = BoundingBox(
-                topLeft = Point(273.80049324035645, 312.1176405539444),
+                origin = Point(273.80049324035645, 312.1176405539444),
                 width = 397.6180114746094,
                 height = 178.08746808863373,
             ),

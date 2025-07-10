@@ -156,7 +156,7 @@ class CubicBezierBinomialTests {
         )
 
         val boundingBox = BoundingBox(
-            topLeft = Point(180.0, 250.0),
+            origin = Point(180.0, 250.0),
             width = 420.0,
             height = 350.0,
         )
