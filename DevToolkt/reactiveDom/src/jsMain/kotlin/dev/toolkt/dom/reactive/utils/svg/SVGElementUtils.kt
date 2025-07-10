@@ -8,9 +8,10 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import dev.toolkt.reactive.reactive_list.bind
-import org.w3c.dom.DOMPoint
 import org.w3c.dom.Document
 import org.w3c.dom.Node
+import org.w3c.dom.extra.svg.SVGPathSegment
+import org.w3c.dom.extra.svg.setPathData
 import org.w3c.dom.svg.SVGAnimatedLength
 import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGElement
@@ -19,9 +20,7 @@ import org.w3c.dom.svg.SVGLineElement
 import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGPolylineElement
 import org.w3c.dom.svg.SVGSVGElement
-import svg.SVGPathSegment
 import svg.SVGPoint
-import svg.setPathData
 
 fun Document.createReactiveSvgElement(
     localSvgName: String,

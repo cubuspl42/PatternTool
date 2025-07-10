@@ -1,6 +1,16 @@
-package svg
+package org.w3c.dom.extra.svg
 
+import org.w3c.dom.extra.jsObject
 import org.w3c.dom.svg.SVGPathElement
+
+external interface SVGPathDataSettings {
+    var normalize: Boolean
+}
+
+external interface SVGPathSegment {
+    var type: String /* "A" | "a" | "C" | "c" | "H" | "h" | "L" | "l" | "M" | "m" | "Q" | "q" | "S" | "s" | "T" | "t" | "V" | "v" | "Z" | "z" */
+    var values: Array<Number>
+}
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun SVGPathSegment(
@@ -21,9 +31,6 @@ inline fun SVGPathDataSettings(
     obj["normalize"] = normalize
     return obj
 }
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun jsObject(): dynamic = js("({})")
 
 fun SVGPathElement.getPathData(
     settings: SVGPathDataSettings? = null,

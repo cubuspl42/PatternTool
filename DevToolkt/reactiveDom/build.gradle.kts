@@ -30,5 +30,9 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
+        jsMain.dependencies {
+            implementation(project(":domApiCompatExtra"))
+        }
     }
 }

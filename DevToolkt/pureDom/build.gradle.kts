@@ -37,6 +37,8 @@ kotlin {
             implementation(libs.fop)
         }
 
-        jvmTest.dependencies {}
+        jsMain.dependencies {
+            implementation(project(":domApiCompatExtra"))
+        }
     }
 }
