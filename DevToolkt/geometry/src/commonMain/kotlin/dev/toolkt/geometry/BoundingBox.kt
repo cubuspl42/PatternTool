@@ -6,11 +6,20 @@ import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 
 /**
- * A bounding box described by its diagonal from a to b
+ * An axis-aligned rectangle
  */
 data class BoundingBox(
-    val topLeft: Point,
+    /**
+     * The origin point
+     */
+    val origin: Point,
+    /**
+     * Number of units in the +X direction
+     */
     val width: Double,
+    /**
+     * Number of units in the +Y direction
+     */
     val height: Double,
 ) : NumericObject {
     companion object {
@@ -41,7 +50,7 @@ data class BoundingBox(
             require(yMin <= yMax)
 
             return BoundingBox(
-                topLeft = Point(
+                origin = Point(
                     x = xMin,
                     y = yMin,
                 ),
@@ -85,7 +94,7 @@ data class BoundingBox(
         get() = minOf(width, height)
 
     val bottomRight: Point
-        get() = topLeft.transformBy(
+        get() = origin.transformBy(
             transformation = PrimitiveTransformation.Translation(
                 tx = width,
                 ty = height,
@@ -93,7 +102,7 @@ data class BoundingBox(
         )
 
     val xMin: Double
-        get() = topLeft.x
+        get() = origin.x
 
     val xMax: Double
         get() = bottomRight.x
@@ -105,7 +114,7 @@ data class BoundingBox(
         get() = yMin..yMax
 
     val yMin: Double
-        get() = topLeft.y
+        get() = origin.y
 
     val yMax: Double
         get() = bottomRight.y
@@ -129,7 +138,7 @@ data class BoundingBox(
     fun transformVia(
         transformation: Transformation,
     ): BoundingBox = of(
-        pointA = transformation.transform(topLeft),
+        pointA = transformation.transform(origin),
         pointB = transformation.transform(bottomRight),
     )
 
@@ -152,10 +161,10 @@ data class BoundingBox(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance
+        tolerance: NumericObject.Tolerance,
     ): Boolean = when {
         other !is BoundingBox -> false
-        !topLeft.equalsWithTolerance(other.topLeft, tolerance = tolerance) -> false
+        !origin.equalsWithTolerance(other.origin, tolerance = tolerance) -> false
         !width.equalsWithTolerance(other.width, tolerance = tolerance) -> false
         !height.equalsWithTolerance(other.height, tolerance = tolerance) -> false
         else -> true
