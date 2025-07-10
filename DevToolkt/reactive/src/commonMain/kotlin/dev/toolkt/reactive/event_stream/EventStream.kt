@@ -174,3 +174,7 @@ fun <E> EventStream<E>.hold(
     initialValue = initialValue,
     newValues = this,
 )
+
+fun <ValueT> EventStream<ValueT>.newest(): Future<Cell<ValueT>> = next().map { firstValue ->
+    hold(initialValue = firstValue)
+}

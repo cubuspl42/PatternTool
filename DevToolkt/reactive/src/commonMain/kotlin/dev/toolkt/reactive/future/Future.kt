@@ -105,6 +105,14 @@ abstract class Future<out V> {
     ): Future<Vr>
 }
 
+val <V> Future<V>.resultOrNull: Cell<V?>
+    get() = state.map {
+        when (it) {
+            is Future.Fulfilled<V> -> it.result
+            Future.Pending -> null
+        }
+    }
+
 fun <V> Future<V>.hold(
     initialValue: V,
 ): Cell<V> = when (val foundState = currentState) {
