@@ -9,6 +9,16 @@ sealed class ComplexTransformation : StandaloneTransformation() {
         transformation.transform(acc)
     }
 
+    fun transform(
+        x: Double,
+        y: Double,
+    ): Point = transform(
+        point = Point(
+            x = x,
+            y = y,
+        ),
+    )
+
     override val toUniversal: PrimitiveTransformation.Universal
         get() = primitiveTransformations.fold(
             initial = Identity.toUniversal,

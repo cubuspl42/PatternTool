@@ -68,7 +68,7 @@ private fun createRootElement(): HTMLDivElement {
                     displayStyle = Cell.of(
                         PureFlexStyle(
                             direction = PureFlexDirection.Column,
-                            grow = 1.0,
+                            grow = 5.0,
                         ),
                     ),
                     backgroundColor = Cell.of(PureColor.lightGray),
@@ -84,8 +84,9 @@ private fun createRootElement(): HTMLDivElement {
                 style = ReactiveStyle(
                     displayStyle = Cell.of(
                         PureFlexStyle(
+                            direction = PureFlexDirection.Column,
                             alignItems = PureFlexAlignItems.Start,
-                            grow = 0.0,
+                            grow = 1.0,
                         ),
                     ),
                 ),
@@ -93,9 +94,9 @@ private fun createRootElement(): HTMLDivElement {
                     createPolynomialPlot(
                         polynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial1 },
                     ),
-//                    createSideBar(
-//                        userCurveSystem = userCurveSystem,
-//                    ),
+                    createPolynomialPlot(
+                        polynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial2 },
+                    ),
                 ),
             ),
         ),

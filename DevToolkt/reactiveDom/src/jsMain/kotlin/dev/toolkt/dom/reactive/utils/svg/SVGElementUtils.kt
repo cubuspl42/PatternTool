@@ -4,7 +4,9 @@ import dev.toolkt.dom.pure.collections.pointList
 import dev.toolkt.dom.pure.svg.PureSvg
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveElement
+import dev.toolkt.dom.reactive.utils.svg.transforms.bind
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import dev.toolkt.reactive.reactive_list.bind
@@ -16,6 +18,7 @@ import org.w3c.dom.svg.SVGAnimatedLength
 import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGElement
 import org.w3c.dom.svg.SVGGElement
+import org.w3c.dom.svg.SVGGraphicsElement
 import org.w3c.dom.svg.SVGLineElement
 import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGPolylineElement
@@ -32,6 +35,31 @@ fun Document.createReactiveSvgElement(
     style = style,
     children = children,
 ) as SVGElement
+
+fun Document.createReactiveSvgGraphicsElement(
+    svgElement: SVGSVGElement,
+    localSvgName: String,
+    style: ReactiveStyle? = null,
+    transformation: Cell<Transformation>? = null,
+    children: ReactiveList<Node>? = null,
+): SVGElement {
+    val svgGraphicsElement = createReactiveElement(
+        namespace = PureSvg.Namespace,
+        name = localSvgName,
+        style = style,
+        children = children,
+    ) as SVGGraphicsElement
+
+    transformation?.let {
+        svgGraphicsElement.transform.baseVal.bind(
+            svgElement = svgElement,
+            transformation = it,
+        )
+    }
+
+    return svgGraphicsElement
+}
+
 
 fun Document.createReactiveSvgSvgElement(
     style: ReactiveStyle? = null,
@@ -130,11 +158,15 @@ fun Document.createReactiveSvgLineElement(
 }
 
 fun Document.createReactiveSvgGroupElement(
+    svgElement: SVGSVGElement,
     style: ReactiveStyle? = null,
+    transformation: Cell<Transformation>?,
     children: ReactiveList<SVGElement>,
-): SVGGElement = createReactiveSvgElement(
+): SVGGElement = createReactiveSvgGraphicsElement(
+    svgElement = svgElement,
     localSvgName = "g",
     style = style,
+    transformation = transformation,
     children = children,
 ) as SVGGElement
 

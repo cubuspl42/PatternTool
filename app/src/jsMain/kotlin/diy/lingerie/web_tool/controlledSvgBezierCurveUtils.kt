@@ -30,6 +30,8 @@ fun createControlledSvgBezierCurve(
     color: PureColor,
 ): SVGGElement {
     return document.createReactiveSvgGroupElement(
+        svgElement = svgElement,
+        transformation = null,
         children = ReactiveList.Companion.of(
             createControlLineElement(
                 start = userBezierCurve.start,

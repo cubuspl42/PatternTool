@@ -7,10 +7,6 @@ import dev.toolkt.core.numeric.NumericObject
 data class ReflectionOverLine(
     val line: Line,
 ) : ComplexTransformation() {
-    override fun toSvgTransformationString(): String {
-        TODO("Not yet implemented")
-    }
-
     override val primitiveTransformations: List<PrimitiveTransformation>
         get() = TODO("Not yet implemented")
 
