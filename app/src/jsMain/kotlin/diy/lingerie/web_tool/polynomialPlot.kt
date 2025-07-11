@@ -5,9 +5,13 @@ import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.style.PureFill
+import dev.toolkt.dom.pure.style.PureFlexDirection
+import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.pure.style.PureStrokeStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
+import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.createResponsiveElement
+import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgGroupElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgLineElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgPolylineElement
@@ -24,7 +28,29 @@ import kotlinx.browser.document
 import org.w3c.dom.Element
 import svg.createLegacySVGPoint
 
-internal fun createPolynomialPlot(
+internal fun createPolynomialPlotWrapper(
+    polynomial: Cell<Polynomial>,
+): Element = document.createReactiveHtmlDivElement(
+    style = ReactiveStyle(
+        displayStyle = Cell.of(
+            PureFlexStyle(
+                direction = PureFlexDirection.Column,
+            ),
+        ),
+        width = Cell.of(100.percent),
+        height = Cell.of(100.percent),
+    ),
+    children = ReactiveList.of(
+        document.createReactiveTextNode(
+            polynomial.map {
+                it.coefficients.toString()
+            },
+        ),
+        createPolynomialPlot(polynomial = polynomial),
+    ),
+)
+
+private fun createPolynomialPlot(
     polynomial: Cell<Polynomial>,
 ): Element = createResponsiveElement { size ->
     ReactiveList.looped { childrenLooped ->

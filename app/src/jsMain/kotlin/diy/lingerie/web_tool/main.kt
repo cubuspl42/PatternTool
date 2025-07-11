@@ -106,10 +106,10 @@ private fun createRootElement(): HTMLDivElement {
                     ),
                 ),
                 children = ReactiveList.of(
-                    createPolynomialPlot(
+                    createPolynomialPlotWrapper(
                         polynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial1 },
                     ),
-                    createPolynomialPlot(
+                    createPolynomialPlotWrapper(
                         polynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial2 },
                     ),
                 ),
