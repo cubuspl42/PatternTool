@@ -1,13 +1,13 @@
 package dev.toolkt.geometry.math.parametric_curve_functions
 
+import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.geometry.math.ParametricPolynomial
+import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCurveFunction
 import dev.toolkt.math.algebra.RealFunction
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.sample
-import dev.toolkt.geometry.math.ParametricPolynomial
-import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCurveFunction
-import dev.toolkt.core.iterable.LinSpace
 
 abstract class ParametricCurveFunction : RealFunction<Vector2> {
     companion object {
@@ -35,13 +35,15 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     }
 
     /**
-     * Solve the intersection of this parametric curve with another parametric curve.
+     * Solve the intersection of this parametric curve with another parametric curve
+     * within the given [tRange].
      * It's preferred that this curve is the simpler of two curves.
      *
      * @return A set of intersection parameter values t for this curve.
      */
     fun solveIntersectionEquation(
         other: ParametricCurveFunction,
+        tRange: ClosedFloatingPointRange<Double>,
         tolerance: NumericObject.Tolerance.Absolute,
     ): List<Double> {
         val intersectionPolynomial = findIntersectionPolynomial(other = other)
@@ -52,6 +54,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
 
         return intersectionPolynomial.findTValueRoots(
             tolerance = tolerance,
+            tRange = tRange,
         )
     }
 
@@ -64,9 +67,10 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     fun findDerivative(): ParametricPolynomial<*> = toParametricPolynomial().findDerivative()
 
     protected fun Polynomial.findTValueRoots(
+        tRange: ClosedFloatingPointRange<Double>,
         tolerance: NumericObject.Tolerance.Absolute,
     ): List<Double> = this.findRoots(
-        range = primaryTRange,
+        range = tRange,
         tolerance = tolerance,
     )
 
@@ -91,16 +95,17 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     /**
      * Locate a [point] lying on the curve.
      *
-     * @return If the [point] is on the curve, the t-value for that point. If the
-     * point is not on the curve, a reasonable approximation of the t-value of the
-     * point on the curve closest to [point]. If the t-value could not be found
-     * (because the curve self-intersects at [point] or is strongly degenerate), null.
+     * @return A coordinate for the [point] (if it's on the curve or reasonably close to the curve),
+     * or null if no coordinate could be found within the given [tRange]. For points not lying on the curve,
+     * this function returns a value that can be interpreted as a rough approximation of the point's projection.
      */
     abstract fun locatePoint(
         point: Vector2,
+        tRange: ClosedFloatingPointRange<Double>,
         tolerance: NumericObject.Tolerance.Absolute,
     ): Double?
 
+    // FIXME: Nuke?
     /**
      * Project a [point] onto the curve.
      *

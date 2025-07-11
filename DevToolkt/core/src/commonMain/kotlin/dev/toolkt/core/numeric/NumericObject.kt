@@ -40,7 +40,7 @@ interface NumericObject {
 
         companion object {
             val Default = Absolute(
-                absoluteTolerance = 10e-6,
+                absoluteTolerance = 1e-6,
             )
         }
 

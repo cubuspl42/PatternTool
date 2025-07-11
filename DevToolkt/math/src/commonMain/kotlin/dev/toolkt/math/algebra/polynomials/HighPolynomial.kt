@@ -87,7 +87,9 @@ data class HighPolynomial internal constructor(
         else -> true
     }
 
-    override fun apply(x: Double): Double = coefficients.withIndex().sumOf { (i, ai) ->
-        ai * x.pow(i)
+    override fun apply(x: Double): Double = coefficients.foldRight(
+        initial = 0.0,
+    ) { ai, acc ->
+        ai + acc * x
     }
 }

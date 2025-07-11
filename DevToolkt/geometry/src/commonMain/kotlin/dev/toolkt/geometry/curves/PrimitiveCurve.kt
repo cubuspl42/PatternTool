@@ -11,6 +11,7 @@ import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericObject.Tolerance
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 
 abstract class PrimitiveCurve : OpenCurve() {
     abstract class Edge : NumericObject, ReprObject {
@@ -48,22 +49,26 @@ abstract class PrimitiveCurve : OpenCurve() {
             complexObjectCurve: PrimitiveCurve,
             tolerance: Tolerance.Absolute,
         ): Set<Intersection> {
-            // Solve the intersection equation for the curves (for t ∈ ℝ)
+            // Solve the intersection equation for the curves (for t ∈ 0..1)
             val tValues = simpleSubjectCurve.basisFunction.solveIntersectionEquation(
                 other = complexObjectCurve.basisFunction,
+                tRange = primaryTRange,
                 tolerance = NumericObject.Tolerance.Default,
             )
 
             // Filter out intersections outside either curve
             return tValues.mapNotNull { tSimple ->
+                // Technically, it's an extraneous check as we solved the equation for the 0..1 range,
+                // but lets' double protect from numerical anomalies
                 val coordSimple = Coord.of(t = tSimple) ?: return@mapNotNull null
 
                 val potentialIntersectionPoint = simpleSubjectCurve.evaluate(coord = coordSimple)
 
                 val tComplex = complexObjectCurve.basisFunction.locatePoint(
                     point = potentialIntersectionPoint.pointVector,
+                    tRange = primaryTRange,
                     tolerance = tolerance,
-                ) ?: throw UnsupportedOperationException("Cannot find t for the complex curve")
+                ) ?: return@mapNotNull null
 
                 val coordComplex = Coord.of(t = tComplex) ?: return@mapNotNull null
 
@@ -150,5 +155,7 @@ abstract class PrimitiveCurve : OpenCurve() {
      * @return If the [point] is on the curve, coordinate of that point. If the
      * point is not on the curve, `null`
      */
-    abstract fun locatePoint(point: Point): Coord?
+    abstract fun locatePoint(
+        point: Point,
+    ): Coord?
 }

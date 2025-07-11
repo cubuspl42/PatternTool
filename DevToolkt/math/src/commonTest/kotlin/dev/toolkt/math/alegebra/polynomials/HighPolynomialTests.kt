@@ -116,6 +116,30 @@ class HighPolynomialTests {
     }
 
     @Test
+    fun testApply() {
+        val a0 = -4.0
+        val a1 = 3.0
+        val a2 = -2.0
+        val a3 = 1.0
+        val a4 = 17.9
+
+        val x = -12.34
+
+        val p = HighPolynomial(
+            a0,
+            a1,
+            a2,
+            a3,
+            a4,
+        )
+
+        assertEqualsWithTolerance(
+            expected = a0 + a1 * x + a2 * x * x + a3 * x * x * x + a4 * x * x * x * x,
+            actual = p.apply(x),
+        )
+    }
+
+    @Test
     fun testTimes_constant() {
         val pa = HighPolynomial(
             a0 = -4.0,

@@ -1,5 +1,6 @@
 package dev.toolkt.math.alegebra.polynomials
 
+import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.math.algebra.polynomials.ConstantPolynomial
 import dev.toolkt.math.algebra.polynomials.LinearPolynomial
 import dev.toolkt.math.algebra.polynomials.QuadraticPolynomial
@@ -121,6 +122,9 @@ class LinearPolynomialTests {
         assertEqualsWithTolerance(
             expected = listOf(0.66666),
             actual = roots,
+            tolerance = NumericObject.Tolerance.Absolute(
+                absoluteTolerance = 1e-4,
+            ),
         )
     }
 }
