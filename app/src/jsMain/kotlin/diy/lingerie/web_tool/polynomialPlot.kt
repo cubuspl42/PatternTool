@@ -96,7 +96,7 @@ private fun buildPolynomialGeometricPlot(
     polynomial: Polynomial,
     plotSize: PureSize,
 ): List<Point> {
-    val yMax = 1e19
+    val yMax = 1e9
 
     val transProjection = TransProjection(
         sourceRectangle = Rectangle.of(

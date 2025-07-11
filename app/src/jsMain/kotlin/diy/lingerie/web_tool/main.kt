@@ -14,6 +14,7 @@ import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.gestures.GenericMouseGesture
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
@@ -32,18 +33,32 @@ fun main() {
 }
 
 private fun createRootElement(): HTMLDivElement {
+    val firstBezierCurve = BezierCurve(
+        start = Point(247.45586850992547, 379.490073683598),
+        firstControl = Point(422.61086805841114, 396.6670752291757),
+        secondControl = Point(531.4859546756852, 386.71814287026064),
+        end = Point(594.0656015814893, 364.6746085219802),
+    )
+
+    val secondBezierCurve = BezierCurve(
+        start = Point(452.41959820093143, 239.38755149520694),
+        firstControl = Point(410.63096772289646, 281.7264423034185),
+        secondControl = Point(385.13020832675465, 365.70689316897005),
+        end = Point(405.2940882855255, 513.4262225999319),
+    )
+
     val userCurveSystem = UserCurveSystem(
         userBezierCurve1 = UserBezierCurve(
-            start = PropertyCell(initialValue = Point(1547.0, 893.0)),
-            firstControl = PropertyCell(initialValue = Point(964.0, 592.0)),
-            secondControl = PropertyCell(initialValue = Point(1044.0, 207.0)),
-            end = PropertyCell(initialValue = Point(1829.0, 625.0)),
+            start = PropertyCell(initialValue = firstBezierCurve.start),
+            firstControl = PropertyCell(initialValue = firstBezierCurve.firstControl),
+            secondControl = PropertyCell(initialValue = firstBezierCurve.secondControl),
+            end = PropertyCell(initialValue = firstBezierCurve.end),
         ),
         userBezierCurve2 = UserBezierCurve(
-            start = PropertyCell(initialValue = Point(1407.0, 904.0)),
-            firstControl = PropertyCell(initialValue = Point(2176.0, 201.0)),
-            secondControl = PropertyCell(initialValue = Point(1018.0, 402.0)),
-            end = PropertyCell(initialValue = Point(1707.0, 855.0)),
+            start = PropertyCell(initialValue = secondBezierCurve.start),
+            firstControl = PropertyCell(initialValue = secondBezierCurve.firstControl),
+            secondControl = PropertyCell(initialValue = secondBezierCurve.secondControl),
+            end = PropertyCell(initialValue = secondBezierCurve.end),
         ),
     )
 
