@@ -4,6 +4,7 @@
  */
 package svg
 
+import dev.toolkt.geometry.Point
 import org.w3c.dom.svg.SVGSVGElement
 
 fun SVGSVGElement.createLegacySVGPoint(): SVGPoint = createSVGPoint() as SVGPoint
@@ -14,6 +15,13 @@ fun SVGSVGElement.createLegacySVGPoint(
 ): SVGPoint = createLegacySVGPoint().apply {
     this.x = x
     this.y = y
+}
+
+fun SVGSVGElement.createLegacySVGPoint(
+    point: Point,
+): SVGPoint = createLegacySVGPoint().apply {
+    this.x = point.x
+    this.y = point.y
 }
 
 external interface SVGPointList11 {

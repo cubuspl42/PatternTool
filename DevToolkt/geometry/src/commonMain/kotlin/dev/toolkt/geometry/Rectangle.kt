@@ -170,6 +170,13 @@ data class Rectangle(
         else -> true
     }
 
+    fun scalingTo(
+        target: Rectangle,
+    ): PrimitiveTransformation.Scaling = PrimitiveTransformation.Scaling(
+        sx = target.width / width,
+        sy = target.height / height,
+    )
+
     init {
         require(width >= 0)
         require(height >= 0)

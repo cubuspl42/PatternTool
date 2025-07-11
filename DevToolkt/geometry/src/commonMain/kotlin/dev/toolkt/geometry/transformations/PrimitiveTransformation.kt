@@ -129,7 +129,7 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
             tx: Double,
             ty: Double,
         ) : this(
-            translationVector = dev.toolkt.geometry.Vector2(
+            translationVector = Vector2(
                 x = tx,
                 y = ty,
             ),
@@ -198,6 +198,12 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
             ),
         )
 
+        val sx: Double
+            get() = scaleVector.x
+
+        val sy: Double
+            get() = scaleVector.y
+
         init {
             require(!scaleVector.equalsWithTolerance(Vector2.Companion.Zero))
         }
@@ -223,7 +229,7 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
             )
 
         override fun invert(): Scaling = Scaling(
-            scaleVector = dev.toolkt.geometry.Vector2(
+            scaleVector = Vector2(
                 x = 1.0 / scaleVector.x,
                 y = 1.0 / scaleVector.y,
             ),

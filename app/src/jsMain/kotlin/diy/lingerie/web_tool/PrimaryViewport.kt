@@ -16,6 +16,7 @@ import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgGroupElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
+import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
@@ -49,6 +50,8 @@ internal fun createPrimaryViewport(
             color = PureColor.darkBlue,
         ),
         document.createReactiveSvgGroupElement(
+            svgElement = svgElement,
+            transformation = Cell.of(Transformation.Identity),
             children = userCurveSystem.intersections.map { intersection ->
                 document.createReactiveSvgCircleElement(
                     style = ReactiveStyle(
