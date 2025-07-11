@@ -110,7 +110,7 @@ class CubicBezierBinomialTests {
     }
 
     @Test
-    fun testInvert() {
+    fun testInvertRational() {
         val cubicBezierBinomial = CubicBezierBinomial(
             point0 = Vector2(a0 = 492.59773540496826, a1 = 197.3452272415161),
             point1 = Vector2(a0 = 393.3277416229248, a1 = 180.14210319519043),
