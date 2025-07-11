@@ -41,10 +41,12 @@ internal fun createPrimaryViewport(
         createControlledSvgBezierCurve(
             svgElement = svgElement,
             userBezierCurve = userCurveSystem.userBezierCurve1,
+            color = PureColor.black,
         ),
         createControlledSvgBezierCurve(
             svgElement = svgElement,
             userBezierCurve = userCurveSystem.userBezierCurve2,
+            color = PureColor.darkBlue,
         ),
         document.createReactiveSvgGroupElement(
             children = userCurveSystem.intersections.map { intersection ->

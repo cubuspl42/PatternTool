@@ -27,6 +27,7 @@ import org.w3c.dom.svg.SVGSVGElement
 fun createControlledSvgBezierCurve(
     svgElement: SVGSVGElement,
     userBezierCurve: UserBezierCurve,
+    color: PureColor,
 ): SVGGElement {
     return document.createReactiveSvgGroupElement(
         children = ReactiveList.Companion.of(
@@ -42,7 +43,7 @@ fun createControlledSvgBezierCurve(
                 style = ReactiveStyle(
                     fill = Cell.Companion.of(PureFill.None),
                     strokeStyle = PureStrokeStyle(
-                        color = PureColor.Companion.black,
+                        color = color,
                         width = 1.px,
                     ),
                 ),
