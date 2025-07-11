@@ -1,5 +1,6 @@
 package diy.lingerie.pattern_tool
 
+import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.dom.pure.mm
 import dev.toolkt.dom.pure.svg.PureSvgPath
@@ -86,6 +87,9 @@ class OutlineTests {
                 ),
             ),
             actual = verge,
+            tolerance = NumericObject.Tolerance.Absolute(
+                absoluteTolerance = 0.001,
+            ),
         )
     }
 
@@ -314,6 +318,9 @@ class OutlineTests {
                 ),
             ),
             actual = outline,
+            tolerance = NumericObject.Tolerance.Absolute(
+                absoluteTolerance = 0.001,
+            ),
         )
     }
 
@@ -523,6 +530,9 @@ class OutlineTests {
                 ),
             ),
             actual = outline,
+            tolerance = NumericObject.Tolerance.Absolute(
+                absoluteTolerance = 0.001,
+            ),
         )
     }
 

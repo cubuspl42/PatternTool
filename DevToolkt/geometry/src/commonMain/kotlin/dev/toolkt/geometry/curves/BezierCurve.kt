@@ -1,21 +1,21 @@
 package dev.toolkt.geometry.curves
 
-import dev.toolkt.geometry.Rectangle
+import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.core.iterable.mapCarrying
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.range.linearlyInterpolate
+import dev.toolkt.core.range.normalize
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Rectangle
 import dev.toolkt.geometry.SpatialObject
-import dev.toolkt.geometry.splines.OpenSpline
-import dev.toolkt.geometry.transformations.PrimitiveTransformation
-import dev.toolkt.geometry.transformations.Transformation
-import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.geometry.math.RationalImplicitPolynomial
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.QuadraticBezierBinomial
-import dev.toolkt.core.iterable.LinSpace
-import dev.toolkt.core.iterable.mapCarrying
-import dev.toolkt.core.range.linearlyInterpolate
-import dev.toolkt.core.range.normalize
+import dev.toolkt.geometry.splines.OpenSpline
+import dev.toolkt.geometry.transformations.PrimitiveTransformation
+import dev.toolkt.geometry.transformations.Transformation
 import kotlin.math.roundToInt
 
 
@@ -283,7 +283,9 @@ data class BezierCurve private constructor(
         pointVector = basisFunction.apply(coord.t),
     )
 
-    override fun locatePoint(point: Point): Coord? {
+    override fun locatePoint(
+        point: Point,
+    ): Coord? {
         val invertedCurve = basisFunction.inverted ?: run {
             // If the curve is degenerated to a line (or a point), it still
             // _can_ contain the given point, but for now we're giving up
@@ -295,6 +297,7 @@ data class BezierCurve private constructor(
             point = point,
         ) ?: basisFunction.locatePointByProjection(
             point = point.pointVector,
+            tRange = primaryTRange,
             tolerance = NumericObject.Tolerance.Default,
         ) ?: return null
 
@@ -447,13 +450,31 @@ data class BezierCurve private constructor(
         }
     }
 
-    fun containsPoint(point: Point): Boolean {
-        val tValue = basisFunction.projectPointClosest(point.pointVector) ?: return false
+    fun containsPoint(
+        point: Point,
+        tolerance: SpatialObject.SpatialTolerance = SpatialObject.SpatialTolerance.default,
+    ): Boolean {
+        // Empirically, the projection tolerance is set to 1/1024 of the span
+        // tolerance, which is a reasonable value for most cases.
+        val projectionTolerance = NumericObject.Tolerance.Absolute(
+            absoluteTolerance = tolerance.spanTolerance.value / 1024,
+        )
+
+        val tValue = basisFunction.projectPointClosest(
+            point = point.pointVector,
+            tRange = primaryTRange,
+            tolerance = projectionTolerance,
+        ) ?: return false
+
         val coord = Coord.of(t = tValue) ?: return false
 
         val distance = Point.distanceBetween(evaluate(coord), point)
 
-        return distance.equalsApproximatelyZero()
+        val equalsApproximatelyZero = distance.equalsApproximatelyZero(
+            tolerance = tolerance,
+        )
+
+        return equalsApproximatelyZero
     }
 
     val totalArcLength: Double by lazy {

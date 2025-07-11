@@ -3,6 +3,7 @@ package dev.toolkt.geometry
 import dev.toolkt.core.ReprObject
 import dev.toolkt.core.indentLater
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricLineFunction
 
 /**
@@ -46,6 +47,7 @@ class Ray(
 
         val t1 = l1.locatePoint(
             potentialIntersectionPoint,
+            tRange = primaryTRange,
             tolerance = NumericObject.Tolerance.Default,
         ) ?: return null
 

@@ -251,6 +251,7 @@ data class CubicBezierBinomial(
 
     override fun locatePoint(
         point: Vector2,
+        tRange: ClosedFloatingPointRange<Double>,
         tolerance: NumericObject.Tolerance.Absolute,
     ): Double? {
         // TODO: Move the responsibility of hybrid approaches to a higher layer
@@ -259,6 +260,7 @@ data class CubicBezierBinomial(
             tolerance = tolerance,
         ) ?: locatePointByProjection(
             point = point,
+            tRange = tRange,
             tolerance = tolerance,
         )
     }
@@ -310,10 +312,12 @@ data class CubicBezierBinomial(
 
     /**
      * @return the t-value (or one of t-values) for [point] if it lies on the
-     * curve or `null` if the point doesn't seem to lie on the curve
+     * curve or `null` if the point doesn't seem to lie on the curve (within
+     * the given [tRange])
      */
     internal fun locatePointByProjection(
         point: Vector2,
+        tRange: ClosedFloatingPointRange<Double>,
         tolerance: NumericObject.Tolerance.Absolute,
     ): Double? {
         // Find the t-values of all points on curve orthogonal to the given point
@@ -321,6 +325,7 @@ data class CubicBezierBinomial(
         //       finding doesn't enter the complex domain
         val projectedTValues = projectPointAll(
             point = point,
+            tRange = tRange,
             tolerance = tolerance,
         )
 
@@ -404,16 +409,13 @@ data class CubicBezierBinomial(
 
     private fun projectPointAll(
         point: Vector2,
+        tRange: ClosedFloatingPointRange<Double>,
         tolerance: NumericObject.Tolerance.Absolute,
     ): List<Double> {
         val projectionPolynomial = findPointProjectionPolynomial(point)
 
-        val guessedTValue = locatePointByInversionWithControlCheck(
-            point = point,
-            tolerance = tolerance,
-        ) ?: 0.5
-
         val roots = projectionPolynomial.findTValueRoots(
+            tRange = tRange,
             tolerance = tolerance,
         )
 
@@ -422,10 +424,12 @@ data class CubicBezierBinomial(
 
     fun projectPointClosest(
         point: Vector2,
+        tRange: ClosedFloatingPointRange<Double>,
         tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
     ): Double? {
         val tValues = projectPointAll(
             point = point,
+            tRange = tRange,
             tolerance = tolerance,
         )
 
@@ -496,11 +500,14 @@ data class CubicBezierBinomial(
 
     // TODO: Implement a hybrid algorithm (equation / iteration) on a given range
     //  + return distance
+    // FIXME: This function doesn't even stick to the contract, it's terrible
     override fun projectPoint(
         point: Vector2,
         tolerance: NumericObject.Tolerance.Absolute,
     ): Double? = projectPointAll(
-        point, tolerance,
+        point = point,
+        tRange = primaryTRange, // ?
+        tolerance = tolerance,
     ).singleOrNull()
 
     /**

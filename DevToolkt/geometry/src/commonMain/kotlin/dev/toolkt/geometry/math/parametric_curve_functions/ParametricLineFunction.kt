@@ -56,7 +56,9 @@ data class ParametricLineFunction(
      */
     fun solveIntersection(
         other: ParametricLineFunction,
-    ): Double? = solveIntersectionEquation(other, NumericObject.Tolerance.Default).singleOrNull()
+    ): Double? = solveIntersectionEquation(
+        other = other, tRange = primaryTRange, tolerance = NumericObject.Tolerance.Default
+    ).singleOrNull()
 
     /**
      * Solve the equation s + d * t = p for t
@@ -67,6 +69,17 @@ data class ParametricLineFunction(
      * line degenerates to a point
      */
     override fun locatePoint(
+        point: Vector2,
+        tRange: ClosedFloatingPointRange<Double>,
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): Double? = locatePoint(
+        point = point,
+        tolerance = tolerance,
+    )?.takeIf {
+        tRange.contains(it)
+    }
+
+    fun locatePoint(
         point: Vector2,
         tolerance: NumericObject.Tolerance.Absolute,
     ): Double? {
@@ -94,7 +107,7 @@ data class ParametricLineFunction(
 
     override fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance.Absolute
+        tolerance: NumericObject.Tolerance.Absolute,
     ): Double? {
         val sp = point - s
         return sp.findProjectionScale(d, tolerance = tolerance)

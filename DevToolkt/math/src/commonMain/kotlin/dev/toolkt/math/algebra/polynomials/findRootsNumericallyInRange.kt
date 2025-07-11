@@ -77,8 +77,9 @@ private fun RealFunction<Double>.findRootByBisection(
         depth: Int,
     ): Double {
         val midpoint = subRange.midpoint
+        val midpointValue = apply(midpoint)
 
-        if (apply(midpoint).equalsZeroWithTolerance(tolerance) || subRange.isEmptyWithTolerance(tolerance = tolerance) || depth >= maxDepth) {
+        if (midpointValue.equalsZeroWithTolerance(tolerance) || subRange.isEmptyWithTolerance(tolerance = tolerance) || depth >= maxDepth) {
             // Returning the midpoint if the algorithm failed to converge is only one of the options
             return midpoint
         }
