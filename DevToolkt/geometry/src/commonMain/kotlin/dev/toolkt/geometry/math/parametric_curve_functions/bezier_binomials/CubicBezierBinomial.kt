@@ -516,7 +516,7 @@ data class CubicBezierBinomial(
      *
      * @return The inverted polynomial, or null if the curve is degenerate
      */
-    private fun invert(): RationalImplicitPolynomial? {
+    private fun invertRational(): RationalImplicitPolynomial? {
         val denominator = 3.0 * Matrix3x3.Companion.rowMajor(
             row0 = point1.toVector3(),
             row1 = point2.toVector3(),
@@ -557,7 +557,7 @@ data class CubicBezierBinomial(
         )
     }
 
-    val inverted: RationalImplicitPolynomial? by lazy { invert() }
+    val inverted: RationalImplicitPolynomial? by lazy { invertRational() }
 
     fun lower(): QuadraticBezierBinomial = QuadraticBezierBinomial(
         pointMatrix = raiseMatrixPseudoInverse * pointMatrix,
