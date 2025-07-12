@@ -5,7 +5,6 @@ import dev.toolkt.dom.pure.PureUnit
 import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
-import dev.toolkt.dom.pure.style.PureFlexJustifyContent
 import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.pure.style.PureTableDisplayStyle
 import dev.toolkt.dom.reactive.style.PureEdgeInsets
@@ -83,7 +82,7 @@ private fun createRootElement(): HTMLDivElement {
                     displayStyle = Cell.of(
                         PureFlexStyle(
                             direction = PureFlexDirection.Column,
-                            grow = 5.0,
+                            grow = 1.0,
                         ),
                     ),
                     backgroundColor = Cell.of(PureColor.lightGray),
@@ -100,10 +99,9 @@ private fun createRootElement(): HTMLDivElement {
                     displayStyle = Cell.of(
                         PureFlexStyle(
                             direction = PureFlexDirection.Column,
-                            alignItems = PureFlexAlignItems.Start,
-                            grow = 1.0,
                         ),
                     ),
+                    width = Cell.of(1024.px),
                 ),
                 children = ReactiveList.of(
                     createPolynomialPlotWrapper(
@@ -199,7 +197,6 @@ private fun createTopBar(
         displayStyle = Cell.of(
             PureFlexStyle(
                 alignItems = PureFlexAlignItems.Center,
-                justifyContent = PureFlexJustifyContent.Start,
             ),
         ),
         width = Cell.of(PureUnit.Percent.full),

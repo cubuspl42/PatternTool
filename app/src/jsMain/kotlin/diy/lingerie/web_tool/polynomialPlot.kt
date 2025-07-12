@@ -35,10 +35,9 @@ internal fun createPolynomialPlotWrapper(
         displayStyle = Cell.of(
             PureFlexStyle(
                 direction = PureFlexDirection.Column,
+                grow = 1.0,
             ),
         ),
-        width = Cell.of(100.percent),
-        height = Cell.of(100.percent),
     ),
     children = ReactiveList.of(
         document.createReactiveTextNode(
@@ -56,8 +55,11 @@ private fun createPolynomialPlot(
     ReactiveList.looped { childrenLooped ->
         val svgElement = document.createReactiveSvgSvgElement(
             style = ReactiveStyle(
-                width = Cell.of(100.percent),
-                height = Cell.of(100.percent),
+                displayStyle = Cell.of(
+                    PureFlexStyle(
+                        grow = 1.0,
+                    ),
+                ),
             ),
             children = childrenLooped,
         )

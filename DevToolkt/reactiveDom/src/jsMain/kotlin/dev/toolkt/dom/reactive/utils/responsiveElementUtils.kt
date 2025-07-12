@@ -1,8 +1,8 @@
 package dev.toolkt.dom.reactive.utils
 
 import dev.toolkt.dom.pure.PureSize
-import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.size
+import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.reactive.cell.Cell
@@ -13,13 +13,17 @@ import kotlinx.browser.document
 import org.w3c.dom.Element
 
 fun createResponsiveElement(
+    style: ReactiveStyle = ReactiveStyle(
+        displayStyle = Cell.of(
+            PureFlexStyle(
+                grow = 1.0,
+            ),
+        ),
+    ),
     buildInner: (size: Cell<PureSize>) -> Element,
 ): Element = ReactiveList.Companion.looped { childrenLooped ->
     val divElement = document.createReactiveHtmlDivElement(
-        style = ReactiveStyle(
-            width = Cell.Companion.of(100.percent),
-            height = Cell.Companion.of(100.percent),
-        ),
+        style = style,
         children = childrenLooped,
     )
 
