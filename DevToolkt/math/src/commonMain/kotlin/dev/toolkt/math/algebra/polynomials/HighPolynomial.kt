@@ -3,7 +3,6 @@ package dev.toolkt.math.algebra.polynomials
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
-import kotlin.math.pow
 
 data class HighPolynomial internal constructor(
     override val coefficients: List<Double>,
@@ -13,7 +12,9 @@ data class HighPolynomial internal constructor(
             coefficients: List<Double>,
             tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
         ): Polynomial {
-            require(coefficients.isNotEmpty())
+            require(coefficients.isNotEmpty()) {
+                "HighPolynomial must have at least one coefficient, but got empty coefficients list"
+            }
 
             return when {
                 coefficients.size > 4 -> {
@@ -53,8 +54,13 @@ data class HighPolynomial internal constructor(
     )
 
     init {
-        require(degree >= 4)
-        require(coefficients.last() != 0.0)
+        require(degree >= 4) {
+            "HighPolynomial must have degree >= 4, but got degree = $degree"
+        }
+
+        require(coefficients.last() != 0.0) {
+            "HighPolynomial must not have leading zero coefficient, but got coefficients = $coefficients"
+        }
     }
 
     override val a3: Double
