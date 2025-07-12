@@ -1,17 +1,17 @@
 package dev.toolkt.geometry.curves
 
 import dev.toolkt.core.numeric.NumericObject
-import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Span
 import dev.toolkt.geometry.SpatialObject
 import kotlin.test.Ignore
 import kotlin.test.Test
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class BezierCurveIntersectionTests {
+    /**
+     * A healthy non-corner case
+     */
     @Test
     fun testFindIntersections_LineSegment_BezierCurve_noIntersections() {
         val lineSegment = LineSegment(
@@ -35,6 +35,9 @@ class BezierCurveIntersectionTests {
         )
     }
 
+    /**
+     * A healthy non-corner case
+     */
     @Test
     fun testFindIntersections_LineSegment_BezierCurve_oneIntersection() {
         val lineSegment = LineSegment(
@@ -64,6 +67,9 @@ class BezierCurveIntersectionTests {
         )
     }
 
+    /**
+     * A healthy non-corner case
+     */
     @Test
     fun testFindIntersections_LineSegment_BezierCurve_threeIntersections() {
         val firstCurve = LineSegment(
@@ -103,8 +109,80 @@ class BezierCurveIntersectionTests {
         )
     }
 
+    /**
+     * A healthy non-corner case (used to be problematic)
+     */
     @Test
-    @Ignore // FIXME: Figure out the issues with locatePoint
+    fun testFindIntersections_BezierCurve_BezierCurve_threeIntersections_c_loop() {
+        val firstBezierCurve = BezierCurve(
+            start = Point(1547.0, 893.0),
+            firstControl = Point(964.0, 592.0),
+            secondControl = Point(1044.0, 207.0),
+            end = Point(1808.0, 680.0),
+        )
+
+        val secondBezierCurve = BezierCurve(
+            start = Point(1407.0, 904.0),
+            firstControl = Point(2176.0, 201.0),
+            secondControl = Point(1018.0, 402.0),
+            end = Point(1707.0, 855.0),
+        )
+
+        testBezierIntersectionsBySubdivisionSymmetric(
+            firstCurve = firstBezierCurve,
+            secondCurve = secondBezierCurve,
+            expectedIntersection = listOf(
+                ExpectedIntersection(
+                    point = Point(1465.981292217617, 848.2089843881924),
+                    firstCoord = OpenCurve.Coord(t = 0.04904937744140625),
+                    secondCoord = OpenCurve.Coord(t = 0.02740478515625),
+                ),
+                ExpectedIntersection(
+                    point = Point(1491.6693825254533, 514.1636085670052),
+                    firstCoord = OpenCurve.Coord(t = 0.838714599609375),
+                    secondCoord = OpenCurve.Coord(t = 0.6728515625),
+                ),
+                ExpectedIntersection(
+                    point = Point(1662.9276703424082, 595.8206819867323),
+                    firstCoord = OpenCurve.Coord(t = 0.9326324462890625),
+                    secondCoord = OpenCurve.Coord(t = 0.190765380859375),
+                ),
+            ),
+        )
+
+        testBezierIntersectionsByEquationSolvingSymmetric(
+            firstCurve = firstBezierCurve,
+            secondCurve = secondBezierCurve,
+            expectedIntersection = listOf(
+                ExpectedIntersection(
+                    point = Point(1465.981292217617, 848.2089843881924),
+                    firstCoord = OpenCurve.Coord(t = 0.04904937744140625),
+                    secondCoord = OpenCurve.Coord(t = 0.02740478515625),
+                ),
+                ExpectedIntersection(
+                    point = Point(1491.6693825254533, 514.1636085670052),
+                    firstCoord = OpenCurve.Coord(t = 0.838714599609375),
+                    secondCoord = OpenCurve.Coord(t = 0.6728515625),
+                ),
+                ExpectedIntersection(
+                    point = Point(1662.9276703424082, 595.8206819867323),
+                    firstCoord = OpenCurve.Coord(t = 0.9326324462890625),
+                    secondCoord = OpenCurve.Coord(t = 0.190765380859375),
+                ),
+            ),
+            tolerance = NumericObject.Tolerance.Absolute(
+                absoluteTolerance = 1e-2,
+            ),
+        )
+    }
+
+    /**
+     * A healthy corner case
+     *
+     * A line intersecting a loop curve at its self-intersection
+     */
+    @Test
+    @Ignore // FIXME: Make it work
     fun testFindIntersections_LineSegment_BezierCurve_oneIntersection_splitLoop() {
         val lineSegment = LineSegment(
             start = Point(401.14355433959827, 374.2024184921395),
@@ -134,6 +212,12 @@ class BezierCurveIntersectionTests {
         )
     }
 
+    /**
+     * A healthy non-corner case
+     *
+     * A wave and a self-intersecting curve intersecting nine times (the most
+     * intersections possible).
+     */
     @Test
     fun testFindIntersections_BezierCurve_BezierCurve_nineIntersections() {
         val firstCurve = BezierCurve(
@@ -203,46 +287,14 @@ class BezierCurveIntersectionTests {
         )
     }
 
-    @Test
-    @Ignore // FIXME: Figure out how things _should_ behave
-    // This test started failing with the simplified numeric equation solving
-    fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_overlapping() {
-        // Although these curves look like two nearly-line-shaped innocent
-        // curves crossing in the "X" shape, it's actually a single loop
-        // curve cut to pieces
-
-        val firstBezierCurve = BezierCurve(
-            start = Point(383.0995044708252, 275.80810546875),
-            firstControl = Point(435.23948860168457, 325.49310302734375),
-            secondControl = Point(510.3655261993408, 384.4371032714844),
-            end = Point(614.6575183868408, 453.4740905761719),
-        )
-
-        val secondBezierCurve = BezierCurve(
-            start = Point(372.14351081848145, 439.6011047363281),
-            firstControl = Point(496.5914783477783, 370.8171081542969),
-            secondControl = Point(559.4554920196533, 307.91810607910156),
-            end = Point(582.3854846954346, 253.8291015625),
-        )
-
-        // It's not clear why this test cases succeeds and the next one (similar) fails
-        testBezierIntersectionsConsistentSymmetric(
-            firstCurve = firstBezierCurve,
-            secondCurve = secondBezierCurve,
-            expectedIntersection = listOf(
-                ExpectedIntersection(
-                    point = Point(488.177482, 364.171107),
-                    secondCoord = OpenCurve.Coord(t = 0.378574),
-                    firstCoord = OpenCurve.Coord(t = 0.538009),
-                ),
-            ),
-        )
-    }
-
+    /**
+     * A pathological case
+     * Obvious correct behavior
+     *
+     * A loop split at its top
+     */
     @Test
     fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_splitLoop() {
-        // A loop split at its top
-
         val firstBezierCurve = BezierCurve(
             start = Point(273.80049324035645, 489.08709716796875),
             firstControl = Point(684.4749774932861, 329.1851005554199),
@@ -288,10 +340,56 @@ class BezierCurveIntersectionTests {
         )
     }
 
+    /**
+     * A pathological case
+     * Obvious correct behavior
+     *
+     * Two curves intersecting in an X-like way trimmed from the same
+     * self-intersecting original curve
+     */
     @Test
-    @Ignore // FIXME: Figure out how things _should_ behave
+    @Ignore // FIXME: Make it work
     // This test started failing with the simplified numeric equation solving
-    fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_cutLoop() {
+    fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_xFromLoop1() {
+        val firstBezierCurve = BezierCurve(
+            start = Point(383.0995044708252, 275.80810546875),
+            firstControl = Point(435.23948860168457, 325.49310302734375),
+            secondControl = Point(510.3655261993408, 384.4371032714844),
+            end = Point(614.6575183868408, 453.4740905761719),
+        )
+
+        val secondBezierCurve = BezierCurve(
+            start = Point(372.14351081848145, 439.6011047363281),
+            firstControl = Point(496.5914783477783, 370.8171081542969),
+            secondControl = Point(559.4554920196533, 307.91810607910156),
+            end = Point(582.3854846954346, 253.8291015625),
+        )
+
+        // It's not clear why this test cases succeeds and the next one (similar) fails
+        testBezierIntersectionsConsistentSymmetric(
+            firstCurve = firstBezierCurve,
+            secondCurve = secondBezierCurve,
+            expectedIntersection = listOf(
+                ExpectedIntersection(
+                    point = Point(488.177482, 364.171107),
+                    secondCoord = OpenCurve.Coord(t = 0.378574),
+                    firstCoord = OpenCurve.Coord(t = 0.538009),
+                ),
+            ),
+        )
+    }
+
+    /**
+     * A pathological case
+     * Obvious correct behavior
+     *
+     * Two curves intersecting in an X-like way trimmed from the same
+     * self-intersecting original curve
+     */
+    @Test
+    @Ignore // FIXME: Make it work
+    // This test started failing with the simplified numeric equation solving
+    fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_xFromLoop2() {
         // A loop cut into two pieces that make it non-obvious that any loop
         // is involved at all (for some reason, possibly numeric accuracy, this
         // one is not problematic!)
@@ -337,8 +435,15 @@ class BezierCurveIntersectionTests {
         )
     }
 
+    /**
+     * A pathological case
+     * Obvious correct behavior
+     *
+     * Two curves intersecting in an X-like way trimmed from the same
+     * self-intersecting original curve
+     */
     @Test
-    fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_anotherCutLoop() {
+    fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_xFromLoop3() {
         // A loop cut into two pieces that make it non-obvious that any loop
         // is involved at all (for some reason, possibly numeric accuracy, this
         // one IS problematic and confuses the equation solving algorithm)
@@ -381,75 +486,12 @@ class BezierCurveIntersectionTests {
         )
     }
 
+    /**
+     * A pathological case
+     * Non-obvious correct behavior
+     */
     @Test
-    fun testFindIntersections_BezierCurve_BezierCurve_threeIntersections_c_loop() {
-        // A simple C-shaped curve and a loop. For an unknown reason, this case
-        // might be problematic (possibly uncovering a big problem in the lower layer)
-
-        val firstBezierCurve = BezierCurve(
-            start = Point(1547.0, 893.0),
-            firstControl = Point(964.0, 592.0),
-            secondControl = Point(1044.0, 207.0),
-            end = Point(1808.0, 680.0),
-        )
-
-        val secondBezierCurve = BezierCurve(
-            start = Point(1407.0, 904.0),
-            firstControl = Point(2176.0, 201.0),
-            secondControl = Point(1018.0, 402.0),
-            end = Point(1707.0, 855.0),
-        )
-
-        testBezierIntersectionsBySubdivisionSymmetric(
-            firstCurve = firstBezierCurve,
-            secondCurve = secondBezierCurve,
-            expectedIntersection = listOf(
-                ExpectedIntersection(
-                    point = Point(1465.981292217617, 848.2089843881924),
-                    firstCoord = OpenCurve.Coord(t = 0.04904937744140625),
-                    secondCoord = OpenCurve.Coord(t = 0.02740478515625),
-                ),
-                ExpectedIntersection(
-                    point = Point(1491.6693825254533, 514.1636085670052),
-                    firstCoord = OpenCurve.Coord(t = 0.838714599609375),
-                    secondCoord = OpenCurve.Coord(t = 0.6728515625),
-                ),
-                ExpectedIntersection(
-                    point = Point(1662.9276703424082, 595.8206819867323),
-                    firstCoord = OpenCurve.Coord(t = 0.9326324462890625),
-                    secondCoord = OpenCurve.Coord(t = 0.190765380859375),
-                ),
-            ),
-        )
-
-        testBezierIntersectionsByEquationSolvingSymmetric(
-            firstCurve = firstBezierCurve,
-            secondCurve = secondBezierCurve,
-            expectedIntersection = listOf(
-                ExpectedIntersection(
-                    point = Point(1465.981292217617, 848.2089843881924),
-                    firstCoord = OpenCurve.Coord(t = 0.04904937744140625),
-                    secondCoord = OpenCurve.Coord(t = 0.02740478515625),
-                ),
-                ExpectedIntersection(
-                    point = Point(1491.6693825254533, 514.1636085670052),
-                    firstCoord = OpenCurve.Coord(t = 0.838714599609375),
-                    secondCoord = OpenCurve.Coord(t = 0.6728515625),
-                ),
-                ExpectedIntersection(
-                    point = Point(1662.9276703424082, 595.8206819867323),
-                    firstCoord = OpenCurve.Coord(t = 0.9326324462890625),
-                    secondCoord = OpenCurve.Coord(t = 0.190765380859375),
-                ),
-            ),
-            tolerance = NumericObject.Tolerance.Absolute(
-                absoluteTolerance = 1e-2,
-            ),
-        )
-    }
-
-    @Test
-    @Ignore // FIXME: Fix various issues with self-intersection
+    @Ignore // FIXME: Figure out the expected behavior and maybe make it work
     fun testFindIntersections_BezierCurve_oneSelfIntersection() {
         // A loop
         val bezierCurve = BezierCurve(
