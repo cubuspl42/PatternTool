@@ -133,7 +133,7 @@ data class ParametricPolynomial<P : LowPolynomial>(
 
     fun normalize(): ParametricPolynomial<*> {
         // If the X function can't be normalized (it's constant), we're
-        // dealing with a denormalized line-alike curve. If neither X nor Y
+        // dealing with a degenerate line-alike curve. If neither X nor Y
         // can be normalized (both are constant), this curve degenerates to a
         // point, and a point is already normalized
         return normalizeByX() ?: normalizeByY() ?: this
