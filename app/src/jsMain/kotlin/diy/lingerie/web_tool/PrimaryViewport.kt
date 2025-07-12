@@ -1,7 +1,6 @@
 package diy.lingerie.web_tool
 
 import dev.toolkt.dom.pure.PureColor
-import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureBorderStyle
 import dev.toolkt.dom.pure.style.PureBoxSizing
@@ -32,8 +31,11 @@ internal fun createPrimaryViewport(
 ): PrimaryViewport = ReactiveList.looped { childrenLooped ->
     val svgElement = document.createReactiveSvgSvgElement(
         style = ReactiveStyle(
-            width = Cell.of(100.percent),
-            height = Cell.of(100.percent),
+            displayStyle = Cell.of(
+                PureFlexStyle(
+                    grow = 1.0,
+                ),
+            ),
         ),
         children = childrenLooped,
     )
@@ -70,10 +72,10 @@ internal fun createPrimaryViewport(
             element = document.createReactiveHtmlDivElement(
                 style = ReactiveStyle(
                     boxSizing = PureBoxSizing.BorderBox,
-                    width = Cell.of(100.percent),
-                    height = Cell.of(100.percent),
                     displayStyle = Cell.of(
-                        PureFlexStyle(),
+                        PureFlexStyle(
+                            grow = 1.0,
+                        ),
                     ),
                     borderStyle = PureBorderStyle(
                         width = 4.px,
