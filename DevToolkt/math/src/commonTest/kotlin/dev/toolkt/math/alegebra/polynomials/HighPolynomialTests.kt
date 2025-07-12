@@ -16,6 +16,22 @@ import kotlin.test.assertNotNull
 
 class HighPolynomialTests {
     @Test
+    fun testNormalized_zeros() {
+        assertEquals(
+            expected = ConstantPolynomial(
+                a0 = 0.0,
+            ),
+            actual = HighPolynomial.normalized(
+                listOf(
+                    0.0,
+                    0.0,
+                    0.0,
+                ),
+            ),
+        )
+    }
+
+    @Test
     fun testNormalized() {
         assertEquals(
             expected = ConstantPolynomial(
