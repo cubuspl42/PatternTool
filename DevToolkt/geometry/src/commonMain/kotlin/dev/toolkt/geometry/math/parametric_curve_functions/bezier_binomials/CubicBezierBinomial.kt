@@ -1,9 +1,24 @@
 package dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials
 
-import dev.toolkt.geometry.x
-import dev.toolkt.geometry.y
+import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.core.iterable.partitionAtCenter
+import dev.toolkt.core.iterable.withNeighboursOrNull
+import dev.toolkt.core.math.sq
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
+import dev.toolkt.core.numeric.equalsZeroWithTolerance
+import dev.toolkt.geometry.math.LowParametricPolynomial
+import dev.toolkt.geometry.math.ParametricPolynomial
+import dev.toolkt.geometry.math.RationalImplicitPolynomial
+import dev.toolkt.geometry.math.a1
+import dev.toolkt.geometry.math.a2
+import dev.toolkt.geometry.math.a3
+import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCubicCurveFunction
+import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitLineFunction
+import dev.toolkt.geometry.math.implicit_curve_functions.times
+import dev.toolkt.geometry.x
+import dev.toolkt.geometry.y
+import dev.toolkt.math.algebra.linear.matrices.matrix2.Matrix2x2
 import dev.toolkt.math.algebra.linear.matrices.matrix2.Matrix4x2
 import dev.toolkt.math.algebra.linear.matrices.matrix2.MatrixNx2
 import dev.toolkt.math.algebra.linear.matrices.matrix3.Matrix3x3
@@ -17,15 +32,7 @@ import dev.toolkt.math.algebra.linear.vectors.Vector4
 import dev.toolkt.math.algebra.linear.vectors.times
 import dev.toolkt.math.algebra.polynomials.CubicPolynomial
 import dev.toolkt.math.algebra.polynomials.Polynomial
-import dev.toolkt.geometry.math.LowParametricPolynomial
-import dev.toolkt.geometry.math.ParametricPolynomial
-import dev.toolkt.geometry.math.RationalImplicitPolynomial
-import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCubicCurveFunction
-import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitLineFunction
-import dev.toolkt.geometry.math.implicit_curve_functions.times
-import dev.toolkt.core.iterable.LinSpace
-import dev.toolkt.core.iterable.partitionAtCenter
-import dev.toolkt.core.iterable.withNeighboursOrNull
+import dev.toolkt.math.algebra.polynomials.QuadraticPolynomial
 import dev.toolkt.math.minByUnimodalWithSelectee
 import dev.toolkt.math.minByWithSelecteeOrNull
 
@@ -41,7 +48,7 @@ data class CubicBezierBinomial(
         /**
          * The characteristic matrix of the cubic Bézier curve.
          */
-        val characteristicMatrix = Matrix4x4.Companion.rowMajor(
+        val characteristicMatrix = Matrix4x4.rowMajor(
             row0 = Vector4(-1.0, 3.0, -3.0, 1.0),
             row1 = Vector4(3.0, -6.0, 3.0, 0.0),
             row2 = Vector4(-3.0, 3.0, 0.0, 0.0),
@@ -51,7 +58,7 @@ data class CubicBezierBinomial(
         /**
          * A matrix for raising a quadratic curve to a cubic curve
          */
-        val raiseMatrix = Matrix4x3.Companion.rowMajor(
+        val raiseMatrix = Matrix4x3.rowMajor(
             row0 = Vector3(1.0, 0.0, 0.0),
             row1 = Vector3(1.0 / 3.0, 2.0 / 3.0, 0.0),
             row2 = Vector3(0.0, 2.0 / 3.0, 1.0 / 3.0),
@@ -73,7 +80,7 @@ data class CubicBezierBinomial(
             // T
             val tMatrix = MatrixNx4(
                 rows = samples.map { it ->
-                    CubicPolynomial.Companion.monomialVector(it.t)
+                    CubicPolynomial.monomialVector(it.t)
                 },
             )
 
@@ -181,6 +188,86 @@ data class CubicBezierBinomial(
             c = 3 * x1 * y0 - 3 * x0 * y1,
         )
 
+    sealed class SelfIntersectionResult {
+        /**
+         * The self-intersection exists and occurs at the given t-values.
+         */
+        data class Existing(
+            val t0: Double,
+            val t1: Double,
+        ) : SelfIntersectionResult()
+
+        /**
+         * The curve does not have a self-intersection
+         */
+        data object NonExisting : SelfIntersectionResult()
+    }
+
+    /**
+     * @return The self-intersection result, or null which implies that the
+     * curve is degenerate.
+     */
+    fun findSelfIntersection(
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): SelfIntersectionResult? {
+        // Sánchez-Reyes, J. Self-Intersections of Cubic Bézier Curves Revisited. Mathematics 2024, 12, 2463. https://doi.org/10.3390/math12162463
+        // 4. Finding the Parameter Values for the Double Point via Factorization
+
+        val parametricPolynomial = toParametricPolynomial()
+
+        val a1: Vector2 = parametricPolynomial.a1
+        val a2: Vector2 = parametricPolynomial.a2
+        val a3: Vector2 = parametricPolynomial.a3
+
+        val detA1: Double = Matrix2x2.columnMajor(
+            column0 = a2,
+            column1 = a3,
+        ).determinant
+
+        if (detA1.equalsZeroWithTolerance(tolerance = tolerance)) {
+            // This implies a degenerate straight line case
+            // FIXME: While this conclusion is taken straight from the article, it seems to be incorrect. |A₁| seems
+            //  to imply only that the solution definitely can't be found, the curve might be a proper cubic curve
+            //  with some constraints. It might be the case that |A₁| = 0 implies that _either_ the X or the Y component
+            //  of the parametric cubic curve degenerates (to a quadratic/linear curve or point?).
+            return null
+        }
+
+        val detA2: Double = Matrix2x2.columnMajor(
+            column0 = a1,
+            column1 = a3,
+        ).determinant
+
+        val detA3: Double = Matrix2x2.columnMajor(
+            column0 = a1,
+            column1 = a2,
+        ).determinant
+
+        // Substitute...
+        // α = uv
+        // β = u + v
+        // γ = (u + v)² - uv = β² - α
+
+        // Cramer’s rule furnishes the unique solution as a quotient of determinants A₁, A₂, A₃ as follows:
+        val beta: Double = -detA2 / detA1
+        val gamma: Double = detA3 / detA1
+
+        // α = β² - γ
+        val alpha: Double = beta.sq - gamma
+
+        // Solve t² - βt + αt = 0
+        val (u, v) = QuadraticPolynomial.checked(
+            a0 = alpha,
+            a1 = -beta,
+            a2 = 1.0,
+        ).findRoots() ?: return SelfIntersectionResult.NonExisting
+
+        return SelfIntersectionResult.Existing(
+            t0 = u,
+            t1 = v,
+        )
+    }
+
     /**
      * Find the polynomial B(t) . B'(t)
      */
@@ -197,7 +284,7 @@ data class CubicBezierBinomial(
         val c = 3.0 * (p1 - p0)
         val d = p0
 
-        return Polynomial.Companion.normalized(
+        return Polynomial.normalized(
             c.dot(d),
             c.dot(c) + 2.0 * b.dot(d),
             3.0 * b.dot(c) + 3.0 * a.dot(d),
@@ -225,7 +312,7 @@ data class CubicBezierBinomial(
 
     fun normalize(): ParametricPolynomial<*> = toParametricPolynomial().normalize()
 
-    override fun toParametricPolynomial(): LowParametricPolynomial = ParametricPolynomial.Companion.cubic(
+    override fun toParametricPolynomial(): LowParametricPolynomial = ParametricPolynomial.cubic(
         a3 = -point0 + 3.0 * point1 - 3.0 * point2 + point3,
         a2 = 3.0 * point0 - 6.0 * point1 + 3.0 * point2,
         a1 = -3.0 * point0 + 3.0 * point1,
@@ -372,7 +459,7 @@ data class CubicBezierBinomial(
             range = range,
             sampleCount = 12,
         ).withNeighboursOrNull().minByOrNull { (_, tMid, _) ->
-            Vector2.Companion.distanceSquared(
+            Vector2.distanceSquared(
                 apply(tMid),
                 point,
             )
@@ -384,7 +471,7 @@ data class CubicBezierBinomial(
                 val tEndEffective = tEnd ?: tMid
 
                 (tStartEffective..tEndEffective).minByWithSelecteeOrNull { t ->
-                    Vector2.Companion.distanceSquared(
+                    Vector2.distanceSquared(
                         apply(t),
                         point,
                     )
@@ -394,7 +481,7 @@ data class CubicBezierBinomial(
             else -> (tStart..tEnd).minByUnimodalWithSelectee(
                 tolerance = tolerance,
             ) { t ->
-                Vector2.Companion.distance(
+                Vector2.distance(
                     apply(t),
                     point,
                 )
@@ -434,7 +521,7 @@ data class CubicBezierBinomial(
         )
 
         return tValues.minByOrNull {
-            Vector2.Companion.distance(
+            Vector2.distance(
                 apply(it),
                 point,
             )
@@ -517,7 +604,7 @@ data class CubicBezierBinomial(
      * @return The inverted polynomial, or null if the curve is degenerate
      */
     private fun invertRational(): RationalImplicitPolynomial? {
-        val denominator = 3.0 * Matrix3x3.Companion.rowMajor(
+        val denominator = 3.0 * Matrix3x3.rowMajor(
             row0 = point1.toVector3(),
             row1 = point2.toVector3(),
             row2 = point3.toVector3(),
@@ -527,13 +614,13 @@ data class CubicBezierBinomial(
             return null
         }
 
-        val nominator1 = Matrix3x3.Companion.rowMajor(
+        val nominator1 = Matrix3x3.rowMajor(
             row0 = point0.toVector3(),
             row1 = point1.toVector3(),
             row2 = point3.toVector3(),
         ).determinant
 
-        val nominator2 = Matrix3x3.Companion.rowMajor(
+        val nominator2 = Matrix3x3.rowMajor(
             row0 = point0.toVector3(),
             row1 = point2.toVector3(),
             row2 = point3.toVector3(),

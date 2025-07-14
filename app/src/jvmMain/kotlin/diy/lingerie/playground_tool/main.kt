@@ -5,12 +5,9 @@ import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.help
 import com.github.ajalt.clikt.parameters.types.path
-import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.curves.BezierCurve
-import dev.toolkt.geometry.curves.toCoordRange
-import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import diy.lingerie.tool_utils.Playground
 import java.nio.file.Path
 
@@ -23,26 +20,10 @@ class MainCommand : CliktCommand() {
 
     override fun run() {
         val bezierCurve = BezierCurve(
-            start = Point(233.92449010844575, 500.813035986871),
-            firstControl = Point(863.426829231712, 303.18800785949134),
-            secondControl = Point(53.73076075494464, 164.97814335091425),
-            end = Point(551.3035908506827, 559.7310384198445),
-        )
-
-        val subCurves = LinSpace.generateSubRanges(
-            range = primaryTRange,
-            sampleCount = 12,
-        ).map { tRange ->
-            bezierCurve.trim(coordRange = tRange.toCoordRange()!!)
-        }.toList()
-
-        val loweredCurves = subCurves.map {
-            it.basisFunction.lower()
-        }
-
-        val point = Point(
-            256.60993714914935,
-            374.33410623067596,
+            start = Point(0.0, 200.0),
+            firstControl = Point(100.0, 0.0),
+            secondControl = Point(200.0, 200.0),
+            end = Point(300.0, 0.0),
         )
 
         val playground = Playground(
@@ -51,16 +32,7 @@ class MainCommand : CliktCommand() {
                     color = PureColor.blue,
                     bezierCurve = bezierCurve,
                 ),
-                Playground.PointItem(
-                    color = PureColor.green,
-                    point = point,
-                ),
-            ) + loweredCurves.map { loweredCurve ->
-                Playground.QuadraticBezierBinomialItem(
-                    color = PureColor.red,
-                    quadraticBezierBinomial = loweredCurve,
-                )
-            },
+            ),
         )
 
         playground.writeToFile(
