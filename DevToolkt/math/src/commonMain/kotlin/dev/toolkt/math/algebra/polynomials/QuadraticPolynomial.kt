@@ -11,6 +11,23 @@ data class QuadraticPolynomial internal constructor(
     override val a2: Double,
 ) : SubCubicPolynomial(), SuperLinearPolynomial {
     companion object {
+        fun checked(
+            a0: Double,
+            a1: Double,
+            a2: Double,
+            tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+        ): QuadraticPolynomial {
+            require(!a2.equalsZeroWithTolerance(tolerance = tolerance)) {
+                "Coefficient a2 must not be zero (within tolerance)."
+            }
+
+            return QuadraticPolynomial(
+                a0 = a0,
+                a1 = a1,
+                a2 = a2,
+            )
+        }
+
         fun normalized(
             a0: Double,
             a1: Double,
@@ -29,6 +46,10 @@ data class QuadraticPolynomial internal constructor(
                 a2 = a2,
             )
         }
+    }
+
+    init {
+        require(a2 != 0.0) { "Coefficient a2 must not be zero." }
     }
 
     override val isNormalized: Boolean

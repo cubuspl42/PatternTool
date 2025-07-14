@@ -162,4 +162,28 @@ data class ParametricPolynomial<P : LowPolynomial>(
 
 typealias LowParametricPolynomial = ParametricPolynomial<LowPolynomial>
 
+val LowParametricPolynomial.a0: Vector2
+    get() = Vector2(
+        x = xPolynomial.a0,
+        y = yPolynomial.a0,
+    )
+
+val LowParametricPolynomial.a1: Vector2
+    get() = Vector2(
+        x = xPolynomial.a1 ?: 0.0,
+        y = yPolynomial.a1 ?: 0.0,
+    )
+
+val LowParametricPolynomial.a2: Vector2
+    get() = Vector2(
+        x = xPolynomial.a2 ?: 0.0,
+        y = yPolynomial.a2 ?: 0.0,
+    )
+
+val LowParametricPolynomial.a3: Vector2
+    get() = Vector2(
+        x = xPolynomial.a3 ?: 0.0,
+        y = yPolynomial.a3 ?: 0.0,
+    )
+
 typealias SubCubicParametricPolynomial = ParametricPolynomial<SubCubicPolynomial>
