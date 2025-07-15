@@ -15,7 +15,7 @@ lightgray = 'lightgray'
 blue = 'blue'
 
 
-class BezierCurve:
+class CubicBezierCurve:
     def __init__(
             self,
             p0: Tuple[float, float],
@@ -273,7 +273,7 @@ class BezierCurve:
 
         return lb / (lb - la)
 
-    def intersect(self, other: "BezierCurve") -> Expr:
+    def intersect(self, other: "CubicBezierCurve") -> Expr:
         implicit = self.implicitize()
 
         print("implicit:")
