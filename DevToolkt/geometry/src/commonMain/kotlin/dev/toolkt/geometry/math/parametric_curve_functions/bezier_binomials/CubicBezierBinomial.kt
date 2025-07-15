@@ -644,6 +644,18 @@ data class CubicBezierBinomial(
         )
     }
 
+    override fun buildInvertedFunction(
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): InvertedProperCubicBezierBinomial {
+        // Curves degenerating to a line need some special handling
+        val implicitPolynomial = invertRational()
+            ?: throw UnsupportedOperationException("Inverting degenerate curves is not yet implemented")
+
+        return InvertedProperCubicBezierBinomial(
+            implicitPolynomial = implicitPolynomial,
+        )
+    }
+
     val inverted: RationalImplicitPolynomial? by lazy { invertRational() }
 
     fun lower(): QuadraticBezierBinomial = QuadraticBezierBinomial(

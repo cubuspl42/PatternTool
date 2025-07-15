@@ -1,5 +1,8 @@
 package dev.toolkt.core.math
 
+import kotlin.math.nextDown
+import kotlin.math.nextUp
+
 fun avgOf(
     a: Double,
     b: Double,
@@ -51,3 +54,23 @@ fun Double.Companion.haveDifferentSigns(
     a: Double,
     b: Double,
 ): Boolean = a * b < 0.0
+
+/**
+ * Generates a sequence of values around this value, including the value itself.
+ */
+fun Double.valuesAround(
+    /**
+     * The number of values to generate around this value.
+     */
+    count: Int,
+): Sequence<Double> {
+    val smallerValueCount = count / 2
+    val greaterValueCount = count - smallerValueCount
+
+    val smallerValueSequence = generateSequence(this) { it.nextDown() }
+    val greaterValueSequence = generateSequence(this) { it.nextUp() }.drop(1)
+
+    val smallerValues = smallerValueSequence.take(smallerValueCount).toList().reversed()
+
+    return smallerValues.asSequence() + greaterValueSequence.take(greaterValueCount)
+}

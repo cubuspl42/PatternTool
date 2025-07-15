@@ -4,20 +4,42 @@ import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCurveFunction
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.InvertedCurveFunction.InversionResult
+import dev.toolkt.math.algebra.Function
 import dev.toolkt.math.algebra.RealFunction
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.sample
 
 abstract class ParametricCurveFunction : RealFunction<Vector2> {
-    companion object {
-        val primaryTRange = 0.0..1.0
+    abstract class InvertedCurveFunction : Function<Vector2, InversionResult> {
+        sealed class InversionResult {
+            /**
+             * The given point corresponds to a specific t-value on the curve,
+             * but it's not certain that it actually lies on the curve.
+             */
+            data class Specific(
+                val t: Double,
+            ) : InversionResult()
+
+            /**
+             * The given point lies on the self-intersection (or very close to it).
+             * It's certain that it lies on the curve (multiple times, one could say),
+             * but there's no single unambiguous corresponding t-value (the
+             * self-intersection has at least two t-value candidates).
+             */
+            data object SelfIntersection : InversionResult()
+        }
     }
 
     data class Sample(
         val t: Double,
         val point: Vector2,
     )
+
+    companion object {
+        val primaryTRange = 0.0..1.0
+    }
 
     fun findCriticalPoints(
         tolerance: NumericObject.Tolerance.Absolute,
@@ -91,6 +113,10 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         val p1 = apply(tRange.endInclusive)
         Vector2.Companion.distance(p0, p1)
     }
+
+    abstract fun buildInvertedFunction(
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): InvertedCurveFunction
 
     /**
      * Locate a [point] lying on the curve.
