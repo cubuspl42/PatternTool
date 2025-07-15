@@ -124,6 +124,9 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
      * @return A coordinate for the [point] (if it's on the curve or reasonably close to the curve),
      * or null if no coordinate could be found within the given [tRange]. For points not lying on the curve,
      * this function returns a value that can be interpreted as a rough approximation of the point's projection.
+     *
+     * FIXME: This contract makes little sense, as it doesn't truly locate a point (it accepts points _not_ lying on the
+     *  curve, which makes it no more useful than the raw inversion function)
      */
     abstract fun locatePoint(
         point: Vector2,
