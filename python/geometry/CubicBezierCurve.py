@@ -2,14 +2,13 @@ from typing import Tuple, List
 
 import numpy as np
 import plotly.graph_objs as go
-from sympy import symbols, binomial, Matrix, expand, solve, Expr, lambdify
+from sympy import binomial, Matrix, expand, solve, Expr, lambdify
 from sympy.core.numbers import I
+
+from geometry.CommonSymbols import x_sym, y_sym, t_sym
 
 # N = 3 for cubic Bézier curves
 n = 3
-
-# Define symbolic variables
-x_sym, y_sym, t_sym = symbols('x y t', real=True)
 
 lightgray = 'lightgray'
 blue = 'blue'
@@ -79,7 +78,7 @@ class CubicBezierCurve:
                 return go.Scatter(
                     x=x_values,
                     y=y_values,
-                    text = formatted_text,
+                    text=formatted_text,
                     mode='lines',
                     line=dict(color=color),
                     name=trace_name,
@@ -188,28 +187,28 @@ class CubicBezierCurve:
         ]).det()
 
     @property
-    def l32(self) -> Expr:
-        return self.l_ij(3, 2)
-
-    @property
-    def l31(self) -> Expr:
-        return self.l_ij(3, 1)
-
-    @property
-    def l30(self) -> Expr:
-        return self.l_ij(3, 0)
-
-    @property
-    def l21(self) -> Expr:
-        return self.l_ij(2, 1)
+    def l10(self) -> Expr:
+        return self.l_ij(1, 0)
 
     @property
     def l20(self) -> Expr:
         return self.l_ij(2, 0)
 
     @property
-    def l10(self) -> Expr:
-        return self.l_ij(1, 0)
+    def l21(self) -> Expr:
+        return self.l_ij(2, 1)
+
+    @property
+    def l30(self) -> Expr:
+        return self.l_ij(3, 0)
+
+    @property
+    def l31(self) -> Expr:
+        return self.l_ij(3, 1)
+
+    @property
+    def l32(self) -> Expr:
+        return self.l_ij(3, 2)
 
     def implicitize(self) -> Expr:
         a_impl_mat = Matrix([
