@@ -1,17 +1,19 @@
 package dev.toolkt.geometry.curves
 
 import dev.toolkt.core.ReprObject
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericObject.Tolerance
 import dev.toolkt.geometry.Direction
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
-import dev.toolkt.geometry.splines.OpenSpline
-import dev.toolkt.geometry.splines.Spline
-import dev.toolkt.geometry.transformations.Transformation
-import dev.toolkt.core.numeric.NumericObject
-import dev.toolkt.core.numeric.NumericObject.Tolerance
+import dev.toolkt.geometry.SpatialObject
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.InvertedCurveFunction.InversionResult
+import dev.toolkt.geometry.splines.OpenSpline
+import dev.toolkt.geometry.splines.Spline
+import dev.toolkt.geometry.transformations.Transformation
 
 abstract class PrimitiveCurve : OpenCurve() {
     abstract class Edge : NumericObject, ReprObject {
@@ -87,6 +89,12 @@ abstract class PrimitiveCurve : OpenCurve() {
     final override val subCurves: List<PrimitiveCurve>
         get() = listOf(this)
 
+    val invertedBasisFunction by lazy {
+        basisFunction.buildInvertedFunction(
+            tolerance = NumericObject.Tolerance.Default,
+        )
+    }
+
     final override val pathFunction: FeatureFunction<Point> by lazy {
         FeatureFunction.wrap(basisFunction).map { vector ->
             Point(pointVector = vector)
@@ -154,8 +162,54 @@ abstract class PrimitiveCurve : OpenCurve() {
      *
      * @return If the [point] is on the curve, coordinate of that point. If the
      * point is not on the curve, `null`
+     *
+     * TODO: Nuke in favor of the newer API
      */
     abstract fun locatePoint(
         point: Point,
     ): Coord?
+
+    /**
+     * Locate the point on the curve
+     *
+     * @return If the [point] lies on the curve (within the given [tolerance]), coordinate of that point. If the point
+     * does not lie on the curve or is extremely close to the self-intersection, `null`.
+     */
+    fun locatePointByInversion(
+        point: Point,
+        tolerance: SpatialObject.SpatialTolerance,
+    ): Coord? {
+        val inversionResult = invertedBasisFunction.apply(
+            point.pointVector,
+        ) as? InversionResult.Specific ?: run {
+            // If a point lies on the self-intersection, there are actually multiple
+            // coordinates that are a possibly acceptable answer. For now, let's give up.
+            return null
+        }
+
+        // If the inversion returned a result outside the primary t-value range,
+        // it means that the point is not on the curve
+        val invertedCoord = Coord.of(
+            t = inversionResult.t,
+            tolerance = NumericObject.Tolerance.Default,
+        ) ?: return null
+
+        // If the inversion gave a specific t-value, it's not a guarantee that
+        // the point is on the curve, as the inversion function is defined for
+        // all (non-self-intersection) points
+
+        // Let's see what point lies on the inverted t-value
+        val actualPoint = evaluate(coord = invertedCoord)
+
+        return when {
+            // If the point we try to locate and the point at the inverted t-value
+            // are effectively the same point, the point location was successful
+            point.equalsWithSpatialTolerance(
+                other = actualPoint,
+                tolerance = tolerance,
+            ) -> invertedCoord
+
+            else -> null
+        }
+    }
 }

@@ -17,6 +17,7 @@ import dev.toolkt.core.math.avgOf
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.iterable.clusterSimilar
 import dev.toolkt.core.math.split
+import dev.toolkt.core.range.extend
 import dev.toolkt.core.range.width
 import kotlin.jvm.JvmInline
 
@@ -147,6 +148,17 @@ abstract class OpenCurve : NumericObject, ReprObject {
              */
             fun of(t: Double): Coord? = when (t) {
                 in tRange -> Coord(t = t)
+                else -> null
+            }
+
+            fun of(
+                t: Double,
+                tolerance: NumericObject.Tolerance.Absolute,
+            ): Coord? = when (t) {
+                in tRange.extend(tolerance.absoluteTolerance) -> Coord(
+                    t = t.coerceIn(tRange),
+                )
+
                 else -> null
             }
 
