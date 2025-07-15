@@ -11,6 +11,11 @@ import dev.toolkt.geometry.math.SubCubicParametricPolynomial
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCurveFunction
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricLineFunction
 import dev.toolkt.core.math.sq
+import dev.toolkt.geometry.math.RationalImplicitPolynomial
+import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitLineFunction
+import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitQuadraticCurveFunction
+import dev.toolkt.geometry.x
+import dev.toolkt.geometry.y
 import kotlin.math.ln
 import kotlin.math.sqrt
 
@@ -40,6 +45,45 @@ data class QuadraticBezierBinomial(
     private val delta1: Vector2
         get() = point2 - point1
 
+    private val x0: Double
+        get() = point0.x
+
+    private val y0: Double
+        get() = point0.y
+
+    private val x1: Double
+        get() = point1.x
+
+    private val y1: Double
+        get() = point1.y
+
+    private val x2: Double
+        get() = point2.x
+
+    private val y2: Double
+        get() = point2.y
+
+    private val l10: ImplicitLineFunction
+        get() = ImplicitLineFunction(
+            a = 2 * y1 - 2 * y0,
+            b = 2 * x0 - 2 * x1,
+            c = 2 * x1 * y0 - 2 * x0 * y1,
+        )
+
+    private val l20: ImplicitLineFunction
+        get() = ImplicitLineFunction(
+            a = y2 - y0,
+            b = x0 - x2,
+            c = x2 * y0 - x0 * y2,
+        )
+
+    private val l21: ImplicitLineFunction
+        get() = ImplicitLineFunction(
+            a = 2 * y2 - 2 * y1,
+            b = 2 * x1 - 2 * x2,
+            c = 2 * x2 * y1 - 2 * x1 * y2,
+        )
+
     override fun toParametricPolynomial(): SubCubicParametricPolynomial = ParametricPolynomial.Companion.quadratic(
         a = point0 - 2.0 * point1 + point2,
         b = 2.0 * (point1 - point0),
@@ -49,7 +93,15 @@ data class QuadraticBezierBinomial(
     override fun buildInvertedFunction(
         tolerance: NumericObject.Tolerance.Absolute,
     ): InvertedCurveFunction {
-        TODO("Not yet implemented")
+        val l20 = this.l20
+        val l21 = this.l21
+
+        return InvertedBezierBinomial(
+            implicitPolynomial = RationalImplicitPolynomial(
+                nominatorFunction = l20,
+                denominatorFunction = l20 - l21,
+            ),
+        )
     }
 
     override fun locatePoint(
@@ -68,7 +120,14 @@ data class QuadraticBezierBinomial(
     }
 
     override fun implicitize(): ImplicitCurveFunction {
-        TODO("Not yet implemented")
+        val l10 = this.l10
+        val l20 = this.l20
+        val l21 = this.l21
+
+        return calculateDeterminant(
+            a = l21, b = l20,
+            c = l20, d = l10,
+        )
     }
 
     override fun apply(a: Double): Vector2 {
@@ -186,3 +245,15 @@ data class QuadraticBezierBinomial(
         else -> true
     }
 }
+
+/**
+ * Calculate the determinant of a 3x3 polynomial matrix in the form:
+ * | a b |
+ * | c d |
+ *
+ * @return The determinant of the described matrix (a polynomial!)
+ */
+private fun calculateDeterminant(
+    a: ImplicitLineFunction, b: ImplicitLineFunction,
+    c: ImplicitLineFunction, d: ImplicitLineFunction,
+): ImplicitQuadraticCurveFunction = a * d - b * c

@@ -146,32 +146,12 @@ data class CubicBezierBinomial(
     private val y3: Double
         get() = point3.y
 
-    private val l32: ImplicitLineFunction
-        get() = ImplicitLineFunction(
-            a = 3 * y3 - 3 * y2,
-            b = 3 * x2 - 3 * x3,
-            c = 3 * x3 * y2 - 3 * x2 * y3,
-        )
 
-    private val l31: ImplicitLineFunction
+    private val l10: ImplicitLineFunction
         get() = ImplicitLineFunction(
-            a = 3 * y3 - 3 * y1,
-            b = 3 * x1 - 3 * x3,
-            c = 3 * x3 * y1 - 3 * x1 * y3,
-        )
-
-    private val l30: ImplicitLineFunction
-        get() = ImplicitLineFunction(
-            a = y3 - y0,
-            b = x0 - x3,
-            c = x3 * y0 - x0 * y3,
-        )
-
-    private val l21: ImplicitLineFunction
-        get() = ImplicitLineFunction(
-            a = 9 * y2 - 9 * y1,
-            b = 9 * x1 - 9 * x2,
-            c = 9 * x2 * y1 - 9 * x1 * y2,
+            a = 3 * y1 - 3 * y0,
+            b = 3 * x0 - 3 * x1,
+            c = 3 * x1 * y0 - 3 * x0 * y1,
         )
 
     private val l20: ImplicitLineFunction
@@ -181,11 +161,32 @@ data class CubicBezierBinomial(
             c = 3 * x2 * y0 - 3 * x0 * y2,
         )
 
-    private val l10: ImplicitLineFunction
+    private val l21: ImplicitLineFunction
         get() = ImplicitLineFunction(
-            a = 3 * y1 - 3 * y0,
-            b = 3 * x0 - 3 * x1,
-            c = 3 * x1 * y0 - 3 * x0 * y1,
+            a = 9 * y2 - 9 * y1,
+            b = 9 * x1 - 9 * x2,
+            c = 9 * x2 * y1 - 9 * x1 * y2,
+        )
+
+    private val l30: ImplicitLineFunction
+        get() = ImplicitLineFunction(
+            a = y3 - y0,
+            b = x0 - x3,
+            c = x3 * y0 - x0 * y3,
+        )
+
+    private val l31: ImplicitLineFunction
+        get() = ImplicitLineFunction(
+            a = 3 * y3 - 3 * y1,
+            b = 3 * x1 - 3 * x3,
+            c = 3 * x3 * y1 - 3 * x1 * y3,
+        )
+
+    private val l32: ImplicitLineFunction
+        get() = ImplicitLineFunction(
+            a = 3 * y3 - 3 * y2,
+            b = 3 * x2 - 3 * x3,
+            c = 3 * x3 * y2 - 3 * x2 * y3,
         )
 
     sealed class SelfIntersectionResult {
@@ -646,12 +647,12 @@ data class CubicBezierBinomial(
 
     override fun buildInvertedFunction(
         tolerance: NumericObject.Tolerance.Absolute,
-    ): InvertedProperCubicBezierBinomial {
+    ): InvertedBezierBinomial {
         // Curves degenerating to a line need some special handling
         val implicitPolynomial = invertRational()
             ?: throw UnsupportedOperationException("Inverting degenerate curves is not yet implemented")
 
-        return InvertedProperCubicBezierBinomial(
+        return InvertedBezierBinomial(
             implicitPolynomial = implicitPolynomial,
         )
     }
@@ -714,3 +715,4 @@ private fun calculateDeterminant(
     d: ImplicitLineFunction, e: ImplicitLineFunction, f: ImplicitLineFunction,
     g: ImplicitLineFunction, h: ImplicitLineFunction, i: ImplicitLineFunction,
 ): ImplicitCubicCurveFunction = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g)
+

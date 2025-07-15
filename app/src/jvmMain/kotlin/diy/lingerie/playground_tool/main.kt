@@ -19,15 +19,11 @@ class MainCommand : CliktCommand() {
     ).help("Path to the output file")
 
     override fun run() {
-        val start = Point(277.26681060791014, 236.51385116577148)
-        val end = Point(663.6991928100585, 231.08415603637695)
-
-        // A simple "smile" curve, but degenerating to a quadratic curve
         val bezierCurve = BezierCurve(
-            start = start,
-            firstControl = Point(414.2205947875977, 355.1834526062012),
-            secondControl = Point(543.0313888549805, 353.3735542297363),
-            end = end,
+            start = Point(0.0, 200.0),
+            firstControl = Point(100.0, 0.0),
+            secondControl = Point(200.0, 200.0),
+            end = Point(300.0, 0.0),
         )
 
         val playground = Playground(
