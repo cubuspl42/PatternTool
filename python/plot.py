@@ -3,16 +3,16 @@ import plotly.graph_objs as go
 import plotly.io as pio
 from plotly.subplots import make_subplots
 
-from geometry.BezierCurve import BezierCurve
+from geometry.CubicBezierCurve import CubicBezierCurve
 
-curve1 = BezierCurve(
+curve1 = CubicBezierCurve(
     p0=(200.0, 200.0),
     p1=(100.0, 100.0),
     p2=(400.0, 400.0),
     p3=(300.0, 300.0),
 )
 
-curve2 = BezierCurve(
+curve2 = CubicBezierCurve(
     p0=(273.80049324035645, 489.08709716796875),
     p1=(1068.5394763946533, 253.16610717773438),
     p2=(-125.00849723815918, 252.71710205078125),
