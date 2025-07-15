@@ -4,8 +4,7 @@ import dev.toolkt.geometry.math.RationalImplicitPolynomial
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 
-class InvertedProperCubicBezierBinomial(
-    // TODO: Merge into this class?
+class InvertedBezierBinomial(
     private val implicitPolynomial: RationalImplicitPolynomial,
 ) : ParametricCurveFunction.InvertedCurveFunction() {
     override fun apply(
