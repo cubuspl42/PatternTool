@@ -6,6 +6,17 @@ import dev.toolkt.core.math.linearlyInterpolate
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
 
+object ClosedFloatingPointRangeUtils {
+    fun around(
+        x0: Double,
+        width: Double,
+    ): ClosedFloatingPointRange<Double> {
+        require(width >= 0.0) { "Width must be non-negative." }
+
+        return (x0 - width / 2.0).rangeTo(x0 + width / 2.0)
+    }
+}
+
 /**
  * Normalizes the value to the range [start, end].
  *

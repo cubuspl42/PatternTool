@@ -224,7 +224,7 @@ sealed class RelativeAngle : RadialObject {
     }
 
     data class Radial(
-        override val fi: Double
+        override val fi: Double,
     ) : RelativeAngle() {
         override fun isZeroWithRadialTolerance(
             tolerance: RadialTolerance,
@@ -248,6 +248,18 @@ sealed class RelativeAngle : RadialObject {
                         normalized > PI -> normalized - 2 * PI
                         else -> normalized
                     },
+                )
+            }
+
+            fun fractional(
+                x: Double,
+            ): Radial {
+                require(x in 0.0.rangeUntil(1.0)) {
+                    "Fractional value must be in the range [0, 1), but was $x"
+                }
+
+                return Radial(
+                    fi = (2.0 * x - 1.0) * PI,
                 )
             }
         }

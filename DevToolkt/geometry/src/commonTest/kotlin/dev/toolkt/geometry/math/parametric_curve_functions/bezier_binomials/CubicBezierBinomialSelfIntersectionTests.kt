@@ -164,7 +164,7 @@ class CubicBezierBinomialSelfIntersectionTests {
             cubicBezierBinomial = cubicBezierBinomial,
             expectedResult = SelfIntersectionResult.Existing(
                 t0 = 0.1562984990421814,
-                t1 = 0.9175376647659079
+                t1 = 0.9175376647659079,
             ),
             expectedPoint = Vector2(530.7843327892789, 327.91010317869666),
             actualResult = selfIntersectionResult,
@@ -173,10 +173,10 @@ class CubicBezierBinomialSelfIntersectionTests {
     }
 
     /**
-     * A cubic Bezier binomial that has self-intersection outside of its primary (0.0 to 1.0) range
+     * A cubic Bezier binomial that has self-intersection fully outside its primary (0.0 to 1.0) range
      */
     @Test
-    fun testFindSelfIntersection_existing_extended_1() {
+    fun testFindSelfIntersection_existing_extendedFully_1() {
         val tolerance = NumericObject.Tolerance.Default
 
         val cubicBezierBinomial = CubicBezierBinomial(
@@ -199,6 +199,39 @@ class CubicBezierBinomialSelfIntersectionTests {
                 t1 = 5.495637186468656,
             ),
             expectedPoint = Vector2(516.6420774390026, 136.90441263698267),
+            actualResult = selfIntersectionResult,
+            tolerance = tolerance,
+        )
+    }
+
+    /**
+     * A cubic Bezier binomial that has self-intersection partially outside its primary (0.0 to 1.0) range
+     * (one t-value is within 0.0 to 1.0, the other is outside)
+     */
+    @Test
+    fun testFindSelfIntersection_existing_extendedPartially_1() {
+        val tolerance = NumericObject.Tolerance.Default
+
+        val cubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(a0 = 492.59773540496826, a1 = 197.3452272415161),
+            point1 = Vector2(a0 = 393.3277416229248, a1 = 180.14210319519043),
+            point2 = Vector2(a0 = 287.3950023651123, a1 = 260.3726043701172),
+            point3 = Vector2(a0 = 671.4185047149658, a1 = 490.2051086425781)
+        )
+
+        val selfIntersectionResult = assertNotNull(
+            cubicBezierBinomial.findSelfIntersection(
+                tolerance = tolerance,
+            ),
+        )
+
+        assertSelfIntersectionExists(
+            cubicBezierBinomial = cubicBezierBinomial,
+            expectedResult = SelfIntersectionResult.Existing(
+                t0 = -0.7393528461432413,
+                t1 = 0.8083924555183848,
+            ),
+            expectedPoint = Vector2(501.14355433959827, 374.2024184921395),
             actualResult = selfIntersectionResult,
             tolerance = tolerance,
         )
@@ -235,7 +268,7 @@ private fun assertSelfIntersectionExists(
         expected = expectedPoint,
         actual = point0,
         tolerance = tolerance,
-        message = "The first self-intersection point does not match the expected point",
+        message = "The first self-intersection point does not match the expected point (expected: $expectedPoint, actual: $point0)",
     )
 
     assertEqualsWithTolerance(

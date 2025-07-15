@@ -9,6 +9,7 @@ import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitLineFunction
 import dev.toolkt.core.math.avgOf
+import dev.toolkt.core.numeric.equalsZeroWithTolerance
 
 /**
  * Represents a line in 2D space in parametric form: p = s + d * t
@@ -19,6 +20,7 @@ data class ParametricLineFunction(
     val d: Vector2,
     val s: Vector2,
 ) : ParametricCurveFunction() {
+
     companion object {
         fun of(
             point0: Vector2,
@@ -57,8 +59,38 @@ data class ParametricLineFunction(
     fun solveIntersection(
         other: ParametricLineFunction,
     ): Double? = solveIntersectionEquation(
-        other = other, tRange = primaryTRange, tolerance = NumericObject.Tolerance.Default
+        other = other,
+        tRange = primaryTRange,
+        tolerance = NumericObject.Tolerance.Default,
     ).singleOrNull()
+
+    override fun buildInvertedFunction(
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): InvertedCurveFunction = when {
+        d.equalsWithTolerance(
+            Vector2.Zero,
+            tolerance = tolerance,
+        ) -> InvertedPointFunction
+
+        d.x.equalsZeroWithTolerance(
+            tolerance = tolerance,
+        ) -> InvertedVerticalLineFunction(
+            sy = s.y,
+            dy = d.y,
+        )
+
+        d.y.equalsZeroWithTolerance(
+            tolerance = tolerance,
+        ) -> InvertedHorizontalLineFunction(
+            sx = s.x,
+            dx = d.x,
+        )
+
+        else -> InvertedInclinedLineFunction(
+            s = s,
+            d = d,
+        )
+    }
 
     /**
      * Solve the equation s + d * t = p for t

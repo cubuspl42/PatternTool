@@ -46,6 +46,12 @@ data class QuadraticBezierBinomial(
         c = point0,
     )
 
+    override fun buildInvertedFunction(
+        tolerance: NumericObject.Tolerance.Absolute,
+    ): InvertedCurveFunction {
+        TODO("Not yet implemented")
+    }
+
     override fun locatePoint(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
