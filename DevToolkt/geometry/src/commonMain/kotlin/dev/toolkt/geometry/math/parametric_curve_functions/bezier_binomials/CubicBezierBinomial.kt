@@ -671,15 +671,9 @@ data class CubicBezierBinomial(
         val l10 = this.l10
 
         return calculateDeterminant(
-            a = l32,
-            b = l31,
-            c = l30,
-            d = l31,
-            e = l30 + l21,
-            f = l20,
-            g = l30,
-            h = l20,
-            i = l10,
+            a = l32, b = l31, c = l30,
+            d = l31, e = l30 + l21, f = l20,
+            g = l30, h = l20, i = l10,
         )
     }
 

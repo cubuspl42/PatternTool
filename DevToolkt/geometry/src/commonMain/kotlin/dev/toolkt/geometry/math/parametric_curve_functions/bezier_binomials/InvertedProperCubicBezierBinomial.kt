@@ -11,7 +11,9 @@ class InvertedProperCubicBezierBinomial(
     override fun apply(
         a: Vector2,
     ): InversionResult {
-        val t = implicitPolynomial.apply(a).valueOrNull ?: return InversionResult.SelfIntersection
+        val ratio = implicitPolynomial.apply(a)
+
+        val t = ratio.valueOrNull ?: return InversionResult.SelfIntersection
 
         return InversionResult.Specific(t = t)
     }
