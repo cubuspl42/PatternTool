@@ -19,8 +19,7 @@ import dev.toolkt.core.numeric.equalsZeroWithTolerance
 data class ParametricLineFunction(
     val d: Vector2,
     val s: Vector2,
-) : ParametricCurveFunction() {
-
+) : ParametricCurveFunction(), NumericObject {
     companion object {
         fun of(
             point0: Vector2,
@@ -63,6 +62,10 @@ data class ParametricLineFunction(
         tRange = primaryTRange,
         tolerance = NumericObject.Tolerance.Default,
     ).singleOrNull()
+
+    override fun findDerivativeCurve(): ParametricPointFunction = ParametricPointFunction(
+        p = d,
+    )
 
     override fun buildInvertedFunction(
         tolerance: NumericObject.Tolerance.Absolute,
@@ -159,4 +162,14 @@ data class ParametricLineFunction(
 
     val point1: Vector2
         get() = s + d
+
+    override fun equalsWithTolerance(
+        other: NumericObject,
+        tolerance: NumericObject.Tolerance,
+    ): Boolean = when {
+        other !is ParametricLineFunction -> false
+        !d.equalsWithTolerance(other.d, tolerance = tolerance) -> false
+        !s.equalsWithTolerance(other.s, tolerance = tolerance) -> false
+        else -> true
+    }
 }

@@ -1,18 +1,18 @@
 package dev.toolkt.geometry.math.implicit_curve_functions
 
 
-import dev.toolkt.geometry.x
-import dev.toolkt.geometry.y
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.math.ParametricPolynomial
+import dev.toolkt.geometry.x
+import dev.toolkt.geometry.y
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.polynomials.plus
 import dev.toolkt.math.algebra.polynomials.times
 
 /**
- * A bilinear polynomial in the form a * x + b * y + c
+ * An implicit line function, i.e. a bilinear polynomial in the form a * x + b * y + c
  */
 data class ImplicitLineFunction(
     val a: Double,

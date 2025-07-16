@@ -1,8 +1,9 @@
 package dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials
 
 import dev.toolkt.core.numeric.NumericObject
-import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricLineFunction
+import dev.toolkt.math.algebra.linear.vectors.Vector2
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
@@ -253,6 +254,26 @@ class QuadraticBezierBinomialTests {
             tolerance = NumericObject.Tolerance.Absolute(
                 absoluteTolerance = 0.5,
             ),
+        )
+    }
+
+    @Test
+    fun testFindDerivativeCurve_simple() {
+        // A simple "smile" curve
+        val quadraticBezierBinomial = QuadraticBezierBinomial(
+            point0 = Vector2(a0 = 277.26681060791014, a1 = 236.51827863311763),
+            point1 = Vector2(a0 = 482.6974868774416, a1 = 414.51708820343026),
+            point2 = Vector2(a0 = 663.6991928100585, a1 = 231.0843890609741),
+        )
+
+        val derivativeCurve: ParametricLineFunction = quadraticBezierBinomial.findDerivativeCurve()
+
+        assertEqualsWithTolerance(
+            expected = ParametricLineFunction.of(
+                Vector2(a0 = 205.43067626953143, a1 = 177.99880957031263),
+                Vector2(a0 = 181.00170593261697, a1 = -183.43269914245616),
+            ),
+            actual = derivativeCurve,
         )
     }
 }
