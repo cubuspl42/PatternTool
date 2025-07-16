@@ -11,6 +11,27 @@ import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.sample
 
+/**
+ * A parametric curve function in 2D space, i.e. a function in the form f : (t: ℝ) → (p: ℝ²).
+ * Given a time parameter, it returns a point in 2D space. The term "point" is
+ * quire abstract in this context. In fact, it's just a 2D vector, which might be
+ * interpreted as a point, as curve's velocity, or in a totally different way.
+ *
+ * In a corner case, this might be a constant function (associating all possible
+ * t-values with a single point).
+ *
+ * Although the curves are defined in the real range, their 0..1 range has a
+ * special meaning. In many use-cases, that range is considered the proper
+ * domain of the curve.
+ *
+ * Specific subclasses describe specific curves with different number of control points.
+ *
+ * Currently, the general contract allows the objects of this class to be improperly
+ * parametrized (degenerate), i.e. being geometrically equivalent to a simpler
+ * parametric curve (with less control points). While such curve functions can be
+ * evaluated without issues, many (nearly all?) analytical algorithms will fail
+ * to work properly with them and will require some extra handling.
+ */
 abstract class ParametricCurveFunction : RealFunction<Vector2> {
     abstract class InvertedCurveFunction : Function<Vector2, InversionResult> {
         sealed class InversionResult {
@@ -87,6 +108,8 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     }
 
     fun findDerivative(): ParametricPolynomial<*> = toParametricPolynomial().findDerivative()
+
+    abstract fun findDerivativeCurve(): ParametricCurveFunction
 
     protected fun Polynomial.findTValueRoots(
         tRange: ClosedFloatingPointRange<Double>,

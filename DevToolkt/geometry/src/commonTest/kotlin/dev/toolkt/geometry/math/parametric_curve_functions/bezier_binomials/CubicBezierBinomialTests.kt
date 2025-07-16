@@ -7,6 +7,7 @@ import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
 import dev.toolkt.math.algebra.linear.vectors.Vector2
+import dev.toolkt.math.algebra.linear.vectors.times
 import kotlin.random.Random
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -210,6 +211,28 @@ class CubicBezierBinomialTests {
                 closerPoints.none { it.t in range },
             )
         }
+    }
+
+    @Test
+    fun testFindDerivativeCurve_simple() {
+        // A simple "smile" curve
+        val cubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(294.82501220703125, 235.177001953125),
+            point1 = Vector2(361.5459899902344, 359.1940002441406),
+            point2 = Vector2(595.7059936523438, 349.3630065917969),
+            point3 = Vector2(646.1409912109375, 232.42100524902344),
+        )
+
+        val derivativeCurve: QuadraticBezierBinomial = cubicBezierBinomial.findDerivativeCurve()
+
+        assertEqualsWithTolerance(
+            expected = QuadraticBezierBinomial(
+                point0 = Vector2(a0 = 200.16293334960938, a1 = 372.0509948730469),
+                point1 = Vector2(a0 = 702.4800109863281, a1 = -29.49298095703125),
+                point2 = Vector2(a0 = 151.30499267578125, a1 = -350.8260040283203),
+            ),
+            actual = derivativeCurve,
+        )
     }
 }
 

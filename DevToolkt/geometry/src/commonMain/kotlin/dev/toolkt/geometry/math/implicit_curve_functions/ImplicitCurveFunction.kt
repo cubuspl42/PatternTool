@@ -9,10 +9,13 @@ import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.polynomials.plus
 
 /**
- * A bivariate polynomial in variables x and y, modelling a curve. For points
- * on the curve, the polynomial evaluates to zero. For points not on the curve,
- * the polynomial evaluates to a non-zero value which indicates on which side
- * of the curve the point lies.
+ * A bivariate polynomial in variables x and y, modelling a curve in the form f : (p: ℝ²) → ℝ.
+ * Given a point, it returns a value indicating whether the point lies on the curve.
+ *
+ * For points on the curve, this function evaluates to zero (within reasonable
+ * tolerance). For points not on the curve, the polynomial evaluates to a non-zero
+ * value which indicates on which side of the curve the point lies (unless the
+ * curve is a point, in which case it doesn't really _have_ sides).
  */
 sealed class ImplicitCurveFunction : Function<Vector2, Double>, NumericObject {
     protected operator fun Polynomial.plus(

@@ -14,8 +14,10 @@ import dev.toolkt.core.math.sq
 import dev.toolkt.geometry.math.RationalImplicitPolynomial
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitLineFunction
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitQuadraticCurveFunction
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
+import dev.toolkt.math.algebra.linear.vectors.times
 import kotlin.math.ln
 import kotlin.math.sqrt
 
@@ -88,6 +90,11 @@ data class QuadraticBezierBinomial(
         a = point0 - 2.0 * point1 + point2,
         b = 2.0 * (point1 - point0),
         c = point0,
+    )
+
+    override fun findDerivativeCurve(): ParametricLineFunction = ParametricLineFunction.of(
+        point0 = delta0,
+        point1 = delta1,
     )
 
     override fun buildInvertedFunction(

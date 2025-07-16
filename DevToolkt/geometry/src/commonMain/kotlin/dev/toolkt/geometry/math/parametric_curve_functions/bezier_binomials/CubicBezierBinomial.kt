@@ -16,6 +16,7 @@ import dev.toolkt.geometry.math.a3
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCubicCurveFunction
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitLineFunction
 import dev.toolkt.geometry.math.implicit_curve_functions.times
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
 import dev.toolkt.math.algebra.linear.matrices.matrix2.Matrix2x2
@@ -31,6 +32,7 @@ import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.math.algebra.linear.vectors.Vector4
 import dev.toolkt.math.algebra.linear.vectors.times
 import dev.toolkt.math.algebra.polynomials.CubicPolynomial
+import dev.toolkt.math.algebra.polynomials.LowPolynomial
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.polynomials.QuadraticPolynomial
 import dev.toolkt.math.minByUnimodalWithSelectee
@@ -644,6 +646,12 @@ data class CubicBezierBinomial(
             denominatorFunction = lb - la,
         )
     }
+
+    override fun findDerivativeCurve(): QuadraticBezierBinomial = QuadraticBezierBinomial(
+        point0 = 3.0 * delta0,
+        point1 = 3.0 * delta1,
+        point2 = 3.0 * delta2,
+    )
 
     override fun buildInvertedFunction(
         tolerance: NumericObject.Tolerance.Absolute,
