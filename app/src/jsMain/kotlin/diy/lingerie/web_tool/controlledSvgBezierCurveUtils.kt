@@ -32,7 +32,10 @@ fun createControlledSvgBezierCurve(
     return document.createReactiveSvgGroupElement(
         svgElement = svgElement,
         transformation = null,
-        children = ReactiveList.Companion.of(
+        children = ReactiveList.of(
+            userBezierCurve.reactiveBezierCurve.createReactiveExtendedSvgPolylineElement(
+                svgElement = svgElement,
+            ),
             createControlLineElement(
                 start = userBezierCurve.start,
                 end = userBezierCurve.firstControl,
