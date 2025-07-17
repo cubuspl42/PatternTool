@@ -7,7 +7,6 @@ import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
 import dev.toolkt.math.algebra.linear.vectors.Vector2
-import dev.toolkt.math.algebra.linear.vectors.times
 import kotlin.random.Random
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -232,6 +231,90 @@ class CubicBezierBinomialTests {
                 point2 = Vector2(a0 = 151.30499267578125, a1 = -350.8260040283203),
             ),
             actual = derivativeCurve,
+        )
+    }
+
+    /**
+     * Two curves intersecting in an X-like way trimmed from the same
+     * self-intersecting original curve
+     */
+    @Test
+    fun testFindImage_xFromLoop() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(383.0995044708252, 275.80810546875),
+            point1 = Vector2(435.23948860168457, 325.49310302734375),
+            point2 = Vector2(510.3655261993408, 384.4371032714844),
+            point3 = Vector2(614.6575183868408, 453.4740905761719),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(372.14351081848145, 439.6011047363281),
+            point1 = Vector2(496.5914783477783, 370.8171081542969),
+            point2 = Vector2(559.4554920196533, 307.91810607910156),
+            point3 = Vector2(582.3854846954346, 253.8291015625),
+        )
+
+        // Currently, the accuracy is not impressive
+        val tolerance = NumericObject.Tolerance.Relative(
+            relativeTolerance = 0.01,
+        )
+
+        val image = assertNotNull(
+            firstCubicBezierBinomial.findImage(
+                target = secondCubicBezierBinomial,
+                tolerance = tolerance,
+            ),
+        )
+
+        assertTrue(
+            image.overlap(
+                source = firstCubicBezierBinomial,
+                target = secondCubicBezierBinomial,
+                tolerance = tolerance,
+            ),
+        )
+
+        assertEqualsWithTolerance(
+            expected = 5.295492,
+            actual = image.t0,
+        )
+
+        assertEqualsWithTolerance(
+            expected = 5.954922,
+            actual = image.t1,
+        )
+    }
+
+    /**
+     * Two curves intersecting in an X-like way trimmed from the same
+     * self-intersecting original curve, but one of the curve is moved by a
+     * single unit on a single control point
+     */
+    @Test
+    fun testFindImage_xFromLoop_alike() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(383.0995044708252, 275.80810546875),
+            point1 = Vector2(435.23948860168457, 325.49310302734375),
+            point2 = Vector2(510.3655261993408, 384.4371032714844),
+            point3 = Vector2(614.6575183868408, 453.4740905761719),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(372.14351081848145, 439.6011047363281),
+            point1 = Vector2(496.5914783477783, 370.8171081542969),
+            point2 = Vector2(559.4554920196533, 307.91810607910156),
+            point3 = Vector2(582.3854846954346, 254.8291015625),
+        )
+
+        val tolerance = NumericObject.Tolerance.Relative(
+            relativeTolerance = 0.01,
+        )
+
+        assertNull(
+            firstCubicBezierBinomial.findImage(
+                target = secondCubicBezierBinomial,
+                tolerance = tolerance,
+            ),
         )
     }
 }
