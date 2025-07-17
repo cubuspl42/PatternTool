@@ -5,9 +5,13 @@ import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCurveFunction
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.InvertedCurveFunction.InversionResult
+import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
+import dev.toolkt.geometry.math.toBezierBinomial
 import dev.toolkt.math.algebra.Function
 import dev.toolkt.math.algebra.RealFunction
 import dev.toolkt.math.algebra.linear.vectors.Vector2
+import dev.toolkt.math.algebra.polynomials.CubicPolynomial
+import dev.toolkt.math.algebra.polynomials.LowPolynomial
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.sample
 
@@ -57,6 +61,62 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         val t: Double,
         val point: Vector2,
     )
+
+    /**
+     * The image of a curve (called a source curve) in the timeline of another
+     * curve (called a target curve). The image is meaningful if the source curve
+     * and the target curve overlap in the real range. An image can be used to
+     * verify whether the source and the target curve overlap.
+     */
+    data class Image(
+        /**
+         * The image of the start parameter (0.0) mapped to the parameter of the
+         * target curve
+         */
+        val t0: Double,
+        /**
+         * The image of the end parameter (1.0) mapped to the parameter of the
+         * target curve.
+         */
+        val t1: Double,
+    ) {
+        val dilation: LowPolynomial.Dilation
+            get() = LowPolynomial.Dilation(t1 - t0)
+
+        val shift: LowPolynomial.Shift
+            get() = LowPolynomial.Shift(t0)
+
+        val modulation: LowPolynomial.Modulation
+            get() = LowPolynomial.Modulation(
+                dilation = dilation,
+                shift = shift,
+            )
+
+        /**
+         * Verify whether the [source] and [target] curves overlap according to
+         * this image.
+         */
+        fun overlap(
+            source: CubicBezierBinomial,
+            target: CubicBezierBinomial,
+            tolerance: NumericObject.Tolerance,
+        ): Boolean {
+            val modulatedSourcePolynomial = source.toParametricPolynomial().transform(modulation)
+
+            val modulatedSourcePolynomialX = modulatedSourcePolynomial.xPolynomial as CubicPolynomial
+            val modulatedSourcePolynomialY = modulatedSourcePolynomial.yPolynomial as CubicPolynomial
+
+            val modulatedSource = ParametricPolynomial(
+                xPolynomial = modulatedSourcePolynomialX,
+                yPolynomial = modulatedSourcePolynomialY,
+            ).toBezierBinomial()
+
+            return modulatedSource.equalsWithTolerance(
+                other = target,
+                tolerance = tolerance,
+            )
+        }
+    }
 
     companion object {
         val primaryTRange = 0.0..1.0

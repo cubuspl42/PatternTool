@@ -2,17 +2,22 @@ package dev.toolkt.geometry.math
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.geometry.Vector2
+import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
 import dev.toolkt.math.algebra.RealFunction
 import dev.toolkt.math.algebra.linear.vectors.Vector2
+import dev.toolkt.math.algebra.linear.vectors.times
 import dev.toolkt.math.algebra.polynomials.ConstantPolynomial
+import dev.toolkt.math.algebra.polynomials.CubicPolynomial
 import dev.toolkt.math.algebra.polynomials.LowPolynomial
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.polynomials.SubCubicPolynomial
 import dev.toolkt.math.algebra.polynomials.SubQuadraticPolynomial
 import dev.toolkt.math.algebra.polynomials.derivativeSubCubic
 import dev.toolkt.math.algebra.polynomials.modulate
+import dev.toolkt.math.algebra.polynomials.transform
+import kotlin.jvm.JvmName
 
 data class ParametricPolynomial<P : LowPolynomial>(
     val xPolynomial: P,
@@ -139,6 +144,13 @@ data class ParametricPolynomial<P : LowPolynomial>(
         return normalizeByX() ?: normalizeByY() ?: this
     }
 
+    fun transform(
+        transformation: LowPolynomial.Transformation,
+    ): ParametricPolynomial<P> = ParametricPolynomial(
+        xPolynomial = xPolynomial.transform(transformation = transformation),
+        yPolynomial = yPolynomial.transform(transformation = transformation),
+    )
+
     private fun normalizeByX(): ParametricPolynomial<*>? {
         val (xFunctionNormalized, normalProjection) = xPolynomial.normalize() ?: return null
         val yFunctionNormalized = yPolynomial.modulate(normalProjection.invert())
@@ -161,6 +173,10 @@ data class ParametricPolynomial<P : LowPolynomial>(
 }
 
 typealias LowParametricPolynomial = ParametricPolynomial<LowPolynomial>
+
+typealias SubCubicParametricPolynomial = ParametricPolynomial<SubCubicPolynomial>
+
+typealias CubicParametricPolynomial = ParametricPolynomial<CubicPolynomial>
 
 val LowParametricPolynomial.a0: Vector2
     get() = Vector2(
@@ -186,4 +202,38 @@ val LowParametricPolynomial.a3: Vector2
         y = yPolynomial.a3 ?: 0.0,
     )
 
-typealias SubCubicParametricPolynomial = ParametricPolynomial<SubCubicPolynomial>
+
+val CubicParametricPolynomial.a0: Vector2
+    @JvmName("a0Cubic")
+    get() = Vector2(
+        x = xPolynomial.a0,
+        y = yPolynomial.a0,
+    )
+
+val CubicParametricPolynomial.a1: Vector2
+    @JvmName("a1Cubic")
+    get() = Vector2(
+        x = xPolynomial.a1,
+        y = yPolynomial.a1,
+    )
+
+val CubicParametricPolynomial.a2: Vector2
+    @JvmName("a2Cubic")
+    get() = Vector2(
+        x = xPolynomial.a2,
+        y = yPolynomial.a2,
+    )
+
+val CubicParametricPolynomial.a3: Vector2
+    @JvmName("a3Cubic")
+    get() = Vector2(
+        x = xPolynomial.a3,
+        y = yPolynomial.a3,
+    )
+
+fun CubicParametricPolynomial.toBezierBinomial(): CubicBezierBinomial = CubicBezierBinomial(
+    point0 = a0,
+    point1 = a0 + a1 / 3.0,
+    point2 = a0 + (2.0 * a1 + a2) / 3.0,
+    point3 = a0 + a1 + a2 + a3,
+)

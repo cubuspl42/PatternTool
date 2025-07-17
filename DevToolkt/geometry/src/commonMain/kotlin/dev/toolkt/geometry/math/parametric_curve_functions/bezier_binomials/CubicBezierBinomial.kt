@@ -16,7 +16,7 @@ import dev.toolkt.geometry.math.a3
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCubicCurveFunction
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitLineFunction
 import dev.toolkt.geometry.math.implicit_curve_functions.times
-import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricLineFunction
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
 import dev.toolkt.math.algebra.linear.matrices.matrix2.Matrix2x2
@@ -32,7 +32,6 @@ import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.math.algebra.linear.vectors.Vector4
 import dev.toolkt.math.algebra.linear.vectors.times
 import dev.toolkt.math.algebra.polynomials.CubicPolynomial
-import dev.toolkt.math.algebra.polynomials.LowPolynomial
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.polynomials.QuadraticPolynomial
 import dev.toolkt.math.minByUnimodalWithSelectee
@@ -647,6 +646,8 @@ data class CubicBezierBinomial(
         )
     }
 
+    fun findSecondDerivativeCurve(): ParametricLineFunction = findDerivativeCurve().findDerivativeCurve()
+
     override fun findDerivativeCurve(): QuadraticBezierBinomial = QuadraticBezierBinomial(
         point0 = 3.0 * delta0,
         point1 = 3.0 * delta1,
@@ -684,6 +685,59 @@ data class CubicBezierBinomial(
             d = l31, e = l30 + l21, f = l20,
             g = l30, h = l20, i = l10,
         )
+    }
+
+    /**
+     * Find the image of this curve on the [target] curve.
+     *
+     * If this curve and the target curve are two segments of the same curve
+     * (within reasonable tolerance), the resulting image modulation will transform
+     * this curve to the target curve (within reasonable tolerance). Otherwise,
+     * it will transform this curve into some other, unspecified curve.
+     *
+     * If this curve and the target curve are geometrically equivalent (within
+     * reasonable tolerance), the returned image should be the identity image.
+     *
+     * This operation might not behave correctly for improperly parametrized
+     * curves (curves degenerating to a quadratic or linear curve).
+     */
+    fun findPossibleImage(
+        target: CubicBezierBinomial,
+    ): Image {
+        val secondDerivativeCurve = findSecondDerivativeCurve()
+        val targetSecondDerivativeCurve = target.findSecondDerivativeCurve()
+
+        // Target curve, b(u)
+        val b0 = targetSecondDerivativeCurve.point0
+        val deltaB = targetSecondDerivativeCurve.d
+
+        // Source curve, c(v)
+        val c0 = secondDerivativeCurve.point0
+        val c1 = secondDerivativeCurve.point1
+
+        // Image of v=0, v=1 in b's timeline (u₀, u₁)
+        val u0 = c0.cross(b0) / deltaB.cross(c0)
+        val u1 = c1.cross(b0) / deltaB.cross(c1)
+
+        return Image(
+            t0 = u0,
+            t1 = u1,
+        )
+    }
+
+    fun findImage(
+        target: CubicBezierBinomial,
+        tolerance: NumericObject.Tolerance,
+    ): Image? {
+        val image = findPossibleImage(target = target)
+
+        return image.takeIf {
+            it.overlap(
+                source = this,
+                target = target,
+                tolerance = tolerance,
+            )
+        }
     }
 
     override fun toReprString(): String {
