@@ -10,7 +10,7 @@ fun Polynomial.findRootsExternally(
     val solver = LaguerreSolver(tolerance.absoluteTolerance)
 
     val roots = solver.solveAllComplex(
-        coefficients.reversed().toDoubleArray(),
+        coefficients.toDoubleArray(),
         guessedRoot,
     )
 
