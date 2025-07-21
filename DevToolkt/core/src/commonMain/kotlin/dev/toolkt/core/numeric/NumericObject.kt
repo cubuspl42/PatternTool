@@ -8,34 +8,41 @@ interface NumericObject {
     sealed class Tolerance {
         data object Zero : Tolerance() {
             override fun equalsApproximately(
-                value: Double, reference: Double
+                value: Double, reference: Double,
             ): Boolean = value == reference
+        }
+
+        sealed class Threshold : Tolerance() {
+            final override fun equalsApproximately(
+                value: Double,
+                reference: Double,
+            ): Boolean = abs(value - reference) <= threshold(reference = reference)
+
+            abstract fun threshold(reference: Double): Double
         }
 
         data class Absolute(
             val absoluteTolerance: Double,
-        ) : Tolerance() {
+        ) : Threshold() {
             operator fun times(factor: Double) = Absolute(
                 absoluteTolerance = absoluteTolerance * factor,
             )
 
-            override fun equalsApproximately(
-                value: Double,
+            override fun threshold(
                 reference: Double,
-            ): Boolean = abs(value - reference) <= absoluteTolerance
+            ): Double = absoluteTolerance
         }
 
         data class Relative(
             val relativeTolerance: Double,
-        ) : Tolerance() {
+        ) : Threshold() {
+            override fun threshold(
+                reference: Double,
+            ): Double = relativeTolerance * abs(reference)
+
             init {
                 require(relativeTolerance > 0.0 && relativeTolerance < 0.25)
             }
-
-            override fun equalsApproximately(
-                value: Double,
-                reference: Double,
-            ): Boolean = abs(value - reference) <= relativeTolerance * abs(reference)
         }
 
         companion object {
@@ -85,7 +92,7 @@ fun Double.divideWithTolerance(
 ): Double? = when {
     divisor.equalsWithTolerance(
         0.0,
-        tolerance = tolerance
+        tolerance = tolerance,
     ) -> null
 
     else -> this / divisor
