@@ -2,7 +2,7 @@ package dev.toolkt.geometry.curves
 
 import dev.toolkt.core.ReprObject
 import dev.toolkt.core.numeric.NumericObject
-import dev.toolkt.core.numeric.NumericObject.Tolerance
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.Direction
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
@@ -49,13 +49,13 @@ abstract class PrimitiveCurve : OpenCurve() {
         fun findIntersectionsByEquationSolving(
             simpleSubjectCurve: PrimitiveCurve,
             complexObjectCurve: PrimitiveCurve,
-            tolerance: Tolerance.Absolute,
+            tolerance: NumericTolerance.Absolute,
         ): Set<Intersection> {
             // Solve the intersection equation for the curves (for t ∈ 0..1)
             val tValues = simpleSubjectCurve.basisFunction.solveIntersectionEquation(
                 other = complexObjectCurve.basisFunction,
                 tRange = primaryTRange,
-                tolerance = NumericObject.Tolerance.Default,
+                tolerance = NumericTolerance.Default,
             )
 
             // Filter out intersections outside either curve
@@ -91,7 +91,7 @@ abstract class PrimitiveCurve : OpenCurve() {
 
     val invertedBasisFunction by lazy {
         basisFunction.buildInvertedFunction(
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         )
     }
 
@@ -144,7 +144,7 @@ abstract class PrimitiveCurve : OpenCurve() {
         // Line segment is never more complex than other primitive curves
         simpleSubjectCurve = subjectLineSegment,
         complexObjectCurve = this,
-        tolerance = Tolerance.Default,
+        tolerance = NumericTolerance.Default,
     )
 
     abstract val basisFunction: ParametricCurveFunction
@@ -191,7 +191,7 @@ abstract class PrimitiveCurve : OpenCurve() {
         // it means that the point is not on the curve
         val invertedCoord = Coord.of(
             t = inversionResult.t,
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         ) ?: return null
 
         // If the inversion gave a specific t-value, it's not a guarantee that

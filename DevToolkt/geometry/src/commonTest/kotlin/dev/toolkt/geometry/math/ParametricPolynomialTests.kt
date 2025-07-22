@@ -1,6 +1,6 @@
 package dev.toolkt.geometry.math
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.math.algebra.polynomials.CubicPolynomial
 import dev.toolkt.math.algebra.polynomials.LowPolynomial
@@ -73,7 +73,7 @@ class ParametricPolynomialTests {
         assertEqualsWithTolerance(
             expected = firstNormalized,
             actual = secondNormalized,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 1e-3,
             )
         )

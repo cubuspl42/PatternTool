@@ -3,6 +3,7 @@ package dev.toolkt.geometry.math.implicit_curve_functions
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.math.algebra.linear.vectors.Vector2
@@ -48,7 +49,7 @@ data class ImplicitQuadraticCurveFunction(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is ImplicitQuadraticCurveFunction -> false
         !a2.equalsWithTolerance(other.a2, tolerance = tolerance) -> false

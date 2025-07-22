@@ -4,6 +4,7 @@ import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.iterable.uncons
 import dev.toolkt.core.iterable.untrail
+import dev.toolkt.core.numeric.NumericTolerance
 
 /**
  * A polynomial of a low degree (at most cubic)
@@ -42,7 +43,7 @@ sealed class LowPolynomial : Polynomial {
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Shift -> false
             !shift.equalsWithTolerance(other.shift, tolerance = tolerance) -> false
@@ -68,7 +69,7 @@ sealed class LowPolynomial : Polynomial {
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Dilation -> false
             !dilation.equalsWithTolerance(other.dilation, tolerance = tolerance) -> false
@@ -110,7 +111,7 @@ sealed class LowPolynomial : Polynomial {
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Modulation -> false
             !shift.equalsWithTolerance(other.shift, tolerance = tolerance) -> false
@@ -170,7 +171,7 @@ sealed class LowPolynomial : Polynomial {
     override fun findRoots(
         maxDepth: Int,
         range: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): List<Double> = findRootsAnalytically().filter {
         it in range
     }

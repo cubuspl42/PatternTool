@@ -4,6 +4,7 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Size
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -27,7 +28,7 @@ data class PureSvgRectangle(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is PureSvgRectangle -> false
         !position.equalsWithTolerance(other.position, tolerance) -> false

@@ -5,7 +5,7 @@
  */
 package dev.toolkt.geometry
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.divideWithTolerance
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 
@@ -30,7 +30,7 @@ val Vector2.y
  */
 fun Vector2.findProjectionScale(
     other: Vector2,
-    tolerance: NumericObject.Tolerance,
+    tolerance: NumericTolerance,
 ): Double? = this.dot(other).divideWithTolerance(
     other.magnitudeSquared,
     tolerance = tolerance,

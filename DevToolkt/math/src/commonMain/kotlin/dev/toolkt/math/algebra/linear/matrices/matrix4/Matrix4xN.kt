@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.linear.matrices.matrix4
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.math.algebra.linear.matrices.matrix2.Matrix4x2
 import dev.toolkt.math.algebra.linear.matrices.matrix2.MatrixNx2
@@ -79,7 +80,7 @@ data class Matrix4xN(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when (other) {
         !is Matrix4xN -> false
         else -> columns.equalsWithTolerance(other.columns, tolerance = tolerance)

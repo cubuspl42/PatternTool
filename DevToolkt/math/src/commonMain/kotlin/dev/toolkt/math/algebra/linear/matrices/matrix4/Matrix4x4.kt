@@ -3,6 +3,7 @@ package dev.toolkt.math.algebra.linear.matrices.matrix4
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.math.algebra.linear.vectors.Vector4
 import dev.toolkt.core.iterable.indexOfMaxBy
+import dev.toolkt.core.numeric.NumericTolerance
 import kotlin.jvm.JvmName
 import kotlin.math.absoluteValue
 
@@ -63,7 +64,7 @@ sealed class Matrix4x4 : NumericObject {
     ): Boolean {
         return equalsWithTolerance(
             other = other as? NumericObject ?: return false,
-            tolerance = NumericObject.Tolerance.Zero,
+            tolerance = NumericTolerance.Zero,
         )
     }
 
@@ -382,7 +383,7 @@ sealed class Matrix4x4 : NumericObject {
 
     protected fun equalsWithToleranceRowWise(
         other: Matrix4x4,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         !row0.equalsWithTolerance(other.row0, tolerance = tolerance) -> false
         !row1.equalsWithTolerance(other.row1, tolerance = tolerance) -> false

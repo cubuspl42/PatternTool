@@ -3,6 +3,7 @@ package dev.toolkt.dom.pure.svg
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Size
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
@@ -27,7 +28,7 @@ data class PureSvgMarker(
     }
 
     override fun equalsWithTolerance(
-        other: NumericObject, tolerance: NumericObject.Tolerance
+        other: NumericObject, tolerance: NumericTolerance
     ): Boolean = when {
         other !is PureSvgMarker -> false
         id != other.id -> false

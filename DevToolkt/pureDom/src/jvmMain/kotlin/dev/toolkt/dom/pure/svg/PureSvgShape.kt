@@ -2,6 +2,7 @@ package dev.toolkt.dom.pure.svg
 
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import dev.toolkt.dom.pure.PureColor
@@ -23,7 +24,7 @@ abstract class PureSvgShape : PureSvgGraphicsElement() {
         fun toDashArrayString(): String? = dashArray?.joinToString(" ") { it.toString() }
 
         override fun equalsWithTolerance(
-            other: NumericObject, tolerance: NumericObject.Tolerance
+            other: NumericObject, tolerance: NumericTolerance
         ): Boolean = when {
             other !is Stroke -> false
             color != other.color -> false
@@ -44,7 +45,7 @@ abstract class PureSvgShape : PureSvgGraphicsElement() {
             }
 
             override fun equalsWithTolerance(
-                other: NumericObject, tolerance: NumericObject.Tolerance
+                other: NumericObject, tolerance: NumericTolerance
             ): Boolean = when {
                 other !is Specified -> false
                 color != other.color -> false
@@ -59,7 +60,7 @@ abstract class PureSvgShape : PureSvgGraphicsElement() {
 
             override fun equalsWithTolerance(
                 other: NumericObject,
-                tolerance: NumericObject.Tolerance
+                tolerance: NumericTolerance
             ): Boolean {
                 TODO("Not yet implemented")
             }

@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import kotlin.math.sqrt
@@ -35,7 +36,7 @@ data class Complex(
     }
 
     fun toReal(
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? = when {
         imaginary.equalsZeroWithTolerance(tolerance = tolerance) -> real
         else -> null
@@ -43,7 +44,7 @@ data class Complex(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is Complex -> false
         !real.equalsWithTolerance(other.real, tolerance) -> false

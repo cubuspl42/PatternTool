@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.linear.matrices.matrix4
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.matrices.matrix3.Matrix3x3
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.linear.vectors.Vector3
@@ -38,7 +39,7 @@ data class Matrix3x2(
     ): Boolean {
         return equalsWithTolerance(
             other = other as? NumericObject ?: return false,
-            tolerance = NumericObject.Tolerance.Zero,
+            tolerance = NumericTolerance.Zero,
         )
     }
 
@@ -65,7 +66,7 @@ data class Matrix3x2(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance
+        tolerance: NumericTolerance
     ): Boolean = when {
         other !is Matrix3x2 -> false
         !row0.equalsWithTolerance(other.row0, tolerance = tolerance) -> false

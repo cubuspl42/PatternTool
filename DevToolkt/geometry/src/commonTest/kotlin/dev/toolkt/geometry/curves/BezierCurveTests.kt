@@ -1,6 +1,6 @@
 package dev.toolkt.geometry.curves
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
@@ -82,7 +82,7 @@ class BezierCurveTests {
             coord = OpenCurve.Coord(t = 0.43483),
         )
 
-        val tolerance = NumericObject.Tolerance.Absolute(
+        val tolerance = NumericTolerance.Absolute(
             absoluteTolerance = 1e-2,
         )
 

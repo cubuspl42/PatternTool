@@ -1,18 +1,18 @@
 package dev.toolkt.geometry.curves
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.geometry.Point
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class BezierCurveArcLengthTests {
-    private val arcLengthVerificationTolerance = NumericObject.Tolerance.Relative(
+    private val arcLengthVerificationTolerance = NumericTolerance.Relative(
         // 0.5 %
         relativeTolerance = 0.005,
     )
 
-    private val arcLengthLocationTolerance = NumericObject.Tolerance.Absolute(
+    private val arcLengthLocationTolerance = NumericTolerance.Absolute(
         absoluteTolerance = 1e-3,
     )
 
@@ -155,7 +155,7 @@ class BezierCurveArcLengthTests {
         val locatedCoord = assertNotNull(
             bezierCurve.locateArcLength(
                 arcLength = actualArcLength,
-                tolerance = NumericObject.Tolerance.Absolute(
+                tolerance = NumericTolerance.Absolute(
                     absoluteTolerance = 1e-2,
                 ),
             ),

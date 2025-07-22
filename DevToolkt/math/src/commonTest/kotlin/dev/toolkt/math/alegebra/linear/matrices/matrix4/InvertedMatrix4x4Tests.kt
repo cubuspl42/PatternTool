@@ -1,6 +1,6 @@
 package dev.toolkt.math.alegebra.linear.matrices.matrix4
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.matrices.matrix4.InvertedMatrix4x4
 import dev.toolkt.math.algebra.linear.matrices.matrix4.Matrix4x4
 import dev.toolkt.math.algebra.linear.vectors.Vector4
@@ -9,7 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertIs
 
 class InvertedMatrix4x4Tests {
-    private val tolerance = NumericObject.Tolerance.Absolute(
+    private val tolerance = NumericTolerance.Absolute(
         absoluteTolerance = 10e-4,
     )
 

@@ -1,6 +1,7 @@
 package dev.toolkt.dom.pure.svg
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.transformations.Transformation
 import org.w3c.dom.Document
@@ -29,7 +30,7 @@ data class PureSvgGroup(
     }
 
     override fun equalsWithTolerance(
-        other: NumericObject, tolerance: NumericObject.Tolerance
+        other: NumericObject, tolerance: NumericTolerance
     ): Boolean = when {
         other !is PureSvgGroup -> false
         id != other.id -> false

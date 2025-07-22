@@ -1,6 +1,7 @@
 package dev.toolkt.dom.pure
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.dom.pure.style.PurePropertyValue
 
@@ -40,7 +41,7 @@ data class PureDimension<out U : PureUnit>(
         }
 
     override fun equalsWithTolerance(
-        other: NumericObject, tolerance: NumericObject.Tolerance,
+        other: NumericObject, tolerance: NumericTolerance,
     ): Boolean = when {
         other !is PureDimension<*> -> false
         !value.equalsWithTolerance(other.value, tolerance = tolerance) -> false

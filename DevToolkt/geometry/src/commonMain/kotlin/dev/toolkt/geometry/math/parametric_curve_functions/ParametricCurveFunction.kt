@@ -1,7 +1,7 @@
 package dev.toolkt.geometry.math.parametric_curve_functions
 
 import dev.toolkt.core.iterable.LinSpace
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCurveFunction
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.InvertedCurveFunction.InversionResult
@@ -99,7 +99,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         fun overlap(
             source: CubicBezierBinomial,
             target: CubicBezierBinomial,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean {
             val modulatedSourcePolynomial = source.toParametricPolynomial().transform(modulation)
 
@@ -123,7 +123,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     }
 
     fun findCriticalPoints(
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): ParametricPolynomial.RootSet = findDerivative().findRoots(
         range = primaryTRange,
         tolerance = tolerance,
@@ -147,7 +147,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     fun solveIntersectionEquation(
         other: ParametricCurveFunction,
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): List<Double> {
         val intersectionPolynomial = findIntersectionPolynomial(other = other)
 
@@ -173,7 +173,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
 
     protected fun Polynomial.findTValueRoots(
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): List<Double> = this.findRoots(
         range = tRange,
         tolerance = tolerance,
@@ -198,7 +198,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     }
 
     abstract fun buildInvertedFunction(
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): InvertedCurveFunction
 
     /**
@@ -214,7 +214,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     abstract fun locatePoint(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double?
 
     // FIXME: Nuke?
@@ -226,7 +226,7 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
      */
     abstract fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double?
 
     /**

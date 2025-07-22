@@ -1,6 +1,6 @@
 package dev.toolkt.math.alegebra.linear.vectors
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.vectors.Vector4
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import kotlin.test.Test
@@ -18,7 +18,7 @@ class Vector4Tests {
         assertEqualsWithTolerance(
             expected = 3.16228,
             actual = vector.magnitude,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 1e-4,
             ),
         )

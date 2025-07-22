@@ -1,6 +1,7 @@
 package dev.toolkt.geometry.math
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.Vector2
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import dev.toolkt.geometry.x
@@ -104,7 +105,7 @@ data class ParametricPolynomial<P : LowPolynomial>(
 
     fun findRoots(
         range: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): RootSet = RootSet(
         xRoots = xPolynomial.findRoots(
             range = range,
@@ -123,7 +124,7 @@ data class ParametricPolynomial<P : LowPolynomial>(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is ParametricPolynomial<*> -> false
         !xPolynomial.equalsWithTolerance(other.xPolynomial) -> false

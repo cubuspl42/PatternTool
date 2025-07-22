@@ -1,7 +1,7 @@
 package dev.toolkt.geometry.curves
 
 import dev.toolkt.geometry.Point
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 
 internal data class ExpectedIntersection(
@@ -21,7 +21,7 @@ internal fun <CurveT : OpenCurve> testIntersectionsSymmetric(
     secondCurve: CurveT,
     findIntersections: (CurveT, CurveT) -> Set<OpenCurve.Intersection>,
     expectedIntersections: List<ExpectedIntersection>,
-    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
+    tolerance: NumericTolerance = NumericTolerance.Default,
 ) {
     val intersectionsOneWay = findIntersections(
         firstCurve,
@@ -51,7 +51,7 @@ internal fun <CurveT : OpenCurve> testIntersectionsSymmetric(
 internal fun assertIntersectionsEqual(
     expectedIntersections: List<ExpectedIntersection>,
     actualIntersections: Set<OpenCurve.Intersection>,
-    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
+    tolerance: NumericTolerance = NumericTolerance.Default,
 ) {
     val expected = expectedIntersections.map { intersection ->
         object : OpenCurve.Intersection() {

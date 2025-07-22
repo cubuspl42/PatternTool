@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.linear.matrices.matrix3
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 
 internal data class ColumnMajorMatrix3x3(
@@ -40,7 +41,7 @@ internal data class ColumnMajorMatrix3x3(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other is Matrix3x3 -> when {
             other is ColumnMajorMatrix3x3 -> when {

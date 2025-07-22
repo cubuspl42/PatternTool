@@ -11,6 +11,7 @@ import dev.toolkt.core.toReprString
 import dev.toolkt.core.iterable.clusterSimilarConsecutive
 import dev.toolkt.core.iterable.withNextCyclic
 import dev.toolkt.core.iterable.withPreviousCyclic
+import dev.toolkt.core.numeric.NumericTolerance
 
 /**
  * A composite closed curve guaranteed only to be positionally-continuous (C0).
@@ -93,7 +94,7 @@ data class ClosedSpline(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is ClosedSpline -> false
         !cyclicLinks.equalsWithTolerance(other.cyclicLinks, tolerance) -> false

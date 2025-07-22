@@ -1,6 +1,7 @@
 package dev.toolkt.geometry.math.parametric_curve_functions
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 
@@ -33,18 +34,18 @@ data class ParametricPointFunction(
     override fun findDerivativeCurve(): ParametricPointFunction = ParametricPointFunction.Zero
 
     override fun buildInvertedFunction(
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): InvertedCurveFunction = InvertedPointFunction
 
     override fun locatePoint(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? = TODO()
 
     override fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double = 0.0
 
     override fun toReprString(): String {
@@ -57,7 +58,7 @@ data class ParametricPointFunction(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is ParametricPointFunction -> false
         !p.equalsWithTolerance(other.p, tolerance = tolerance) -> false

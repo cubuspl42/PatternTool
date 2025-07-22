@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.polynomials
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
 
@@ -12,7 +13,7 @@ data class LinearPolynomial internal constructor(
         fun normalized(
             a0: Double,
             a1: Double,
-            tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+            tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
         ): SubQuadraticPolynomial = when {
             a1.equalsZeroWithTolerance(tolerance = tolerance) -> ConstantPolynomial(
                 a0 = a0,
@@ -65,7 +66,7 @@ data class LinearPolynomial internal constructor(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is LinearPolynomial -> false
         !a0.equalsWithTolerance(other.a0, tolerance = tolerance) -> false

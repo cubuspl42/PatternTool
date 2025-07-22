@@ -6,7 +6,7 @@ import dev.toolkt.core.range.copy
 import dev.toolkt.core.range.linearlyInterpolate
 import dev.toolkt.core.range.midpoint
 import dev.toolkt.core.range.width
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import kotlin.math.sqrt
 
@@ -23,7 +23,7 @@ private val invPhi2 = (3 - sqrt(5.0)) / 2.0  // 1 / phi^2
  * value of the function. If the function wasn't in fact unimodal, returns null.
  */
 fun <T : Comparable<T>> ClosedFloatingPointRange<Double>.minByWithSelecteeOrNull(
-    tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+    tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
     function: (Double) -> T,
 ): Pair<Double, T>? {
     val (minValue, minSelectee) = this.minByUnimodalWithSelectee(
@@ -49,7 +49,7 @@ fun <T : Comparable<T>> ClosedFloatingPointRange<Double>.minByWithSelecteeOrNull
  * range start or its end.
  */
 fun <T : Comparable<T>> ClosedFloatingPointRange<Double>.minByUnimodalWithSelectee(
-    tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+    tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
     function: (Double) -> T,
 ): Pair<Double, T> = minByUnimodalWithSelecteeRecursive(
     tolerance = tolerance,
@@ -58,7 +58,7 @@ fun <T : Comparable<T>> ClosedFloatingPointRange<Double>.minByUnimodalWithSelect
 )
 
 private tailrec fun <T : Comparable<T>> minByUnimodalWithSelecteeRecursive(
-    tolerance: NumericObject.Tolerance.Absolute,
+    tolerance: NumericTolerance.Absolute,
     function: (Double) -> T,
     searchRange: ClosedFloatingPointRange<Double>,
     lowerPoint: Sample<Double, T> = function.invokeSampling(searchRange.linearlyInterpolate(t = invPhi2)),

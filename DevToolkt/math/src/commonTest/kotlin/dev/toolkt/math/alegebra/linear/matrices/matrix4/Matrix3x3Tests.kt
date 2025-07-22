@@ -1,6 +1,6 @@
 package dev.toolkt.math.alegebra.linear.matrices.matrix4
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.matrices.matrix3.Matrix3x3
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
@@ -35,7 +35,7 @@ class Matrix3x3Tests {
                 Vector3(-1.24819, 2.2592, -1.11111),
             ),
             actual = matrixInverted,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 1e-4,
             ),
         )

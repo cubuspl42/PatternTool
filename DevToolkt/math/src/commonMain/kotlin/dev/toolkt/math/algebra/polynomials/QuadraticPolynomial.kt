@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.polynomials
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import kotlin.math.sqrt
@@ -15,7 +16,7 @@ data class QuadraticPolynomial internal constructor(
             a0: Double,
             a1: Double,
             a2: Double,
-            tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+            tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
         ): QuadraticPolynomial {
             require(!a2.equalsZeroWithTolerance(tolerance = tolerance)) {
                 "Coefficient a2 must not be zero (within tolerance)."
@@ -32,7 +33,7 @@ data class QuadraticPolynomial internal constructor(
             a0: Double,
             a1: Double,
             a2: Double,
-            tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+            tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
         ): SubCubicPolynomial = when {
             a2.equalsZeroWithTolerance(tolerance = tolerance) -> LinearPolynomial.normalized(
                 a0 = a0,
@@ -130,7 +131,7 @@ data class QuadraticPolynomial internal constructor(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is QuadraticPolynomial -> false
         !a0.equalsWithTolerance(other.a0, tolerance = tolerance) -> false

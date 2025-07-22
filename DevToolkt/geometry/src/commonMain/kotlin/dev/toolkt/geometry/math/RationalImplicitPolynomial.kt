@@ -4,6 +4,7 @@ import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCurveFunction
 import dev.toolkt.math.Ratio
 import dev.toolkt.math.algebra.Function
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 
 data class RationalImplicitPolynomial(
@@ -19,7 +20,7 @@ data class RationalImplicitPolynomial(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is RationalImplicitPolynomial -> false
         !nominatorFunction.equalsWithTolerance(other.nominatorFunction, tolerance = tolerance) -> false

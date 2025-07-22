@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.polynomials
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.RealFunction
 import dev.toolkt.math.algebra.complex_polynomials.ComplexPolynomial
 import dev.toolkt.math.algebra.toComplex
@@ -99,7 +100,7 @@ sealed interface Polynomial : NumericObject, RealFunction<Double> {
     fun findRoots(
         maxDepth: Int = 20,
         range: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+        tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
     ): List<Double>
 
     /**
