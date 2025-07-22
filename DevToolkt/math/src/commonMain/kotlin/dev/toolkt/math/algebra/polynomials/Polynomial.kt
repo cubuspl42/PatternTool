@@ -3,8 +3,6 @@ package dev.toolkt.math.algebra.polynomials
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.RealFunction
-import dev.toolkt.math.algebra.complex_polynomials.ComplexPolynomial
-import dev.toolkt.math.algebra.toComplex
 import kotlin.math.max
 
 internal fun areCloseNever(
@@ -136,10 +134,6 @@ sealed interface Polynomial : NumericObject, RealFunction<Double> {
 
 val Polynomial.degree: Int
     get() = coefficients.size - 1
-
-fun Polynomial.toComplexPolynomial() = ComplexPolynomial.Companion.normalized(
-    coefficients = coefficients.map { it.toComplex() },
-)
 
 fun Polynomial.getCoefficient(i: Int): Double? = coefficients.getOrNull(i)
 
