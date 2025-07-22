@@ -348,8 +348,6 @@ class BezierCurveIntersectionTests {
      * self-intersecting original curve
      */
     @Test
-    @Ignore // FIXME: Make it work
-    // This test started failing with the simplified numeric equation solving
     fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_xFromLoop1() {
         val firstBezierCurve = BezierCurve(
             start = Point(383.0995044708252, 275.80810546875),
@@ -387,8 +385,6 @@ class BezierCurveIntersectionTests {
      * self-intersecting original curve
      */
     @Test
-    @Ignore // FIXME: Make it work
-    // This test started failing with the simplified numeric equation solving
     fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_xFromLoop2() {
         // A loop cut into two pieces that make it non-obvious that any loop
         // is involved at all (for some reason, possibly numeric accuracy, this

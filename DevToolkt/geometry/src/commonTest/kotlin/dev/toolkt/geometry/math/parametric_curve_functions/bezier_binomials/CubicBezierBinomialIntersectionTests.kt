@@ -5,7 +5,6 @@ import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import dev.toolkt.math.algebra.linear.vectors.Vector2
-import kotlin.test.Ignore
 import kotlin.test.Test
 
 class CubicBezierBinomialIntersectionTests {
@@ -135,7 +134,6 @@ class CubicBezierBinomialIntersectionTests {
      * At least one intersection should be found
      */
     @Test
-    @Ignore // FIXME: The new root finding improves this, adjust the expectations
     fun testSolveIntersections_cubicBezierBinomials_c_loop_multipleIntersections_3() {
         val firstCubicBezierBinomial = CubicBezierBinomial(
             Vector2(516.0, 340.0),
@@ -162,8 +160,10 @@ class CubicBezierBinomialIntersectionTests {
         ).sorted()
 
         assertEqualsWithTolerance(
-            // FIXME: Find _any_ intersections!
-            expected = emptyList(),
+            expected = listOf(
+                0.39889806497300995,
+                0.4018584581119655,
+            ),
             actual = tValues.filter { it in OpenCurve.Coord.tRange },
             tolerance = tolerance,
         )
