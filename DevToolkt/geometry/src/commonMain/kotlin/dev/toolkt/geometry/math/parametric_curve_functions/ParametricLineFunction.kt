@@ -61,7 +61,7 @@ data class ParametricLineFunction(
     ): Double? = solveIntersectionEquation(
         other = other,
         tRange = primaryTRange,
-        tolerance = NumericTolerance.Default,
+        tolerance = NumericTolerance.Absolute.Default,
     ).singleOrNull()
 
     override fun findDerivativeCurve(): ParametricPointFunction = ParametricPointFunction(

@@ -13,7 +13,7 @@ data class LinearPolynomial internal constructor(
         fun normalized(
             a0: Double,
             a1: Double,
-            tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+            tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
         ): SubQuadraticPolynomial = when {
             a1.equalsZeroWithTolerance(tolerance = tolerance) -> ConstantPolynomial(
                 a0 = a0,

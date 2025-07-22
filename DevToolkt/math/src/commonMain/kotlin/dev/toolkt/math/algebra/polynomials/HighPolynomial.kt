@@ -11,7 +11,7 @@ data class HighPolynomial internal constructor(
     companion object {
         fun normalized(
             coefficients: List<Double>,
-            tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+            tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
         ): Polynomial {
             require(coefficients.isNotEmpty()) {
                 "HighPolynomial must have at least one coefficient, but got empty coefficients list"

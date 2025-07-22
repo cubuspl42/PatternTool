@@ -48,7 +48,7 @@ class Ray(
         val t1 = l1.locatePoint(
             potentialIntersectionPoint,
             tRange = primaryTRange,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         ) ?: return null
 
         if (t1 < 0.0) return null

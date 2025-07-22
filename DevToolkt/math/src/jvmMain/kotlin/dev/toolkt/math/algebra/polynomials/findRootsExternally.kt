@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.polynomials
 
 import dev.toolkt.core.numeric.NumericTolerance
+import dev.toolkt.core.numeric.equalsApproximatelyZero
 import org.apache.commons.math3.analysis.solvers.LaguerreSolver
 
 fun Polynomial.findRootsExternally(
@@ -16,7 +17,7 @@ fun Polynomial.findRootsExternally(
 
     return roots.mapNotNull {
         when {
-            tolerance.equalsApproximately(it.imaginary, 0.0) -> it.real
+            tolerance.equalsApproximatelyZero(it.imaginary) -> it.real
             else -> null
         }
     }
