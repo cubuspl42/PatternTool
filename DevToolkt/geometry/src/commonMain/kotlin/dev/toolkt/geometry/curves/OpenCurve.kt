@@ -17,6 +17,7 @@ import dev.toolkt.core.math.avgOf
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.iterable.clusterSimilar
 import dev.toolkt.core.math.split
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.range.extend
 import dev.toolkt.core.range.width
 import kotlin.jvm.JvmInline
@@ -153,7 +154,7 @@ abstract class OpenCurve : NumericObject, ReprObject {
 
             fun of(
                 t: Double,
-                tolerance: NumericObject.Tolerance.Absolute,
+                tolerance: NumericTolerance.Absolute,
             ): Coord? = when (t) {
                 in tRange.extend(tolerance.absoluteTolerance) -> Coord(
                     t = t.coerceIn(tRange),
@@ -180,7 +181,7 @@ abstract class OpenCurve : NumericObject, ReprObject {
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Coord -> false
             !t.equalsWithTolerance(other.t, tolerance) -> false
@@ -254,7 +255,7 @@ abstract class OpenCurve : NumericObject, ReprObject {
 
         final override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Intersection -> false
             !point.equalsWithTolerance(other.point, tolerance) -> false

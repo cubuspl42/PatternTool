@@ -3,6 +3,7 @@ package dev.toolkt.dom.pure.svg
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import org.w3c.dom.Document
@@ -26,7 +27,7 @@ data class PureSvgCircle(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is PureSvgCircle -> false
         !center.equalsWithTolerance(other.center, tolerance) -> false

@@ -1,11 +1,11 @@
 package dev.toolkt.math.algebra.polynomials
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import org.apache.commons.math3.analysis.solvers.LaguerreSolver
 
 fun Polynomial.findRootsExternally(
     guessedRoot: Double,
-    tolerance: NumericObject.Tolerance.Absolute,
+    tolerance: NumericTolerance.Absolute,
 ): List<Double> {
     val solver = LaguerreSolver(tolerance.absoluteTolerance)
 

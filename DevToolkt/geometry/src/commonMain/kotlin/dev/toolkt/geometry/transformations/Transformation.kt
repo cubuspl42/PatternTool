@@ -3,6 +3,7 @@ package dev.toolkt.geometry.transformations
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.transformations.PrimitiveTransformation.Universal
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 
 sealed class Transformation : NumericObject {
@@ -26,7 +27,7 @@ sealed class Transformation : NumericObject {
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean {
             TODO("Not yet implemented")
         }

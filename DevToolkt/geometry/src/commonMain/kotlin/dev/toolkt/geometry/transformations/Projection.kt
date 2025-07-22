@@ -1,6 +1,7 @@
 package dev.toolkt.geometry.transformations
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 
 data class Projection(
     val scaling: PrimitiveTransformation.Scaling,
@@ -28,7 +29,7 @@ data class Projection(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean {
         TODO("Not yet implemented")
     }

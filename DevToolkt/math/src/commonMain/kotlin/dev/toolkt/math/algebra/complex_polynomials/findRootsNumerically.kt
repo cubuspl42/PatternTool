@@ -1,7 +1,7 @@
 package dev.toolkt.math.algebra.complex_polynomials
 
 import dev.toolkt.math.algebra.Complex
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.div
 import dev.toolkt.math.algebra.sqrt
 import dev.toolkt.math.algebra.times
@@ -12,7 +12,7 @@ import dev.toolkt.math.algebra.times
 fun ComplexPolynomial.findRootsNumerically(
     maxDepth: Int,
     guessedRoot: Complex,
-    tolerance: NumericObject.Tolerance.Absolute,
+    tolerance: NumericTolerance.Absolute,
 ): List<Complex> {
     val primaryRoot = findPrimaryRootNumerically(
         maxDepth = maxDepth,
@@ -40,7 +40,7 @@ fun ComplexPolynomial.findRootsNumerically(
 private fun ComplexPolynomial.findPrimaryRootNumerically(
     maxDepth: Int,
     guessedRoot: Complex,
-    tolerance: NumericObject.Tolerance.Absolute,
+    tolerance: NumericTolerance.Absolute,
 ): Complex? {
     val n = degree.toDouble()
 

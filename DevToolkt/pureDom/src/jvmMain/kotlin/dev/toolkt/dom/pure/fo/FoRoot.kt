@@ -1,6 +1,7 @@
 package dev.toolkt.dom.pure.fo
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.dom.pure.PureDimension
 import dev.toolkt.dom.pure.svg.PureSvg
@@ -110,7 +111,7 @@ data class FoRoot(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is FoRoot -> false
         !pageWidth.equalsWithTolerance(other.pageWidth, tolerance) -> false

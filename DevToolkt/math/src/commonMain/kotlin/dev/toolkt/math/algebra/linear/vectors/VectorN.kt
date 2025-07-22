@@ -1,7 +1,7 @@
 package dev.toolkt.math.algebra.linear.vectors
 
 import dev.toolkt.core.numeric.NumericObject
-import dev.toolkt.core.numeric.NumericObject.Tolerance
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.math.algebra.linear.matrices.matrix2.MatrixNx2
 import kotlin.math.sqrt
@@ -82,7 +82,7 @@ data class VectorN(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is VectorN -> false
         !a.equalsWithTolerance(

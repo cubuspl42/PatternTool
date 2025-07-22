@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.polynomials
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.RealFunction
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
@@ -34,7 +35,7 @@ data class CubicPolynomial internal constructor(
             a1: Double,
             a2: Double,
             a3: Double,
-            tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+            tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
         ): LowPolynomial = when {
             a3.equalsZeroWithTolerance(tolerance = tolerance) -> QuadraticPolynomial.normalized(
                 a0 = a0,
@@ -148,7 +149,7 @@ data class CubicPolynomial internal constructor(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is CubicPolynomial -> false
         !a0.equalsWithTolerance(other.a0, tolerance = tolerance) -> false

@@ -2,6 +2,7 @@ package dev.toolkt.geometry.math.implicit_curve_functions
 
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.x
@@ -90,7 +91,7 @@ data class ImplicitLineFunction(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is ImplicitLineFunction -> false
         !a.equalsWithTolerance(other.a, tolerance = tolerance) -> false

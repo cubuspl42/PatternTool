@@ -1,7 +1,7 @@
 package dev.toolkt.geometry
 
 import dev.toolkt.core.numeric.NumericObject
-import dev.toolkt.core.numeric.NumericObject.Tolerance
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.curves.PrimitiveCurve
@@ -34,7 +34,7 @@ data class LineSegment(
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = other == Edge
 
         override fun toString(): String = "LineSegment.Edge"
@@ -67,7 +67,7 @@ data class LineSegment(
             return PrimitiveCurve.findIntersectionsByEquationSolving(
                 simpleSubjectCurve = subjectLineSegment,
                 complexObjectCurve = objectPrimitiveCurve,
-                tolerance = Tolerance.Default,
+                tolerance = NumericTolerance.Default,
             )
         }
     }
@@ -117,7 +117,7 @@ data class LineSegment(
         val tValue = basisFunction.locatePoint(
             point = point.pointVector,
             tRange = primaryTRange,
-            tolerance = Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         ) ?: return when {
             // If a line is degenerated, _all_ t-values are a good answer, but
             // we don't want to say that the point is not on the curve when it
@@ -132,7 +132,7 @@ data class LineSegment(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is LineSegment -> false
         !start.equalsWithTolerance(other.start, tolerance = tolerance) -> false
@@ -173,7 +173,7 @@ data class LineSegment(
         intersections = PrimitiveCurve.findIntersectionsByEquationSolving(
             simpleSubjectCurve = this,
             complexObjectCurve = subjectBezierCurve,
-            tolerance = Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         ),
     )
 

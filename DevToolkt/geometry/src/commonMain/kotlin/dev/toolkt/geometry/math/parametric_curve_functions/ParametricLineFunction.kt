@@ -9,6 +9,7 @@ import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitLineFunction
 import dev.toolkt.core.math.avgOf
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
 
 /**
@@ -60,7 +61,7 @@ data class ParametricLineFunction(
     ): Double? = solveIntersectionEquation(
         other = other,
         tRange = primaryTRange,
-        tolerance = NumericObject.Tolerance.Default,
+        tolerance = NumericTolerance.Default,
     ).singleOrNull()
 
     override fun findDerivativeCurve(): ParametricPointFunction = ParametricPointFunction(
@@ -68,7 +69,7 @@ data class ParametricLineFunction(
     )
 
     override fun buildInvertedFunction(
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): InvertedCurveFunction = when {
         d.equalsWithTolerance(
             Vector2.Zero,
@@ -106,7 +107,7 @@ data class ParametricLineFunction(
     override fun locatePoint(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? = locatePoint(
         point = point,
         tolerance = tolerance,
@@ -116,7 +117,7 @@ data class ParametricLineFunction(
 
     fun locatePoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? {
         val tx: Double? = (point.x - s.x).divideWithTolerance(
             d.x,
@@ -142,7 +143,7 @@ data class ParametricLineFunction(
 
     override fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? {
         val sp = point - s
         return sp.findProjectionScale(d, tolerance = tolerance)
@@ -165,7 +166,7 @@ data class ParametricLineFunction(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is ParametricLineFunction -> false
         !d.equalsWithTolerance(other.d, tolerance = tolerance) -> false

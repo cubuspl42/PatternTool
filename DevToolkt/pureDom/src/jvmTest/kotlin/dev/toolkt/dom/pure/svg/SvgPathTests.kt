@@ -1,6 +1,6 @@
 package dev.toolkt.dom.pure.svg
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.utils.xml.childElements
@@ -80,7 +80,7 @@ class SvgPathTests {
         assertEqualsWithTolerance(
             expected = expectedPath,
             actual = path,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 1e-4,
             ),
         )

@@ -1,10 +1,9 @@
 package dev.toolkt.geometry.curves
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.SpatialObject
-import dev.toolkt.geometry.curves.OpenCurve.Coord
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -38,7 +37,7 @@ class BezierCurveLocationTests {
                     tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         )
 
         assertEqualsWithTolerance(
@@ -49,7 +48,7 @@ class BezierCurveLocationTests {
                     tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         )
 
         assertEqualsWithTolerance(
@@ -61,7 +60,7 @@ class BezierCurveLocationTests {
                     tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         )
     }
 
@@ -86,7 +85,7 @@ class BezierCurveLocationTests {
                     tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         )
 
         assertEqualsWithTolerance(
@@ -97,7 +96,7 @@ class BezierCurveLocationTests {
                     tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         )
 
         assertEqualsWithTolerance(
@@ -109,7 +108,7 @@ class BezierCurveLocationTests {
                     tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         )
     }
 }

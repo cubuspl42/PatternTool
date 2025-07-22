@@ -1,7 +1,7 @@
 package dev.toolkt.math.algebra.polynomials
 
 import dev.toolkt.core.math.haveDifferentSigns
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import dev.toolkt.core.range.isEmptyWithTolerance
 import dev.toolkt.core.range.midpoint
@@ -26,7 +26,7 @@ fun RealFunction<Double>.findRootsNumericallyInRange(
      * - a given sign-changing range's width is close enough to zero to consider its center a root
      * - f(x0) is close enough to zero to consider x0 a root
      */
-    tolerance: NumericObject.Tolerance.Absolute,
+    tolerance: NumericTolerance.Absolute,
 ): List<Double> {
     // We assume that the number of segments is large enough that a single
     // segment contains at most one root.
@@ -69,7 +69,7 @@ private fun RealFunction<Double>.changesSignDefinitely(
  */
 private fun RealFunction<Double>.findRootByBisection(
     subRange: OpenEndRange<Double>,
-    tolerance: NumericObject.Tolerance.Absolute,
+    tolerance: NumericTolerance.Absolute,
     maxDepth: Int = 128,
 ): Double {
     tailrec fun RealFunction<Double>.findRootByBisectionRecursively(

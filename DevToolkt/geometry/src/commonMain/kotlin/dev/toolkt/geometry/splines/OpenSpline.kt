@@ -15,6 +15,7 @@ import dev.toolkt.core.toReprString
 import dev.toolkt.core.iterable.mapCarrying
 import dev.toolkt.core.iterable.uncons
 import dev.toolkt.core.iterable.withPrevious
+import dev.toolkt.core.numeric.NumericTolerance
 
 /**
  * A composite open curve assumed to be tangent-continuous (G1).
@@ -77,7 +78,7 @@ data class OpenSpline(
         fun findIntersections(
             subjectOpenSpline: OpenSpline,
             objectOpenSpline: OpenSpline,
-            tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
+            tolerance: NumericTolerance = NumericTolerance.Default,
         ): Set<Intersection> {
 
             TODO()
@@ -86,7 +87,7 @@ data class OpenSpline(
         fun findIntersections(
             subjectPrimitiveCurve: PrimitiveCurve,
             objectOpenSpline: OpenSpline,
-            tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
+            tolerance: NumericTolerance = NumericTolerance.Default,
         ): Set<Intersection> {
 
             TODO()
@@ -155,7 +156,7 @@ data class OpenSpline(
     ): Set<Intersection> = OpenSpline.findIntersections(
         subjectPrimitiveCurve = subjectLineSegment,
         objectOpenSpline = this,
-        tolerance = NumericObject.Tolerance.Default,
+        tolerance = NumericTolerance.Default,
     )
 
     override fun findIntersectionsBezierCurve(
@@ -163,7 +164,7 @@ data class OpenSpline(
     ): Set<Intersection> = OpenSpline.findIntersections(
         subjectPrimitiveCurve = subjectBezierCurve,
         objectOpenSpline = this,
-        tolerance = NumericObject.Tolerance.Default,
+        tolerance = NumericTolerance.Default,
     )
 
     override fun findIntersectionsOpenSpline(
@@ -171,12 +172,12 @@ data class OpenSpline(
     ): Set<Intersection> = OpenSpline.findIntersections(
         subjectOpenSpline = subjectSpline,
         objectOpenSpline = this,
-        tolerance = NumericObject.Tolerance.Default,
+        tolerance = NumericTolerance.Default,
     )
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is OpenSpline -> false
         !trailingSequentialLinks.equalsWithTolerance(other.links, tolerance) -> false

@@ -1,6 +1,7 @@
 package dev.toolkt.geometry.transformations
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
 
@@ -21,7 +22,7 @@ data class TransProjection(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean {
         TODO("Not yet implemented")
     }

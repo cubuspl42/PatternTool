@@ -20,6 +20,7 @@ import dev.toolkt.core.iterable.uncons
 import dev.toolkt.core.iterable.withNextBy
 import dev.toolkt.core.iterable.withNextCyclic
 import dev.toolkt.core.iterable.withPreviousCyclic
+import dev.toolkt.core.numeric.NumericTolerance
 import kotlin.jvm.JvmInline
 
 /**
@@ -61,7 +62,7 @@ data class Outline(
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Anchor -> false
             !position.equalsWithTolerance(other.position, tolerance) -> false
@@ -81,7 +82,7 @@ data class Outline(
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Handle -> false
             !position.equalsWithTolerance(other.position, tolerance) -> false
@@ -124,7 +125,7 @@ data class Outline(
 
             override fun equalsWithTolerance(
                 other: NumericObject,
-                tolerance: NumericObject.Tolerance,
+                tolerance: NumericTolerance,
             ): Boolean = when {
                 other !is Free -> false
 
@@ -185,7 +186,7 @@ data class Outline(
 
             override fun equalsWithTolerance(
                 other: NumericObject,
-                tolerance: NumericObject.Tolerance,
+                tolerance: NumericTolerance,
             ): Boolean = when {
                 other !is Smooth -> false
                 !rearHandle.equalsWithTolerance(other.rearHandle, tolerance) -> false
@@ -257,7 +258,7 @@ data class Outline(
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Edge -> false
 
@@ -295,7 +296,7 @@ data class Outline(
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Link -> false
             !edge.equalsWithTolerance(other.edge, tolerance) -> false
@@ -500,7 +501,7 @@ data class Outline(
         )
 
         override fun equalsWithTolerance(
-            other: NumericObject, tolerance: NumericObject.Tolerance
+            other: NumericObject, tolerance: NumericTolerance
         ): Boolean = when {
             other !is Verge -> false
             !startAnchor.equalsWithTolerance(other.startAnchor, tolerance) -> false
@@ -702,7 +703,7 @@ data class Outline(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is Outline -> false
         !cyclicLinks.equalsWithTolerance(other.cyclicLinks, tolerance = tolerance) -> false

@@ -1,6 +1,6 @@
 package dev.toolkt.math.alegebra.polynomials
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.math.algebra.polynomials.ConstantPolynomial
 import dev.toolkt.math.algebra.polynomials.CubicPolynomial
@@ -452,7 +452,7 @@ class HighPolynomialTests {
 
         val roots = highPolynomial.findRootsNumericallyInRange(
             range = 0.0..1.0,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 1e-4,
             ),
         )
@@ -460,7 +460,7 @@ class HighPolynomialTests {
         assertEqualsWithTolerance(
             expected = expectedRoots,
             actual = roots.sorted(),
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 1e-3,
             ),
         )

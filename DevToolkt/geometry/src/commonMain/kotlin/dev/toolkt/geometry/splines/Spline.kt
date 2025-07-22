@@ -6,6 +6,7 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.curves.PrimitiveCurve
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.indentLater
+import dev.toolkt.core.numeric.NumericTolerance
 
 /**
  * A composite curve, at least positionally-continuous (C0), either open or
@@ -41,7 +42,7 @@ interface Spline : NumericObject, ReprObject {
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Link -> false
             !edge.equalsWithTolerance(other.edge, tolerance) -> false

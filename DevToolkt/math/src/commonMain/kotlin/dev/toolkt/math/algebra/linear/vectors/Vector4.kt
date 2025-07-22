@@ -1,7 +1,7 @@
 package dev.toolkt.math.algebra.linear.vectors
 
 import dev.toolkt.core.numeric.NumericObject
-import dev.toolkt.core.numeric.NumericObject.Tolerance
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.math.algebra.linear.matrices.matrix2.Matrix4x2
 import dev.toolkt.math.algebra.linear.matrices.matrix4.Matrix4x3
@@ -120,7 +120,7 @@ data class Vector4(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is Vector4 -> false
         !a0.equalsWithTolerance(

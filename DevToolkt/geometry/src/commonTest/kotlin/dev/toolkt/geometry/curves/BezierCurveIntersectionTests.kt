@@ -1,6 +1,6 @@
 package dev.toolkt.geometry.curves
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Span
@@ -170,7 +170,7 @@ class BezierCurveIntersectionTests {
                     secondCoord = OpenCurve.Coord(t = 0.190765380859375),
                 ),
             ),
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 1e-2,
             ),
         )
@@ -559,7 +559,7 @@ class BezierCurveIntersectionTests {
         expectedEquationSolvingIntersections: List<ExpectedIntersection>,
         expectedSubdivisionIntersections: List<ExpectedIntersection>,
     ) {
-        val numericObjectToleranceAbsolute = NumericObject.Tolerance.Absolute(
+        val numericObjectToleranceAbsolute = NumericTolerance.Absolute(
             absoluteTolerance = 1e-4,
         )
 
@@ -614,7 +614,7 @@ class BezierCurveIntersectionTests {
         firstCurve: BezierCurve,
         secondCurve: BezierCurve,
         expectedIntersection: List<ExpectedIntersection>,
-        tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Absolute(
+        tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute(
             absoluteTolerance = 1e-2,
         ),
     ) {
@@ -650,7 +650,7 @@ class BezierCurveIntersectionTests {
                 )
             },
             expectedIntersections = expectedIntersection,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 0.1,
             ),
         )

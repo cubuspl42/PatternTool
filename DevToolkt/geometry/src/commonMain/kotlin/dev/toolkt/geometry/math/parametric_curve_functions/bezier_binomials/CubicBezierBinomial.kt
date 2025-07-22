@@ -5,6 +5,7 @@ import dev.toolkt.core.iterable.partitionAtCenter
 import dev.toolkt.core.iterable.withNeighboursOrNull
 import dev.toolkt.core.math.sq
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import dev.toolkt.geometry.math.LowParametricPolynomial
@@ -210,7 +211,7 @@ data class CubicBezierBinomial(
      * curve is degenerate.
      */
     fun findSelfIntersection(
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): SelfIntersectionResult? {
         // Sánchez-Reyes, J. Self-Intersections of Cubic Bézier Curves Revisited. Mathematics 2024, 12, 2463. https://doi.org/10.3390/math12162463
         // 4. Finding the Parameter Values for the Double Point via Factorization
@@ -341,7 +342,7 @@ data class CubicBezierBinomial(
     override fun locatePoint(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? {
         // TODO: Move the responsibility of hybrid approaches to a higher layer
         return locatePointByInversionWithControlCheck(
@@ -358,7 +359,7 @@ data class CubicBezierBinomial(
     //  layer
     private fun locatePointByInversionWithControlCheck(
         point: Vector2,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Double? {
         val eps = 10e-8
 
@@ -407,7 +408,7 @@ data class CubicBezierBinomial(
     internal fun locatePointByProjection(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? {
         // Find the t-values of all points on curve orthogonal to the given point
         // TODO: Some valid points aren't found because the polynomial root
@@ -455,7 +456,7 @@ data class CubicBezierBinomial(
     fun projectPointIteratively(
         range: ClosedFloatingPointRange<Double>,
         point: Vector2,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): PointProjection? {
         val (tStart, tMid, tEnd) = LinSpace.generate(
             range = range,
@@ -499,7 +500,7 @@ data class CubicBezierBinomial(
     private fun projectPointAll(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): List<Double> {
         val projectionPolynomial = findPointProjectionPolynomial(point)
 
@@ -514,7 +515,7 @@ data class CubicBezierBinomial(
     fun projectPointClosest(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+        tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
     ): Double? {
         val tValues = projectPointAll(
             point = point,
@@ -592,7 +593,7 @@ data class CubicBezierBinomial(
     // FIXME: This function doesn't even stick to the contract, it's terrible
     override fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? = projectPointAll(
         point = point,
         tRange = primaryTRange, // ?
@@ -655,7 +656,7 @@ data class CubicBezierBinomial(
     )
 
     override fun buildInvertedFunction(
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): InvertedBezierBinomial {
         // Curves degenerating to a line need some special handling
         val implicitPolynomial = invertRational()
@@ -727,7 +728,7 @@ data class CubicBezierBinomial(
 
     fun findImage(
         target: CubicBezierBinomial,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Image? {
         val image = findPossibleImage(target = target)
 
@@ -753,7 +754,7 @@ data class CubicBezierBinomial(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is CubicBezierBinomial -> false
         !point0.equalsWithTolerance(other.point0, tolerance = tolerance) -> false

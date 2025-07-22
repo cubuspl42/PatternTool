@@ -3,6 +3,7 @@ package dev.toolkt.geometry
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 
 /**
@@ -161,7 +162,7 @@ data class Rectangle(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is Rectangle -> false
         !origin.equalsWithTolerance(other.origin, tolerance = tolerance) -> false

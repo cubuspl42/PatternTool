@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.polynomials
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
 
@@ -10,7 +11,7 @@ data class HighPolynomial internal constructor(
     companion object {
         fun normalized(
             coefficients: List<Double>,
-            tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+            tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
         ): Polynomial {
             require(coefficients.isNotEmpty()) {
                 "HighPolynomial must have at least one coefficient, but got empty coefficients list"
@@ -78,7 +79,7 @@ data class HighPolynomial internal constructor(
     override fun findRoots(
         maxDepth: Int,
         range: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): List<Double> = findRootsNumericallyInRange(
         range = range,
         tolerance = tolerance,
@@ -86,7 +87,7 @@ data class HighPolynomial internal constructor(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is HighPolynomial -> false
         !coefficients.equalsWithTolerance(other.coefficients, tolerance = tolerance) -> false

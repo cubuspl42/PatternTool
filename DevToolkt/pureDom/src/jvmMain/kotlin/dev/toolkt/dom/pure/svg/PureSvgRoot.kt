@@ -1,6 +1,7 @@
 package dev.toolkt.dom.pure.svg
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import dev.toolkt.dom.pure.PureDimension
@@ -26,7 +27,7 @@ data class PureSvgRoot(
         fun toViewBoxString(): String = "$x $y $width $height"
 
         override fun equalsWithTolerance(
-            other: NumericObject, tolerance: NumericObject.Tolerance,
+            other: NumericObject, tolerance: NumericTolerance,
         ): Boolean = when {
             other !is ViewBox -> false
             !x.equalsWithTolerance(other.x, tolerance) -> false
@@ -117,7 +118,7 @@ data class PureSvgRoot(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean {
         return when {
             other !is PureSvgRoot -> false

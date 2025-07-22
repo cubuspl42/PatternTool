@@ -3,6 +3,7 @@ package dev.toolkt.geometry.transformations
 import dev.toolkt.geometry.Line
 import dev.toolkt.geometry.Point
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 
 data class ReflectionOverLine(
     val line: Line,
@@ -16,7 +17,7 @@ data class ReflectionOverLine(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean {
         TODO("Not yet implemented")
     }

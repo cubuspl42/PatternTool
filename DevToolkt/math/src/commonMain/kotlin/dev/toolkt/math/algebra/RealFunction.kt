@@ -1,10 +1,10 @@
 package dev.toolkt.math.algebra
 
-import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
 import dev.toolkt.core.range.copy
 import dev.toolkt.core.range.extend
 import dev.toolkt.core.iterable.LinSpace
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.range.midpoint
 import dev.toolkt.core.range.width
 
@@ -50,7 +50,7 @@ fun RealFunction<Double>.solveEqualityByBisection(
     y: Double,
     range: ClosedFloatingPointRange<Double>,
     maxIterationCount: Int = 1000,
-    tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+    tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
 ): Double? = object : RealFunction<Double> {
     override fun apply(
         a: Double,
@@ -71,7 +71,7 @@ fun RealFunction<Double>.solveEqualityByBisection(
 fun RealFunction<Double>.findRootByBisection(
     range: ClosedFloatingPointRange<Double>,
     maxIterationCount: Int = 1000,
-    tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+    tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
 ): Double? {
     // If a solution is on the edge of the range (within tolerance), we want
     // to find it

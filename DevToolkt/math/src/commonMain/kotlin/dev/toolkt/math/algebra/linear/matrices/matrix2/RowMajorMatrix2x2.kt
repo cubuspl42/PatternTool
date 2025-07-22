@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.linear.matrices.matrix2
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 
 internal data class RowMajorMatrix2x2(
@@ -29,7 +30,7 @@ internal data class RowMajorMatrix2x2(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is Matrix2x2 -> false
         else -> equalsWithToleranceRowWise(

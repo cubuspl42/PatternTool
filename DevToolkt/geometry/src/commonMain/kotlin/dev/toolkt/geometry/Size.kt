@@ -2,6 +2,7 @@ package dev.toolkt.geometry
 
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 
 /**
  * Size of a two-dimensional object
@@ -30,7 +31,7 @@ data class Size(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean {
         TODO()
     }

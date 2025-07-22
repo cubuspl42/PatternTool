@@ -3,6 +3,7 @@ package dev.toolkt.geometry.curves
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.iterable.mapCarrying
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.range.linearlyInterpolate
 import dev.toolkt.core.range.normalize
 import dev.toolkt.geometry.LineSegment
@@ -48,7 +49,7 @@ data class BezierCurve private constructor(
 
         override fun equalsWithTolerance(
             other: NumericObject,
-            tolerance: NumericObject.Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean = when {
             other !is Edge -> false
             !firstControl.equalsWithTolerance(other.firstControl, tolerance) -> false
@@ -100,7 +101,7 @@ data class BezierCurve private constructor(
         ): Set<Intersection> = findIntersectionsByEquationSolving(
             simpleSubjectCurve = subjectBezierCurve,
             complexObjectCurve = objectBezierCurve,
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         )
 
         /**
@@ -298,7 +299,7 @@ data class BezierCurve private constructor(
         ) ?: basisFunction.locatePointByProjection(
             point = point.pointVector,
             tRange = primaryTRange,
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         ) ?: return null
 
         return Coord.of(t = tValue)
@@ -330,7 +331,7 @@ data class BezierCurve private constructor(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is BezierCurve -> false
         !start.equalsWithTolerance(other.start, tolerance = tolerance) -> false
@@ -354,7 +355,7 @@ data class BezierCurve private constructor(
         val endPoint = pathFunction.end
 
         val criticalPointSet = basisFunction.findCriticalPoints(
-            tolerance = NumericObject.Tolerance.Default,
+            tolerance = NumericTolerance.Default,
         )
 
         val criticalXValues = criticalPointSet.xRoots.mapNotNull { t ->
@@ -456,7 +457,7 @@ data class BezierCurve private constructor(
     ): Boolean {
         // Empirically, the projection tolerance is set to 1/1024 of the span
         // tolerance, which is a reasonable value for most cases.
-        val projectionTolerance = NumericObject.Tolerance.Absolute(
+        val projectionTolerance = NumericTolerance.Absolute(
             absoluteTolerance = tolerance.spanTolerance.value / 1024,
         )
 
@@ -500,7 +501,7 @@ data class BezierCurve private constructor(
 
         fun locateArcLength(
             arcLength: Double,
-            tolerance: NumericObject.Tolerance.Absolute,
+            tolerance: NumericTolerance.Absolute,
         ): Coord? {
             if (arcLength !in arcLengthRange) {
                 return null
@@ -521,7 +522,7 @@ data class BezierCurve private constructor(
 
     fun locateArcLength(
         arcLength: Double,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Coord? = lowerInRange(
         coordRange = Coord.fullRange,
     ).mapCarrying(

@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.linear.matrices.matrix4
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.vectors.Vector4
 
 internal class RowMajorMatrix4x4(
@@ -56,7 +57,7 @@ internal class RowMajorMatrix4x4(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is Matrix4x4 -> false
         else -> equalsWithToleranceRowWise(

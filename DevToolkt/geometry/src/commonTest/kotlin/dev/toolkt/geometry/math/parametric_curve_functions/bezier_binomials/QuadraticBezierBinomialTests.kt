@@ -1,6 +1,6 @@
 package dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricLineFunction
 import dev.toolkt.math.algebra.linear.vectors.Vector2
@@ -109,13 +109,13 @@ class QuadraticBezierBinomialTests {
         assertEqualsWithTolerance(
             expected = quadraticBezierBinomial.primaryArcLengthNearlyExact,
             actual = quadraticBezierBinomial.primaryArcLengthApproximate,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 1e-2,
             ),
         )
     }
 
-    private val arcLengthLocationTolerance = NumericObject.Tolerance.Absolute(
+    private val arcLengthLocationTolerance = NumericTolerance.Absolute(
         absoluteTolerance = 1e-2,
     )
 
@@ -251,7 +251,7 @@ class QuadraticBezierBinomialTests {
         assertEqualsWithTolerance(
             expected = expectedQuadraticBezierBinomial,
             actual = loweredQuadraticBezierBinomial,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 0.5,
             ),
         )

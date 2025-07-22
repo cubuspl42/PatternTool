@@ -2,6 +2,7 @@ package dev.toolkt.dom.pure.svg
 
 import dev.toolkt.core.iterable.uncons
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsWithToleranceOrNull
 import dev.toolkt.geometry.Point
@@ -27,7 +28,7 @@ data class PureSvgPath(
             ): Segment = this
 
             override fun equalsWithTolerance(
-                other: NumericObject, tolerance: NumericObject.Tolerance
+                other: NumericObject, tolerance: NumericTolerance
             ): Boolean = other == ClosePath
         }
 
@@ -55,7 +56,7 @@ data class PureSvgPath(
             override fun toPathSegString(): String = "M${finalPoint.toSvgString()}"
 
             override fun equalsWithTolerance(
-                other: NumericObject, tolerance: NumericObject.Tolerance
+                other: NumericObject, tolerance: NumericTolerance
             ): Boolean = when (other) {
                 is MoveTo -> targetPoint.equalsWithTolerance(other.targetPoint, tolerance)
                 else -> false
@@ -74,7 +75,7 @@ data class PureSvgPath(
             override fun toPathSegString(): String = "L${finalPoint.toSvgString()}"
 
             override fun equalsWithTolerance(
-                other: NumericObject, tolerance: NumericObject.Tolerance
+                other: NumericObject, tolerance: NumericTolerance
             ): Boolean = when (other) {
                 is LineTo -> finalPoint.equalsWithTolerance(other.finalPoint, tolerance)
                 else -> false
@@ -97,7 +98,7 @@ data class PureSvgPath(
 
             override fun equalsWithTolerance(
                 other: NumericObject,
-                tolerance: NumericObject.Tolerance,
+                tolerance: NumericTolerance,
             ): Boolean = when {
                 other !is QuadraticBezierCurveTo -> false
                 !controlPoint.equalsWithTolerance(other.controlPoint, tolerance) -> false
@@ -120,7 +121,7 @@ data class PureSvgPath(
 
             override fun equalsWithTolerance(
                 other: NumericObject,
-                tolerance: NumericObject.Tolerance,
+                tolerance: NumericTolerance,
             ): Boolean = when {
                 other !is SmoothQuadraticBezierCurveTo -> false
                 !finalPoint.equalsWithTolerance(other.finalPoint, tolerance) -> false
@@ -147,7 +148,7 @@ data class PureSvgPath(
                 "C${controlPoint1.toSvgString()} ${controlPoint2.toSvgString()} ${finalPoint.toSvgString()}"
 
             override fun equalsWithTolerance(
-                other: NumericObject, tolerance: NumericObject.Tolerance
+                other: NumericObject, tolerance: NumericTolerance
             ): Boolean = when {
                 other !is CubicBezierCurveTo -> false
                 !controlPoint1.equalsWithTolerance(other.controlPoint1, tolerance) -> false
@@ -172,7 +173,7 @@ data class PureSvgPath(
             override fun toPathSegString(): String = "S${controlPoint2.toSvgString()} ${finalPoint.toSvgString()}"
 
             override fun equalsWithTolerance(
-                other: NumericObject, tolerance: NumericObject.Tolerance
+                other: NumericObject, tolerance: NumericTolerance
             ): Boolean = when {
                 other !is SmoothCubicBezierCurveTo -> false
                 !controlPoint2.equalsWithTolerance(other.controlPoint2, tolerance) -> false
@@ -230,7 +231,7 @@ data class PureSvgPath(
     }
 
     override fun equalsWithTolerance(
-        other: NumericObject, tolerance: NumericObject.Tolerance
+        other: NumericObject, tolerance: NumericTolerance
     ): Boolean = when {
         other !is PureSvgPath -> false
         !stroke.equalsWithToleranceOrNull(other.stroke, tolerance) -> false

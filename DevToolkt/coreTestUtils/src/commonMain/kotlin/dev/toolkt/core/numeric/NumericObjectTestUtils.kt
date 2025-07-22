@@ -7,7 +7,7 @@ import kotlin.test.assertTrue
 fun assertEqualsWithTolerance(
     expected: Double,
     actual: Double,
-    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
+    tolerance: NumericTolerance = NumericTolerance.Default,
 ) {
     assertTrue(
         actual = expected.equalsWithTolerance(actual, tolerance = tolerance),
@@ -18,7 +18,7 @@ fun assertEqualsWithTolerance(
 fun <T : NumericObject> assertEqualsWithTolerance(
     expected: T,
     actual: T,
-    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
+    tolerance: NumericTolerance = NumericTolerance.Default,
     message: String = "Expected $expected, but got $actual (tolerance: $tolerance)",
 ) {
     assertTrue(
@@ -31,7 +31,7 @@ fun <T : NumericObject> assertEqualsWithTolerance(
 fun <T : NumericObject> assertEqualsWithTolerance(
     expected: List<T>,
     actual: List<T>,
-    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
+    tolerance: NumericTolerance = NumericTolerance.Default,
 ) {
     assertEquals(
         expected = expected.size,
@@ -53,7 +53,7 @@ fun <T : NumericObject> assertEqualsWithTolerance(
 fun assertEqualsWithTolerance(
     expected: List<Double>,
     actual: List<Double>,
-    tolerance: NumericObject.Tolerance = NumericObject.Tolerance.Default,
+    tolerance: NumericTolerance = NumericTolerance.Default,
 ) {
     assertEquals(
         expected = expected.size,

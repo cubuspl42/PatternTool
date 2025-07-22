@@ -11,13 +11,12 @@ import dev.toolkt.geometry.math.SubCubicParametricPolynomial
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitCurveFunction
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricLineFunction
 import dev.toolkt.core.math.sq
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.math.RationalImplicitPolynomial
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitLineFunction
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitQuadraticCurveFunction
-import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
-import dev.toolkt.math.algebra.linear.vectors.times
 import kotlin.math.ln
 import kotlin.math.sqrt
 
@@ -98,7 +97,7 @@ data class QuadraticBezierBinomial(
     )
 
     override fun buildInvertedFunction(
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): InvertedCurveFunction {
         val l20 = this.l20
         val l21 = this.l21
@@ -114,14 +113,14 @@ data class QuadraticBezierBinomial(
     override fun locatePoint(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? {
         TODO("Not yet implemented")
     }
 
     override fun projectPoint(
         point: Vector2,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? {
         TODO("Not yet implemented")
     }
@@ -216,7 +215,7 @@ data class QuadraticBezierBinomial(
      */
     fun locateArcLength(
         arcLength: Double,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): Double? {
         require(arcLength >= 0.0)
 
@@ -243,7 +242,7 @@ data class QuadraticBezierBinomial(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is QuadraticBezierBinomial -> false
         !point0.equalsWithTolerance(other.point0, tolerance = tolerance) -> false

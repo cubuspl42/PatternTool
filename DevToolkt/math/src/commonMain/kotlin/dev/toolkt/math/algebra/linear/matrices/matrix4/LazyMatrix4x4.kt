@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.linear.matrices.matrix4
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.vectors.Vector4
 
 internal sealed class LazyMatrix4x4 : Matrix4x4() {
@@ -39,7 +40,7 @@ internal sealed class LazyMatrix4x4 : Matrix4x4() {
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = computed.equalsWithTolerance(
         other,
         tolerance = tolerance,

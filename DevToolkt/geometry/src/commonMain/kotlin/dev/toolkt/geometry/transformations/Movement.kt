@@ -1,6 +1,7 @@
 package dev.toolkt.geometry.transformations
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 
 data class Movement(
     val rotation: PrimitiveTransformation.Rotation,
@@ -28,7 +29,7 @@ data class Movement(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean {
         TODO("Not yet implemented")
     }

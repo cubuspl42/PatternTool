@@ -9,6 +9,7 @@ import dev.toolkt.math.algebra.times
 import dev.toolkt.math.algebra.toComplex
 import dev.toolkt.core.iterable.uncons
 import dev.toolkt.core.iterable.untrail
+import dev.toolkt.core.numeric.NumericTolerance
 import kotlin.jvm.JvmName
 
 data class ComplexPolynomial internal constructor(
@@ -114,7 +115,7 @@ data class ComplexPolynomial internal constructor(
     fun findRealRoots(
         maxDepth: Int,
         guessedRoot: Double,
-        tolerance: NumericObject.Tolerance.Absolute,
+        tolerance: NumericTolerance.Absolute,
     ): List<Double> = this.findRoots(
         maxDepth = maxDepth,
         guessedRoot = guessedRoot.toComplex(),
@@ -128,7 +129,7 @@ data class ComplexPolynomial internal constructor(
     fun findRoots(
         maxDepth: Int = 100,
         guessedRoot: Complex = Complex.Companion.Zero,
-        tolerance: NumericObject.Tolerance.Absolute = NumericObject.Tolerance.Default,
+        tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
     ): List<Complex> {
         if (degree == 0) {
             return emptyList()
@@ -143,7 +144,7 @@ data class ComplexPolynomial internal constructor(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is ComplexPolynomial -> false
         !coefficients.equalsWithTolerance(other.coefficients, tolerance = tolerance) -> false

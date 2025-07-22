@@ -2,6 +2,7 @@ package dev.toolkt.geometry.transformations
 
 import dev.toolkt.geometry.Point
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 
 data class CombinedTransformation(
     override val standaloneTransformations: List<StandaloneTransformation>,
@@ -39,7 +40,7 @@ data class CombinedTransformation(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean {
         TODO("Not yet implemented")
     }

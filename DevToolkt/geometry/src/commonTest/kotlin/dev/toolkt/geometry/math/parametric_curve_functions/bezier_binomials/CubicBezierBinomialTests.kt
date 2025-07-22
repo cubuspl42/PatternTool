@@ -1,7 +1,7 @@
 package dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials
 
 import dev.toolkt.core.iterable.LinSpace
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.Point
@@ -130,7 +130,7 @@ class CubicBezierBinomialTests {
             assertEqualsWithTolerance(
                 actual = ratio.value,
                 expected = sample.t,
-                tolerance = NumericObject.Tolerance.Default,
+                tolerance = NumericTolerance.Default,
             )
         }
     }
@@ -141,7 +141,7 @@ class CubicBezierBinomialTests {
         val range = -0.01..1.01
         val random = Random(0)
 
-        val tolerance = NumericObject.Tolerance.Absolute(
+        val tolerance = NumericTolerance.Absolute(
             absoluteTolerance = 1e-2,
         )
 
@@ -152,7 +152,7 @@ class CubicBezierBinomialTests {
 
         // The verification tolerance for arbitrary points within the bounding box
         // For points close to the curve, the tolerance could be narrower
-        val verificationTolerance = NumericObject.Tolerance.Absolute(
+        val verificationTolerance = NumericTolerance.Absolute(
             absoluteTolerance = 2e-1,
         )
 
@@ -255,7 +255,7 @@ class CubicBezierBinomialTests {
         )
 
         // Currently, the accuracy is not impressive
-        val tolerance = NumericObject.Tolerance.Relative(
+        val tolerance = NumericTolerance.Relative(
             relativeTolerance = 0.01,
         )
 
@@ -306,7 +306,7 @@ class CubicBezierBinomialTests {
             point3 = Vector2(582.3854846954346, 254.8291015625),
         )
 
-        val tolerance = NumericObject.Tolerance.Relative(
+        val tolerance = NumericTolerance.Relative(
             relativeTolerance = 0.01,
         )
 

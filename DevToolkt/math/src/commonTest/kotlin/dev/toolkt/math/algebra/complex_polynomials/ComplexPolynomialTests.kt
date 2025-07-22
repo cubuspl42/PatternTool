@@ -1,6 +1,6 @@
 package dev.toolkt.math.algebra.complex_polynomials
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.math.algebra.Complex
 import dev.toolkt.math.algebra.toComplex
@@ -26,7 +26,7 @@ class ComplexPolynomialTests {
                 Complex(-1.50, -3.93),
             ),
             actual = actualRoots,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 0.01,
             ),
         )
@@ -65,7 +65,7 @@ class ComplexPolynomialTests {
                 0.049059.toComplex(),
             ),
             actual = actualRoots,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 0.01,
             ),
         )

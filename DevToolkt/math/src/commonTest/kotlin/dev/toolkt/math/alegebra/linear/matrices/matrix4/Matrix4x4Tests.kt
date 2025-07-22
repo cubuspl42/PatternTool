@@ -1,6 +1,6 @@
 package dev.toolkt.math.alegebra.linear.matrices.matrix4
 
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.matrices.matrix4.Matrix4x4
 import dev.toolkt.math.algebra.linear.vectors.Vector4
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
@@ -99,7 +99,7 @@ class Matrix4x4Tests {
         assertEqualsWithTolerance(
             expected = Vector4(0.99166, 0.98333, 0.95, 0.8),
             actual = solution,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 1e-4,
             ),
         )
@@ -125,7 +125,7 @@ class Matrix4x4Tests {
                 -0.16667,
             ),
             actual = solution,
-            tolerance = NumericObject.Tolerance.Absolute(
+            tolerance = NumericTolerance.Absolute(
                 absoluteTolerance = 1e-4,
             ),
         )

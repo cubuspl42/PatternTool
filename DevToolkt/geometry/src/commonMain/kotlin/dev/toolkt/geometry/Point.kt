@@ -1,7 +1,7 @@
 package dev.toolkt.geometry
 
 import dev.toolkt.core.numeric.NumericObject
-import dev.toolkt.core.numeric.NumericObject.Tolerance
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.geometry.transformations.PrimitiveTransformation.Translation
 import dev.toolkt.geometry.transformations.Transformation
@@ -15,7 +15,7 @@ data class Point(
             firstPoint: Point,
             secondPoint: Point,
             testPoint: Point,
-            tolerance: Tolerance,
+            tolerance: NumericTolerance,
         ): Boolean {
             TODO()
         }
@@ -94,7 +94,7 @@ data class Point(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is Point -> false
         !pointVector.equalsWithTolerance(other.pointVector, tolerance = tolerance) -> false

@@ -1,7 +1,7 @@
 package dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials
 
 import dev.toolkt.core.iterable.LinSpace
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.core.range.ClosedFloatingPointRangeUtils
 import dev.toolkt.geometry.Direction
@@ -30,13 +30,13 @@ class CubicBezierBinomialInversionFuzzyTests {
             point3 = Vector2(a0 = 671.4185047149658, a1 = 490.2051086425781)
         )
 
-        val computationTolerance = NumericObject.Tolerance.Absolute(
+        val computationTolerance = NumericTolerance.Absolute(
             absoluteTolerance = 1e-6,
         )
 
         // Close to the self-intersection the numerical accuracy of the found
         // t-values is acceptable, but not impressive
-        val testTolerance = NumericObject.Tolerance.Absolute(
+        val testTolerance = NumericTolerance.Absolute(
             absoluteTolerance = 1e-3,
         )
 

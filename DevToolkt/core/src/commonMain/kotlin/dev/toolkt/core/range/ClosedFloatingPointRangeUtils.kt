@@ -3,7 +3,7 @@ package dev.toolkt.core.range
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.core.math.avgOf
 import dev.toolkt.core.math.linearlyInterpolate
-import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
 
 object ClosedFloatingPointRangeUtils {
@@ -103,7 +103,7 @@ val OpenEndRange<Double>.width: Double
 fun OpenEndRange<Double>.withEndIncluded(): ClosedFloatingPointRange<Double> = start..endExclusive
 
 fun OpenEndRange<Double>.isEmptyWithTolerance(
-    tolerance: NumericObject.Tolerance.Absolute,
+    tolerance: NumericTolerance.Absolute,
 ): Boolean = this.width.equalsZeroWithTolerance(
     tolerance = tolerance,
 )

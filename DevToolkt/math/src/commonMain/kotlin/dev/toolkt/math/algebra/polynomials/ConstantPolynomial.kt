@@ -1,6 +1,7 @@
 package dev.toolkt.math.algebra.polynomials
 
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 
 data class ConstantPolynomial(
@@ -37,7 +38,7 @@ data class ConstantPolynomial(
 
     override fun equalsWithTolerance(
         other: NumericObject,
-        tolerance: NumericObject.Tolerance,
+        tolerance: NumericTolerance,
     ): Boolean = when {
         other !is ConstantPolynomial -> false
         !a0.equalsWithTolerance(other.a0, tolerance = tolerance) -> false
