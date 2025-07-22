@@ -33,17 +33,17 @@ fun main() {
 
 private fun createRootElement(): HTMLDivElement {
     val firstBezierCurve = BezierCurve(
-        start = Point(247.45586850992547, 379.490073683598),
-        firstControl = Point(422.61086805841114, 396.6670752291757),
-        secondControl = Point(531.4859546756852, 386.71814287026064),
-        end = Point(594.0656015814893, 364.6746085219802),
+        start = Point(1547.0, 893.0),
+        firstControl = Point(964.0, 592.0),
+        secondControl = Point(1044.0, 207.0),
+        end = Point(1621.0, 797.0),
     )
 
     val secondBezierCurve = BezierCurve(
-        start = Point(452.41959820093143, 239.38755149520694),
-        firstControl = Point(410.63096772289646, 281.7264423034185),
-        secondControl = Point(385.13020832675465, 365.70689316897005),
-        end = Point(405.2940882855255, 513.4262225999319),
+        start = Point(1407.0, 904.0),
+        firstControl = Point(2176.0, 201.0),
+        secondControl = Point(1018.0, 402.0),
+        end = Point(1707.0, 855.0),
     )
 
     val userCurveSystem = UserCurveSystem(
@@ -104,11 +104,13 @@ private fun createRootElement(): HTMLDivElement {
                     width = Cell.of(1024.px),
                 ),
                 children = ReactiveList.of(
-                    createPolynomialPlotWrapper(
-                        polynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial1 },
+                    createCurveInfoView(
+                        userBezierCurve = userCurveSystem.userBezierCurve1,
+                        intersectionPolynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial1 },
                     ),
-                    createPolynomialPlotWrapper(
-                        polynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial2 },
+                    createCurveInfoView(
+                        userBezierCurve = userCurveSystem.userBezierCurve2,
+                        intersectionPolynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial2 },
                     ),
                 ),
             ),

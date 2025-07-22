@@ -3,7 +3,6 @@ package diy.lingerie.web_tool
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
-import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.style.PureFill
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexStyle
@@ -12,6 +11,7 @@ import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.createResponsiveElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
+import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlSpanElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgGroupElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgLineElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgPolylineElement
@@ -28,8 +28,9 @@ import kotlinx.browser.document
 import org.w3c.dom.Element
 import svg.createLegacySVGPoint
 
-internal fun createPolynomialPlotWrapper(
-    polynomial: Cell<Polynomial>,
+internal fun createCurveInfoView(
+    userBezierCurve: UserBezierCurve,
+    intersectionPolynomial: Cell<Polynomial>,
 ): Element = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
         displayStyle = Cell.of(
@@ -40,12 +41,25 @@ internal fun createPolynomialPlotWrapper(
         ),
     ),
     children = ReactiveList.of(
-        document.createReactiveTextNode(
-            polynomial.map {
-                it.coefficients.toString()
-            },
+        document.createReactiveHtmlSpanElement(
+            children = ReactiveList.of(
+                document.createReactiveTextNode(
+                    userBezierCurve.bezierCurve.map {
+                        it.toReprString()
+                    }
+                ),
+            ),
         ),
-        createPolynomialPlot(polynomial = polynomial),
+        document.createReactiveHtmlSpanElement(
+            children = ReactiveList.of(
+                document.createReactiveTextNode(
+                    intersectionPolynomial.map {
+                        it.coefficients.toString()
+                    },
+                ),
+            ),
+        ),
+        createPolynomialPlot(polynomial = intersectionPolynomial),
     ),
 )
 
