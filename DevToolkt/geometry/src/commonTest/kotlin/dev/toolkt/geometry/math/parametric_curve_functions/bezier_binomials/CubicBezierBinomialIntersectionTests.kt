@@ -50,20 +50,19 @@ class CubicBezierBinomialIntersectionTests {
      * with the loop's self-intersection.
      */
     @Test
-    @Ignore // FIXME: The new root finding improves this, adjust the expectations
     fun testSolveIntersections_cubicBezierBinomials_c_loop_multipleIntersections_1() {
         val firstCubicBezierBinomial = CubicBezierBinomial(
             Vector2(1547.0, 893.0),
             Vector2(964.0, 592.0),
             Vector2(1044.0, 207.0),
-            Vector2(1621.0, 797.0),
+            Vector2(1625.0, 801.0),
         )
 
         val secondCubicBezierBinomial = CubicBezierBinomial(
             Vector2(1407.0, 904.0),
             Vector2(2176.0, 201.0),
             Vector2(1018.0, 402.0),
-            Vector2(1707.0, 855.0),
+            Vector2(1749.0, 902.0),
         )
 
         val tolerance = NumericTolerance.Absolute(
@@ -78,10 +77,9 @@ class CubicBezierBinomialIntersectionTests {
 
         assertEqualsWithTolerance(
             expected = listOf(
-                // FIXME: One of these intersections is obviously correct, the other might be acceptable, but one
-                //  obviously correct intersection is definitely missing
-                0.049060821533203125,
-                0.9793510437011719,
+                0.04905698903558175,
+                0.9647737943983817,
+                0.965063632437699,
             ),
             actual = tValues.filter { it in OpenCurve.Coord.tRange },
             tolerance = tolerance,
