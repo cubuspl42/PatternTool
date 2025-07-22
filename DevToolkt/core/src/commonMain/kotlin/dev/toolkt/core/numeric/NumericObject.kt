@@ -28,12 +28,12 @@ fun <T : NumericObject> T?.equalsWithToleranceOrNull(
 
 fun Double.equalsZeroWithTolerance(
     tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
-): Boolean = tolerance.equalsApproximately(this, 0.0)
+): Boolean = tolerance.equalsApproximatelyZero(this)
 
 fun Double.equalsWithTolerance(
     other: Double,
     tolerance: NumericTolerance = NumericTolerance.Default,
-): Boolean = tolerance.equalsApproximately(this, other)
+): Boolean = tolerance.equalsApproximately(value = this, reference = other)
 
 fun Double.divideWithTolerance(
     divisor: Double,

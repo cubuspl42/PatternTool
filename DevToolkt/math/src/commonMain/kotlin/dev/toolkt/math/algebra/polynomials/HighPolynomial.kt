@@ -4,6 +4,7 @@ import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.core.numeric.equalsZeroWithTolerance
+import dev.toolkt.math.algebra.LaguerreSolver
 
 data class HighPolynomial internal constructor(
     override val coefficients: List<Double>,
@@ -80,10 +81,20 @@ data class HighPolynomial internal constructor(
         maxDepth: Int,
         range: ClosedFloatingPointRange<Double>,
         tolerance: NumericTolerance.Absolute,
-    ): List<Double> = findRootsNumericallyInRange(
-        range = range,
-        tolerance = tolerance,
-    )
+    ): List<Double> {
+        val complexRoots = LaguerreSolver.solveAll(
+            coefficients = coefficients,
+            initialGuess = 0.5,
+        ) ?: return emptyList()
+
+        val realRoots = complexRoots.mapNotNull { complex ->
+            complex.real.takeIf {
+                complex.imaginary.equalsZeroWithTolerance(tolerance = tolerance)
+            }
+        }
+
+        return realRoots.filter { it in range }
+    }
 
     override fun equalsWithTolerance(
         other: NumericObject,
