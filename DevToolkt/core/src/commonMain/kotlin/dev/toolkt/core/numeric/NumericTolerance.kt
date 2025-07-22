@@ -35,6 +35,12 @@ sealed class NumericTolerance {
         override fun abs(value: Double): Double = value.absoluteValue
     }
 
+    object ComplexMeasurement : RelativeMeasurement<Complex> {
+        override fun substruct(value: Complex, reference: Complex): Complex = value - reference
+
+        override fun abs(value: Complex): Double = value.abs()
+    }
+
     /**
      * Zero tolerance
      *
@@ -259,4 +265,20 @@ fun NumericTolerance.Absolute.equalsApproximatelyZero(
 ): Boolean = equalsApproximatelyZero(
     value = value,
     measurement = NumericTolerance.DoubleMeasurement,
+)
+
+fun NumericTolerance.equalsApproximately(
+    value: Complex,
+    reference: Complex,
+): Boolean = equalsApproximately(
+    value = value,
+    reference = reference,
+    measurement = NumericTolerance.ComplexMeasurement,
+)
+
+fun NumericTolerance.Absolute.equalsApproximatelyZero(
+    value: Complex,
+): Boolean = equalsApproximatelyZero(
+    value = value,
+    measurement = NumericTolerance.ComplexMeasurement,
 )
