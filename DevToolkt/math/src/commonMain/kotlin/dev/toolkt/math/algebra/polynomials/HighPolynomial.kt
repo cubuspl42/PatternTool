@@ -15,7 +15,7 @@ data class HighPolynomial internal constructor(
             tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
         ): Polynomial {
             require(coefficients.isNotEmpty()) {
-                "HighPolynomial must have at least one coefficient, but got empty coefficients list"
+                "A polynomial must have at least one coefficient, but got empty coefficients list"
             }
 
             return when {

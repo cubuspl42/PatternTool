@@ -33,17 +33,17 @@ fun main() {
 
 private fun createRootElement(): HTMLDivElement {
     val firstBezierCurve = BezierCurve(
-        start = Point(1547.0, 893.0),
-        firstControl = Point(964.0, 592.0),
-        secondControl = Point(1044.0, 207.0),
-        end = Point(1621.0, 797.0),
+        start = Point(273.80049324035645, 489.08709716796875),
+        firstControl = Point(684.4749774932861, 329.1851005554199),
+        secondControl = Point(591.8677291870117, 214.5483512878418),
+        end = Point(492.59773540496826, 197.3452272415161),
     )
 
     val secondBezierCurve = BezierCurve(
-        start = Point(1407.0, 904.0),
-        firstControl = Point(2176.0, 201.0),
-        secondControl = Point(1018.0, 402.0),
-        end = Point(1707.0, 855.0),
+        start = Point(492.59773540496826, 197.3452272415161),
+        firstControl = Point(393.3277416229248, 180.14210319519043),
+        secondControl = Point(287.3950023651123, 260.3726043701172),
+        end = Point(671.4185047149658, 490.2051086425781),
     )
 
     val userCurveSystem = UserCurveSystem(

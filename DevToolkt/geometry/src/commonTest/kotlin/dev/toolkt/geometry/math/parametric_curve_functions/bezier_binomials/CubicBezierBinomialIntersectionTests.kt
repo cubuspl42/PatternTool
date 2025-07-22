@@ -9,6 +9,112 @@ import kotlin.test.Test
 
 class CubicBezierBinomialIntersectionTests {
     @Test
+    fun testFindImage_splitLoop_nearlyPerfect() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(273.80049324035645, 489.08709716796875),
+            point1 = Vector2(684.4749774932861, 329.1851005554199),
+            point2 = Vector2(591.8677291870117, 214.5483512878418),
+            point3 = Vector2(492.59773540496826, 197.3452272415161),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(492.59773540496826, 197.3452272415161),
+            point1 = Vector2(393.3277416229248, 180.14210319519043),
+            point2 = Vector2(287.3950023651123, 260.3726043701172),
+            point3 = Vector2(671.4185047149658, 490.2051086425781),
+        )
+
+        val tolerance = NumericTolerance.Absolute(
+            absoluteTolerance = 1e-5,
+        )
+
+        val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
+            other = secondCubicBezierBinomial,
+            tRange = primaryTRange,
+            tolerance = tolerance,
+        ).sorted()
+
+        assertEqualsWithTolerance(
+            expected = listOf(
+                0.25490963748754075,
+            ),
+            actual = tValues.filter { it in OpenCurve.Coord.tRange },
+            tolerance = tolerance,
+        )
+    }
+
+    @Test
+    fun testFindImage_splitLoop_nearlyPerfect_reversed() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(492.59773540496826, 197.3452272415161),
+            point1 = Vector2(393.3277416229248, 180.14210319519043),
+            point2 = Vector2(287.3950023651123, 260.3726043701172),
+            point3 = Vector2(671.4185047149658, 490.2051086425781),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(273.80049324035645, 489.08709716796875),
+            point1 = Vector2(684.4749774932861, 329.1851005554199),
+            point2 = Vector2(591.8677291870117, 214.5483512878418),
+            point3 = Vector2(492.59773540496826, 197.3452272415161),
+        )
+
+        val tolerance = NumericTolerance.Absolute(
+            absoluteTolerance = 1e-5,
+        )
+
+        val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
+            other = secondCubicBezierBinomial,
+            tRange = primaryTRange,
+            tolerance = tolerance,
+        ).sorted()
+
+        assertEqualsWithTolerance(
+            expected = listOf(),
+            actual = tValues.filter { it in OpenCurve.Coord.tRange },
+            tolerance = tolerance,
+        )
+    }
+
+
+    @Test
+    fun testFindImage_splitLoop_slightlyMoved() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(273.80049324035645, 489.08709716796875),
+            point1 = Vector2(684.4749774932861, 329.1851005554199),
+            point2 = Vector2(591.8677291870117, 214.5483512878418),
+            point3 = Vector2(492.59773540496826, 197.3452272415161),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(492.59773540496826, 197.3452272415161),
+            point1 = Vector2(393.3277416229248, 180.14210319519043),
+            point2 = Vector2(287.3950023651123, 260.3726043701172),
+            point3 = Vector2(670.0, 488.0),
+        )
+
+        val tolerance = NumericTolerance.Absolute(
+            absoluteTolerance = 1e-5,
+        )
+
+        val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
+            other = secondCubicBezierBinomial,
+            tRange = primaryTRange,
+            tolerance = tolerance,
+        ).sorted()
+
+        assertEqualsWithTolerance(
+            expected = listOf(
+                0.2613134250318228,
+                0.6881766821296057,
+                0.9998802065922072,
+            ),
+            actual = tValues.filter { it in OpenCurve.Coord.tRange },
+            tolerance = tolerance,
+        )
+    }
+
+    @Test
     fun testSolveIntersections_cubicBezierBinomials_threeIntersections_1() {
         val firstCubicBezierBinomial = CubicBezierBinomial(
             Vector2(1547.0, 893.0),

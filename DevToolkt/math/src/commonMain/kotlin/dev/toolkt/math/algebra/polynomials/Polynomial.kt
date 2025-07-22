@@ -65,9 +65,15 @@ sealed interface Polynomial : NumericObject, RealFunction<Double> {
          */
         fun normalized(
             coefficients: List<Double>,
-        ): Polynomial = HighPolynomial.normalized(
-            coefficients = coefficients,
-        )
+        ): Polynomial {
+            require(coefficients.isNotEmpty()) {
+                "A polynomial must have at least one coefficient, but got empty coefficients list"
+            }
+
+            return HighPolynomial.normalized(
+                coefficients = coefficients,
+            )
+        }
 
         /**
          * @return a normalized polynomial (of a potentially high degree)
@@ -125,11 +131,17 @@ sealed interface Polynomial : NumericObject, RealFunction<Double> {
     }
 
     val derivative: Polynomial
-        get() = normalized(
-            coefficients = coefficients.mapIndexed { i, ai ->
-                i * ai
-            }.drop(1),
-        )
+        get() {
+            require(coefficients.size > 1) {
+                "Cannot compute derivative of a polynomial with degree < 1, but got degree = ${coefficients.size - 1}"
+            }
+
+            return normalized(
+                coefficients = coefficients.mapIndexed { i, ai ->
+                    i * ai
+                }.drop(1),
+            )
+        }
 }
 
 val Polynomial.degree: Int

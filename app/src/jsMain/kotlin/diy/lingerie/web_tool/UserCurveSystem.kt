@@ -21,16 +21,14 @@ data class UserCurveSystem(
         cell1 = userBezierCurve1.bezierCurve,
         cell2 = userBezierCurve2.bezierCurve,
     ) { bezierCurve1, bezierCurve2 ->
-        val intersections = BezierCurve.findIntersections(
+        val intersections = BezierCurve.findIntersectionsByEquationSolving(
             subjectBezierCurve = bezierCurve1,
             objectBezierCurve = bezierCurve2,
-            tolerance = SpatialObject.SpatialTolerance.default
         )
 
         val intersectionPolynomial1 = bezierCurve1.basisFunction.findIntersectionPolynomial(
             other = bezierCurve2.basisFunction,
         )
-
 
         val intersectionPolynomial2 = bezierCurve2.basisFunction.findIntersectionPolynomial(
             other = bezierCurve1.basisFunction,

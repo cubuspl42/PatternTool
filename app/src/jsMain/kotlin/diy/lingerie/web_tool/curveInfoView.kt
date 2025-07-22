@@ -45,7 +45,7 @@ internal fun createCurveInfoView(
             children = ReactiveList.of(
                 document.createReactiveTextNode(
                     userBezierCurve.bezierCurve.map {
-                        it.toReprString()
+                        it.basisFunction.toReprString()
                     }
                 ),
             ),
@@ -138,7 +138,7 @@ private fun buildPolynomialGeometricPlot(
     polynomial: Polynomial,
     plotSize: PureSize,
 ): List<Point> {
-    val yMax = 1e9
+    val yMax = 1e2
 
     val transProjection = TransProjection(
         sourceRectangle = Rectangle.of(
