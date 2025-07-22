@@ -27,7 +27,7 @@ fun <T : NumericObject> T?.equalsWithToleranceOrNull(
 }
 
 fun Double.equalsZeroWithTolerance(
-    tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+    tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
 ): Boolean = tolerance.equalsApproximately(this, 0.0)
 
 fun Double.equalsWithTolerance(

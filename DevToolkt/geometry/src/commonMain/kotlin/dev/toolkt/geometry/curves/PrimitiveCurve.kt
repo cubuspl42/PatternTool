@@ -55,7 +55,7 @@ abstract class PrimitiveCurve : OpenCurve() {
             val tValues = simpleSubjectCurve.basisFunction.solveIntersectionEquation(
                 other = complexObjectCurve.basisFunction,
                 tRange = primaryTRange,
-                tolerance = NumericTolerance.Default,
+                tolerance = NumericTolerance.Absolute.Default,
             )
 
             // Filter out intersections outside either curve
@@ -91,7 +91,7 @@ abstract class PrimitiveCurve : OpenCurve() {
 
     val invertedBasisFunction by lazy {
         basisFunction.buildInvertedFunction(
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         )
     }
 
@@ -144,7 +144,7 @@ abstract class PrimitiveCurve : OpenCurve() {
         // Line segment is never more complex than other primitive curves
         simpleSubjectCurve = subjectLineSegment,
         complexObjectCurve = this,
-        tolerance = NumericTolerance.Default,
+        tolerance = NumericTolerance.Absolute.Default,
     )
 
     abstract val basisFunction: ParametricCurveFunction
@@ -191,7 +191,7 @@ abstract class PrimitiveCurve : OpenCurve() {
         // it means that the point is not on the curve
         val invertedCoord = Coord.of(
             t = inversionResult.t,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         ) ?: return null
 
         // If the inversion gave a specific t-value, it's not a guarantee that

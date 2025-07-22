@@ -18,7 +18,7 @@ class CubicBezierBinomialSelfIntersectionTests {
      */
     @Test
     fun testFindSelfIntersection_degenerate_point() {
-        val tolerance = NumericTolerance.Default
+        val tolerance = NumericTolerance.Absolute.Default
 
         val point = Vector2(
             a0 = 492.59773540496826,
@@ -44,7 +44,7 @@ class CubicBezierBinomialSelfIntersectionTests {
      */
     @Test
     fun testFindSelfIntersection_degenerate_line() {
-        val tolerance = NumericTolerance.Default
+        val tolerance = NumericTolerance.Absolute.Default
 
         val origin = Vector2(
             a0 = 492.59773540496826,
@@ -72,7 +72,7 @@ class CubicBezierBinomialSelfIntersectionTests {
      */
     @Test
     fun testFindSelfIntersection_degenerate_quadratic() {
-        val tolerance = NumericTolerance.Default
+        val tolerance = NumericTolerance.Absolute.Default
 
         val cubicBezierBinomial = CubicBezierBinomial(
             point0 = Vector2(100.0, 100.0),
@@ -94,7 +94,7 @@ class CubicBezierBinomialSelfIntersectionTests {
     @Test
     @Ignore // FIXME: Figure this out (there's an issue in the paper?)
     fun testFindSelfIntersection_nonExisting_quasiDegenerate() {
-        val tolerance = NumericTolerance.Default
+        val tolerance = NumericTolerance.Absolute.Default
 
         // This curve is actually a proper cubic curve (it doesn't degenerate
         // to a quadratic curve; it has an inflection point), yet it results
@@ -121,7 +121,7 @@ class CubicBezierBinomialSelfIntersectionTests {
      */
     @Test
     fun testFindSelfIntersection_nonExisting_simple() {
-        val tolerance = NumericTolerance.Default
+        val tolerance = NumericTolerance.Absolute.Default
 
         val cubicBezierBinomial = CubicBezierBinomial(
             point0 = Vector2(11.3, 200.0),
@@ -145,7 +145,7 @@ class CubicBezierBinomialSelfIntersectionTests {
      */
     @Test
     fun testFindSelfIntersection_existing_proper_1() {
-        val tolerance = NumericTolerance.Default
+        val tolerance = NumericTolerance.Absolute.Default
 
         val cubicBezierBinomial = CubicBezierBinomial(
             point0 = Vector2(401.23199462890625, 505.39300537109375),
@@ -177,7 +177,7 @@ class CubicBezierBinomialSelfIntersectionTests {
      */
     @Test
     fun testFindSelfIntersection_existing_extendedFully_1() {
-        val tolerance = NumericTolerance.Default
+        val tolerance = NumericTolerance.Absolute.Default
 
         val cubicBezierBinomial = CubicBezierBinomial(
             point0 = Vector2(455.3070068359375, 417.5899963378906),
@@ -210,7 +210,7 @@ class CubicBezierBinomialSelfIntersectionTests {
      */
     @Test
     fun testFindSelfIntersection_existing_extendedPartially_1() {
-        val tolerance = NumericTolerance.Default
+        val tolerance = NumericTolerance.Absolute.Default
 
         val cubicBezierBinomial = CubicBezierBinomial(
             point0 = Vector2(a0 = 492.59773540496826, a1 = 197.3452272415161),

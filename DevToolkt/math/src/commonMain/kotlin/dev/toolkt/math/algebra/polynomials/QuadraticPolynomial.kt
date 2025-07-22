@@ -16,7 +16,7 @@ data class QuadraticPolynomial internal constructor(
             a0: Double,
             a1: Double,
             a2: Double,
-            tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+            tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
         ): QuadraticPolynomial {
             require(!a2.equalsZeroWithTolerance(tolerance = tolerance)) {
                 "Coefficient a2 must not be zero (within tolerance)."
@@ -33,7 +33,7 @@ data class QuadraticPolynomial internal constructor(
             a0: Double,
             a1: Double,
             a2: Double,
-            tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+            tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
         ): SubCubicPolynomial = when {
             a2.equalsZeroWithTolerance(tolerance = tolerance) -> LinearPolynomial.normalized(
                 a0 = a0,

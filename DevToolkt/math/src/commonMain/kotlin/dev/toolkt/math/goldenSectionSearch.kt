@@ -23,7 +23,7 @@ private val invPhi2 = (3 - sqrt(5.0)) / 2.0  // 1 / phi^2
  * value of the function. If the function wasn't in fact unimodal, returns null.
  */
 fun <T : Comparable<T>> ClosedFloatingPointRange<Double>.minByWithSelecteeOrNull(
-    tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+    tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
     function: (Double) -> T,
 ): Pair<Double, T>? {
     val (minValue, minSelectee) = this.minByUnimodalWithSelectee(
@@ -49,7 +49,7 @@ fun <T : Comparable<T>> ClosedFloatingPointRange<Double>.minByWithSelecteeOrNull
  * range start or its end.
  */
 fun <T : Comparable<T>> ClosedFloatingPointRange<Double>.minByUnimodalWithSelectee(
-    tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+    tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
     function: (Double) -> T,
 ): Pair<Double, T> = minByUnimodalWithSelecteeRecursive(
     tolerance = tolerance,

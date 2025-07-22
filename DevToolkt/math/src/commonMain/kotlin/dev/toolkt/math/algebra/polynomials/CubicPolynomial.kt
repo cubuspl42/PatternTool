@@ -35,7 +35,7 @@ data class CubicPolynomial internal constructor(
             a1: Double,
             a2: Double,
             a3: Double,
-            tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+            tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
         ): LowPolynomial = when {
             a3.equalsZeroWithTolerance(tolerance = tolerance) -> QuadraticPolynomial.normalized(
                 a0 = a0,

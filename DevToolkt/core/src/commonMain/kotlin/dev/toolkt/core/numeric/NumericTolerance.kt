@@ -1,12 +1,40 @@
 package dev.toolkt.core.numeric
 
-import kotlin.math.abs
+import dev.toolkt.core.math.maxBy
+import kotlin.math.absoluteValue
 
 /**
  * Numeric tolerance is a way to compare two floating-point numbers
  * with a certain degree of tolerance, rather than requiring exact equality.
  */
 sealed class NumericTolerance {
+    /**
+     * Interface for finding an absolute measure of a value. The [AbsoluteMeasurement] implementation must obey the
+     * following laws:
+     *
+     * 1. `measure(value) >= 0` for all values
+     * 2. `measure(value) == 0` if and only if `value == ZERO`, where `ZERO` is a zero value of type `T`
+     */
+    interface AbsoluteMeasurement<in T> {
+        fun abs(value: T): Double
+    }
+
+    /**
+     * Interface for measuring the difference between two values. In addition to the [AbsoluteMeasurement] laws, the
+     * [RelativeMeasurement] implementation must obey the following laws:
+     *
+     * 3. `substruct(value, reference) == ZERO` if and only if `value == reference`
+     */
+    interface RelativeMeasurement<T> : AbsoluteMeasurement<T> {
+        fun substruct(value: T, reference: T): T
+    }
+
+    object DoubleMeasurement : RelativeMeasurement<Double> {
+        override fun substruct(value: Double, reference: Double): Double = value - reference
+
+        override fun abs(value: Double): Double = value.absoluteValue
+    }
+
     /**
      * Zero tolerance
      *
@@ -18,36 +46,46 @@ sealed class NumericTolerance {
      * equality.
      */
     data object Zero : NumericTolerance() {
-        override fun equalsApproximately(
-            value: Double,
-            reference: Double,
+        override fun <T> equalsApproximately(
+            value: T,
+            reference: T,
+            measurement: RelativeMeasurement<T>,
         ): Boolean = value == reference
+
+        override fun <T> equalsApproximatelyZero(
+            value: T,
+            measurement: AbsoluteMeasurement<T>,
+        ): Boolean = measurement.abs(value) == 0.0
     }
 
-    /**
-     * Threshold tolerance: |v - v_ref| ≤ t(v_ref)
-     *
-     * Threshold tolerance is a base class for different types of tolerance
-     * that use a threshold function to determine if two values are
-     * approximately equal.
-     */
-    sealed class Threshold : NumericTolerance() {
-        companion object {
-            fun hybrid(
-                relative: Relative,
-                absolute: Absolute,
-            ): Hybrid = Hybrid(
-                relative = relative,
-                absolute = absolute,
+    sealed class Proper : NumericTolerance() {
+        final override fun <T> equalsApproximately(
+            value: T,
+            reference: T,
+            measurement: RelativeMeasurement<T>,
+        ): Boolean {
+            val effectiveTolerance = determineEffectiveTolerance(
+                value = value,
+                reference = reference,
+                measurement = measurement,
+            )
+
+            val difference = measurement.substruct(
+                value = value,
+                reference = reference,
+            )
+
+            return effectiveTolerance.equalsApproximatelyZero(
+                value = difference,
+                measurement = measurement,
             )
         }
 
-        final override fun equalsApproximately(
-            value: Double,
-            reference: Double,
-        ): Boolean = abs(value - reference) <= threshold(reference = reference)
-
-        abstract fun threshold(reference: Double): Double
+        abstract fun <T> determineEffectiveTolerance(
+            value: T,
+            reference: T,
+            measurement: RelativeMeasurement<T>,
+        ): Absolute
     }
 
     /**
@@ -70,13 +108,41 @@ sealed class NumericTolerance {
          * Absolute tolerance, effective for reference values close to zero
          */
         val absolute: Absolute,
-    ) : Threshold() {
-        override fun threshold(
-            reference: Double,
-        ): Double = maxOf(
-            relative.threshold(reference),
-            absolute.threshold(reference),
+    ) : Proper() {
+        override fun <T> determineEffectiveTolerance(
+            value: T,
+            reference: T,
+            measurement: RelativeMeasurement<T>,
+        ): Absolute {
+            val effectiveRelativeTolerance = relative.determineEffectiveTolerance(
+                value = value,
+                reference = reference,
+                measurement = measurement,
+            )
+
+            return maxBy(
+                absolute,
+                effectiveRelativeTolerance,
+            ) {
+                it.absoluteTolerance
+            }
+        }
+
+        override fun <T> equalsApproximatelyZero(
+            value: T,
+            measurement: AbsoluteMeasurement<T>,
+        ): Boolean = absolute.equalsApproximatelyZero(
+            value = value,
+            measurement = measurement,
         )
+
+        companion object {
+            val Default: Hybrid = Hybrid(
+                relative = Relative.Default,
+                absolute = Absolute.Default,
+            )
+        }
+
     }
 
     /**
@@ -90,14 +156,27 @@ sealed class NumericTolerance {
          * The absolute tolerance threshold
          */
         val absoluteTolerance: Double,
-    ) : Threshold() {
+    ) : Proper() {
+        companion object {
+            val Default = Absolute(
+                absoluteTolerance = 1e-6,
+            )
+        }
+
         operator fun times(factor: Double) = Absolute(
             absoluteTolerance = absoluteTolerance * factor,
         )
 
-        override fun threshold(
-            reference: Double,
-        ): Double = absoluteTolerance
+        override fun <T> equalsApproximatelyZero(
+            value: T,
+            measurement: AbsoluteMeasurement<T>,
+        ): Boolean = measurement.abs(value) <= absoluteTolerance
+
+        override fun <T> determineEffectiveTolerance(
+            value: T,
+            reference: T,
+            measurement: RelativeMeasurement<T>,
+        ): Absolute = this
     }
 
     /**
@@ -114,10 +193,25 @@ sealed class NumericTolerance {
          * The relative tolerance factor
          */
         val relativeTolerance: Double,
-    ) : Threshold() {
-        override fun threshold(
-            reference: Double,
-        ): Double = relativeTolerance * abs(reference)
+    ) : Proper() {
+        companion object {
+            val Default = Relative(
+                relativeTolerance = 1e-14,
+            )
+        }
+
+        override fun <T> equalsApproximatelyZero(
+            value: T,
+            measurement: AbsoluteMeasurement<T>,
+        ): Boolean = false
+
+        override fun <T> determineEffectiveTolerance(
+            value: T,
+            reference: T,
+            measurement: RelativeMeasurement<T>,
+        ): Absolute = Absolute(
+            absoluteTolerance = relativeTolerance * measurement.abs(reference),
+        )
 
         init {
             require(relativeTolerance > 0.0 && relativeTolerance < 0.25)
@@ -125,17 +219,44 @@ sealed class NumericTolerance {
     }
 
     companion object {
-        val Default = Absolute(
-            absoluteTolerance = 1e-6,
-        )
+        val Default: NumericTolerance
+            get() = Absolute.Default
     }
 
     /**
      * Check if the [value] is approximately equal to the [reference] within
-     * the tolerance defined by this object. This operation might be asymmetric.
+     * the tolerance defined by this object, using the provided [measurement].
+     * This operation might be asymmetric.
      */
-    abstract fun equalsApproximately(
-        value: Double,
-        reference: Double,
+    abstract fun <T> equalsApproximately(
+        value: T,
+        reference: T,
+        measurement: RelativeMeasurement<T>,
+    ): Boolean
+
+    /**
+     * Check if the [value] is approximately equal to the zero within
+     * the tolerance defined by this object, using the provided [measurement].
+     * This operation might be asymmetric.
+     */
+    abstract fun <T> equalsApproximatelyZero(
+        value: T,
+        measurement: AbsoluteMeasurement<T>,
     ): Boolean
 }
+
+fun NumericTolerance.equalsApproximately(
+    value: Double,
+    reference: Double,
+): Boolean = equalsApproximately(
+    value = value,
+    reference = reference,
+    measurement = NumericTolerance.DoubleMeasurement,
+)
+
+fun NumericTolerance.Absolute.equalsApproximatelyZero(
+    value: Double,
+): Boolean = equalsApproximatelyZero(
+    value = value,
+    measurement = NumericTolerance.DoubleMeasurement,
+)

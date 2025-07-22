@@ -515,7 +515,7 @@ data class CubicBezierBinomial(
     fun projectPointClosest(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
-        tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+        tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
     ): Double? {
         val tValues = projectPointAll(
             point = point,

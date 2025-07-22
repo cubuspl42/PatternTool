@@ -101,7 +101,7 @@ data class BezierCurve private constructor(
         ): Set<Intersection> = findIntersectionsByEquationSolving(
             simpleSubjectCurve = subjectBezierCurve,
             complexObjectCurve = objectBezierCurve,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         )
 
         /**
@@ -299,7 +299,7 @@ data class BezierCurve private constructor(
         ) ?: basisFunction.locatePointByProjection(
             point = point.pointVector,
             tRange = primaryTRange,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         ) ?: return null
 
         return Coord.of(t = tValue)
@@ -355,7 +355,7 @@ data class BezierCurve private constructor(
         val endPoint = pathFunction.end
 
         val criticalPointSet = basisFunction.findCriticalPoints(
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         )
 
         val criticalXValues = criticalPointSet.xRoots.mapNotNull { t ->

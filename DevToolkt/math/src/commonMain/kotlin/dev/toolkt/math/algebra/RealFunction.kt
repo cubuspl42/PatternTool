@@ -50,7 +50,7 @@ fun RealFunction<Double>.solveEqualityByBisection(
     y: Double,
     range: ClosedFloatingPointRange<Double>,
     maxIterationCount: Int = 1000,
-    tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+    tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
 ): Double? = object : RealFunction<Double> {
     override fun apply(
         a: Double,
@@ -71,7 +71,7 @@ fun RealFunction<Double>.solveEqualityByBisection(
 fun RealFunction<Double>.findRootByBisection(
     range: ClosedFloatingPointRange<Double>,
     maxIterationCount: Int = 1000,
-    tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+    tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
 ): Double? {
     // If a solution is on the edge of the range (within tolerance), we want
     // to find it

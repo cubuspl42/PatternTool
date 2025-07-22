@@ -129,7 +129,7 @@ data class ComplexPolynomial internal constructor(
     fun findRoots(
         maxDepth: Int = 100,
         guessedRoot: Complex = Complex.Companion.Zero,
-        tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+        tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
     ): List<Complex> {
         if (degree == 0) {
             return emptyList()

@@ -67,7 +67,7 @@ data class LineSegment(
             return PrimitiveCurve.findIntersectionsByEquationSolving(
                 simpleSubjectCurve = subjectLineSegment,
                 complexObjectCurve = objectPrimitiveCurve,
-                tolerance = NumericTolerance.Default,
+                tolerance = NumericTolerance.Absolute.Default,
             )
         }
     }
@@ -117,7 +117,7 @@ data class LineSegment(
         val tValue = basisFunction.locatePoint(
             point = point.pointVector,
             tRange = primaryTRange,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         ) ?: return when {
             // If a line is degenerated, _all_ t-values are a good answer, but
             // we don't want to say that the point is not on the curve when it
@@ -173,7 +173,7 @@ data class LineSegment(
         intersections = PrimitiveCurve.findIntersectionsByEquationSolving(
             simpleSubjectCurve = this,
             complexObjectCurve = subjectBezierCurve,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         ),
     )
 

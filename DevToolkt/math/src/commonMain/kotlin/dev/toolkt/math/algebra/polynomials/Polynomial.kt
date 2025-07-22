@@ -100,7 +100,7 @@ sealed interface Polynomial : NumericObject, RealFunction<Double> {
     fun findRoots(
         maxDepth: Int = 20,
         range: ClosedFloatingPointRange<Double>,
-        tolerance: NumericTolerance.Absolute = NumericTolerance.Default,
+        tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
     ): List<Double>
 
     /**

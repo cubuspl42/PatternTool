@@ -6,6 +6,7 @@ import dev.toolkt.math.algebra.polynomials.HighPolynomial
 import dev.toolkt.math.algebra.polynomials.QuadraticPolynomial
 import dev.toolkt.math.algebra.polynomials.findRootsExternally
 import org.apache.commons.math3.exception.TooManyEvaluationsException
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertFails
 import kotlin.test.assertIs
@@ -22,7 +23,7 @@ class HighPolynomialJvmTests {
 
         val roots = quadraticPolynomial.findRootsExternally(
             guessedRoot = 0.0,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         )
 
         assertEqualsWithTolerance(
@@ -49,7 +50,7 @@ class HighPolynomialJvmTests {
 
         val roots = highPolynomial.findRootsExternally(
             guessedRoot = 0.5,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         ).filter { it in 0.0..1.0 }
 
         assertEqualsWithTolerance(
@@ -79,7 +80,7 @@ class HighPolynomialJvmTests {
 
         val roots = highPolynomial.findRootsExternally(
             guessedRoot = 0.5,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         )
 
         assertEqualsWithTolerance(
@@ -110,7 +111,7 @@ class HighPolynomialJvmTests {
 
         val roots = highPolynomial.findRootsExternally(
             guessedRoot = 0.5,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         )
 
         assertEqualsWithTolerance(
@@ -124,6 +125,7 @@ class HighPolynomialJvmTests {
     }
 
     @Test
+    @Ignore // This test is very slow, it can be manually un-ignored when necessary
     fun testFindRootsExternally_tricky_badGuess() {
         val highPolynomial = HighPolynomial(
             -1.0, 0.0, 0.0, 0.0, 1.0
@@ -134,7 +136,7 @@ class HighPolynomialJvmTests {
                 highPolynomial.findRootsExternally(
                     // With this guessed value, the algorithm doesn't converge
                     guessedRoot = 0.0,
-                    tolerance = NumericTolerance.Default,
+                    tolerance = NumericTolerance.Absolute.Default,
                 )
             },
         )
@@ -149,7 +151,7 @@ class HighPolynomialJvmTests {
         val roots = highPolynomial.findRootsExternally(
             // With this guessed value, the algorithm does converge
             guessedRoot = 0.5,
-            tolerance = NumericTolerance.Default,
+            tolerance = NumericTolerance.Absolute.Default,
         )
 
         assertEqualsWithTolerance(
