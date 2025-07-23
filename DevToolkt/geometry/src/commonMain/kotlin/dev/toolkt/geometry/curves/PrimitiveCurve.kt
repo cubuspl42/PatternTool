@@ -162,20 +162,10 @@ abstract class PrimitiveCurve : OpenCurve() {
     /**
      * Locate the point on the curve
      *
-     * @return If the [point] is on the curve, coordinate of that point. If the
-     * point is not on the curve, `null`
-     *
-     * TODO: Nuke in favor of the newer API
-     */
-    abstract fun locatePoint(
-        point: Point,
-    ): Coord?
-
-    /**
-     * Locate the point on the curve
-     *
      * @return If the [point] lies on the curve (within the given [tolerance]), coordinate of that point. If the point
      * does not lie on the curve or is extremely close to the self-intersection, `null`.
+     *
+     * TODO: This double null interpretation is likely not useful!
      */
     fun locatePointByInversion(
         point: Point,

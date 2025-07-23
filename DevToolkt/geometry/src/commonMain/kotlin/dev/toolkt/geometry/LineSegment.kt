@@ -5,7 +5,6 @@ import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.curves.PrimitiveCurve
-import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricLineFunction
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.geometry.transformations.Transformation
@@ -112,23 +111,6 @@ data class LineSegment(
     ): Point = Point(
         pointVector = start.pointVector + coord.t * (end.pointVector - start.pointVector),
     )
-
-    override fun locatePoint(point: Point): Coord? {
-        val tValue = basisFunction.locatePoint(
-            point = point.pointVector,
-            tRange = primaryTRange,
-            tolerance = NumericTolerance.Absolute.Default,
-        ) ?: return when {
-            // If a line is degenerated, _all_ t-values are a good answer, but
-            // we don't want to say that the point is not on the curve when it
-            // kind of is
-            start.equalsWithTolerance(point) -> Coord.start
-
-            else -> null
-        }
-
-        return Coord.of(t = tValue)
-    }
 
     override fun equalsWithTolerance(
         other: NumericObject,

@@ -284,27 +284,6 @@ data class BezierCurve constructor(
         pointVector = basisFunction.apply(coord.t),
     )
 
-    override fun locatePoint(
-        point: Point,
-    ): Coord? {
-        val invertedCurve = basisFunction.inverted ?: run {
-            // If the curve is degenerated to a line (or a point), it still
-            // _can_ contain the given point, but for now we're giving up
-            return null
-        }
-
-        val tValue = locatePointByInversion(
-            invertedCurve = invertedCurve,
-            point = point,
-        ) ?: basisFunction.locatePointByProjection(
-            point = point.pointVector,
-            tRange = primaryTRange,
-            tolerance = NumericTolerance.Absolute.Default,
-        ) ?: return null
-
-        return Coord.of(t = tValue)
-    }
-
     /**
      * Locate the given point by inversion
      *
