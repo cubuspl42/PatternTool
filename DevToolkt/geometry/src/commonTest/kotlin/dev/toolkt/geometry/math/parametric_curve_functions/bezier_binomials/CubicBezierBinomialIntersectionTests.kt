@@ -438,7 +438,7 @@ class CubicBezierBinomialIntersectionTests {
     }
 
     @Test
-    fun testSolveIntersections_cubicBezierBinomial_loop() {
+    fun testSolveIntersections_cubicBezierBinomial_xFromLoop() {
         val firstCubicBezierBinomial = CubicBezierBinomial(
             point0 = Vector2(233.92449010844575, 500.813035986871),
             point1 = Vector2(422.77519184542564, 441.5255275486571),
@@ -472,7 +472,8 @@ class CubicBezierBinomialIntersectionTests {
         )
 
         // The equation solving doesn't seem to be capable of finding the
-        // intersection of these curves
+        // intersection of these curves (we can't really blame it, the
+        // intersection polynomial is effectively a zero polynomial)
         assertEqualsWithTolerance(
             expected = emptyList(),
             actual = tValues,

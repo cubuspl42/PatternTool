@@ -34,26 +34,18 @@ fun main() {
 }
 
 private fun createRootElement(): HTMLDivElement {
-    val firstCubicBezierBinomial = CubicBezierBinomial(
-        point0 = Vector2(a0 = 463.1134738931656, a1 = 195.15946716213224),
-        point1 = Vector2(a0 = 386.60439148807524, a1 = 197.40369498348238),
-        point2 = Vector2(a0 = 337.6147671518326, a1 = 265.3442191305161),
-        point3 = Vector2(a0 = 570.4135222711564, a1 = 425.69124907588963),
-    )
-
-    val secondCubicBezierBinomial = CubicBezierBinomial(
-        point0 = Vector2(a0 = 273.80049324035645, a1 = 489.08709716796875),
-        point1 = Vector2(a0 = 684.4749774932861, a1 = 329.1851005554199),
-        point2 = Vector2(a0 = 591.8677291870117, a1 = 214.5483512878418),
-        point3 = Vector2(a0 = 492.59773540496826, a1 = 197.3452272415161),
-    )
-
     val firstBezierCurve = BezierCurve(
-        basisFunction = firstCubicBezierBinomial,
+        start = Point(233.92449010844575, 500.813035986871),
+        firstControl = Point(422.77519184542564, 441.5255275486571),
+        secondControl = Point(482.0980368984025, 387.5853838361354),
+        end = Point(486.0476425340348, 351.778389940191),
     )
 
     val secondBezierCurve = BezierCurve(
-        basisFunction = secondCubicBezierBinomial,
+        start = Point(382.2960291124364, 335.5675928528492),
+        firstControl = Point(370.41409366476535, 370.845949740462),
+        secondControl = Point(402.03174182196125, 441.30516989916543),
+        end = Point(551.3035908506827, 559.7310384198445),
     )
 
     val userCurveSystem = UserCurveSystem(

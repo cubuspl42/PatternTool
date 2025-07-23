@@ -465,4 +465,40 @@ class HighPolynomialTests {
             ),
         )
     }
+
+    /**
+     * This polynomial is nearly flat. This is an intersection polynomial of
+     * two curves that overlap in their extended range. There is no expectation
+     * to find any roots here.
+     */
+    @Test
+    fun testFindRoots_nearlyFlat() {
+        val highPolynomial = HighPolynomial(
+            coefficients = listOf(
+                -0.0703125,
+                -0.24609375,
+                -2.066650390625,
+                3.977783203125,
+                -2.550048828125,
+                0.525421142578125,
+                0.15000152587890625,
+                -0.10351181030273438,
+                0.02113819122314453,
+                -0.0015780925750732422,
+            )
+        )
+
+        val roots = highPolynomial.findRootsNumericallyInRange(
+            range = 0.0..1.0,
+            tolerance = NumericTolerance.Absolute(
+                absoluteTolerance = 1e-4,
+            ),
+        )
+
+        assertEqualsWithTolerance(
+            expected = emptyList(),
+            actual = roots,
+        )
+
+    }
 }
