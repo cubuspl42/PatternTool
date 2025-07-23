@@ -5,6 +5,8 @@ import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Span
 import dev.toolkt.geometry.SpatialObject
+import dev.toolkt.geometry.Vector2
+import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import kotlin.test.Ignore
 import kotlin.test.Test
 
@@ -481,6 +483,37 @@ class BezierCurveIntersectionTests {
             expectedDefaultIntersections = expectedIntersections,
             expectedSubdivisionIntersections = expectedIntersections,
             expectedEquationSolvingIntersections = emptyList(),
+        )
+    }
+
+    @Test
+    @Ignore // TODO: Make it work! Start from this one
+    fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_xFromLoop_moved() {
+        val firstBezierCurve = BezierCurve(
+            start = Point(233.92449010844575, 500.813035986871),
+            firstControl = Point(422.77519184542564, 441.5255275486571),
+            secondControl = Point(482.0980368984025, 387.5853838361354),
+            end = Point(484.0, 353.0),
+        )
+
+        val secondBezierCurve = BezierCurve(
+            start = Point(382.2960291124364, 335.5675928528492),
+            firstControl = Point(370.41409366476535, 370.845949740462),
+            secondControl = Point(402.03174182196125, 441.30516989916543),
+            end = Point(551.3035908506827, 559.7310384198445),
+        )
+
+        testBezierIntersectionsConsistentSymmetric(
+            firstCurve = firstBezierCurve,
+            secondCurve = secondBezierCurve,
+            expectedIntersections = listOf(
+                ExpectedIntersection(
+                    // TODO: Figure out the correct point
+                    point = Point(0.0, 0.0),
+                    firstCoord = OpenCurve.Coord(t = 0.0),
+                    secondCoord = OpenCurve.Coord(t = 0.0),
+                ),
+            ),
         )
     }
 

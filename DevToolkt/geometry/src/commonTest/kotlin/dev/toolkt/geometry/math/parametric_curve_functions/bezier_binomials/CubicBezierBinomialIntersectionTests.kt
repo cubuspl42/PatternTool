@@ -460,6 +460,43 @@ class CubicBezierBinomialIntersectionTests {
     }
 
     @Test
+    fun testSolveIntersectionEquation_cubicBezierBinomial_xFromLoop_moved() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(233.92449010844575, 500.813035986871),
+            point1 = Vector2(422.77519184542564, 441.5255275486571),
+            point2 = Vector2(482.0980368984025, 387.5853838361354),
+            point3 = Vector2(484.0, 353.0),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(382.2960291124364, 335.5675928528492),
+            point1 = Vector2(370.41409366476535, 370.845949740462),
+            point2 = Vector2(402.03174182196125, 441.30516989916543),
+            point3 = Vector2(551.3035908506827, 559.7310384198445),
+        )
+
+        // Like the "x from loop" test, but slightly moved, doesn't overlap on the extended range
+        if (firstCubicBezierBinomial.isFullyOverlapping(secondCubicBezierBinomial)) {
+            throw AssertionError("The curves were assumed not to be overlapping")
+        }
+
+        val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
+            other = secondCubicBezierBinomial,
+            tRange = primaryTRange,
+            tolerance = NumericTolerance.Absolute.Default,
+        )
+
+        assertEqualsWithTolerance(
+            expected = listOf(
+                1.649148012689011E-4,
+                0.4390934103344293,
+                0.45244180415985374,
+            ),
+            actual = tValues.sorted(),
+        )
+    }
+
+    @Test
     fun testSolveIntersectionEquation_line() {
 
     }
