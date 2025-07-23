@@ -443,6 +443,8 @@ class BezierCurveIntersectionTests {
         // A loop cut into two pieces that make it non-obvious that any loop
         // is involved at all (for some reason, possibly numeric accuracy, this
         // one IS problematic and confuses the equation solving algorithm)
+        // This pair gives an extremely flat intersection polynomial, possibly
+        // the most flat found so far
 
         // The original loop curve:
         // start = Point(233.92449010844575, 500.813035986871),

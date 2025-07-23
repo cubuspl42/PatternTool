@@ -6,6 +6,7 @@ import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
+import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial.SelfIntersectionResult
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import kotlin.random.Random
@@ -276,7 +277,7 @@ class CubicBezierBinomialTests {
      * self-intersecting original curve
      */
     @Test
-    fun testFindImage_xFromLoop() {
+    fun testFindImage_xFromLoop1() {
         val firstCubicBezierBinomial = CubicBezierBinomial(
             point0 = Vector2(383.0995044708252, 275.80810546875),
             point1 = Vector2(435.23948860168457, 325.49310302734375),
@@ -318,6 +319,57 @@ class CubicBezierBinomialTests {
 
         assertEqualsWithTolerance(
             expected = 5.954922,
+            actual = image.t1,
+        )
+    }
+
+
+    /**
+     * Two curves intersecting in an X-like way trimmed from the same
+     * self-intersecting original curve
+     */
+    @Test
+    fun testFindImage_xFromLoop2() {
+        val tolerance = NumericTolerance.Relative(
+            relativeTolerance = 1e-12,
+        )
+
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(a0 = 233.92449010844575, a1 = 500.813035986871),
+            point1 = Vector2(a0 = 422.77519184542564, a1 = 441.5255275486571),
+            point2 = Vector2(a0 = 482.0980368984025, a1 = 387.5853838361354),
+            point3 = Vector2(a0 = 486.0476425340348, a1 = 351.778389940191),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(a0 = 382.2960291124364, a1 = 335.5675928528492),
+            point1 = Vector2(a0 = 370.41409366476535, a1 = 370.845949740462),
+            point2 = Vector2(a0 = 402.03174182196125, a1 = 441.30516989916543),
+            point3 = Vector2(a0 = 551.3035908506827, a1 = 559.7310384198445),
+        )
+
+        val image = assertNotNull(
+            firstCubicBezierBinomial.findImage(
+                target = secondCubicBezierBinomial,
+                tolerance = tolerance,
+            ),
+        )
+
+        assertTrue(
+            image.overlap(
+                source = firstCubicBezierBinomial,
+                target = secondCubicBezierBinomial,
+                tolerance = tolerance,
+            ),
+        )
+
+        assertEqualsWithTolerance(
+            expected = -2.3333333333333437,
+            actual = image.t0,
+        )
+
+        assertEqualsWithTolerance(
+            expected = -1.3333333333333333,
             actual = image.t1,
         )
     }
