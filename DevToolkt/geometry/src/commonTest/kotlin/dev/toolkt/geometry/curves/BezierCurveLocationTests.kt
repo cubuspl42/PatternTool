@@ -3,7 +3,7 @@ package dev.toolkt.geometry.curves
 import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.geometry.Point
-import dev.toolkt.geometry.SpatialObject
+import dev.toolkt.geometry.curves.PrimitiveCurve.PointInversionResult
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -11,7 +11,7 @@ import kotlin.test.assertNotNull
 class BezierCurveLocationTests {
     @Test
     @Ignore // FIXME: The inversion function for curves degenerating to a quadratic is built, but doesn't work
-    fun testLocatePointByInversion_degenerate_quadratic_1() {
+    fun testInvertPoint_degenerate_quadratic_1() {
         val start = Point(277.26681060791014, 236.5185116577148)
         val end = Point(663.6991928100585, 231.08415603637695)
 
@@ -30,34 +30,37 @@ class BezierCurveLocationTests {
         )
 
         assertEqualsWithTolerance(
-            expected = OpenCurve.Coord.start,
+            expected = PointInversionResult.Single(
+                coord = OpenCurve.Coord.start,
+            ),
             actual = assertNotNull(
-                bezierCurve.locatePointByInversion(
+                bezierCurve.invertPoint(
                     point = start,
-                    tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
             tolerance = NumericTolerance.Default,
         )
 
         assertEqualsWithTolerance(
-            expected = OpenCurve.Coord.end,
+            expected = PointInversionResult.Single(
+                coord = OpenCurve.Coord.end,
+            ),
             actual = assertNotNull(
-                bezierCurve.locatePointByInversion(
+                bezierCurve.invertPoint(
                     point = end,
-                    tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
             tolerance = NumericTolerance.Default,
         )
 
         assertEqualsWithTolerance(
-            expected = OpenCurve.Coord.of(0.5)!!,
+            expected = PointInversionResult.Single(
+                coord = OpenCurve.Coord.of(0.5)!!,
+            ),
             actual = assertNotNull(
-                bezierCurve.locatePointByInversion(
+                bezierCurve.invertPoint(
                     // A point at the middle of the curve
                     point = Point(476.5902442932129, 324.15987846374514),
-                    tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
             tolerance = NumericTolerance.Default,
@@ -65,7 +68,7 @@ class BezierCurveLocationTests {
     }
 
     @Test
-    fun testLocatePointByInversion_simple_1() {
+    fun testInvertPoint_simple_1() {
         val start = Point(294.82501220703125, 235.177001953125)
         val end = Point(646.1409912109375, 232.42100524902344)
 
@@ -78,34 +81,37 @@ class BezierCurveLocationTests {
         )
 
         assertEqualsWithTolerance(
-            expected = OpenCurve.Coord.start,
+            expected = PointInversionResult.Single(
+                OpenCurve.Coord.start,
+            ),
             actual = assertNotNull(
-                bezierCurve.locatePointByInversion(
+                bezierCurve.invertPoint(
                     point = start,
-                    tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
             tolerance = NumericTolerance.Default,
         )
 
         assertEqualsWithTolerance(
-            expected = OpenCurve.Coord.end,
+            expected = PointInversionResult.Single(
+                OpenCurve.Coord.end,
+            ),
             actual = assertNotNull(
-                bezierCurve.locatePointByInversion(
+                bezierCurve.invertPoint(
                     point = end,
-                    tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
             tolerance = NumericTolerance.Default,
         )
 
         assertEqualsWithTolerance(
-            expected = OpenCurve.Coord.of(0.5)!!,
+            expected = PointInversionResult.Single(
+                OpenCurve.Coord.of(0.5)!!,
+            ),
             actual = assertNotNull(
-                bezierCurve.locatePointByInversion(
+                bezierCurve.invertPoint(
                     // A point at the middle of the curve
                     point = Point(476.5902442932129, 324.1586284637451),
-                    tolerance = SpatialObject.SpatialTolerance.default,
                 ),
             ),
             tolerance = NumericTolerance.Default,

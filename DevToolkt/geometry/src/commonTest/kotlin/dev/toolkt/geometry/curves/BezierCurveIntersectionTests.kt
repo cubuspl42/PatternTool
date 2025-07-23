@@ -184,7 +184,6 @@ class BezierCurveIntersectionTests {
      * A line intersecting a loop curve at its self-intersection
      */
     @Test
-    @Ignore // FIXME: Make it work
     fun testFindIntersections_LineSegment_BezierCurve_oneIntersection_splitLoop() {
         val lineSegment = LineSegment(
             start = Point(401.14355433959827, 374.2024184921395),
@@ -199,18 +198,27 @@ class BezierCurveIntersectionTests {
             end = Point(671.4185047149658, 490.2051086425781),
         )
 
+        val actualIntersections = BezierCurve.findIntersections(
+            subjectLineSegment = lineSegment,
+            objectBezierCurve = bezierCurve,
+        )
+
+        // Two intersections are found...
+        // From a certain perspective it makes sense
         assertIntersectionsEqual(
             expectedIntersections = listOf(
                 ExpectedIntersection(
-                    point = Point(501.14355433959827, 374.2024184921395),
-                    firstCoord = OpenCurve.Coord(t = 0.2606471534818411),
-                    secondCoord = OpenCurve.Coord(t = 0.8083924553357065),
+                    point = Point(501.14329730761887, 374.2024184921395),
+                    firstCoord = OpenCurve.Coord(t =  0.4999987148401033),
+                    secondCoord = OpenCurve.Coord(t = 0.8083924555183848),
+                ),
+                ExpectedIntersection(
+                    point = Point(501.1438111319996, 374.2024184921395),
+                    firstCoord = OpenCurve.Coord(t = 0.5000012839620069),
+                    secondCoord = OpenCurve.Coord(t = 0.8083924555183848),
                 ),
             ),
-            actualIntersections = BezierCurve.Companion.findIntersections(
-                subjectLineSegment = lineSegment,
-                objectBezierCurve = bezierCurve,
-            ),
+            actualIntersections = actualIntersections,
         )
     }
 

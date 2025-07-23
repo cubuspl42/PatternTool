@@ -37,6 +37,10 @@ data class ParametricPointFunction(
         tolerance: NumericTolerance.Absolute,
     ): InvertedCurveFunction = InvertedPointFunction
 
+    override fun findSelfIntersection(
+        tolerance: NumericTolerance.Absolute,
+    ): Nothing? = null
+
     override fun locatePoint(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,

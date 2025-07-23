@@ -6,12 +6,10 @@ import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
-import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial.SelfIntersectionResult
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import kotlin.random.Random
 import kotlin.test.Ignore
 import kotlin.test.Test
-import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -129,13 +127,9 @@ class CubicBezierBinomialTests {
         // Distance to the self-intersection point: 2.5690823589665505E-4
         val selfIntersectionPoint2 = Vector2(501.1438111319996, 374.2024184921395)
 
-        // Doesn't trigger the 0/0 safeguard, gives a very bad approximation of t-value
-        assertEqualsWithTolerance(
-            expected = -5.68379446238774,
-            actual = assertNotNull(
-                cubicBezierBinomial.locatePointByInversion(
-                    point = selfIntersectionPoint2,
-                ),
+        assertNull(
+            cubicBezierBinomial.locatePointByInversion(
+                point = selfIntersectionPoint2,
             ),
         )
     }

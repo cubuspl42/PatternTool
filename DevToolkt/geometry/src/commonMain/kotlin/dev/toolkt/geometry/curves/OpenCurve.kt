@@ -147,14 +147,9 @@ abstract class OpenCurve : NumericObject, ReprObject {
              * @param t t-value, unconstrained
              * @return coord if t is in [0, 1], null otherwise
              */
-            fun of(t: Double): Coord? = when (t) {
-                in tRange -> Coord(t = t)
-                else -> null
-            }
-
             fun of(
                 t: Double,
-                tolerance: NumericTolerance.Absolute,
+                tolerance: NumericTolerance.Absolute = NumericTolerance.Absolute.Default,
             ): Coord? = when (t) {
                 in tRange.extend(tolerance.absoluteTolerance) -> Coord(
                     t = t.coerceIn(tRange),

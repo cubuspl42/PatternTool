@@ -8,6 +8,7 @@ import dev.toolkt.geometry.Direction
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.RelativeAngle
 import dev.toolkt.geometry.Span
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.InvertedCurveFunction.InversionResult
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import kotlin.math.nextDown
@@ -48,7 +49,7 @@ class CubicBezierBinomialInversionFuzzyTests {
 
         val selfIntersectionResult = cubicBezierBinomial.findSelfIntersection(
             tolerance = computationTolerance,
-        ) as CubicBezierBinomial.SelfIntersectionResult
+        ) as ParametricCurveFunction.SelfIntersectionResult
 
         /**
          * Test the t-values that are as very close (but not extremely close) to

@@ -202,7 +202,7 @@ data class BezierCurve constructor(
         fun findIntersections(
             subjectLineSegment: LineSegment,
             objectBezierCurve: BezierCurve,
-        ): Set<Intersection> = LineSegment.Companion.findIntersections(
+        ): Set<Intersection> = LineSegment.findIntersections(
             subjectLineSegment = subjectLineSegment,
             objectPrimitiveCurve = objectBezierCurve,
         )

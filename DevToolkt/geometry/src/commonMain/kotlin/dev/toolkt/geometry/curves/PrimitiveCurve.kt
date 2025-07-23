@@ -6,7 +6,6 @@ import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.Direction
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
-import dev.toolkt.geometry.SpatialObject
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
@@ -36,6 +35,59 @@ abstract class PrimitiveCurve : OpenCurve() {
         abstract fun transformBy(
             transformation: Transformation,
         ): Edge
+    }
+
+    /**
+     * The result of point inversion (mapping of a point on the curve to the
+     * respective coordinates)
+     */
+    sealed class PointInversionResult() : NumericObject {
+        abstract val representativeCoord: Coord
+
+        /**
+         * A single point
+         *
+         * One (and only one) coordinate corresponds to the given point.
+         */
+        data class Single(
+            val coord: Coord,
+        ) : PointInversionResult() {
+            override val representativeCoord: Coord
+                get() = coord
+
+            override fun equalsWithTolerance(
+                other: NumericObject,
+                tolerance: NumericTolerance,
+            ): Boolean = when {
+                other !is Single -> false
+                !coord.equalsWithTolerance(other.coord, tolerance) -> false
+                else -> true
+            }
+        }
+
+        /**
+         * A double point
+         *
+         * Two points on the curve correspond to the given point. This is
+         * possible in the case of a self-intersection.
+         */
+        data class Double(
+            val firstCoord: Coord,
+            val secondCoord: Coord,
+        ) : PointInversionResult() {
+            override val representativeCoord: Coord
+                get() = firstCoord
+
+            override fun equalsWithTolerance(
+                other: NumericObject,
+                tolerance: NumericTolerance,
+            ): Boolean = when {
+                other !is Double -> false
+                !firstCoord.equalsWithTolerance(other.firstCoord, tolerance) -> false
+                !secondCoord.equalsWithTolerance(other.secondCoord, tolerance) -> false
+                else -> true
+            }
+        }
     }
 
     companion object {
@@ -72,36 +124,20 @@ abstract class PrimitiveCurve : OpenCurve() {
                 val intersectionPoint = simpleSubjectCurve.evaluate(coord = coordSimple)
 
                 // As we know that the intersection point lies on the complex curve (in the full range), we can safely
-                // use the complex curve's inversion function
-                val complexInversionResult =
-                    complexObjectCurve.invertedBasisFunction.apply(intersectionPoint.pointVector)
+                // use the complex curve's inversion mechanism
+                val pointInversionResult = complexObjectCurve.invertPoint(intersectionPoint) ?: return@mapNotNull null
 
-                when (complexInversionResult) {
-                    InversionResult.SelfIntersection -> {
-                        // Unluckily, the curve-curve self-intersection lies on the complex curve self-intersection
+                object : Intersection() {
+                    override val point: Point = intersectionPoint
 
-                        // No tests catch this...
-                        TODO("Find the self-intersection")
-                    }
+                    override val subjectCoord: Coord = coordSimple
 
-                    is InversionResult.Specific -> {
-                        val coordComplex = Coord.of(t = complexInversionResult.t) ?: return@mapNotNull null
-
-                        // This is a normal, healthy intersection in the proper range
-                        object : Intersection() {
-                            override val point = intersectionPoint
-
-                            override val subjectCoord: Coord = coordSimple
-
-                            override val objectCoord: Coord = coordComplex
-                        }
-                    }
+                    override val objectCoord: Coord = pointInversionResult.representativeCoord
                 }
             }.toSet()
         }
     }
 
-    // TODO: Make this final
     final override val subCurves: List<PrimitiveCurve>
         get() = listOf(this)
 
@@ -174,48 +210,50 @@ abstract class PrimitiveCurve : OpenCurve() {
     abstract fun evaluate(coord: Coord): Point
 
     /**
-     * Locate the point on the curve
+     * Invert the point lying on the curve (including its extension)
      *
-     * @return If the [point] lies on the curve (within the given [tolerance]), coordinate of that point. If the point
-     * does not lie on the curve or is extremely close to the self-intersection, `null`.
-     *
-     * TODO: This double null interpretation is likely not useful!
+     * @return The point inversion result, or `null` if the point doesn't lie
+     * in the curve's primary range.
      */
-    fun locatePointByInversion(
+    fun invertPoint(
         point: Point,
-        tolerance: SpatialObject.SpatialTolerance,
-    ): Coord? {
+    ): PointInversionResult? {
         val inversionResult = invertedBasisFunction.apply(
             point.pointVector,
-        ) as? InversionResult.Specific ?: run {
-            // If a point lies on the self-intersection, there are actually multiple
-            // coordinates that are a possibly acceptable answer. For now, let's give up.
-            return null
-        }
+        )
 
-        // If the inversion returned a result outside the primary t-value range,
-        // it means that the point is not on the curve
-        val invertedCoord = Coord.of(
-            t = inversionResult.t,
-            tolerance = NumericTolerance.Absolute.Default,
-        ) ?: return null
+        when (inversionResult) {
+            InversionResult.SelfIntersection -> {
+                val selfIntersectionResult = basisFunction.findSelfIntersection(
+                    tolerance = NumericTolerance.Absolute.Default,
+                ) ?: return null // If we couldn't find the self-intersection, this is a numerical anomaly or a bug
 
-        // If the inversion gave a specific t-value, it's not a guarantee that
-        // the point is on the curve, as the inversion function is defined for
-        // all (non-self-intersection) points
+                val firstCoord = Coord.of(selfIntersectionResult.t0)
+                val secondCoord = Coord.of(selfIntersectionResult.t1)
 
-        // Let's see what point lies on the inverted t-value
-        val actualPoint = evaluate(coord = invertedCoord)
+                when {
+                    firstCoord != null && secondCoord != null -> return PointInversionResult.Double(
+                        firstCoord = firstCoord,
+                        secondCoord = secondCoord,
+                    )
 
-        return when {
-            // If the point we try to locate and the point at the inverted t-value
-            // are effectively the same point, the point location was successful
-            point.equalsWithSpatialTolerance(
-                other = actualPoint,
-                tolerance = tolerance,
-            ) -> invertedCoord
+                    else -> {
+                        val singleCoord = firstCoord ?: secondCoord ?: return null
 
-            else -> null
+                        return PointInversionResult.Single(
+                            coord = singleCoord,
+                        )
+                    }
+                }
+            }
+
+            is InversionResult.Specific -> {
+                val singleCoord = Coord.of(inversionResult.t) ?: return null
+
+                return PointInversionResult.Single(
+                    coord = singleCoord,
+                )
+            }
         }
     }
 }

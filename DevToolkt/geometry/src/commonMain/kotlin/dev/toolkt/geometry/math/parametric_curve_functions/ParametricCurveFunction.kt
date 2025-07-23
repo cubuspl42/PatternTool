@@ -118,6 +118,14 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
         }
     }
 
+    /**
+     * The self-intersection exists and occurs at the given t-values.
+     */
+    data class SelfIntersectionResult(
+        val t0: Double,
+        val t1: Double,
+    )
+
     companion object {
         val primaryTRange = 0.0..1.0
     }
@@ -200,6 +208,14 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     abstract fun buildInvertedFunction(
         tolerance: NumericTolerance.Absolute,
     ): InvertedCurveFunction
+
+    /**
+     * @return The self-intersection result, or null which implies that the
+     * curve is degenerate _or_ that the self-intersection doesn't exist.
+     */
+    abstract fun findSelfIntersection(
+        tolerance: NumericTolerance.Absolute,
+    ): SelfIntersectionResult?
 
     /**
      * Locate a [point] lying on the curve.

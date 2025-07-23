@@ -110,6 +110,10 @@ data class QuadraticBezierBinomial(
         )
     }
 
+    override fun findSelfIntersection(
+        tolerance: NumericTolerance.Absolute,
+    ): Nothing? = null
+
     override fun locatePoint(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,

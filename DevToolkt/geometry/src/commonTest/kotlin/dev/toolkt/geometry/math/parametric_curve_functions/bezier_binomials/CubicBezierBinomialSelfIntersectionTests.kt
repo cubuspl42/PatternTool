@@ -2,7 +2,8 @@ package dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials
 
 import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
-import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial.SelfIntersectionResult
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
+import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.SelfIntersectionResult
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.linear.vectors.times
 import kotlin.test.Test

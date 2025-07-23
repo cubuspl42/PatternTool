@@ -96,6 +96,10 @@ data class ParametricLineFunction(
         )
     }
 
+    override fun findSelfIntersection(
+        tolerance: NumericTolerance.Absolute,
+    ): Nothing? = null
+
     /**
      * Solve the equation s + d * t = p for t
      *
