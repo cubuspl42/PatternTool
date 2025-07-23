@@ -37,68 +37,39 @@ data class InvertedPoint(
 )
 
 internal fun createCurveInfoView(
-    userBezierCurve: UserBezierCurve,
+    userCurve: UserCurve<*>,
     intersectionPolynomial: Cell<Polynomial>,
-): Element {
-    val intersectionTValues = intersectionPolynomial.map {
-        it.findRoots(range = 0.0..1.0)
-    }
-
-    val intersectionPoints = userBezierCurve.bezierCurve.switchOf { bezierCurve ->
-        intersectionTValues.map { tValues ->
-            tValues.map { tValue ->
-                val point = bezierCurve.basisFunction.apply(tValue)
-
-                InvertedPoint(
-                    tValue = tValue, point = point, ratio = bezierCurve.invertedBasisRationalFunction!!.apply(point)
-                )
-            }
-        }
-    }
-
-    val ratios = intersectionPoints.map { }
-
-    return document.createReactiveHtmlDivElement(
-        style = ReactiveStyle(
-            displayStyle = Cell.of(
-                PureFlexStyle(
-                    direction = PureFlexDirection.Column,
-                    grow = 1.0,
+): Element = document.createReactiveHtmlDivElement(
+    style = ReactiveStyle(
+        displayStyle = Cell.of(
+            PureFlexStyle(
+                direction = PureFlexDirection.Column,
+                grow = 1.0,
+            ),
+        ),
+    ),
+    children = ReactiveList.of(
+        document.createReactiveHtmlSpanElement(
+            children = ReactiveList.of(
+                document.createReactiveTextNode(
+                    userCurve.primitiveCurve.map {
+                        it.basisFunction.toReprString()
+                    },
                 ),
             ),
         ),
-        children = ReactiveList.of(
-            document.createReactiveHtmlSpanElement(
-                children = ReactiveList.of(
-                    document.createReactiveTextNode(
-                        userBezierCurve.bezierCurve.map {
-                            it.basisFunction.toReprString()
-                        },
-                    ),
+        document.createReactiveHtmlSpanElement(
+            children = ReactiveList.of(
+                document.createReactiveTextNode(
+                    intersectionPolynomial.map {
+                        it.coefficients.toString()
+                    },
                 ),
             ),
-            document.createReactiveHtmlSpanElement(
-                children = ReactiveList.of(
-                    document.createReactiveTextNode(
-                        intersectionPolynomial.map {
-                            it.coefficients.toString()
-                        },
-                    ),
-                ),
-            ),
-            document.createReactiveHtmlSpanElement(
-                children = ReactiveList.of(
-                    document.createReactiveTextNode(
-                        intersectionPoints.map {
-                            it.toString()
-                        },
-                    ),
-                ),
-            ),
-            createPolynomialPlot(polynomial = intersectionPolynomial),
         ),
-    )
-}
+        createPolynomialPlot(polynomial = intersectionPolynomial),
+    ),
+)
 
 private fun createPolynomialPlot(
     polynomial: Cell<Polynomial>,
@@ -175,7 +146,7 @@ private fun buildPolynomialGeometricPlot(
     polynomial: Polynomial,
     plotSize: PureSize,
 ): List<Point> {
-    val yMax = 1e5
+    val yMax = 1e14
 
     val transProjection = TransProjection(
         sourceRectangle = Rectangle.of(

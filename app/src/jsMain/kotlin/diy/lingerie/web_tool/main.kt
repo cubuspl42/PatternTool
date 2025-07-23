@@ -12,7 +12,9 @@ import dev.toolkt.dom.reactive.utils.gestures.GenericMouseGesture
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Vector2
 import dev.toolkt.geometry.curves.BezierCurve
+import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.reactive_list.ReactiveList
@@ -30,16 +32,19 @@ fun main() {
 }
 
 private fun createRootElement(): HTMLDivElement {
-    val bezierCurve = BezierCurve(
-        start = Point(492.59773540496826, 197.3452272415161),
-        firstControl = Point(393.3277416229248, 180.14210319519043),
-        secondControl = Point(287.3950023651123, 260.3726043701172),
-        end = Point(671.4185047149658, 490.2051086425781),
-    )
-
     val lineSegment = LineSegment(
         start = Point(401.14355433959827, 374.2024184921395),
         end = Point(601.1435543395982, 374.2024184921395),
+    )
+
+    // Part of a loop
+    val bezierCurve = BezierCurve(
+        basisFunction = CubicBezierBinomial(
+            point0 = Vector2(492.59773540496826, 197.3452272415161),
+            point1 = Vector2(393.3277416229248, 180.14210319519043),
+            point2 = Vector2(287.3950023651123, 260.3726043701172),
+            point3 = Vector2(577.0, 439.0),
+        ),
     )
 
     val userCurveSystem = UserCurveSystem(
@@ -99,19 +104,15 @@ private fun createRootElement(): HTMLDivElement {
                 ),
                 children = ReactiveList.of(
                     listOfNotNull(
-                        (userCurveSystem.userCurve1 as? UserBezierCurve)?.let {
-                            createCurveInfoView(
-                                userBezierCurve = it,
-                                intersectionPolynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial1 },
-                            )
-                        },
-                        (userCurveSystem.userCurve2 as? UserBezierCurve)?.let {
-                            createCurveInfoView(
-                                userBezierCurve = userCurveSystem.userCurve2,
-                                intersectionPolynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial2 },
-                            )
-                        },
-                    )
+                        createCurveInfoView(
+                            userCurve = userCurveSystem.userCurve1,
+                            intersectionPolynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial1 },
+                        ),
+                        createCurveInfoView(
+                            userCurve = userCurveSystem.userCurve2,
+                            intersectionPolynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial2 },
+                        ),
+                    ),
                 ),
             ),
         ),
