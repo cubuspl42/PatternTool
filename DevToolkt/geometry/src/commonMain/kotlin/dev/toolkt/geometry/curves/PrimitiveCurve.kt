@@ -66,11 +66,13 @@ abstract class PrimitiveCurve : OpenCurve() {
 
                 val potentialIntersectionPoint = simpleSubjectCurve.evaluate(coord = coordSimple)
 
-                val tComplex = complexObjectCurve.basisFunction.locatePoint(
+                val tComplexOrNull = complexObjectCurve.basisFunction.locatePoint(
                     point = potentialIntersectionPoint.pointVector,
                     tRange = primaryTRange,
                     tolerance = tolerance,
-                ) ?: return@mapNotNull null
+                )
+
+                val tComplex = tComplexOrNull ?: return@mapNotNull null
 
                 val coordComplex = Coord.of(t = tComplex) ?: return@mapNotNull null
 
