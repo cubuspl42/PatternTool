@@ -237,7 +237,7 @@ class BezierCurveIntersectionTests {
         testBezierIntersectionsConsistentSymmetric(
             firstCurve = firstCurve,
             secondCurve = secondCurve,
-            expectedIntersection = listOf(
+            expectedIntersections = listOf(
                 ExpectedIntersection(
                     point = Point(400.0364120882783, 325.7513850441302),
                     firstCoord = OpenCurve.Coord(t = 0.638175514633884),
@@ -367,7 +367,7 @@ class BezierCurveIntersectionTests {
         testBezierIntersectionsConsistentSymmetric(
             firstCurve = firstBezierCurve,
             secondCurve = secondBezierCurve,
-            expectedIntersection = listOf(
+            expectedIntersections = listOf(
                 ExpectedIntersection(
                     point = Point(488.177482, 364.171107),
                     secondCoord = OpenCurve.Coord(t = 0.378574),
@@ -533,18 +533,18 @@ class BezierCurveIntersectionTests {
     internal fun testBezierIntersectionsConsistentSymmetric(
         firstCurve: BezierCurve,
         secondCurve: BezierCurve,
-        expectedIntersection: List<ExpectedIntersection>,
+        expectedIntersections: List<ExpectedIntersection>,
     ) {
         testBezierIntersectionsByEquationSolvingSymmetric(
             firstCurve = firstCurve,
             secondCurve = secondCurve,
-            expectedIntersection = expectedIntersection,
+            expectedIntersection = expectedIntersections,
         )
 
         testBezierIntersectionsBySubdivisionSymmetric(
             firstCurve = firstCurve,
             secondCurve = secondCurve,
-            expectedIntersection = expectedIntersection,
+            expectedIntersection = expectedIntersections,
         )
     }
 
