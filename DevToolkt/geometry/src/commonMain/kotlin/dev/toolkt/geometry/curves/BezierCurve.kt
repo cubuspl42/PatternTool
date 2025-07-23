@@ -243,6 +243,10 @@ data class BezierCurve constructor(
             secondControl = secondControl,
         )
 
+    val invertedBasisRationalFunction by lazy {
+        basisFunction.buildInvertedRationalFunction()
+    }
+
     override fun transformBy(
         transformation: Transformation,
     ): BezierCurve = BezierCurve(

@@ -58,30 +58,44 @@ abstract class PrimitiveCurve : OpenCurve() {
                 tolerance = NumericTolerance.Absolute.Default,
             )
 
-            // Filter out intersections outside either curve
+            // We now know the set of intersections in the extended range, but some of them might lie outside the
+            // curves' primary 0..1 range. We have to filter those intersections out.
             return tValues.mapNotNull { tSimple ->
-                // Technically, it's an extraneous check as we solved the equation for the 0..1 range,
+                // Technically, it's an extraneous check as we solved the equation for the simple curve's 0..1 range,
                 // but lets' double protect from numerical anomalies
                 val coordSimple = Coord.of(t = tSimple) ?: return@mapNotNull null
 
-                val potentialIntersectionPoint = simpleSubjectCurve.evaluate(coord = coordSimple)
+                // We now know that the intersection lies on the simple curve (in the proper range), but it might
+                // still lie outside the complex curve's primary range
 
-                val tComplexOrNull = complexObjectCurve.basisFunction.locatePoint(
-                    point = potentialIntersectionPoint.pointVector,
-                    tRange = primaryTRange,
-                    tolerance = tolerance,
-                )
+                // Let's find the actual intersection point (until now, we knew only its t-value)
+                val intersectionPoint = simpleSubjectCurve.evaluate(coord = coordSimple)
 
-                val tComplex = tComplexOrNull ?: return@mapNotNull null
+                // As we know that the intersection point lies on the complex curve (in the full range), we can safely
+                // use the complex curve's inversion function
+                val complexInversionResult =
+                    complexObjectCurve.invertedBasisFunction.apply(intersectionPoint.pointVector)
 
-                val coordComplex = Coord.of(t = tComplex) ?: return@mapNotNull null
+                when (complexInversionResult) {
+                    InversionResult.SelfIntersection -> {
+                        // Unluckily, the curve-curve self-intersection lies on the complex curve self-intersection
 
-                object : Intersection() {
-                    override val point = potentialIntersectionPoint
+                        // No tests catch this...
+                        TODO("Find the self-intersection")
+                    }
 
-                    override val subjectCoord: Coord = coordSimple
+                    is InversionResult.Specific -> {
+                        val coordComplex = Coord.of(t = complexInversionResult.t) ?: return@mapNotNull null
 
-                    override val objectCoord: Coord = coordComplex
+                        // This is a normal, healthy intersection in the proper range
+                        object : Intersection() {
+                            override val point = intersectionPoint
+
+                            override val subjectCoord: Coord = coordSimple
+
+                            override val objectCoord: Coord = coordComplex
+                        }
+                    }
                 }
             }.toSet()
         }
