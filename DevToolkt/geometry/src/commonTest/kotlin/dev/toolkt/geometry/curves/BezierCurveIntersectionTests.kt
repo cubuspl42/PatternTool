@@ -487,7 +487,6 @@ class BezierCurveIntersectionTests {
     }
 
     @Test
-    @Ignore // TODO: Make it work! Start from this one
     fun testFindIntersections_BezierCurve_BezierCurve_oneIntersection_xFromLoop_moved() {
         val firstBezierCurve = BezierCurve(
             start = Point(233.92449010844575, 500.813035986871),
@@ -508,10 +507,9 @@ class BezierCurveIntersectionTests {
             secondCurve = secondBezierCurve,
             expectedIntersections = listOf(
                 ExpectedIntersection(
-                    // TODO: Figure out the correct point
-                    point = Point(0.0, 0.0),
-                    firstCoord = OpenCurve.Coord(t = 0.0),
-                    secondCoord = OpenCurve.Coord(t = 0.0),
+                    point = Point(413.87817010438437, 426.9935830074666),
+                    firstCoord = OpenCurve.Coord(t = 0.4390934103344293),
+                    secondCoord = OpenCurve.Coord(t = 0.5445595211772888),
                 ),
             ),
         )
