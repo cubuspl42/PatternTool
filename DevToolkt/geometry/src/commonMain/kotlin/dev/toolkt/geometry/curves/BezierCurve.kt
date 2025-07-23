@@ -20,7 +20,7 @@ import dev.toolkt.geometry.transformations.Transformation
 import kotlin.math.roundToInt
 
 
-data class BezierCurve private constructor(
+data class BezierCurve constructor(
     override val basisFunction: CubicBezierBinomial,
 ) : PrimitiveCurve() {
     data class Edge(

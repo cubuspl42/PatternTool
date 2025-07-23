@@ -119,6 +119,24 @@ data class ImplicitCubicCurveFunction(
         return a3 * (x * x * x) + a2b1 * (x * x * y) + a1b2 * (x * y * y) + b3 * (y * y * y) + a2 * (x * x) + a1b1 * (x * y) + b2 * (y * y) + a1 * x + b1 * y + c
     }
 
+    override fun findXDerivative(): ImplicitQuadraticCurveFunction = ImplicitQuadraticCurveFunction(
+        a2 = 3 * a3,
+        a1b1 = 2 * a2b1,
+        b2 = a1b2,
+        a1 = 2 * a2,
+        b1 = a1b1,
+        c = a1,
+    )
+
+    override fun findYDerivative(): ImplicitQuadraticCurveFunction = ImplicitQuadraticCurveFunction(
+        a2 = a2b1,
+        a1b1 = 2 * a1b2,
+        b2 = 3 * b3,
+        a1 = a1b1,
+        b1 = 2 * b2,
+        c = b1,
+    )
+
     override fun apply(
         v: Vector2,
     ): Double {

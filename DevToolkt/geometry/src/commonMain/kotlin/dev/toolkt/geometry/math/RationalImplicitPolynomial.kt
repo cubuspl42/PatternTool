@@ -18,6 +18,30 @@ data class RationalImplicitPolynomial(
 
     fun applyOrNull(v: Vector2): Double? = apply(v).valueOrNull
 
+    fun findGradient(): Function<Vector2, Double> {
+        val nominatorGradient = nominatorFunction.findGradient()
+        val denominatorGradient = denominatorFunction.findGradient()
+
+
+        // ∇h(x) = ( g(x)·∇f(x) − f(x)·∇g(x) ) / ( g(x) )².
+
+        return object : Function<Vector2, Double> {
+            override fun apply(a: Vector2): Double {
+                val nominatorValue = nominatorFunction.apply(a)
+                val denominatorValue = denominatorFunction.apply(a)
+
+                val nominatorGradientValue = nominatorGradient.apply(a)
+                val denominatorGradientValue = denominatorGradient.apply(a)
+
+                val p = denominatorValue * nominatorGradientValue - nominatorValue * denominatorGradientValue
+                val q = denominatorValue * denominatorValue
+
+                return p / q
+            }
+        }
+    }
+
+
     override fun equalsWithTolerance(
         other: NumericObject,
         tolerance: NumericTolerance,

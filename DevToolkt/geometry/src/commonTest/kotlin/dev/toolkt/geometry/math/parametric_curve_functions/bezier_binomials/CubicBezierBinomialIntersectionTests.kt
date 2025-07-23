@@ -2,6 +2,7 @@ package dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials
 
 import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
+import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import dev.toolkt.math.algebra.linear.vectors.Vector2
@@ -52,12 +53,34 @@ class CubicBezierBinomialIntersectionTests {
             point3 = Vector2(671.4185047149658, 490.2051086425781),
         )
 
+        val firstCubicBezierBinomialTrimmed1 = CubicBezierBinomial(
+            point0 = Vector2(a0 = 463.1134738931656, a1 = 195.15946716213224),
+            point1 = Vector2(a0 = 386.60439148807524, a1 = 197.40369498348238),
+            point2 = Vector2(a0 = 337.6147671518326, a1 = 265.3442191305161),
+            point3 = Vector2(a0 = 570.4135222711564, a1 = 425.69124907588963),
+        )
+
+        val secondCubicBezierBinomialTrimmed1 = CubicBezierBinomial(
+            point0 = Vector2(a0 = 273.80049324035645, a1 = 489.08709716796875),
+            point1 = Vector2(a0 = 684.4749774932861, a1 = 329.1851005554199),
+            point2 = Vector2(a0 = 591.8677291870117, a1 = 214.5483512878418),
+            point3 = Vector2(a0 = 492.59773540496826, a1 = 197.3452272415161),
+        )
+
+        val firstCubicBezierBinomialTrimmed = BezierCurve(
+            basisFunction = firstCubicBezierBinomial,
+        ).trim(OpenCurve.Coord.of(0.1)!!..OpenCurve.Coord.of(0.9)!!).basisFunction
+
         val secondCubicBezierBinomial = CubicBezierBinomial(
             point0 = Vector2(273.80049324035645, 489.08709716796875),
             point1 = Vector2(684.4749774932861, 329.1851005554199),
             point2 = Vector2(591.8677291870117, 214.5483512878418),
             point3 = Vector2(492.59773540496826, 197.3452272415161),
         )
+
+        val secondCubicBezierBinomialTrimmed = BezierCurve(
+            basisFunction = secondCubicBezierBinomial,
+        ).trim(OpenCurve.Coord.of(0.1)!!..OpenCurve.Coord.of(0.9)!!).basisFunction
 
         val tolerance = NumericTolerance.Absolute(
             absoluteTolerance = 1e-5,
@@ -76,6 +99,41 @@ class CubicBezierBinomialIntersectionTests {
         )
     }
 
+    @Test
+    fun testFindImage_splitLoop_nearlyPerfect_reversed_trimmed() {
+        val firstCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(a0 = 463.1134738931656, a1 = 195.15946716213224),
+            point1 = Vector2(a0 = 386.60439148807524, a1 = 197.40369498348238),
+            point2 = Vector2(a0 = 337.6147671518326, a1 = 265.3442191305161),
+            point3 = Vector2(a0 = 570.4135222711564, a1 = 425.69124907588963),
+        )
+
+        val secondCubicBezierBinomial = CubicBezierBinomial(
+            point0 = Vector2(a0 = 273.80049324035645, a1 = 489.08709716796875),
+            point1 = Vector2(a0 = 684.4749774932861, a1 = 329.1851005554199),
+            point2 = Vector2(a0 = 591.8677291870117, a1 = 214.5483512878418),
+            point3 = Vector2(a0 = 492.59773540496826, a1 = 197.3452272415161),
+        )
+
+        val tolerance = NumericTolerance.Absolute(
+            absoluteTolerance = 1e-5,
+        )
+
+        val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
+            other = secondCubicBezierBinomial,
+            tRange = primaryTRange,
+            tolerance = tolerance,
+        ).sorted()
+
+        assertEqualsWithTolerance(
+            expected = listOf(
+                0.0,
+                0.5057347435322408,
+            ),
+            actual = tValues.filter { it in OpenCurve.Coord.tRange },
+            tolerance = tolerance,
+        )
+    }
 
     @Test
     fun testFindImage_splitLoop_slightlyMoved() {

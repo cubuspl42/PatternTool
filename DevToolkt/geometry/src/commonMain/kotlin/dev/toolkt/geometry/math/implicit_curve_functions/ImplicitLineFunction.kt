@@ -85,6 +85,10 @@ data class ImplicitLineFunction(
         y = p.yPolynomial,
     )
 
+    override fun findXDerivative(): ImplicitConstFunction = ImplicitConstFunction(a = a)
+
+    override fun findYDerivative(): ImplicitConstFunction = ImplicitConstFunction(a = b)
+
     override fun apply(
         v: Vector2,
     ): Double = a * v.x + b * v.y + c

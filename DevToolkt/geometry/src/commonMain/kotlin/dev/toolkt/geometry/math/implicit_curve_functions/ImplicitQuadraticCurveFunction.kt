@@ -131,6 +131,18 @@ data class ImplicitQuadraticCurveFunction(
         return a2 * (x * x) + a1b1 * (x * y) + b2 * (y * y) + a1 * x + b1 * y + c
     }
 
+    override fun findXDerivative(): ImplicitLineFunction = ImplicitLineFunction(
+        a = 2 * a2,
+        b = a1b1,
+        c = a1
+    )
+
+    override fun findYDerivative(): ImplicitLineFunction = ImplicitLineFunction(
+        a = a1b1,
+        b = 2 * b2,
+        c = b1
+    )
+
     operator fun minus(
         other: ImplicitCubicCurveFunction,
     ): ImplicitCubicCurveFunction = this + (-other)
