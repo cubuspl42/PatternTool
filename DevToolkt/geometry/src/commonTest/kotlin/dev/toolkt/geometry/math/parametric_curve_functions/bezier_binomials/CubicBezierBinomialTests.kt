@@ -6,7 +6,6 @@ import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
-import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial.SelfIntersectionResult
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import kotlin.random.Random
@@ -60,7 +59,7 @@ class CubicBezierBinomialTests {
             point3 = Vector2(a0 = 671.4185047149658, a1 = 490.2051086425781)
         )
 
-        val selfIntersectionResult = assertIs<SelfIntersectionResult.Existing>(
+        val selfIntersectionResult = assertNotNull(
             cubicBezierBinomial.findSelfIntersection(tolerance = tolerance),
         )
 

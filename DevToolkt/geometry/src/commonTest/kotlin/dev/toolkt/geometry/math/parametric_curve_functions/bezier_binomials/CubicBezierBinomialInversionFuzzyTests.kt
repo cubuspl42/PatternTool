@@ -46,7 +46,7 @@ class CubicBezierBinomialInversionFuzzyTests {
 
         val selfIntersectionResult = cubicBezierBinomial.findSelfIntersection(
             tolerance = computationTolerance,
-        ) as CubicBezierBinomial.SelfIntersectionResult.Existing
+        ) as CubicBezierBinomial.SelfIntersectionResult
 
         /**
          * Test the t-values that are as very close (but not extremely close) to

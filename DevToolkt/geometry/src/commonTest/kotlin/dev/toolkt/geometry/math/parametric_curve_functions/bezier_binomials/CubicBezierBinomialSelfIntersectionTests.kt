@@ -5,10 +5,8 @@ import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial.SelfIntersectionResult
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.linear.vectors.times
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -161,7 +159,7 @@ class CubicBezierBinomialSelfIntersectionTests {
 
         assertSelfIntersectionExists(
             cubicBezierBinomial = cubicBezierBinomial,
-            expectedResult = SelfIntersectionResult.Existing(
+            expectedResult = SelfIntersectionResult(
                 t0 = 0.1562984990421814,
                 t1 = 0.9175376647659079,
             ),
@@ -193,7 +191,7 @@ class CubicBezierBinomialSelfIntersectionTests {
 
         assertSelfIntersectionExists(
             cubicBezierBinomial = cubicBezierBinomial,
-            expectedResult = SelfIntersectionResult.Existing(
+            expectedResult = SelfIntersectionResult(
                 t0 = 2.5780884122264855,
                 t1 = 5.495637186468656,
             ),
@@ -226,7 +224,7 @@ class CubicBezierBinomialSelfIntersectionTests {
 
         assertSelfIntersectionExists(
             cubicBezierBinomial = cubicBezierBinomial,
-            expectedResult = SelfIntersectionResult.Existing(
+            expectedResult = SelfIntersectionResult(
                 t0 = -0.7393528461432413,
                 t1 = 0.8083924555183848,
             ),
@@ -244,17 +242,13 @@ class CubicBezierBinomialSelfIntersectionTests {
  */
 private fun assertSelfIntersectionExists(
     cubicBezierBinomial: CubicBezierBinomial,
-    expectedResult: SelfIntersectionResult.Existing,
+    expectedResult: SelfIntersectionResult,
     expectedPoint: Vector2,
     actualResult: SelfIntersectionResult,
     tolerance: NumericTolerance,
 ) {
-    val actualExisting = assertIs<SelfIntersectionResult.Existing>(
-        actualResult,
-    )
-
-    val point0 = cubicBezierBinomial.apply(actualExisting.t0)
-    val point1 = cubicBezierBinomial.apply(actualExisting.t0)
+    val point0 = cubicBezierBinomial.apply(actualResult.t0)
+    val point1 = cubicBezierBinomial.apply(actualResult.t0)
 
     assertEqualsWithTolerance(
         expected = point1,
@@ -279,7 +273,7 @@ private fun assertSelfIntersectionExists(
 
     assertEquals(
         expected = expectedResult,
-        actual = actualExisting,
+        actual = actualResult,
         message = "Self-intersection result does not match expected",
     )
 }

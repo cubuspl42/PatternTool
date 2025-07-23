@@ -191,20 +191,13 @@ data class CubicBezierBinomial(
             c = 3 * x3 * y2 - 3 * x2 * y3,
         )
 
-    sealed class SelfIntersectionResult {
-        /**
-         * The self-intersection exists and occurs at the given t-values.
-         */
-        data class Existing(
-            val t0: Double,
-            val t1: Double,
-        ) : SelfIntersectionResult()
-
-        /**
-         * The curve does not have a self-intersection
-         */
-        data object NonExisting : SelfIntersectionResult()
-    }
+    /**
+     * The self-intersection exists and occurs at the given t-values.
+     */
+    data class SelfIntersectionResult(
+        val t0: Double,
+        val t1: Double,
+    )
 
     /**
      * @return The self-intersection result, or null which implies that the
@@ -212,7 +205,7 @@ data class CubicBezierBinomial(
      */
     fun findSelfIntersection(
         tolerance: NumericTolerance.Absolute,
-    ): SelfIntersectionResult.Existing? {
+    ): SelfIntersectionResult? {
         // Sánchez-Reyes, J. Self-Intersections of Cubic Bézier Curves Revisited. Mathematics 2024, 12, 2463. https://doi.org/10.3390/math12162463
         // 4. Finding the Parameter Values for the Double Point via Factorization
 
@@ -262,7 +255,7 @@ data class CubicBezierBinomial(
             a2 = 1.0,
         ).findRoots() ?: return null
 
-        return SelfIntersectionResult.Existing(
+        return SelfIntersectionResult(
             t0 = u,
             t1 = v,
         )
