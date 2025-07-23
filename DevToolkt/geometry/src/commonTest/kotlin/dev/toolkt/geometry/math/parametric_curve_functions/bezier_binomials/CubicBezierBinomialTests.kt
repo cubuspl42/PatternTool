@@ -118,13 +118,9 @@ class CubicBezierBinomialTests {
             tolerance = looseTolerance,
         )
 
-        // Doesn't trigger the 0/0 safeguard, gives a bad approximation of t-value
-        assertEqualsWithTolerance(
-            expected = 1.5389931806514046,
-            actual = assertNotNull(
-                actual = cubicBezierBinomial.locatePointByInversion(
-                    point = selfIntersectionPoint1,
-                ),
+        assertNull(
+            actual = cubicBezierBinomial.locatePointByInversion(
+                point = selfIntersectionPoint1,
             ),
         )
 

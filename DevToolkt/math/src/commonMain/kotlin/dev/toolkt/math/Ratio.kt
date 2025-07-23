@@ -14,10 +14,18 @@ data class Ratio(
             nominator = 0.0,
             denominator = 0.0,
         )
+
+        // This is extremely elastic tolerance, but in the current use cases,
+        // both nominator and denominator are typically large. Values smaller
+        // than one lead to numerical explosions. This tolerance should be
+        // handled on another layer.
+        private val defaultDivisionTolerance = NumericTolerance.Absolute(
+            absoluteTolerance = 1e-2,
+        )
     }
 
     val valueOrNull: Double?
-        get() = nominator.divideWithTolerance(denominator)
+        get() = nominator.divideWithTolerance(denominator, tolerance = defaultDivisionTolerance)
 
     val value: Double
         get() = nominator / denominator
