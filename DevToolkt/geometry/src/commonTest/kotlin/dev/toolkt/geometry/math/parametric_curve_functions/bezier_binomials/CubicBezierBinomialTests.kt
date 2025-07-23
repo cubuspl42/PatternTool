@@ -107,6 +107,9 @@ class CubicBezierBinomialTests {
         )
 
         // A good approximation of the self intersection point, extremely close to the self-intersection
+        // Distance to the curve: 2.965446658236352E-8
+        // Distance to the self-intersection point: 1.2517558197816879E-7
+        // The ratio denominator is _slightly_ above the tolerance threshold (~6e-6)
         val selfIntersectionPoint1 = Vector2(501.14355433959827, 374.2024184921395)
 
         assertEqualsWithTolerance(
@@ -116,33 +119,28 @@ class CubicBezierBinomialTests {
         )
 
         // Doesn't trigger the 0/0 safeguard, gives a bad approximation of t-value
-        // It's not clear whether this point is close enough to the curve. The inversion function doesn't seem
-        // to be reliable for points like this outside of the
-        val badTValue0 = assertNotNull(
-            actual = cubicBezierBinomial.locatePointByInversion(
-                point = selfIntersectionPoint1,
-            ),
-        )
-
         assertEqualsWithTolerance(
             expected = 1.5389931806514046,
-            actual = badTValue0,
+            actual = assertNotNull(
+                actual = cubicBezierBinomial.locatePointByInversion(
+                    point = selfIntersectionPoint1,
+                ),
+            ),
         )
 
         // Another good approximation of the self intersection point, very close to the self-intersection
+        // Distance to the curve: 1.5141784118304349E-4 (Isn't this too far? It's more than the tolerance)
+        // Distance to the self-intersection point: 2.5690823589665505E-4
         val selfIntersectionPoint2 = Vector2(501.1438111319996, 374.2024184921395)
 
         // Doesn't trigger the 0/0 safeguard, gives a very bad approximation of t-value
-        // Same, it's not clear whether this point is close enough to the curve.
-        val badTValue1 = assertNotNull(
-            cubicBezierBinomial.locatePointByInversion(
-                point = selfIntersectionPoint2,
-            ),
-        )
-
         assertEqualsWithTolerance(
             expected = -5.68379446238774,
-            actual = badTValue1,
+            actual = assertNotNull(
+                cubicBezierBinomial.locatePointByInversion(
+                    point = selfIntersectionPoint2,
+                ),
+            ),
         )
     }
 

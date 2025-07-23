@@ -497,6 +497,7 @@ data class CubicBezierBinomial(
         )
     }
 
+    // TODO: Why is this private? Let's fix the projection API
     private fun projectPointAll(
         point: Vector2,
         tRange: ClosedFloatingPointRange<Double>,
