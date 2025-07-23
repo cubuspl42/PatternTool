@@ -19,18 +19,29 @@ class MainCommand : CliktCommand() {
     ).help("Path to the output file")
 
     override fun run() {
-        val bezierCurve = BezierCurve(
-            start = Point(0.0, 200.0),
-            firstControl = Point(100.0, 0.0),
-            secondControl = Point(200.0, 200.0),
-            end = Point(300.0, 0.0),
+        val firstBezierCurve = BezierCurve(
+            start = Point(233.92449010844575, 500.813035986871),
+            firstControl = Point(422.77519184542564, 441.5255275486571),
+            secondControl = Point(482.0980368984025, 387.5853838361354),
+            end = Point(484.0, 353.0),
+        )
+
+        val secondBezierCurve = BezierCurve(
+            start = Point(382.2960291124364, 335.5675928528492),
+            firstControl = Point(370.41409366476535, 370.845949740462),
+            secondControl = Point(402.03174182196125, 441.30516989916543),
+            end = Point(551.3035908506827, 559.7310384198445),
         )
 
         val playground = Playground(
             items = listOf(
                 Playground.BezierCurveItem(
-                    color = PureColor.blue,
-                    bezierCurve = bezierCurve,
+                    color = PureColor.black,
+                    bezierCurve = firstBezierCurve,
+                ),
+                Playground.BezierCurveItem(
+                    color = PureColor.darkBlue,
+                    bezierCurve = secondBezierCurve,
                 ),
             ),
         )

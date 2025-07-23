@@ -2,8 +2,6 @@ package dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials
 
 import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
-import dev.toolkt.geometry.Point
-import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import dev.toolkt.math.algebra.linear.vectors.Vector2
@@ -475,7 +473,8 @@ class CubicBezierBinomialIntersectionTests {
             point3 = Vector2(551.3035908506827, 559.7310384198445),
         )
 
-        // Like the "x from loop" test, but slightly moved, doesn't overlap on the extended range
+        // Like the "x from loop" test, but slightly moved, doesn't really overlap on the extended range
+        // (but in some parts it nearly overlaps)
         if (firstCubicBezierBinomial.isFullyOverlapping(secondCubicBezierBinomial)) {
             throw AssertionError("The curves were assumed not to be overlapping")
         }
@@ -489,6 +488,8 @@ class CubicBezierBinomialIntersectionTests {
         assertEqualsWithTolerance(
             expected = listOf(
                 1.649148012689011E-4,
+                // Although one of these intersections isn't obvious (as the curves are nearly overlapping in that area),
+                // they both seem to be correct!
                 0.4390934103344293,
                 0.45244180415985374,
             ),
