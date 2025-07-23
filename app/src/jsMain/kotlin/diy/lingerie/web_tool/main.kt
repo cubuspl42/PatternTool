@@ -6,17 +6,13 @@ import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexStyle
-import dev.toolkt.dom.pure.style.PureTableDisplayStyle
-import dev.toolkt.dom.reactive.style.PureEdgeInsets
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.gestures.GenericMouseGesture
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
+import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.curves.BezierCurve
-import dev.toolkt.geometry.curves.OpenCurve
-import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
-import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.reactive_list.ReactiveList
@@ -34,32 +30,28 @@ fun main() {
 }
 
 private fun createRootElement(): HTMLDivElement {
-    val firstBezierCurve = BezierCurve(
-        start = Point(233.92449010844575, 500.813035986871),
-        firstControl = Point(422.77519184542564, 441.5255275486571),
-        secondControl = Point(482.0980368984025, 387.5853838361354),
-        end = Point(486.0476425340348, 351.778389940191),
+    val bezierCurve = BezierCurve(
+        start = Point(492.59773540496826, 197.3452272415161),
+        firstControl = Point(393.3277416229248, 180.14210319519043),
+        secondControl = Point(287.3950023651123, 260.3726043701172),
+        end = Point(671.4185047149658, 490.2051086425781),
     )
 
-    val secondBezierCurve = BezierCurve(
-        start = Point(382.2960291124364, 335.5675928528492),
-        firstControl = Point(370.41409366476535, 370.845949740462),
-        secondControl = Point(402.03174182196125, 441.30516989916543),
-        end = Point(551.3035908506827, 559.7310384198445),
+    val lineSegment = LineSegment(
+        start = Point(401.14355433959827, 374.2024184921395),
+        end = Point(601.1435543395982, 374.2024184921395),
     )
 
     val userCurveSystem = UserCurveSystem(
-        userBezierCurve1 = UserBezierCurve(
-            start = PropertyCell(initialValue = firstBezierCurve.start),
-            firstControl = PropertyCell(initialValue = firstBezierCurve.firstControl),
-            secondControl = PropertyCell(initialValue = firstBezierCurve.secondControl),
-            end = PropertyCell(initialValue = firstBezierCurve.end),
+        userCurve2 = UserBezierCurve(
+            start = PropertyCell(initialValue = bezierCurve.start),
+            firstControl = PropertyCell(initialValue = bezierCurve.firstControl),
+            secondControl = PropertyCell(initialValue = bezierCurve.secondControl),
+            end = PropertyCell(initialValue = bezierCurve.end),
         ),
-        userBezierCurve2 = UserBezierCurve(
-            start = PropertyCell(initialValue = secondBezierCurve.start),
-            firstControl = PropertyCell(initialValue = secondBezierCurve.firstControl),
-            secondControl = PropertyCell(initialValue = secondBezierCurve.secondControl),
-            end = PropertyCell(initialValue = secondBezierCurve.end),
+        userCurve1 = UserLineSegment(
+            start = PropertyCell(initialValue = lineSegment.start),
+            end = PropertyCell(initialValue = lineSegment.end),
         ),
     )
 
@@ -106,90 +98,22 @@ private fun createRootElement(): HTMLDivElement {
                     width = Cell.of(1024.px),
                 ),
                 children = ReactiveList.of(
-                    createCurveInfoView(
-                        userBezierCurve = userCurveSystem.userBezierCurve1,
-                        intersectionPolynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial1 },
-                    ),
-                    createCurveInfoView(
-                        userBezierCurve = userCurveSystem.userBezierCurve2,
-                        intersectionPolynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial2 },
-                    ),
+                    listOfNotNull(
+                        (userCurveSystem.userCurve1 as? UserBezierCurve)?.let {
+                            createCurveInfoView(
+                                userBezierCurve = it,
+                                intersectionPolynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial1 },
+                            )
+                        },
+                        (userCurveSystem.userCurve2 as? UserBezierCurve)?.let {
+                            createCurveInfoView(
+                                userBezierCurve = userCurveSystem.userCurve2,
+                                intersectionPolynomial = userCurveSystem.intersectionInfo.map { it.intersectionPolynomial2 },
+                            )
+                        },
+                    )
                 ),
             ),
-        ),
-    )
-}
-
-private fun createSideBar(
-    userCurveSystem: UserCurveSystem,
-): HTMLDivElement {
-    fun createEntryTableRow(
-        key: String,
-        value: Cell<String>,
-    ): HTMLDivElement = document.createReactiveHtmlDivElement(
-        style = ReactiveStyle(
-            displayStyle = Cell.of(PureTableDisplayStyle.Row),
-        ),
-        children = ReactiveList.of(
-            document.createReactiveHtmlDivElement(
-                style = ReactiveStyle(
-                    displayStyle = Cell.of(PureTableDisplayStyle.Cell),
-                ),
-                children = ReactiveList.of(
-                    document.createTextNode(key),
-                ),
-            ),
-            document.createReactiveHtmlDivElement(
-                style = ReactiveStyle(
-                    displayStyle = Cell.of(PureTableDisplayStyle.Cell),
-                ),
-                children = ReactiveList.of(
-                    document.createReactiveTextNode(
-                        data = value,
-                    ),
-                ),
-            ),
-        ),
-    )
-
-    fun createUserBezierCurveRow(
-        index: Int,
-        userBezierCurve: UserBezierCurve,
-    ): HTMLDivElement = createEntryTableRow(
-        key = "Curve #$index",
-        value = userBezierCurve.bezierCurve.map { it.toReprString() },
-    )
-
-    fun createIntersectionRow(
-        intersection: OpenCurve.Intersection,
-    ): HTMLDivElement = createEntryTableRow(
-        key = "Intersection",
-        value = Cell.of("${intersection.point.toReprString()} [t_s = ${intersection.subjectCoord.t}, t_o = ${intersection.objectCoord.t}]"),
-    )
-
-    return document.createReactiveHtmlDivElement(
-        style = ReactiveStyle(
-            displayStyle = Cell.of(
-                PureTableDisplayStyle(
-                    borderSpacing = 8.px,
-                ),
-            ),
-            padding = PureEdgeInsets.all(8.px),
-        ),
-        children = ReactiveList.concatAll(
-            ReactiveList.of(
-                createUserBezierCurveRow(
-                    index = 1,
-                    userBezierCurve = userCurveSystem.userBezierCurve1,
-                ),
-                createUserBezierCurveRow(
-                    index = 2,
-                    userBezierCurve = userCurveSystem.userBezierCurve2,
-                ),
-            ),
-            userCurveSystem.intersections.map {
-                createIntersectionRow(intersection = it)
-            },
         ),
     )
 }

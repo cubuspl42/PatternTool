@@ -10,7 +10,7 @@ data class UserBezierCurve(
     val firstControl: PropertyCell<Point>,
     val secondControl: PropertyCell<Point>,
     val end: PropertyCell<Point>,
-) {
+) : UserCurve<BezierCurve>() {
     val reactiveBezierCurve: ReactiveBezierCurve
         get() = ReactiveBezierCurve(
             start = start,
@@ -18,6 +18,9 @@ data class UserBezierCurve(
             secondControl = secondControl,
             end = end,
         )
+
+    override val reactiveCurve: ReactiveCurve<BezierCurve>
+        get() = reactiveBezierCurve
 
     val bezierCurve: Cell<BezierCurve>
         get() = reactiveBezierCurve.bezierCurve

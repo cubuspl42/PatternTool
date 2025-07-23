@@ -106,6 +106,12 @@ abstract class ReactiveList<out E> {
 
     companion object {
         fun <E> of(
+            children: List<E>,
+        ): ReactiveList<E> = ConstReactiveList(
+            constElements = children,
+        )
+
+        fun <E> of(
             vararg children: E,
         ): ReactiveList<E> = ConstReactiveList(
             constElements = children.toList(),

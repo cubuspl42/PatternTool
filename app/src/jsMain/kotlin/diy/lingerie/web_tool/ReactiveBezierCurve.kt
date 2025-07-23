@@ -27,7 +27,7 @@ data class ReactiveBezierCurve(
     val firstControl: Cell<Point>,
     val secondControl: Cell<Point>,
     val end: Cell<Point>,
-) {
+) : ReactiveCurve<BezierCurve>() {
     companion object {
         fun diff(
             curveCell: Cell<BezierCurve>,
@@ -52,6 +52,9 @@ data class ReactiveBezierCurve(
             end = endNow,
         )
     }
+
+    override val primitiveCurve: Cell<BezierCurve>
+        get() = bezierCurve
 
     fun createReactiveSvgPathElement(
         style: ReactiveStyle,
@@ -107,6 +110,6 @@ data class ReactiveBezierCurve(
             ),
         )
     }
-}
 
-private fun Point.toArray(): Array<Number> = arrayOf(x, y)
+
+}

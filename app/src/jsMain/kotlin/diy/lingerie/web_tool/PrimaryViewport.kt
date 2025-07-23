@@ -41,14 +41,14 @@ internal fun createPrimaryViewport(
     )
 
     val children = ReactiveList.of(
-        createControlledSvgBezierCurve(
+        createControlledSvgCurve(
             svgElement = svgElement,
-            userBezierCurve = userCurveSystem.userBezierCurve1,
+            userCurve = userCurveSystem.userCurve1,
             color = PureColor.black,
         ),
-        createControlledSvgBezierCurve(
+        createControlledSvgCurve(
             svgElement = svgElement,
-            userBezierCurve = userCurveSystem.userBezierCurve2,
+            userCurve = userCurveSystem.userCurve2,
             color = PureColor.darkBlue,
         ),
         document.createReactiveSvgGroupElement(

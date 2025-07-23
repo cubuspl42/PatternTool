@@ -12,26 +12,15 @@ import kotlinx.browser.document
 import org.w3c.dom.svg.SVGGElement
 import org.w3c.dom.svg.SVGSVGElement
 
-fun createControlledSvgBezierCurve(
+fun createControlledSvgLineCurve(
     svgElement: SVGSVGElement,
-    userBezierCurve: UserBezierCurve,
+    userLineSegment: UserLineSegment,
     color: PureColor,
 ): SVGGElement = document.createReactiveSvgGroupElement(
     svgElement = svgElement,
     transformation = null,
-    children = ReactiveList.of(
-        userBezierCurve.reactiveBezierCurve.createReactiveExtendedSvgPolylineElement(
-            svgElement = svgElement,
-        ),
-        createControlLineElement(
-            start = userBezierCurve.start,
-            end = userBezierCurve.firstControl,
-        ),
-        createControlLineElement(
-            start = userBezierCurve.secondControl,
-            end = userBezierCurve.end,
-        ),
-        userBezierCurve.reactiveBezierCurve.createReactiveSvgPathElement(
+    children = ReactiveList.Companion.of(
+        userLineSegment.reactiveLineSegment.createReactiveSvgLineElement(
             style = ReactiveStyle(
                 fill = Cell.Companion.of(PureFill.None),
                 strokeStyle = PureStrokeStyle(
@@ -42,20 +31,11 @@ fun createControlledSvgBezierCurve(
         ),
         createCircleHandleElement(
             container = svgElement,
-            position = userBezierCurve.start,
+            position = userLineSegment.start,
         ),
         createCircleHandleElement(
             container = svgElement,
-            position = userBezierCurve.firstControl,
-        ),
-        createCircleHandleElement(
-            container = svgElement,
-            position = userBezierCurve.secondControl,
-        ),
-        createCircleHandleElement(
-            container = svgElement,
-            position = userBezierCurve.end,
+            position = userLineSegment.end,
         ),
     ),
 )
-
