@@ -2,6 +2,8 @@ package dev.toolkt.math.algebra.polynomials
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericTolerance
+import dev.toolkt.core.numeric.equalsZeroWithTolerance
+import dev.toolkt.math.algebra.LaguerreSolver
 import dev.toolkt.math.algebra.RealFunction
 import kotlin.math.max
 
@@ -191,3 +193,18 @@ operator fun Polynomial.times(
 operator fun Double.times(
     polynomial: Polynomial,
 ): Polynomial = polynomial * this
+
+fun Polynomial.findRootsNumericallyLaguerre(
+    tolerance: NumericTolerance.Absolute,
+): List<Double> {
+    val complexRoots = LaguerreSolver.solveAll(
+        coefficients = coefficients,
+        initialGuess = 0.5,
+    ) ?: return emptyList()
+
+    return complexRoots.mapNotNull { complex ->
+        complex.real.takeIf {
+            complex.imaginary.equalsZeroWithTolerance(tolerance = tolerance)
+        }
+    }
+}

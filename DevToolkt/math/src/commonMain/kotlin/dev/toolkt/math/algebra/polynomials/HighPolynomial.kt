@@ -82,16 +82,9 @@ data class HighPolynomial internal constructor(
         range: ClosedFloatingPointRange<Double>,
         tolerance: NumericTolerance.Absolute,
     ): List<Double> {
-        val complexRoots = LaguerreSolver.solveAll(
-            coefficients = coefficients,
-            initialGuess = 0.5,
-        ) ?: return emptyList()
-
-        val realRoots = complexRoots.mapNotNull { complex ->
-            complex.real.takeIf {
-                complex.imaginary.equalsZeroWithTolerance(tolerance = tolerance)
-            }
-        }
+        val realRoots = findRootsNumericallyLaguerre(
+            tolerance = tolerance,
+        )
 
         return realRoots.filter { it in range }
     }

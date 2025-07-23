@@ -8,7 +8,6 @@ import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction
-import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.InvertedCurveFunction.InversionResult
 import dev.toolkt.geometry.splines.OpenSpline
 import dev.toolkt.geometry.splines.Spline
@@ -106,7 +105,6 @@ abstract class PrimitiveCurve : OpenCurve() {
             // Solve the intersection equation for the curves (for t ∈ 0..1)
             val tValues = simpleSubjectCurve.basisFunction.solveIntersectionEquation(
                 other = complexObjectCurve.basisFunction,
-                tRange = primaryTRange,
                 tolerance = NumericTolerance.Absolute.Default,
             )
 

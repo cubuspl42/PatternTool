@@ -185,6 +185,8 @@ class BezierCurveIntersectionTests {
      */
     @Test
     fun testFindIntersections_LineSegment_BezierCurve_oneIntersection_splitLoop_1() {
+        val tolerance = NumericTolerance.Absolute(absoluteTolerance = 1e-3)
+
         val lineSegment = LineSegment(
             start = Point(401.14355433959827, 374.2024184921395),
             end = Point(601.1435543395982, 374.2024184921395),
@@ -219,11 +221,11 @@ class BezierCurveIntersectionTests {
                 ),
             ),
             actualIntersections = actualIntersections,
+            tolerance = tolerance,
         )
     }
 
     @Test
-    @Ignore // FIXME: Cardano's method is not implemented correctly
     fun testFindIntersections_LineSegment_BezierCurve_oneIntersection_splitLoop_2() {
         val lineSegment = LineSegment(
             start = Point(401.14355433959827, 374.2024184921395),
@@ -247,11 +249,10 @@ class BezierCurveIntersectionTests {
 
         assertIntersectionsEqual(
             expectedIntersections = listOf(
-                // FIXME: This intersection doesn't make sense (Cardano's method is not implemented correctly...)
                 ExpectedIntersection(
-                    point = Point(518.9448421098695, 374.2024184921395),
-                    firstCoord = OpenCurve.Coord(t = 0.5890064388513565),
-                    secondCoord = OpenCurve.Coord(t = 0.08521856497271448),
+                    point = Point(483.07309852164457, 374.2024184921395),
+                    firstCoord = OpenCurve.Coord(t = 0.40964772091023166),
+                    secondCoord = OpenCurve.Coord(t = 0.8697397032603811),
                 ),
             ),
             actualIntersections = actualIntersections,

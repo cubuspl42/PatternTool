@@ -13,6 +13,7 @@ import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.polynomials.CubicPolynomial
 import dev.toolkt.math.algebra.polynomials.LowPolynomial
 import dev.toolkt.math.algebra.polynomials.Polynomial
+import dev.toolkt.math.algebra.polynomials.findRootsNumericallyLaguerre
 import dev.toolkt.math.algebra.sample
 
 /**
@@ -154,7 +155,6 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
      */
     fun solveIntersectionEquation(
         other: ParametricCurveFunction,
-        tRange: ClosedFloatingPointRange<Double>,
         tolerance: NumericTolerance.Absolute,
     ): List<Double> {
         val intersectionPolynomial = findIntersectionPolynomial(other = other)
@@ -165,7 +165,6 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
 
         return intersectionPolynomial.findTValueRoots(
             tolerance = tolerance,
-            tRange = tRange,
         )
     }
 
@@ -180,12 +179,15 @@ abstract class ParametricCurveFunction : RealFunction<Vector2> {
     abstract fun findDerivativeCurve(): ParametricCurveFunction
 
     protected fun Polynomial.findTValueRoots(
-        tRange: ClosedFloatingPointRange<Double>,
         tolerance: NumericTolerance.Absolute,
-    ): List<Double> = this.findRoots(
-        range = tRange,
-        tolerance = tolerance,
-    )
+    ): List<Double> {
+        // Curve polynomials can have huge coefficients, so using the default
+        // root finding strategy (which involves finding roots analytically
+        // for cubic polynomials) isn't numerically stable.
+        return this.findRootsNumericallyLaguerre(
+            tolerance = tolerance,
+        )
+    }
 
     val primaryArcLengthApproximate: Double
         get() = calculatePrimaryArcLengthBruteForce(sampleCount = 128)

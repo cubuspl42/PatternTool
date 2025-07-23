@@ -60,7 +60,6 @@ data class ParametricLineFunction(
         other: ParametricLineFunction,
     ): Double? = solveIntersectionEquation(
         other = other,
-        tRange = primaryTRange,
         tolerance = NumericTolerance.Absolute.Default,
     ).singleOrNull()
 

@@ -3,7 +3,6 @@ package dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials
 import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.geometry.curves.OpenCurve
-import dev.toolkt.geometry.math.parametric_curve_functions.ParametricCurveFunction.Companion.primaryTRange
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import kotlin.test.Test
 
@@ -30,7 +29,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = tolerance,
         ).sorted()
 
@@ -65,7 +63,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = tolerance,
         ).sorted()
 
@@ -98,7 +95,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = tolerance,
         ).sorted()
 
@@ -134,7 +130,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = tolerance,
         ).sorted()
 
@@ -169,7 +164,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = tolerance,
         ).sorted()
 
@@ -211,7 +205,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = tolerance,
         ).sorted()
 
@@ -251,7 +244,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = tolerance,
         ).sorted()
 
@@ -296,7 +288,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = tolerance,
         ).sorted()
 
@@ -332,7 +323,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = tolerance,
         ).sorted()
 
@@ -365,7 +355,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = NumericTolerance.Absolute.Default,
         ).sorted()
 
@@ -398,7 +387,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = cubicBezierBinomial.solveIntersectionEquation(
             other = cubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = NumericTolerance.Absolute.Default,
         )
 
@@ -406,11 +394,11 @@ class CubicBezierBinomialIntersectionTests {
         // finding intersections of a curve with itself
         assertEqualsWithTolerance(
             expected = listOf(
-                // This t-value is withing the [0, 1] range, but otherwise it
-                // appears random
-                0.25925509193554785,
+                -0.43854620246840986,
+                0.2592547245782821,
+                3.130509982360019,
             ),
-            actual = tValues,
+            actual = tValues.sorted(),
         )
     }
 
@@ -444,7 +432,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = NumericTolerance.Absolute.Default,
         )
 
@@ -452,7 +439,10 @@ class CubicBezierBinomialIntersectionTests {
         // intersection of these curves (we can't really blame it, the
         // intersection polynomial is effectively a zero polynomial)
         assertEqualsWithTolerance(
-            expected = emptyList(),
+            expected = listOf(
+                // Random?
+                -2.9123839240224436,
+            ),
             actual = tValues,
         )
     }
@@ -481,7 +471,6 @@ class CubicBezierBinomialIntersectionTests {
 
         val tValues = firstCubicBezierBinomial.solveIntersectionEquation(
             other = secondCubicBezierBinomial,
-            tRange = primaryTRange,
             tolerance = NumericTolerance.Absolute.Default,
         )
 
@@ -492,6 +481,8 @@ class CubicBezierBinomialIntersectionTests {
                 // they both seem to be correct!
                 0.4390934103344293,
                 0.45244180415985374,
+                1.979223166415891,
+                2.8664623566522054,
             ),
             actual = tValues.sorted(),
         )

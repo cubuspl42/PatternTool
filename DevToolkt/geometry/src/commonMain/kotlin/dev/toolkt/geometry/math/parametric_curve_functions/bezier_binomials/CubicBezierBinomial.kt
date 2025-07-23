@@ -397,7 +397,6 @@ data class CubicBezierBinomial(
         //       finding doesn't enter the complex domain
         val projectedTValues = projectPointAll(
             point = point,
-            tRange = tRange,
             tolerance = tolerance,
         )
 
@@ -482,13 +481,11 @@ data class CubicBezierBinomial(
     // TODO: Why is this private? Let's fix the projection API
     private fun projectPointAll(
         point: Vector2,
-        tRange: ClosedFloatingPointRange<Double>,
         tolerance: NumericTolerance.Absolute,
     ): List<Double> {
         val projectionPolynomial = findPointProjectionPolynomial(point)
 
         val roots = projectionPolynomial.findTValueRoots(
-            tRange = tRange,
             tolerance = tolerance,
         )
 
@@ -502,7 +499,6 @@ data class CubicBezierBinomial(
     ): Double? {
         val tValues = projectPointAll(
             point = point,
-            tRange = tRange,
             tolerance = tolerance,
         )
 
@@ -579,7 +575,6 @@ data class CubicBezierBinomial(
         tolerance: NumericTolerance.Absolute,
     ): Double? = projectPointAll(
         point = point,
-        tRange = primaryTRange, // ?
         tolerance = tolerance,
     ).singleOrNull()
 
