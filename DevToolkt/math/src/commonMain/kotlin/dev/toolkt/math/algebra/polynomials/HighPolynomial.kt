@@ -105,9 +105,10 @@ data class HighPolynomial internal constructor(
         else -> true
     }
 
-    override fun apply(x: Double): Double = coefficients.foldRight(
-        initial = 0.0,
-    ) { ai, acc ->
+    /**
+     * Evaluates the polynomial at a given point [x] using Horner's method.
+     */
+    override fun apply(x: Double): Double = coefficients.reduceRight { ai, acc ->
         ai + acc * x
     }
 }
