@@ -20,6 +20,8 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.geometry.transformations.TransProjection
+import dev.toolkt.math.Ratio
+import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.sample
 import dev.toolkt.reactive.cell.Cell
@@ -28,40 +30,75 @@ import kotlinx.browser.document
 import org.w3c.dom.Element
 import svg.createLegacySVGPoint
 
+data class InvertedPoint(
+    val tValue: Double,
+    val point: Vector2,
+    val ratio: Ratio,
+)
+
 internal fun createCurveInfoView(
     userBezierCurve: UserBezierCurve,
     intersectionPolynomial: Cell<Polynomial>,
-): Element = document.createReactiveHtmlDivElement(
-    style = ReactiveStyle(
-        displayStyle = Cell.of(
-            PureFlexStyle(
-                direction = PureFlexDirection.Column,
-                grow = 1.0,
-            ),
-        ),
-    ),
-    children = ReactiveList.of(
-        document.createReactiveHtmlSpanElement(
-            children = ReactiveList.of(
-                document.createReactiveTextNode(
-                    userBezierCurve.bezierCurve.map {
-                        it.basisFunction.toReprString()
-                    }
+): Element {
+    val intersectionTValues = intersectionPolynomial.map {
+        it.findRoots(range = 0.0..1.0)
+    }
+
+    val intersectionPoints = userBezierCurve.bezierCurve.switchOf { bezierCurve ->
+        intersectionTValues.map { tValues ->
+            tValues.map { tValue ->
+                val point = bezierCurve.basisFunction.apply(tValue)
+
+                InvertedPoint(
+                    tValue = tValue, point = point, ratio = bezierCurve.invertedBasisRationalFunction!!.apply(point)
+                )
+            }
+        }
+    }
+
+    val ratios = intersectionPoints.map { }
+
+    return document.createReactiveHtmlDivElement(
+        style = ReactiveStyle(
+            displayStyle = Cell.of(
+                PureFlexStyle(
+                    direction = PureFlexDirection.Column,
+                    grow = 1.0,
                 ),
             ),
         ),
-        document.createReactiveHtmlSpanElement(
-            children = ReactiveList.of(
-                document.createReactiveTextNode(
-                    intersectionPolynomial.map {
-                        it.coefficients.toString()
-                    },
+        children = ReactiveList.of(
+            document.createReactiveHtmlSpanElement(
+                children = ReactiveList.of(
+                    document.createReactiveTextNode(
+                        userBezierCurve.bezierCurve.map {
+                            it.basisFunction.toReprString()
+                        },
+                    ),
                 ),
             ),
+            document.createReactiveHtmlSpanElement(
+                children = ReactiveList.of(
+                    document.createReactiveTextNode(
+                        intersectionPolynomial.map {
+                            it.coefficients.toString()
+                        },
+                    ),
+                ),
+            ),
+            document.createReactiveHtmlSpanElement(
+                children = ReactiveList.of(
+                    document.createReactiveTextNode(
+                        intersectionPoints.map {
+                            it.toString()
+                        },
+                    ),
+                ),
+            ),
+            createPolynomialPlot(polynomial = intersectionPolynomial),
         ),
-        createPolynomialPlot(polynomial = intersectionPolynomial),
-    ),
-)
+    )
+}
 
 private fun createPolynomialPlot(
     polynomial: Cell<Polynomial>,
