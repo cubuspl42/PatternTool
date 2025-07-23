@@ -6,10 +6,12 @@ import dev.toolkt.core.numeric.assertEqualsWithTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
+import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial.SelfIntersectionResult
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import kotlin.random.Random
 import kotlin.test.Ignore
 import kotlin.test.Test
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -45,6 +47,10 @@ class CubicBezierBinomialTests {
 
     @Test
     fun testLocatePointByInversion() {
+        val tolerance = NumericTolerance.Absolute.Default
+
+        val looseTolerance = NumericTolerance.Absolute(absoluteTolerance = 1e-3)
+
         // A curve with a self-intersection (outside its [0, 1] range!)
         val cubicBezierBinomial = CubicBezierBinomial(
             point0 = Vector2(a0 = 492.59773540496826, a1 = 197.3452272415161),
@@ -52,6 +58,22 @@ class CubicBezierBinomialTests {
             point2 = Vector2(a0 = 287.3950023651123, a1 = 260.3726043701172),
             point3 = Vector2(a0 = 671.4185047149658, a1 = 490.2051086425781)
         )
+
+        val selfIntersectionResult = assertIs<SelfIntersectionResult.Existing>(
+            cubicBezierBinomial.findSelfIntersection(tolerance = tolerance),
+        )
+
+        assertEqualsWithTolerance(
+            expected = -0.7393528461432413,
+            actual = selfIntersectionResult.t0,
+        )
+
+        assertEqualsWithTolerance(
+            expected = 0.8083924555183848,
+            actual = selfIntersectionResult.t1,
+        )
+
+        val selfIntersectionPoint = cubicBezierBinomial.apply(selfIntersectionResult.t0)
 
         val samples = cubicBezierBinomial.sample(
             n = 1000,
@@ -72,6 +94,12 @@ class CubicBezierBinomialTests {
         // An acceptable approximation of the self intersection point, somewhat close to the self-intersection
         val selfIntersectionPoint0 = Vector2(501.14313780321595, 374.2020798247014)
 
+        assertEqualsWithTolerance(
+            expected = selfIntersectionPoint,
+            actual = selfIntersectionPoint0,
+            tolerance = looseTolerance,
+        )
+
         // Location works fine
         testCorrectPointLocation(
             cubicBezierBinomial = cubicBezierBinomial,
@@ -80,6 +108,12 @@ class CubicBezierBinomialTests {
 
         // A good approximation of the self intersection point, extremely close to the self-intersection
         val selfIntersectionPoint1 = Vector2(501.14355433959827, 374.2024184921395)
+
+        assertEqualsWithTolerance(
+            expected = selfIntersectionPoint,
+            actual = selfIntersectionPoint1,
+            tolerance = looseTolerance,
+        )
 
         // Doesn't trigger the 0/0 safeguard, gives a bad approximation of t-value
         // It's not clear whether this point is close enough to the curve. The inversion function doesn't seem
