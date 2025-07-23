@@ -208,11 +208,11 @@ data class CubicBezierBinomial(
 
     /**
      * @return The self-intersection result, or null which implies that the
-     * curve is degenerate.
+     * curve is degenerate _or_ that the self-intersection doesn't exist.
      */
     fun findSelfIntersection(
         tolerance: NumericTolerance.Absolute,
-    ): SelfIntersectionResult? {
+    ): SelfIntersectionResult.Existing? {
         // Sánchez-Reyes, J. Self-Intersections of Cubic Bézier Curves Revisited. Mathematics 2024, 12, 2463. https://doi.org/10.3390/math12162463
         // 4. Finding the Parameter Values for the Double Point via Factorization
 
@@ -228,11 +228,8 @@ data class CubicBezierBinomial(
         ).determinant
 
         if (detA1.equalsZeroWithTolerance(tolerance = tolerance)) {
-            // This implies a degenerate straight line case
-            // FIXME: While this conclusion is taken straight from the article, it seems to be incorrect. |A₁| seems
-            //  to imply only that the solution definitely can't be found, the curve might be a proper cubic curve
-            //  with some constraints. It might be the case that |A₁| = 0 implies that _either_ the X or the Y component
-            //  of the parametric cubic curve degenerates (to a quadratic/linear curve or point?).
+            // This seems to occur if at least one component (X/Y) of the curve is degenerated. The curve as a whole
+            // might be a proper cubic curve!
             return null
         }
 
@@ -263,7 +260,7 @@ data class CubicBezierBinomial(
             a0 = alpha,
             a1 = -beta,
             a2 = 1.0,
-        ).findRoots() ?: return SelfIntersectionResult.NonExisting
+        ).findRoots() ?: return null
 
         return SelfIntersectionResult.Existing(
             t0 = u,

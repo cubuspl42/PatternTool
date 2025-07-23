@@ -92,7 +92,6 @@ class CubicBezierBinomialSelfIntersectionTests {
      * A proper cubic Bezier binomial that does not have self-intersection at all
      */
     @Test
-    @Ignore // FIXME: Figure this out (there's an issue in the paper?)
     fun testFindSelfIntersection_nonExisting_quasiDegenerate() {
         val tolerance = NumericTolerance.Absolute.Default
 
@@ -111,7 +110,7 @@ class CubicBezierBinomialSelfIntersectionTests {
         )
 
         assertEquals(
-            expected = SelfIntersectionResult.NonExisting,
+            expected = null,
             actual = selfIntersectionResult,
         )
     }
@@ -135,7 +134,7 @@ class CubicBezierBinomialSelfIntersectionTests {
         )
 
         assertEquals(
-            expected = SelfIntersectionResult.NonExisting,
+            expected = null,
             actual = selfIntersectionResult,
         )
     }
