@@ -271,7 +271,7 @@ class CubicPolynomialTests {
     }
 
     @Test
-    fun testFindRoots_twoRoots() {
+    fun testFindRoots_twoRoots_1() {
         val polynomial = CubicPolynomial(
             a0 = 2.0,
             a1 = -3.0,
@@ -284,6 +284,26 @@ class CubicPolynomialTests {
         assertEqualsWithTolerance(
             expected = listOf(-2.0, 1.0),
             actual = roots,
+        )
+    }
+
+    @Test
+    fun testFindRoots_twoRoots_2() {
+        val cubicPolynomial = CubicPolynomial.normalized(
+            a0 = -1.267032076383295E14,
+            a1 = 4.7419769726418775E14,
+            a2 = -4.0254032851296106E14,
+            a3 = -7150444.805622089
+        )
+
+        val roots = cubicPolynomial.findRootsAnalytically()
+
+        assertEqualsWithTolerance(
+            expected = listOf(
+                0.409648,
+                0.768365,
+            ),
+            actual = roots.sorted(),
         )
     }
 

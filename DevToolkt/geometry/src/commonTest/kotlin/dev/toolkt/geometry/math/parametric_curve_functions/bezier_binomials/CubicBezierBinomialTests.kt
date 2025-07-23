@@ -312,7 +312,6 @@ class CubicBezierBinomialTests {
         )
     }
 
-
     /**
      * Two curves intersecting in an X-like way trimmed from the same
      * self-intersecting original curve
