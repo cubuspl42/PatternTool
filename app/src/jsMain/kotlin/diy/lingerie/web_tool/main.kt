@@ -21,7 +21,7 @@ import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 
-fun main() {
+fun main2() {
     val rootElement = createRootElement()
 
     document.body!!.apply {
