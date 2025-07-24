@@ -1,6 +1,8 @@
 package diy.lingerie.web_tool_3d
 
-import dev.toolkt.core.platform.PlatformSystem
+import dev.toolkt.dom.pure.PureSize
+import dev.toolkt.dom.reactive.utils.trackSize
+import dev.toolkt.reactive.cell.Cell
 import kotlinx.browser.document
 import kotlinx.browser.window
 import three.Float32Array
@@ -45,24 +47,59 @@ private fun getVertexIndex(
     return 1 + i * m + (j - 1)
 }
 
-fun main() {
-    val scene = THREE.Scene()
+fun createReactivePerspectiveCamera(
+    size: Cell<PureSize>,
+    fov: Double,
+    near: Double,
+    far: Double,
+): THREE.PerspectiveCamera {
     val camera = THREE.PerspectiveCamera(
-        75.0, window.innerWidth.toDouble() / window.innerHeight.toDouble(), 0.1, 1000.0
+        75.0,
+        size.currentValue.width / size.currentValue.height,
+        near, far,
     )
 
-    val renderer = THREE.WebGLRenderer()
-    renderer.setSize(window.innerWidth.toDouble(), window.innerHeight.toDouble())
-    document.body?.appendChild(renderer.domElement)
-
-    fun onWindowResize() {
-        camera.aspect = window.innerWidth.toDouble() / window.innerHeight.toDouble()
+    size.newValues.pipe(
+        target = camera,
+    ) { camera, sizeNow ->
+        camera.aspect = sizeNow.width / sizeNow.height
         camera.updateProjectionMatrix()
-        renderer.setSize(window.innerWidth.toDouble(), window.innerHeight.toDouble())
     }
 
-    window.addEventListener("resize", { onWindowResize() }, false)
+    return camera
+}
 
+fun createReactiveRenderer(
+    size: Cell<PureSize>,
+): THREE.WebGLRenderer {
+    val renderer = THREE.WebGLRenderer()
+
+    size.bind(
+        target = renderer,
+    ) { renderer, sizeNow ->
+        renderer.setSize(sizeNow.width, sizeNow.height)
+    }
+
+    return renderer
+}
+
+fun main() {
+    val size = window.trackSize()
+
+    val scene = THREE.Scene()
+
+    val camera = createReactivePerspectiveCamera(
+        size = size,
+        fov = 75.0,
+        near = 0.1,
+        far = 1000.0,
+    )
+
+    val renderer = createReactiveRenderer(
+        size = size,
+    )
+
+    document.body?.appendChild(renderer.domElement)
     val apex = THREE.Vector3(0.0, 0.0, 1.0)
 
     val wireVertices = Array(n) { i ->
@@ -154,6 +191,12 @@ fun main() {
 
     animate()
 }
+
+private fun THREE.Vector3.toList(): List<Double> = listOf(
+    this.x,
+    this.y,
+    this.z,
+)
 
 // Add DOM content loaded event listener
 fun onDomContentLoaded() {
