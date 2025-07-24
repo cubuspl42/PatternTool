@@ -52,7 +52,12 @@ external object THREE {
         fun computeVertexNormals(): BufferGeometry
     }
 
-    class BufferAttribute(array: Float32Array, itemSize: Int)
+    class BufferAttribute(
+        array: Float32Array,
+        itemSize: Int,
+    ) {
+        var needsUpdate: Boolean
+    }
 
     open class Material {
         val wireframe: Boolean
@@ -83,6 +88,14 @@ inline fun MeshBasicMaterialParams(
 @JsName("Float32Array")
 external class Float32Array(array: Array<Double>) {
     constructor(size: Int)
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun Float32Array.get(index: Int): Double = asDynamic()[index]
+
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun Float32Array.set(index: Int, newItem: Double) {
+    asDynamic()[index] = newItem
 }
 
 // Helper functions to enable requestAnimationFrame use from Kotlin
