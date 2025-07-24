@@ -17,4 +17,5 @@ includeBuild(
 
 include(
     "app",
+    "app3d",
 )

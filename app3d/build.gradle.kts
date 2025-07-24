@@ -13,8 +13,6 @@ repositories {
 }
 
 kotlin {
-    jvm()
-
     js(IR) {
         browser {
             webpackTask {
@@ -22,34 +20,20 @@ kotlin {
             }
         }
 
-        nodejs()
-
         binaries.executable()
     }
 
     sourceSets {
-        commonMain.dependencies {
-            implementation(libs.kotlinx.benchmark.runtime)
+        jsMain.dependencies {
             implementation(libs.kotlinx.serialization.json)
             implementation("dev.toolkt:core")
             implementation("dev.toolkt:math")
             implementation("dev.toolkt:geometry")
             implementation("dev.toolkt:pureDom")
             implementation("dev.toolkt:reactive")
-        }
-
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-            implementation("dev.toolkt:coreTestUtils")
-        }
-
-        jvmMain.dependencies {
-            implementation(libs.clikt)
-        }
-
-        jsMain.dependencies {
             implementation("dev.toolkt:domApiCompatExtra")
             implementation("dev.toolkt:reactiveDom")
+            implementation(npm("three", "0.178.0"))
             implementation(npm("path-data-polyfill", "1.0.10"))
         }
     }
@@ -61,35 +45,4 @@ kotlin {
             ),
         )
     }
-}
-
-tasks.shadowJar {
-    mergeServiceFiles()
-}
-
-tasks.withType<ShadowJar> {
-    archiveClassifier.set("") // Ensures the output JAR has no additional classifier
-    manifest {
-        attributes["Main-Class"] = "diy.lingerie.pattern_tool.MainKt"
-    }
-}
-
-benchmark {
-    targets {
-        register("jvm")
-        register("js")
-    }
-
-    configurations {
-        named("main") {
-            warmups = 2
-            iterations = 4
-            iterationTime = 1
-            iterationTimeUnit = "s"
-        }
-    }
-}
-
-allOpen {
-    annotation("org.openjdk.jmh.annotations.State")
 }
