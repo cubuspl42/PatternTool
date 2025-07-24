@@ -1,5 +1,6 @@
 package diy.lingerie.web_tool_3d
 
+import dev.toolkt.core.math.sq
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.reactive.utils.trackSize
 import dev.toolkt.reactive.cell.Cell
@@ -13,6 +14,8 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 private const val R = 1.0
 private const val n = 32
@@ -23,17 +26,15 @@ private fun buildVertex(
     i: Int,
     j: Int,
 ): THREE.Vector3 {
-    val ir = i.toDouble() / n
-    val jr = j.toDouble() / m
-    val jr1 = 1 - jr
+    val ir = i.toDouble() / n // i ratio
+    val jr = j.toDouble() / m // j ratio
 
-    // val r = sin(jr * PI / 2)
-    val r = sqrt(R * R - jr1 * jr1)
+    val r = sqrt(R.sq - (1 - jr).sq)
     val fi = 2 * PI * ir
 
     val x = r * cos(fi)
     val y = r * sin(fi)
-    val z = apex.z - apex.z * jr
+    val z = apex.z * (1 - jr)
 
     return THREE.Vector3(apex.x + x, apex.y + y, z)
 }
@@ -143,10 +144,12 @@ fun main() {
     // Compute normals for the faces, for proper lighting
     geometry.computeVertexNormals()
 
+    val color = Random(3).nextInt()
+
     // Create a material
     val material = THREE.MeshBasicMaterial(
         MeshBasicMaterialParams(
-            color = 0xff1230,
+            color = color,
             wireframe = true,
         ),
     )
