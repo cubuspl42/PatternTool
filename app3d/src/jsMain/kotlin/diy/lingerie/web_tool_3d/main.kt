@@ -102,11 +102,14 @@ fun main() {
     document.body?.appendChild(renderer.domElement)
     val apex = THREE.Vector3(0.0, 0.0, 1.0)
 
-    val wireVertices = Array(n) { i ->
-        Array(m) { j0 ->
-            buildVertex(apex, i, j0 + 1)
+    val wireVertices = (0 until n).flatMap { i ->
+        (1..m).flatMap { j ->
+            buildVertex(apex, i, j).toList()
         }
     }
+
+    // Build flat vertex array for Three.js
+    val flatVertices = apex.toList() + wireVertices
 
     val wireFaces = (0 until n).flatMap { i ->
         val iNext = (i + 1) % n
@@ -123,24 +126,16 @@ fun main() {
         }
     }
 
-    // Build flat vertex array for Three.js
-    val apexArray = apex.toArray()
-    val flatVertices = mutableListOf<Double>()
-    flatVertices.addAll(apexArray)
-    wireVertices.forEach { row ->
-        row.forEach { vertex ->
-            flatVertices.addAll(vertex.toArray())
-        }
-    }
-
-    // Create Float32Array from the vertex data
-    val vertices = Float32Array(flatVertices.toTypedArray())
-
     // Create a new BufferGeometry
     val geometry = THREE.BufferGeometry()
 
     // Create a BufferAttribute on the geometry
-    geometry.setAttribute("position", THREE.BufferAttribute(vertices, 3))
+    geometry.setAttribute(
+        "position",
+        THREE.BufferAttribute(
+            Float32Array(flatVertices.toTypedArray()), 3
+        ),
+    )
 
     // Set the index buffer for the geometry
     geometry.setIndex(wireFaces.toTypedArray())
@@ -151,7 +146,7 @@ fun main() {
     // Create a material
     val material = THREE.MeshBasicMaterial(
         MeshBasicMaterialParams(
-            color = 0xff00ff,
+            color = 0xff1230,
             wireframe = true,
         ),
     )
