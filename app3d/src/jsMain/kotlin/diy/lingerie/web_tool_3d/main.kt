@@ -55,9 +55,10 @@ fun createReactivePerspectiveCamera(
     far: Double,
 ): THREE.PerspectiveCamera {
     val camera = THREE.PerspectiveCamera(
-        75.0,
+        fov,
         size.currentValue.width / size.currentValue.height,
-        near, far,
+        near,
+        far,
     )
 
     size.newValues.pipe(
@@ -128,21 +129,21 @@ fun main() {
     }
 
     // Create a new BufferGeometry
-    val geometry = THREE.BufferGeometry()
+    val geometry = THREE.BufferGeometry().apply {
+        // Create a BufferAttribute on the geometry
+        setAttribute(
+            "position",
+            THREE.BufferAttribute(
+                Float32Array(flatVertices.toTypedArray()), 3
+            ),
+        )
 
-    // Create a BufferAttribute on the geometry
-    geometry.setAttribute(
-        "position",
-        THREE.BufferAttribute(
-            Float32Array(flatVertices.toTypedArray()), 3
-        ),
-    )
+        // Set the index buffer for the geometry
+        setIndex(wireFaces.toTypedArray())
 
-    // Set the index buffer for the geometry
-    geometry.setIndex(wireFaces.toTypedArray())
-
-    // Compute normals for the faces, for proper lighting
-    geometry.computeVertexNormals()
+        // Compute normals for the faces, for proper lighting
+        computeVertexNormals()
+    }
 
     val color = Random(3).nextInt()
 
