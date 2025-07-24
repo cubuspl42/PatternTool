@@ -29,6 +29,9 @@ data class PureColor(
         require(blue in 0..255) { "Blue value must be between 0 and 255" }
     }
 
+    val value: Int
+        get() = (red shl 16) or (green shl 8) or blue
+
     override val cssString: String
         get() = "rgb($red, $green, $blue)"
 }

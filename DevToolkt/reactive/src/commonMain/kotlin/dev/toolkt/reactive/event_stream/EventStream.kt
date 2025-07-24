@@ -175,6 +175,13 @@ fun <E> EventStream<E>.hold(
     newValues = this,
 )
 
+fun <E> EventStream<Any?>.fetch(
+    getValue: () -> E,
+): Cell<E> = HoldCell(
+    initialValue = getValue(),
+    newValues = map { getValue() },
+)
+
 fun <ValueT> EventStream<ValueT>.newest(): Future<Cell<ValueT>> = next().map { firstValue ->
     hold(initialValue = firstValue)
 }

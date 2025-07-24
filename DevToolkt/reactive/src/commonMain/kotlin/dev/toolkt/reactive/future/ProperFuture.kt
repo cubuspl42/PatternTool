@@ -1,8 +1,6 @@
 package dev.toolkt.reactive.future
 
-import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.hold
 
 abstract class ProperFuture<out V> : Future<V>() {
     final override val currentState: State<V>
