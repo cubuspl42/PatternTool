@@ -1,9 +1,7 @@
 package diy.lingerie.web_tool_3d
 
 import dev.toolkt.core.math.sq
-import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.reactive.utils.trackSize
-import dev.toolkt.reactive.cell.Cell
 import kotlinx.browser.document
 import kotlinx.browser.window
 import three.Float32Array
@@ -15,7 +13,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.random.Random
-import kotlin.random.nextInt
 
 private const val R = 1.0
 private const val n = 32
@@ -46,43 +43,6 @@ private fun getVertexIndex(
     j: Int,
 ): Int {
     return 1 + i * m + (j - 1)
-}
-
-fun createReactivePerspectiveCamera(
-    size: Cell<PureSize>,
-    fov: Double,
-    near: Double,
-    far: Double,
-): THREE.PerspectiveCamera {
-    val camera = THREE.PerspectiveCamera(
-        fov,
-        size.currentValue.width / size.currentValue.height,
-        near,
-        far,
-    )
-
-    size.newValues.pipe(
-        target = camera,
-    ) { camera, sizeNow ->
-        camera.aspect = sizeNow.width / sizeNow.height
-        camera.updateProjectionMatrix()
-    }
-
-    return camera
-}
-
-fun createReactiveRenderer(
-    size: Cell<PureSize>,
-): THREE.WebGLRenderer {
-    val renderer = THREE.WebGLRenderer()
-
-    size.bind(
-        target = renderer,
-    ) { renderer, sizeNow ->
-        renderer.setSize(sizeNow.width, sizeNow.height)
-    }
-
-    return renderer
 }
 
 fun main() {
