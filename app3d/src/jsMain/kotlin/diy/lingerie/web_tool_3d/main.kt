@@ -108,37 +108,20 @@ fun main() {
         }
     }
 
-    val wireFaces = Array(n) { i ->
+    val wireFaces = (0 until n).flatMap { i ->
         val iNext = (i + 1) % n
-        val faces = mutableListOf<Int>()
 
-        // Add the top faces
-        faces.addAll(
-            listOf(
-                apexVertexIndex, getVertexIndex(i, 1), getVertexIndex(iNext, 1)
-            )
-        )
-
-        // Add the rest of the faces
-        for (j0 in 0 until m - 1) {
-            val j = j0 + 1
+        listOf(
+            apexVertexIndex, getVertexIndex(i, 1), getVertexIndex(iNext, 1)
+        ) + (1 until m).flatMap { j ->
             val jNext = j + 1
 
-            faces.addAll(
-                listOf(
-                    getVertexIndex(i, j), getVertexIndex(i, jNext), getVertexIndex(iNext, j)
-                )
-            )
-
-            faces.addAll(
-                listOf(
-                    getVertexIndex(i, jNext), getVertexIndex(iNext, jNext), getVertexIndex(iNext, j)
-                )
+            listOf(
+                getVertexIndex(i, j), getVertexIndex(i, jNext), getVertexIndex(iNext, j),
+                getVertexIndex(i, jNext), getVertexIndex(iNext, jNext), getVertexIndex(iNext, j)
             )
         }
-
-        faces.toTypedArray()
-    }.flatten()
+    }
 
     // Build flat vertex array for Three.js
     val apexArray = apex.toArray()
@@ -168,7 +151,7 @@ fun main() {
     // Create a material
     val material = THREE.MeshBasicMaterial(
         MeshBasicMaterialParams(
-            color = 0xff0000,
+            color = 0xff00ff,
             wireframe = true,
         ),
     )
