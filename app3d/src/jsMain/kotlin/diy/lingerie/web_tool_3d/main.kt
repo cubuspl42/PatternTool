@@ -4,6 +4,7 @@ import dev.toolkt.core.math.sq
 import dev.toolkt.dom.reactive.utils.trackSize
 import kotlinx.browser.document
 import kotlinx.browser.window
+import org.w3c.dom.HTMLElement
 import three.Float32Array
 import three.MeshBasicMaterialParams
 import three.THREE
@@ -16,6 +17,10 @@ import kotlin.random.Random
 private const val R = 1.0
 private const val n = 32
 private const val m = 16
+
+private const val apexVertexIndex = 0
+
+private const val colorId = 7
 
 private fun buildVertex(
     apex: THREE.Vector3,
@@ -35,8 +40,6 @@ private fun buildVertex(
     return THREE.Vector3(apex.x + x, apex.y + y, z)
 }
 
-private const val apexVertexIndex = 0
-
 private fun getVertexIndex(
     i: Int,
     j: Int,
@@ -44,18 +47,7 @@ private fun getVertexIndex(
     return 1 + i * m + (j - 1)
 }
 
-fun initialize() {
-    val size = window.trackSize()
-
-    val camera = createReactivePerspectiveCamera(
-        size = size,
-        fov = 75.0,
-        near = 0.1,
-        far = 1000.0,
-    ).apply {
-        position.z = 5.0
-    }
-
+fun createDomeGeometry(): THREE.BufferGeometry {
     val apex = THREE.Vector3(0.0, 0.0, 1.0)
 
     val wireVertices = (0 until n).flatMap { i ->
@@ -76,8 +68,12 @@ fun initialize() {
             val jNext = j + 1
 
             listOf(
-                getVertexIndex(i, j), getVertexIndex(i, jNext), getVertexIndex(iNext, j),
-                getVertexIndex(i, jNext), getVertexIndex(iNext, jNext), getVertexIndex(iNext, j)
+                getVertexIndex(i, j),
+                getVertexIndex(i, jNext),
+                getVertexIndex(iNext, j),
+                getVertexIndex(i, jNext),
+                getVertexIndex(iNext, jNext),
+                getVertexIndex(iNext, j)
             )
         }
     }
@@ -99,7 +95,24 @@ fun initialize() {
         computeVertexNormals()
     }
 
-    val color = Random(5).nextInt()
+    return geometry
+}
+
+fun createRendererElement(): HTMLElement {
+    val size = window.trackSize()
+
+    val camera = createReactivePerspectiveCamera(
+        size = size,
+        fov = 75.0,
+        near = 0.1,
+        far = 1000.0,
+    ).apply {
+        position.z = 5.0
+    }
+
+    val geometry = createDomeGeometry()
+
+    val color = Random(colorId).nextInt()
 
     // Create a material
     val material = THREE.MeshBasicMaterial(
@@ -130,7 +143,13 @@ fun initialize() {
         mesh.rotation.y += s
     }
 
-    document.body?.appendChild(renderer.domElement)
+    return renderer.domElement
+}
+
+fun initialize() {
+    val rendererElement = createRendererElement()
+
+    document.body?.appendChild(rendererElement)
 }
 
 private fun THREE.Vector3.toList(): List<Double> = listOf(
@@ -139,11 +158,9 @@ private fun THREE.Vector3.toList(): List<Double> = listOf(
     this.z,
 )
 
-// Add DOM content loaded event listener
-fun onDomContentLoaded() {
-    initialize()
-}
-
 fun main() {
-    document.addEventListener("DOMContentLoaded", { onDomContentLoaded() })
+    document.addEventListener(
+        type = "DOMContentLoaded",
+        callback = { initialize() },
+    )
 }
