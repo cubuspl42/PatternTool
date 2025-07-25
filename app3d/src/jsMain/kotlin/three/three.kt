@@ -1,6 +1,6 @@
 package three
 
-import dev.toolkt.reactive.Subscription
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.extra.jsObject
 
@@ -26,13 +26,13 @@ external object THREE {
         fun updateProjectionMatrix()
     }
 
-    class WebGLRenderer(params: RenderParams = definedExternally) {
+    class WebGLRenderer(params: WebGLRendererParams = definedExternally) {
         fun setSize(width: Double, height: Double)
         val domElement: HTMLElement
         fun render(scene: Scene, camera: Camera)
     }
 
-    interface RenderParams {
+    interface WebGLRendererParams {
         var canvas: HTMLElement?
     }
 
@@ -82,6 +82,15 @@ inline fun MeshBasicMaterialParams(
     val obj = jsObject()
     obj["color"] = color
     obj["wireframe"] = wireframe
+    return obj
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun WebGLRendererParams(
+    canvas: HTMLCanvasElement? = null,
+): THREE.WebGLRendererParams {
+    val obj = jsObject()
+    obj["canvas"] = canvas
     return obj
 }
 

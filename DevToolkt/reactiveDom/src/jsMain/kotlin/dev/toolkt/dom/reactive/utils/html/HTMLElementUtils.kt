@@ -8,6 +8,7 @@ import dev.toolkt.reactive.event_stream.getEventStream
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLSpanElement
@@ -40,6 +41,13 @@ fun Document.createReactiveHtmlSpanElement(
     style = style,
     children = children,
 ) as HTMLSpanElement
+
+fun Document.createReactiveHtmlCanvasElement(
+    style: ReactiveStyle? = null,
+): HTMLCanvasElement = createReactiveElement(
+    style = style,
+    name = "canvas",
+) as HTMLCanvasElement
 
 fun HTMLElement.getClickEventStream(): EventStream<MouseEvent> = this.getEventStream(
     type = "click"

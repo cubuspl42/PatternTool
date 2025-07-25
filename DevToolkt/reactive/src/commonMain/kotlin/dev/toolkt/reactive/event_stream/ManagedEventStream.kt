@@ -46,7 +46,7 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
     }
 
     private fun potentiallyPause() {
-        if (state == State.Resumed) {
+        if (listenerCount == 0 && state == State.Resumed) {
             state = State.Paused
 
             onPaused()

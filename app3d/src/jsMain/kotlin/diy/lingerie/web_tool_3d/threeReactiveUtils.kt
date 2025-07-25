@@ -1,9 +1,12 @@
 package diy.lingerie.web_tool_3d
 
+import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.reactive.cell.Cell
+import org.w3c.dom.HTMLCanvasElement
 import three.THREE
 import three.THREE.Object3D
+import three.WebGLRendererParams
 import three.requestAnimationFrames
 
 fun createReactivePerspectiveCamera(
@@ -30,12 +33,17 @@ fun createReactivePerspectiveCamera(
 }
 
 fun createReactiveRenderer(
+    canvas: HTMLCanvasElement,
     size: Cell<PureSize>,
     scene: THREE.Scene,
     camera: THREE.Camera,
     process: () -> Unit,
 ): THREE.WebGLRenderer {
-    val renderer = THREE.WebGLRenderer()
+    val renderer = THREE.WebGLRenderer(
+        WebGLRendererParams(
+            canvas = canvas,
+        ),
+    )
 
     size.bind(
         target = renderer,

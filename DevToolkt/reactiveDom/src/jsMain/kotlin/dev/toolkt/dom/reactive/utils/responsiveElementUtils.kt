@@ -11,6 +11,7 @@ import dev.toolkt.reactive.future.resultOrNull
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLElement
 
 fun createResponsiveElement(
     style: ReactiveStyle = ReactiveStyle(
@@ -21,13 +22,13 @@ fun createResponsiveElement(
         ),
     ),
     buildInner: (size: Cell<PureSize>) -> Element,
-): Element = ReactiveList.Companion.looped { childrenLooped ->
+): HTMLElement = ReactiveList.looped { childrenLooped ->
     val divElement = document.createReactiveHtmlDivElement(
         style = style,
         children = childrenLooped,
     )
 
-    val children = ReactiveList.Companion.singleNotNull(
+    val children = ReactiveList.singleNotNull(
         divElement.getNewestContentRect().resultOrNull.mapNotNull { rect ->
             buildInner(
                 rect.map { it.size },

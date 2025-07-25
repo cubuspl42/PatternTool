@@ -9,12 +9,12 @@ import dev.toolkt.dom.pure.style.PureBoxSizing
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
+import dev.toolkt.dom.reactive.utils.createResponsiveElement
+import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlCanvasElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
-import dev.toolkt.dom.reactive.utils.trackSize
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
-import kotlinx.browser.window
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import three.Float32Array
@@ -27,12 +27,14 @@ import kotlin.math.sqrt
 import kotlin.random.Random
 
 private const val R = 1.0
+
 private const val n = 32
+
 private const val m = 16
 
 private const val apexVertexIndex = 0
 
-private const val colorId = 8
+private const val colorId = 10
 
 private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
@@ -132,8 +134,16 @@ fun createDomeGeometry(): THREE.BufferGeometry {
     return geometry
 }
 
-fun createRendererElement(): HTMLElement {
-    val size = window.trackSize()
+fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
+    val canvas = document.createReactiveHtmlCanvasElement(
+        style = ReactiveStyle(
+            displayStyle = Cell.of(
+                PureFlexStyle(
+                    grow = 1.0,
+                ),
+            ),
+        ),
+    )
 
     val camera = createReactivePerspectiveCamera(
         size = size,
@@ -166,7 +176,8 @@ fun createRendererElement(): HTMLElement {
         mainObject = mesh,
     )
 
-    val renderer = createReactiveRenderer(
+    createReactiveRenderer(
+        canvas = canvas,
         size = size,
         scene = scene,
         camera = camera,
@@ -177,7 +188,7 @@ fun createRendererElement(): HTMLElement {
         mesh.rotation.y += s
     }
 
-    return renderer.domElement
+    return@createResponsiveElement canvas
 }
 
 private fun THREE.Vector3.toList(): List<Double> = listOf(
