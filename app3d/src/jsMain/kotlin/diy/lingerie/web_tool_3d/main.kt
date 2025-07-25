@@ -1,9 +1,21 @@
 package diy.lingerie.web_tool_3d
 
 import dev.toolkt.core.math.sq
+import dev.toolkt.dom.pure.PureColor
+import dev.toolkt.dom.pure.PureUnit
+import dev.toolkt.dom.pure.px
+import dev.toolkt.dom.pure.style.PureBorderStyle
+import dev.toolkt.dom.pure.style.PureBoxSizing
+import dev.toolkt.dom.pure.style.PureFlexDirection
+import dev.toolkt.dom.pure.style.PureFlexStyle
+import dev.toolkt.dom.reactive.style.ReactiveStyle
+import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.trackSize
+import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import kotlinx.browser.window
+import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import three.Float32Array
 import three.MeshBasicMaterialParams
@@ -20,7 +32,29 @@ private const val m = 16
 
 private const val apexVertexIndex = 0
 
-private const val colorId = 7
+private const val colorId = 8
+
+private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
+    style = ReactiveStyle(
+        displayStyle = Cell.of(
+            PureFlexStyle(
+                direction = PureFlexDirection.Column,
+            ),
+        ),
+        boxSizing = PureBoxSizing.BorderBox,
+        borderStyle = PureBorderStyle(
+            width = 4.px,
+            color = PureColor.darkGray,
+            style = PureBorderStyle.Style.Solid,
+        ),
+        width = Cell.of(PureUnit.Vw.full),
+        height = Cell.of(PureUnit.Vh.full),
+        backgroundColor = Cell.of(PureColor.lightGray),
+    ),
+    children = ReactiveList.of(
+        createRendererElement(),
+    ),
+)
 
 private fun buildVertex(
     apex: THREE.Vector3,
@@ -146,12 +180,6 @@ fun createRendererElement(): HTMLElement {
     return renderer.domElement
 }
 
-fun initialize() {
-    val rendererElement = createRendererElement()
-
-    document.body?.appendChild(rendererElement)
-}
-
 private fun THREE.Vector3.toList(): List<Double> = listOf(
     this.x,
     this.y,
@@ -161,6 +189,8 @@ private fun THREE.Vector3.toList(): List<Double> = listOf(
 fun main() {
     document.addEventListener(
         type = "DOMContentLoaded",
-        callback = { initialize() },
+        callback = {
+            document.body!!.appendChild(createRootElement())
+        },
     )
 }

@@ -71,12 +71,12 @@ internal fun createPrimaryViewport(
         PrimaryViewport(
             element = document.createReactiveHtmlDivElement(
                 style = ReactiveStyle(
-                    boxSizing = PureBoxSizing.BorderBox,
                     displayStyle = Cell.of(
                         PureFlexStyle(
                             grow = 1.0,
                         ),
                     ),
+                    boxSizing = PureBoxSizing.BorderBox,
                     borderStyle = PureBorderStyle(
                         width = 4.px,
                         color = PureColor.darkGray,
