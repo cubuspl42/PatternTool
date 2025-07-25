@@ -111,6 +111,10 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
         val translationVector: Vector2,
     ) : Specific() {
         companion object {
+            val None = Translation(
+                translationVector = Vector2.Zero,
+            )
+
             fun inDirection(
                 direction: Direction,
                 distance: Span,

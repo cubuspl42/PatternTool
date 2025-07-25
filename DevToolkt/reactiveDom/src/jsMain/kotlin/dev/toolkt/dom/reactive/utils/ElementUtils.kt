@@ -1,6 +1,7 @@
 package dev.toolkt.dom.reactive.utils
 
 import dev.toolkt.dom.reactive.utils.event.offsetPoint
+import dev.toolkt.dom.reactive.utils.gestures.ButtonId
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
@@ -19,16 +20,16 @@ fun Element.getMouseDownEventStream(): EventStream<MouseEvent> = this.getEventSt
 ).cast()
 
 fun Element.getMouseDownEventStream(
-    button: Short,
-): EventStream<MouseEvent> = this.getMouseDownEventStream().filter { it.button == button }
+    button: ButtonId,
+): EventStream<MouseEvent> = this.getMouseDownEventStream().filter { it.button == button.id }
 
 fun Element.getMouseUpEventStream(): EventStream<MouseEvent> = this.getEventStream(
     type = "mouseup",
 ).cast()
 
 fun Element.getMouseUpEventStream(
-    button: Short,
-): EventStream<MouseEvent> = this.getMouseUpEventStream().filter { it.button == button }
+    button: ButtonId,
+): EventStream<MouseEvent> = this.getMouseUpEventStream().filter { it.button == button.id }
 
 fun Element.getMouseMoveEventStream(): EventStream<MouseEvent> = this.getEventStream(
     type = "mousemove",

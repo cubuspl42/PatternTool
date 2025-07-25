@@ -10,9 +10,15 @@ import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createResponsiveElement
+import dev.toolkt.dom.reactive.utils.gestures.ButtonId
+import dev.toolkt.dom.reactive.utils.gestures.onMouseDragGestureStarted
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlCanvasElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
+import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.cell.PropertyCell
+import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
@@ -25,7 +31,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.random.Random
-import kotlin.time.DurationUnit
 
 private const val R = 1.0
 
@@ -167,6 +172,27 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         ),
     )
 
+    val rotationX = PropertyCell(
+        initialValue = 0.0,
+    )
+
+    canvas.onMouseDragGestureStarted(
+        button = ButtonId.LEFT,
+    ).forEach { mouseGesture ->
+        val initialRotationX = rotationX.currentValue
+
+        rotationX.bindUntil(
+            boundValue = mouseGesture.offsetPosition.trackTranslation().map { translation ->
+                val deltaRotationX = translation.tx * 0.01
+
+                initialRotationX + deltaRotationX
+            },
+            until = mouseGesture.onFinished,
+        )
+
+        mouseGesture.offsetPosition
+    }
+
     createReactiveRenderer(
         canvas = canvas,
         camera = camera,
@@ -174,24 +200,29 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
     ) { time ->
         createReactiveScene(
             createReactiveMesh(
-                geometry = geometry,
-                material = material,
-                rotation = time.map {
-                    val t = it.toDouble(DurationUnit.SECONDS)
-                    val r = t * 0.3
-
+                geometry = geometry, material = material,
+                rotation = rotationX.map { rX ->
                     THREE.Euler(
-                        x = r,
-                        y = r,
+                        x = rX,
+                        y = 0.0,
                         z = 0.0,
                     )
-                }
+                },
             )
         )
-
     }
 
     return@createResponsiveElement canvas
+}
+
+fun Cell<Point>.trackTranslation(): Cell<PrimitiveTransformation.Translation> {
+    val initialPoint = currentValue
+
+    return newValues.map {
+        initialPoint.translationTo(it)
+    }.hold(
+        initialValue = PrimitiveTransformation.Translation.None,
+    )
 }
 
 private fun THREE.Vector3.toList(): List<Double> = listOf(

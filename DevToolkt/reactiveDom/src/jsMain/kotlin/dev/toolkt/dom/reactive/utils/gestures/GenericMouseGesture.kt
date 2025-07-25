@@ -45,8 +45,12 @@ fun Element.onMouseOverGestureStarted(): EventStream<GenericMouseGesture> =
         )
     }
 
+enum class ButtonId(val id: Short) {
+    LEFT(0), MIDDLE(1), RIGHT(2),
+}
+
 fun Element.onMouseDragGestureStarted(
-    button: Short,
+    button: ButtonId,
 ): EventStream<GenericMouseGesture> = this.getMouseDownEventStream(
     button = button,
 ).map { mouseDownEvent ->
@@ -62,7 +66,7 @@ fun Element.onMouseDragGestureStarted(
 
 fun SVGElement.onSvgDragGestureStarted(
     container: SVGElement,
-    button: Short,
+    button: ButtonId,
 ): EventStream<SvgMouseGesture> = this.getMouseDownEventStream(
     button = button,
 ).map { targetMouseDownEvent ->
