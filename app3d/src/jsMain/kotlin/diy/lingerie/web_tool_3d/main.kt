@@ -25,6 +25,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.random.Random
+import kotlin.time.DurationUnit
 
 private const val R = 1.0
 
@@ -34,7 +35,7 @@ private const val m = 16
 
 private const val apexVertexIndex = 0
 
-private const val colorId = 10
+private const val colorId = 20
 
 private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
@@ -166,26 +167,28 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         ),
     )
 
-    // Create a mesh
-    val mesh = THREE.Mesh(
-        geometry = geometry,
-        material = material,
-    )
-
-    val scene = createReactiveScene(
-        mainObject = mesh,
-    )
-
     createReactiveRenderer(
         canvas = canvas,
-        size = size,
-        scene = scene,
         camera = camera,
-    ) {
-        val s = 0.005
+        size = size,
+    ) { time ->
+        createReactiveScene(
+            createReactiveMesh(
+                geometry = geometry,
+                material = material,
+                rotation = time.map {
+                    val t = it.toDouble(DurationUnit.SECONDS)
+                    val r = t * 0.3
 
-        mesh.rotation.x += s
-        mesh.rotation.y += s
+                    THREE.Euler(
+                        x = r,
+                        y = r,
+                        z = 0.0,
+                    )
+                }
+            )
+        )
+
     }
 
     return@createResponsiveElement canvas

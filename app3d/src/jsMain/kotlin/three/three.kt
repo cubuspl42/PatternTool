@@ -71,7 +71,10 @@ external object THREE {
         val wireframe: Boolean?
     }
 
-    class Mesh(geometry: BufferGeometry, material: Material) : Object3D
+    class Mesh(
+        geometry: BufferGeometry,
+        material: Material,
+    ) : Object3D
 }
 
 @Suppress("NOTHING_TO_INLINE")
@@ -106,19 +109,4 @@ inline operator fun Float32Array.get(index: Int): Double = asDynamic()[index]
 @Suppress("NOTHING_TO_INLINE")
 inline operator fun Float32Array.set(index: Int, newItem: Double) {
     asDynamic()[index] = newItem
-}
-
-// Helper functions to enable requestAnimationFrame use from Kotlin
-@JsName("requestAnimationFrame")
-external fun requestAnimationFrame(callback: () -> Unit): Int
-
-fun requestAnimationFrames(
-    callback: () -> Unit,
-) {
-    fun animate() {
-        requestAnimationFrame(::animate)
-        callback()
-    }
-
-    requestAnimationFrame(::animate)
 }

@@ -1,13 +1,17 @@
 package diy.lingerie.web_tool_3d
 
-import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.dom.pure.PureSize
+import dev.toolkt.dom.reactive.utils.DOMHighResTimeStamp
+import dev.toolkt.dom.reactive.utils.requestAnimationFrames
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.cell.MutableCell
+import kotlinx.browser.window
 import org.w3c.dom.HTMLCanvasElement
 import three.THREE
 import three.THREE.Object3D
 import three.WebGLRendererParams
-import three.requestAnimationFrames
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun createReactivePerspectiveCamera(
     size: Cell<PureSize>,
@@ -34,10 +38,9 @@ fun createReactivePerspectiveCamera(
 
 fun createReactiveRenderer(
     canvas: HTMLCanvasElement,
-    size: Cell<PureSize>,
-    scene: THREE.Scene,
     camera: THREE.Camera,
-    process: () -> Unit,
+    size: Cell<PureSize>,
+    buildScene: (time: Cell<Duration>) -> THREE.Scene,
 ): THREE.WebGLRenderer {
     val renderer = THREE.WebGLRenderer(
         WebGLRendererParams(
@@ -51,8 +54,23 @@ fun createReactiveRenderer(
         renderer.setSize(sizeNow.width, sizeNow.height)
     }
 
-    requestAnimationFrames {
-        process()
+    val mutableTime = MutableCell(initialValue = Duration.ZERO)
+
+    val scene = buildScene(mutableTime)
+
+    var initialTimestamp: DOMHighResTimeStamp? = null
+
+    window.requestAnimationFrames { timestamp ->
+        val previousTimestamp = when (val foundInitialTimestamp = initialTimestamp) {
+            null -> {
+                initialTimestamp = timestamp
+                timestamp
+            }
+
+            else -> foundInitialTimestamp
+        }
+
+        mutableTime.set((timestamp - previousTimestamp).milliseconds)
 
         renderer.render(
             scene = scene,
@@ -61,6 +79,27 @@ fun createReactiveRenderer(
     }
 
     return renderer
+}
+
+fun createReactiveMesh(
+    geometry: THREE.BufferGeometry,
+    material: THREE.Material,
+    rotation: Cell<THREE.Euler>,
+): THREE.Mesh {
+    val mesh = THREE.Mesh(
+        geometry = geometry,
+        material = material,
+    )
+
+    rotation.bind(
+        target = mesh,
+    ) { mesh, rotationNow ->
+        mesh.rotation.x = rotationNow.x
+        mesh.rotation.y = rotationNow.y
+        mesh.rotation.z = rotationNow.z
+    }
+
+    return mesh
 }
 
 fun createReactiveScene(
