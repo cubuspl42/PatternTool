@@ -1,5 +1,6 @@
 package three
 
+import dev.toolkt.reactive.Subscription
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.extra.jsObject
 
@@ -101,3 +102,14 @@ inline operator fun Float32Array.set(index: Int, newItem: Double) {
 // Helper functions to enable requestAnimationFrame use from Kotlin
 @JsName("requestAnimationFrame")
 external fun requestAnimationFrame(callback: () -> Unit): Int
+
+fun requestAnimationFrames(
+    callback: () -> Unit,
+) {
+    fun animate() {
+        requestAnimationFrame(::animate)
+        callback()
+    }
+
+    requestAnimationFrame(::animate)
+}

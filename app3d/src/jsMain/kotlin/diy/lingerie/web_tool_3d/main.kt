@@ -7,7 +7,6 @@ import kotlinx.browser.window
 import three.Float32Array
 import three.MeshBasicMaterialParams
 import three.THREE
-import three.requestAnimationFrame
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -45,23 +44,18 @@ private fun getVertexIndex(
     return 1 + i * m + (j - 1)
 }
 
-fun main() {
+fun initialize() {
     val size = window.trackSize()
-
-    val scene = THREE.Scene()
 
     val camera = createReactivePerspectiveCamera(
         size = size,
         fov = 75.0,
         near = 0.1,
         far = 1000.0,
-    )
+    ).apply {
+        position.z = 5.0
+    }
 
-    val renderer = createReactiveRenderer(
-        size = size,
-    )
-
-    document.body?.appendChild(renderer.domElement)
     val apex = THREE.Vector3(0.0, 0.0, 1.0)
 
     val wireVertices = (0 until n).flatMap { i ->
@@ -105,7 +99,7 @@ fun main() {
         computeVertexNormals()
     }
 
-    val color = Random(3).nextInt()
+    val color = Random(5).nextInt()
 
     // Create a material
     val material = THREE.MeshBasicMaterial(
@@ -116,22 +110,27 @@ fun main() {
     )
 
     // Create a mesh
-    val mesh = THREE.Mesh(geometry, material)
+    val mesh = THREE.Mesh(
+        geometry = geometry,
+        material = material,
+    )
 
-    // Add the mesh to the scene
-    scene.add(mesh)
+    val scene = createReactiveScene(
+        mainObject = mesh,
+    )
 
-    camera.position.z = 5.0
-
-    fun animate() {
-        requestAnimationFrame(::animate)
+    val renderer = createReactiveRenderer(
+        size = size,
+        scene = scene,
+        camera = camera,
+    ) {
         val s = 0.005
+
         mesh.rotation.x += s
         mesh.rotation.y += s
-        renderer.render(scene, camera)
     }
 
-    animate()
+    document.body?.appendChild(renderer.domElement)
 }
 
 private fun THREE.Vector3.toList(): List<Double> = listOf(
@@ -142,9 +141,9 @@ private fun THREE.Vector3.toList(): List<Double> = listOf(
 
 // Add DOM content loaded event listener
 fun onDomContentLoaded() {
-    main()
+    initialize()
 }
 
-fun main(args: Array<String>) {
+fun main() {
     document.addEventListener("DOMContentLoaded", { onDomContentLoaded() })
 }
