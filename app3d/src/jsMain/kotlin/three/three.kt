@@ -21,9 +21,13 @@ external object THREE {
     open class Camera : Object3D
 
     class PerspectiveCamera(fov: Double, aspect: Double, near: Double, far: Double) : Camera {
-        var position: Vector3
+        val position: Vector3
+
         var aspect: Double
+
         fun updateProjectionMatrix()
+
+        fun lookAt(target: Vector3)
     }
 
     class WebGLRenderer(params: WebGLRendererParams = definedExternally) {

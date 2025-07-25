@@ -42,6 +42,10 @@ private const val apexVertexIndex = 0
 
 private const val colorId = 20
 
+private const val cameraDistance = 10.0
+
+private const val cameraZ = 5.0
+
 private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
         displayStyle = Cell.of(
@@ -151,14 +155,6 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         ),
     )
 
-    val camera = createReactivePerspectiveCamera(
-        size = size,
-        fov = 75.0,
-        near = 0.1,
-        far = 1000.0,
-    ).apply {
-        position.z = 5.0
-    }
 
     val geometry = createDomeGeometry()
 
@@ -172,20 +168,34 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         ),
     )
 
-    val rotationX = PropertyCell(
+    val cameraX = PropertyCell(
         initialValue = 0.0,
+    )
+
+    val camera = createReactivePerspectiveCamera(
+        position = cameraX.map {
+            THREE.Vector3(
+                x = it,
+                y = 0.0,
+                z = cameraZ,
+            )
+        },
+        size = size,
+        fov = 75.0,
+        near = 0.1,
+        far = 1000.0,
     )
 
     canvas.onMouseDragGestureStarted(
         button = ButtonId.LEFT,
     ).forEach { mouseGesture ->
-        val initialRotationX = rotationX.currentValue
+        val initialCameraX = cameraX.currentValue
 
-        rotationX.bindUntil(
+        cameraX.bindUntil(
             boundValue = mouseGesture.offsetPosition.trackTranslation().map { translation ->
-                val deltaRotationX = translation.tx * 0.01
+                val deltaCameraX = translation.tx * 0.01
 
-                initialRotationX + deltaRotationX
+                initialCameraX + deltaCameraX
             },
             until = mouseGesture.onFinished,
         )
@@ -201,13 +211,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         createReactiveScene(
             createReactiveMesh(
                 geometry = geometry, material = material,
-                rotation = rotationX.map { rX ->
-                    THREE.Euler(
-                        x = rX,
-                        y = 0.0,
-                        z = 0.0,
-                    )
-                },
+                rotation = Cell.of(THREE.Euler()),
             )
         )
     }

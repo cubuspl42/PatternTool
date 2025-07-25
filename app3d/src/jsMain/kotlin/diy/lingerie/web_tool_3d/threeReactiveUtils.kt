@@ -14,6 +14,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 fun createReactivePerspectiveCamera(
+    position: Cell<THREE.Vector3>,
     size: Cell<PureSize>,
     fov: Double,
     near: Double,
@@ -25,6 +26,17 @@ fun createReactivePerspectiveCamera(
         near,
         far,
     )
+
+    position.bind(
+        target = camera,
+    ) { camera, positionNow ->
+        camera.position.x = positionNow.x
+        camera.position.y = positionNow.y
+        camera.position.z = positionNow.z
+
+        camera.lookAt(THREE.Vector3())
+    }
+
 
     size.newValues.pipe(
         target = camera,
