@@ -66,6 +66,7 @@ fun <TargetT : Any> Cell<THREE.Euler>.bind(
 
 fun createReactivePerspectiveCamera(
     position: Cell<THREE.Vector3>,
+    rotation: Cell<THREE.Euler>,
     size: Cell<PureSize>,
     fov: Double,
     near: Double,
@@ -80,18 +81,13 @@ fun createReactivePerspectiveCamera(
 
     position.bind(
         target = camera,
-    ) { camera, positionNow ->
-        camera.position.x = positionNow.x
-        camera.position.y = positionNow.y
-        camera.position.z = positionNow.z
-    }
+        selector = THREE.Camera::position,
+    )
 
-    size.newValues.pipe(
+    rotation.bind(
         target = camera,
-    ) { camera, sizeNow ->
-        camera.aspect = sizeNow.width / sizeNow.height
-        camera.updateProjectionMatrix()
-    }
+        selector = THREE.Camera::rotation,
+    )
 
     return camera
 }
@@ -153,11 +149,8 @@ fun createReactiveMesh(
 
     rotation.bind(
         target = mesh,
-    ) { mesh, rotationNow ->
-        mesh.rotation.x = rotationNow.x
-        mesh.rotation.y = rotationNow.y
-        mesh.rotation.z = rotationNow.z
-    }
+        selector = THREE.Object3D::rotation,
+    )
 
     return mesh
 }

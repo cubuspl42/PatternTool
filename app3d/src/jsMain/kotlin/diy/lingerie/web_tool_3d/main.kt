@@ -24,11 +24,12 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import three.MeshBasicMaterialParams
 import three.THREE
+import kotlin.math.PI
 import kotlin.random.Random
 
 private const val colorId = 20
 
-private const val cameraDistance = 2.5
+private const val cameraDistance = 2.0
 
 private const val cameraZ = 0.5
 
@@ -54,7 +55,6 @@ private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDiv
     ),
 )
 
-
 fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
     val canvas = document.createReactiveHtmlCanvasElement(
         style = ReactiveStyle(
@@ -65,7 +65,6 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
             ),
         ),
     )
-
 
     val geometry = createBezierGeometry()
 
@@ -88,16 +87,19 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
             THREE.Vector3(
                 x = 0.0,
                 y = -cameraDistance,
-                z = cameraZ,
+                z = 0.0,
+            ),
+        ),
+        rotation = Cell.of(
+            THREE.Euler(
+                x = PI / 2,
             ),
         ),
         size = size,
         fov = 75.0,
         near = 0.1,
         far = 1000.0,
-    ).apply {
-        lookAt(THREE.Vector3())
-    }
+    )
 
     canvas.onMouseDragGestureStarted(
         button = ButtonId.LEFT,
@@ -129,7 +131,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
                     rotation = Cell.of(THREE.Euler()),
                 ),
                 createReactiveGroup(
-                    position = Cell.of(THREE.Vector3()),
+                    position = Cell.of(THREE.Vector3(z = cameraZ)),
                     rotation = cameraRotation.map { THREE.Euler(z = it) },
                     children = listOf(camera),
                 )

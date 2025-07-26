@@ -60,6 +60,7 @@ external object THREE {
     }
 
 
+    // TODO: Add support for BoxGeometry
     class BufferGeometry {
         fun setAttribute(name: String, attribute: BufferAttribute): BufferGeometry
         fun setIndex(indices: Array<Int>): BufferGeometry
