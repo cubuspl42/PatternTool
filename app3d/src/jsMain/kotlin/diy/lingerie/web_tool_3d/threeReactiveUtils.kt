@@ -159,6 +159,32 @@ fun createReactiveMesh(
     return mesh
 }
 
+fun createReactiveDualMeshGroup(
+    geometry: THREE.BufferGeometry,
+    primaryMaterial: THREE.Material,
+    secondaryMaterial: THREE.Material,
+    position: Cell<Vector3>,
+    rotation: Cell<THREE.Euler>,
+    secondaryScale: Double = 1.001,
+): THREE.Group = createReactiveGroup(
+    position = position,
+    rotation = rotation,
+    children = listOf(
+        THREE.Mesh(
+            geometry = geometry,
+            material = primaryMaterial,
+        ),
+        THREE.Mesh(
+            geometry = geometry,
+            material = secondaryMaterial,
+        ).apply {
+            scale.x = secondaryScale
+            scale.y = secondaryScale
+            scale.z = secondaryScale
+        },
+    ),
+)
+
 fun createReactiveAmbientLight(
     position: Cell<Vector3>,
 ): THREE.Light {

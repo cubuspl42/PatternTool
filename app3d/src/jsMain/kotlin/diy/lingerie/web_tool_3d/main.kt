@@ -16,6 +16,7 @@ import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Vector3
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
+import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.event_stream.hold
@@ -74,13 +75,6 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
 
     val color = Random(colorId).nextInt()
 
-    // Create a material
-    val material = THREE.MeshLambertMaterial(
-        MeshLambertMaterialParams(
-            color = color,
-        ),
-    )
-
     val cameraRotation = PropertyCell(
         initialValue = 0.0,
     )
@@ -127,6 +121,23 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         mouseGesture.offsetPosition
     }
 
+    val meshGroup = createReactiveDualMeshGroup(
+        position = Cell.of(Vector3.Zero),
+        geometry = geometry,
+        primaryMaterial = THREE.MeshLambertMaterial(
+            MeshLambertMaterialParams(
+                color = color,
+            ),
+        ),
+        secondaryMaterial = THREE.MeshBasicMaterial(
+            MeshBasicMaterialParams(
+                color = PureColor.green.value,
+                wireframe = true,
+            ),
+        ),
+        rotation = Cell.of(THREE.Euler()),
+    )
+
     createReactiveRenderer(
         canvas = canvas,
         camera = camera,
@@ -138,11 +149,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
                 createReactivePointLight(
                     position = Cell.of(lightPosition),
                 ),
-                createReactiveMesh(
-                    geometry = geometry,
-                    material = material,
-                    rotation = Cell.of(THREE.Euler()),
-                ),
+                meshGroup,
                 cameraGroup,
             ),
         )

@@ -48,6 +48,8 @@ external object THREE {
 
         val rotation: Euler
 
+        val scale: Vector3
+
         fun add(child: Object3D): Object3D
     }
 
