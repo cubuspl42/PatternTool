@@ -2,7 +2,9 @@ package diy.lingerie.web_tool_3d
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureUnit
+import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.px
+import dev.toolkt.dom.pure.style.PureBlockStyle
 import dev.toolkt.dom.pure.style.PureBorderStyle
 import dev.toolkt.dom.pure.style.PureBoxSizing
 import dev.toolkt.dom.pure.style.PureFlexDirection
@@ -60,14 +62,22 @@ private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDiv
     ),
 )
 
-fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
+fun createRendererElement(): HTMLElement = createResponsiveElement(
+    style = ReactiveStyle(
+        displayStyle = Cell.of(
+            PureBlockStyle(),
+        ),
+        width = Cell.of(100.percent),
+        height = Cell.of(100.percent),
+    ),
+) { size ->
     val canvas = document.createReactiveHtmlCanvasElement(
         style = ReactiveStyle(
             displayStyle = Cell.of(
-                PureFlexStyle(
-                    grow = 1.0,
-                ),
+                PureBlockStyle(),
             ),
+            width = Cell.of(100.percent),
+            height = Cell.of(100.percent),
         ),
     )
 

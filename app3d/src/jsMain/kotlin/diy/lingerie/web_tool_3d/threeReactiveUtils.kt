@@ -78,10 +78,17 @@ fun createReactivePerspectiveCamera(
 ): THREE.PerspectiveCamera {
     val camera = THREE.PerspectiveCamera(
         fov,
-        size.currentValue.width / size.currentValue.height,
+        1.0,
         near,
         far,
     )
+
+    size.bind(
+        target = camera,
+    ) { camera, sizeNow ->
+        camera.aspect = sizeNow.width / sizeNow.height
+        camera.updateProjectionMatrix()
+    }
 
     position.bind(
         target = camera,
