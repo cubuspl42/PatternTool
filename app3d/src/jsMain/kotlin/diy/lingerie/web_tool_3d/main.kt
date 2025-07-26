@@ -118,6 +118,20 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         mouseGesture.offsetPosition
     }
 
+    val box = createReactiveMesh(
+        geometry = THREE.BoxGeometry(
+            width = 1.0,
+            height = 1.0,
+            depth = 1.0,
+        ),
+        material = THREE.MeshBasicMaterial(
+            MeshBasicMaterialParams(
+                color = PureColor.blue.value,
+            ),
+        ),
+        rotation = Cell.of(THREE.Euler()),
+    )
+
     createReactiveRenderer(
         canvas = canvas,
         camera = camera,
@@ -125,6 +139,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
     ) { time ->
         createReactiveScene(
             listOf(
+                box,
                 createReactiveMesh(
                     geometry = geometry,
                     material = material,

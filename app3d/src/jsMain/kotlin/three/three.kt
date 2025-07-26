@@ -60,12 +60,22 @@ external object THREE {
     }
 
 
-    // TODO: Add support for BoxGeometry
-    class BufferGeometry {
+    open class BufferGeometry {
         fun setAttribute(name: String, attribute: BufferAttribute): BufferGeometry
+
         fun setIndex(indices: Array<Int>): BufferGeometry
+
         fun computeVertexNormals(): BufferGeometry
     }
+
+    class BoxGeometry(
+        width: Double = definedExternally,
+        height: Double = definedExternally,
+        depth: Double = definedExternally,
+        widthSegments: Int = definedExternally,
+        heightSegments: Int = definedExternally,
+        depthSegments: Int = definedExternally,
+    ) : BufferGeometry
 
     class BufferAttribute(
         array: Float32Array,
@@ -94,7 +104,7 @@ external object THREE {
 @Suppress("NOTHING_TO_INLINE")
 inline fun MeshBasicMaterialParams(
     color: Int,
-    wireframe: Boolean,
+    wireframe: Boolean = false,
 ): THREE.MeshBasicMaterialParams {
     val obj = jsObject()
     obj["color"] = color
