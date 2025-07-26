@@ -3,6 +3,7 @@ package diy.lingerie.web_tool_3d
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.reactive.utils.DOMHighResTimeStamp
 import dev.toolkt.dom.reactive.utils.requestAnimationFrames
+import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
 import kotlinx.browser.window
@@ -12,6 +13,56 @@ import three.THREE.Object3D
 import three.WebGLRendererParams
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+
+fun createReactiveGroup(
+    position: Cell<THREE.Vector3>,
+    rotation: Cell<THREE.Euler>,
+    children: List<THREE.Object3D>,
+): THREE.Group {
+    val group = THREE.Group()
+
+    position.bind(
+        target = group,
+        selector = THREE.Group::position,
+    )
+
+    rotation.bind(
+        target = group,
+        selector = THREE.Group::rotation,
+    )
+
+    children.forEach { child ->
+        group.add(child)
+    }
+
+    return group
+}
+
+fun <TargetT : Any> Cell<THREE.Vector3>.bind(
+    target: TargetT,
+    selector: (TargetT) -> THREE.Vector3,
+): Subscription = bind(
+    target = target,
+) { target, positionNow ->
+    selector(target).apply {
+        this.x = positionNow.x
+        this.y = positionNow.y
+        this.z = positionNow.z
+    }
+}
+
+fun <TargetT : Any> Cell<THREE.Euler>.bind(
+    target: TargetT,
+    selector: (TargetT) -> THREE.Euler,
+): Subscription = bind(
+    target = target,
+) { target, rotationNow ->
+    selector(target).apply {
+        this.x = rotationNow.x
+        this.y = rotationNow.y
+        this.z = rotationNow.z
+    }
+}
 
 fun createReactivePerspectiveCamera(
     position: Cell<THREE.Vector3>,
@@ -33,10 +84,7 @@ fun createReactivePerspectiveCamera(
         camera.position.x = positionNow.x
         camera.position.y = positionNow.y
         camera.position.z = positionNow.z
-
-        camera.lookAt(THREE.Vector3())
     }
-
 
     size.newValues.pipe(
         target = camera,
@@ -115,7 +163,9 @@ fun createReactiveMesh(
 }
 
 fun createReactiveScene(
-    mainObject: Object3D,
+    children: List<Object3D>,
 ): THREE.Scene = THREE.Scene().apply {
-    add(mainObject)
+    children.forEach {
+        add(it)
+    }
 }

@@ -1,6 +1,5 @@
 package diy.lingerie.web_tool_3d
 
-import dev.toolkt.core.math.sq
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureUnit
 import dev.toolkt.dom.pure.px
@@ -25,19 +24,13 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import three.MeshBasicMaterialParams
 import three.THREE
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
 import kotlin.random.Random
-
-
 
 private const val colorId = 20
 
-private const val cameraDistance = 10.0
+private const val cameraDistance = 2.5
 
-private const val cameraZ = 5.0
+private const val cameraZ = 0.5
 
 private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
@@ -62,7 +55,6 @@ private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDiv
 )
 
 
-
 fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
     val canvas = document.createReactiveHtmlCanvasElement(
         style = ReactiveStyle(
@@ -75,7 +67,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
     )
 
 
-    val geometry = createDomeGeometry()
+    val geometry = createBezierGeometry()
 
     val color = Random(colorId).nextInt()
 
@@ -87,34 +79,36 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         ),
     )
 
-    val cameraX = PropertyCell(
+    val cameraRotation = PropertyCell(
         initialValue = 0.0,
     )
 
     val camera = createReactivePerspectiveCamera(
-        position = cameraX.map {
+        position = Cell.of(
             THREE.Vector3(
-                x = it,
-                y = 0.0,
+                x = 0.0,
+                y = -cameraDistance,
                 z = cameraZ,
-            )
-        },
+            ),
+        ),
         size = size,
         fov = 75.0,
         near = 0.1,
         far = 1000.0,
-    )
+    ).apply {
+        lookAt(THREE.Vector3())
+    }
 
     canvas.onMouseDragGestureStarted(
         button = ButtonId.LEFT,
     ).forEach { mouseGesture ->
-        val initialCameraX = cameraX.currentValue
+        val initialCameraRotation = cameraRotation.currentValue
 
-        cameraX.bindUntil(
+        cameraRotation.bindUntil(
             boundValue = mouseGesture.offsetPosition.trackTranslation().map { translation ->
-                val deltaCameraX = translation.tx * 0.01
+                val delta = translation.tx * 0.01
 
-                initialCameraX + deltaCameraX
+                initialCameraRotation + delta
             },
             until = mouseGesture.onFinished,
         )
@@ -128,10 +122,18 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         size = size,
     ) { time ->
         createReactiveScene(
-            createReactiveMesh(
-                geometry = geometry, material = material,
-                rotation = Cell.of(THREE.Euler()),
-            )
+            listOf(
+                createReactiveMesh(
+                    geometry = geometry,
+                    material = material,
+                    rotation = Cell.of(THREE.Euler()),
+                ),
+                createReactiveGroup(
+                    position = Cell.of(THREE.Vector3()),
+                    rotation = cameraRotation.map { THREE.Euler(z = it) },
+                    children = listOf(camera),
+                )
+            ),
         )
     }
 
@@ -147,6 +149,7 @@ fun Cell<Point>.trackTranslation(): Cell<PrimitiveTransformation.Translation> {
         initialValue = PrimitiveTransformation.Translation.None,
     )
 }
+
 fun main() {
     document.addEventListener(
         type = "DOMContentLoaded",

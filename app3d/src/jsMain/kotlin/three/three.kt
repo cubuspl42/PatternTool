@@ -20,9 +20,12 @@ external object THREE {
 
     open class Camera : Object3D
 
-    class PerspectiveCamera(fov: Double, aspect: Double, near: Double, far: Double) : Camera {
-        val position: Vector3
-
+    class PerspectiveCamera(
+        fov: Double,
+        aspect: Double,
+        near: Double,
+        far: Double,
+    ) : Camera {
         var aspect: Double
 
         fun updateProjectionMatrix()
@@ -41,8 +44,14 @@ external object THREE {
     }
 
     open class Object3D {
-        var rotation: Euler
+        val position: Vector3
+
+        val rotation: Euler
+
+        fun add(child: Object3D): Object3D
     }
+
+    class Group : Object3D
 
     class Euler(x: Double = definedExternally, y: Double = definedExternally, z: Double = definedExternally) {
         var x: Double
