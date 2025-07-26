@@ -3,6 +3,10 @@ package diy.lingerie.web_tool_3d
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.reactive.utils.DOMHighResTimeStamp
 import dev.toolkt.dom.reactive.utils.requestAnimationFrames
+import dev.toolkt.geometry.x
+import dev.toolkt.geometry.y
+import dev.toolkt.geometry.z
+import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
@@ -15,7 +19,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 fun createReactiveGroup(
-    position: Cell<THREE.Vector3>,
+    position: Cell<Vector3>,
     rotation: Cell<THREE.Euler>,
     children: List<THREE.Object3D>,
 ): THREE.Group {
@@ -38,7 +42,7 @@ fun createReactiveGroup(
     return group
 }
 
-fun <TargetT : Any> Cell<THREE.Vector3>.bind(
+fun <TargetT : Any> Cell<Vector3>.bind(
     target: TargetT,
     selector: (TargetT) -> THREE.Vector3,
 ): Subscription = bind(
@@ -65,7 +69,7 @@ fun <TargetT : Any> Cell<THREE.Euler>.bind(
 }
 
 fun createReactivePerspectiveCamera(
-    position: Cell<THREE.Vector3>,
+    position: Cell<Vector3>,
     rotation: Cell<THREE.Euler>,
     size: Cell<PureSize>,
     fov: Double,
@@ -153,6 +157,33 @@ fun createReactiveMesh(
     )
 
     return mesh
+}
+
+fun createReactiveAmbientLight(
+    position: Cell<Vector3>,
+): THREE.Light {
+    val light = THREE.PointLight(0xff0000, 1.0, 100.0)
+
+    position.bind(
+        target = light,
+        selector = THREE.PointLight::position,
+    )
+
+    return light
+}
+
+
+fun createReactivePointLight(
+    position: Cell<Vector3>,
+): THREE.Light {
+    val light = THREE.PointLight(0xff0000, 1.0, 100.0)
+
+    position.bind(
+        target = light,
+        selector = THREE.PointLight::position,
+    )
+
+    return light
 }
 
 fun createReactiveScene(

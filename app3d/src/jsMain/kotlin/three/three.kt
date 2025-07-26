@@ -88,17 +88,50 @@ external object THREE {
         val wireframe: Boolean
     }
 
-    class MeshBasicMaterial(params: MeshBasicMaterialParams = definedExternally) : Material
-
     interface MeshBasicMaterialParams {
         val color: Int
         val wireframe: Boolean?
     }
 
+    class MeshBasicMaterial(
+        params: MeshBasicMaterialParams = definedExternally,
+    ) : Material
+
+    interface MeshLambertMaterialParams {
+        val color: Int
+        val wireframe: Boolean?
+    }
+
+    class MeshLambertMaterial(
+        params: MeshLambertMaterialParams = definedExternally,
+    ) : Material
+
     class Mesh(
         geometry: BufferGeometry,
         material: Material,
     ) : Object3D
+
+    abstract class Light() : Object3D {
+        var color: Int
+
+        var intensity: Double
+    }
+
+    class AmbientLight(
+        color: Int = definedExternally,
+        intensity: Double = definedExternally,
+    ) : Light
+
+    class PointLight(
+        color: Int = definedExternally,
+        intensity: Double = definedExternally,
+        distance: Double = definedExternally,
+        decay: Double = definedExternally,
+    ) : Light {
+        var distance: Double
+
+        var decay: Double
+    }
 }
 
 @Suppress("NOTHING_TO_INLINE")
@@ -106,6 +139,17 @@ inline fun MeshBasicMaterialParams(
     color: Int,
     wireframe: Boolean = false,
 ): THREE.MeshBasicMaterialParams {
+    val obj = jsObject()
+    obj["color"] = color
+    obj["wireframe"] = wireframe
+    return obj
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun MeshLambertMaterialParams(
+    color: Int,
+    wireframe: Boolean = false,
+): THREE.MeshLambertMaterialParams {
     val obj = jsObject()
     obj["color"] = color
     obj["wireframe"] = wireframe

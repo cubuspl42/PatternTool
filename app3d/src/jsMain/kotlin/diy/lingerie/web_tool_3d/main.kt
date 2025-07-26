@@ -14,6 +14,7 @@ import dev.toolkt.dom.reactive.utils.gestures.onMouseDragGestureStarted
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlCanvasElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Vector3
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
@@ -23,6 +24,7 @@ import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import three.MeshBasicMaterialParams
+import three.MeshLambertMaterialParams
 import three.THREE
 import kotlin.math.PI
 import kotlin.random.Random
@@ -32,6 +34,8 @@ private const val colorId = 20
 private const val cameraDistance = 2.0
 
 private const val cameraZ = 0.5
+
+private val lightPosition = Vector3(x = 1.0, y = 1.0, z = 1.0)
 
 private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
@@ -71,10 +75,9 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
     val color = Random(colorId).nextInt()
 
     // Create a material
-    val material = THREE.MeshBasicMaterial(
-        MeshBasicMaterialParams(
+    val material = THREE.MeshLambertMaterial(
+        MeshLambertMaterialParams(
             color = color,
-            wireframe = true,
         ),
     )
 
@@ -84,7 +87,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
 
     val camera = createReactivePerspectiveCamera(
         position = Cell.of(
-            THREE.Vector3(
+            Vector3(
                 x = 0.0,
                 y = -cameraDistance,
                 z = 0.0,
@@ -99,6 +102,12 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         fov = 75.0,
         near = 0.1,
         far = 1000.0,
+    )
+
+    val cameraGroup = createReactiveGroup(
+        position = Cell.of(Vector3(x = 0.0, y = 0.0, z = cameraZ)),
+        rotation = cameraRotation.map { THREE.Euler(z = it) },
+        children = listOf(camera),
     )
 
     canvas.onMouseDragGestureStarted(
@@ -118,20 +127,6 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
         mouseGesture.offsetPosition
     }
 
-    val box = createReactiveMesh(
-        geometry = THREE.BoxGeometry(
-            width = 1.0,
-            height = 1.0,
-            depth = 1.0,
-        ),
-        material = THREE.MeshBasicMaterial(
-            MeshBasicMaterialParams(
-                color = PureColor.blue.value,
-            ),
-        ),
-        rotation = Cell.of(THREE.Euler()),
-    )
-
     createReactiveRenderer(
         canvas = canvas,
         camera = camera,
@@ -139,17 +134,16 @@ fun createRendererElement(): HTMLElement = createResponsiveElement { size ->
     ) { time ->
         createReactiveScene(
             listOf(
-                box,
+                THREE.AmbientLight(),
+                createReactivePointLight(
+                    position = Cell.of(lightPosition),
+                ),
                 createReactiveMesh(
                     geometry = geometry,
                     material = material,
                     rotation = Cell.of(THREE.Euler()),
                 ),
-                createReactiveGroup(
-                    position = Cell.of(THREE.Vector3(z = cameraZ)),
-                    rotation = cameraRotation.map { THREE.Euler(z = it) },
-                    children = listOf(camera),
-                )
+                cameraGroup,
             ),
         )
     }

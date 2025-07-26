@@ -39,21 +39,21 @@ fun createBezierGeometry(): THREE.BufferGeometry {
         val iNext = (i + 1) % n
 
         val topFace = listOf(
-            apexVertexIndex,
-            getVertexIndex(i, 1),
             getVertexIndex(iNext, 1),
+            getVertexIndex(i, 1),
+            apexVertexIndex,
         )
 
         val quadFaces = (1 until m).flatMap { j ->
             val jNext = j + 1
 
             listOf(
-                getVertexIndex(i, j),
+                getVertexIndex(iNext, j),
+                getVertexIndex(iNext, jNext),
                 getVertexIndex(i, jNext),
                 getVertexIndex(iNext, j),
                 getVertexIndex(i, jNext),
-                getVertexIndex(iNext, jNext),
-                getVertexIndex(iNext, j)
+                getVertexIndex(i, j),
             )
         }
 
