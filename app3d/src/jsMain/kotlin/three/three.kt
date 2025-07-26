@@ -93,6 +93,7 @@ external object THREE {
     interface MeshBasicMaterialParams {
         val color: Int
         val wireframe: Boolean?
+        val opacity: Double
     }
 
     class MeshBasicMaterial(
@@ -140,10 +141,14 @@ external object THREE {
 inline fun MeshBasicMaterialParams(
     color: Int,
     wireframe: Boolean = false,
+    transparent: Boolean = false,
+    opacity: Double = 1.0,
 ): THREE.MeshBasicMaterialParams {
     val obj = jsObject()
     obj["color"] = color
     obj["wireframe"] = wireframe
+    obj["transparent"] = transparent
+    obj["opacity"] = opacity
     return obj
 }
 

@@ -143,6 +143,8 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
             MeshBasicMaterialParams(
                 color = PureColor.green.value,
                 wireframe = true,
+                transparent = true,
+                opacity = 0.25,
             ),
         ),
         rotation = Cell.of(THREE.Euler()),
