@@ -2,6 +2,11 @@ package diy.lingerie.web_tool_3d
 
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.negateY
+import dev.toolkt.geometry.x
+import dev.toolkt.geometry.y
+import dev.toolkt.math.algebra.linear.vectors.Vector2
+import dev.toolkt.math.algebra.linear.vectors.minus
 import dev.toolkt.reactive.cell.Cell
 import org.w3c.dom.HTMLCanvasElement
 import three.THREE
@@ -76,3 +81,12 @@ class MyRenderer(
         ).firstOrNull()
     }
 }
+
+private fun Point.toNdc(
+    size: PureSize,
+): Vector2 = (size.relativize(this) * 2.0 - 1.0).negateY()
+
+private fun Vector2.toThreeVector2(): THREE.Vector2 = THREE.Vector2(
+    x = x,
+    y = y,
+)

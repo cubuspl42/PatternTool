@@ -23,16 +23,14 @@ class MyScene(
 ) {
     companion object {
         fun create(
-            bezierCurve: CubicBezierBinomial,
-            apexVertex: Vector3,
+            userSystem: UserSystem,
             viewportSize: Cell<PureSize>,
             cameraRotation: Cell<Double>,
         ): MyScene {
             val floor = buildFloor()
 
             val myBezierMesh = MyBezierMesh.create(
-                bezierCurve = bezierCurve,
-                apexVertex = apexVertex,
+                userBezierMesh = userSystem.userBezierMesh,
                 color = bezierMeshColor.value,
             )
 

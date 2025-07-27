@@ -18,10 +18,12 @@ class MyBezierMesh(
 ) {
     companion object {
         fun create(
-            bezierCurve: CubicBezierBinomial,
-            apexVertex: Vector3,
+            userBezierMesh: UserBezierMesh,
             color: Int,
         ): MyBezierMesh {
+            val bezierCurve= userBezierMesh.bezierCurve
+            val apexVertex = userBezierMesh.apexVertex
+
             val point0HandleBall = buildHandleBallMesh(
                 position = Cell.of(bezierCurve.point0.toVector3(0.0)),
             )
