@@ -5,7 +5,7 @@ import dev.toolkt.reactive.cell.PropertyCell
 import three.THREE
 
 sealed class MyObjectUserData {
-    data class HandleBall(
+    data class HandleBallUserData(
         val position: PropertyCell<Vector2>,
     ) : MyObjectUserData()
 }

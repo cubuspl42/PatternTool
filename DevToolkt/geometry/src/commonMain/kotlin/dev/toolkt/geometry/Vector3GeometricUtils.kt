@@ -26,6 +26,12 @@ val Vector3.y
 val Vector3.z
     get() = a2
 
+val Vector3.xy
+    get() = Vector2(
+        x = x,
+        y = y,
+    )
+
 /**
  * Rotate this vector around the Z axis by the given angle.
  * Only x and y are affected, z remains unchanged.

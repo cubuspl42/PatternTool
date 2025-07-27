@@ -29,6 +29,10 @@ external object THREE {
 
         var z: Double
 
+        fun clone(): Vector3
+
+        fun applyMatrix4(matrix: Matrix4)
+
         fun toArray(): Array<Double>
     }
 
@@ -77,7 +81,12 @@ external object THREE {
 
         var userData: Any
 
+        val matrixWorld: Matrix4
+
         fun add(child: Object3D): Object3D
+
+        fun getWorldPosition(target: Vector3)
+
     }
 
     class Group : Object3D
@@ -183,6 +192,8 @@ external object THREE {
     interface Intersection {
         val distance: Double
 
+        val point: Vector3
+
         val `object`: Object3D
     }
 
@@ -196,6 +207,30 @@ external object THREE {
             objects: Array<Object3D>,
         ): Array<Intersection>
     }
+
+    class Matrix4 {
+        fun clone(): Matrix4
+
+        fun invert()
+    }
+}
+
+val THREE.Object3D.worldPosition: THREE.Vector3
+    get() = THREE.Vector3().apply {
+        getWorldPosition(this)
+    }
+
+fun THREE.Object3D.localize(worldPoint: THREE.Vector3): THREE.Vector3 =
+    matrixWorld.inverted().transform(worldPoint)
+
+fun THREE.Matrix4.inverted(): THREE.Matrix4 = clone().apply {
+    invert()
+}
+
+fun THREE.Matrix4.transform(
+    vector: THREE.Vector3,
+): THREE.Vector3 = vector.clone().apply {
+    applyMatrix4(this@transform)
 }
 
 @Suppress("NOTHING_TO_INLINE")

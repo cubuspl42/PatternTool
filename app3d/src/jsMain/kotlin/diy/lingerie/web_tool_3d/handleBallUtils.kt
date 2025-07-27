@@ -38,7 +38,7 @@ fun buildFlatHandleBallMesh(
     val sphereMesh = createReactiveMesh(
         geometry = handleBallGeometry,
         material = handleBallMaterial,
-        userData = MyObjectUserData.HandleBall(
+        userData = MyObjectUserData.HandleBallUserData(
             position = position,
         ),
         position = position.map {
