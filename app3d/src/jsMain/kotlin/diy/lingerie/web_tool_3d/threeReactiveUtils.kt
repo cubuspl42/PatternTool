@@ -107,7 +107,7 @@ fun createReactivePerspectiveCamera(
 fun createReactiveRenderer(
     canvas: HTMLCanvasElement,
     camera: THREE.Camera,
-    size: Cell<PureSize>,
+    viewportSize: Cell<PureSize>,
     clearColor: PureColor = PureColor.darkGray,
     buildScene: (time: Cell<Duration>) -> THREE.Scene,
 ): THREE.WebGLRenderer {
@@ -119,7 +119,7 @@ fun createReactiveRenderer(
         setClearColor(clearColor.value)
     }
 
-    size.bind(
+    viewportSize.bind(
         target = renderer,
     ) { renderer, sizeNow ->
         renderer.setSize(sizeNow.width, sizeNow.height)

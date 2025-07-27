@@ -109,12 +109,14 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
         initialValue = 0.0,
     )
 
-    val (cameraGroup, camera) = createRotatoryCamera(
+    val myCamera = createMyCamera(
         height = cameraZ,
         distance = cameraDistance,
-        size = size,
+        viewportSize = size,
         rotation = cameraRotation,
     )
+
+    val camera = myCamera.camera
 
     val handleBalls = listOf(
         buildHandleBallMesh(
@@ -202,7 +204,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
     createReactiveRenderer(
         canvas = canvas,
         camera = camera,
-        size = size,
+        viewportSize = size,
     ) { time ->
         createReactiveScene(
             listOf(
@@ -211,7 +213,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
                     position = Cell.of(lightPosition),
                 ),
                 bezierMeshGroup,
-                cameraGroup,
+                myCamera.wrapperGroup,
                 floor,
             ) + handleBalls,
         )

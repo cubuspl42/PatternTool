@@ -6,12 +6,21 @@ import dev.toolkt.reactive.cell.Cell
 import three.THREE
 import kotlin.math.PI
 
-fun createRotatoryCamera(
+data class MyCamera(
+    val camera: THREE.PerspectiveCamera,
+    val wrapperGroup: THREE.Group,
+)
+
+/**
+ * Create a camera focused on a point [height] units above origin, rotating
+ * around that point.
+ */
+fun createMyCamera(
     height: Double,
     distance: Double,
-    size: Cell<PureSize>,
+    viewportSize: Cell<PureSize>,
     rotation: Cell<Double>,
-): Pair<THREE.Group, THREE.PerspectiveCamera> {
+): MyCamera {
     val camera = createReactivePerspectiveCamera(
         position = Cell.of(
             Vector3(
@@ -25,7 +34,7 @@ fun createRotatoryCamera(
                 x = PI / 2,
             ),
         ),
-        size = size,
+        size = viewportSize,
         fov = 75.0,
         near = 0.1,
         far = 1000.0,
@@ -37,8 +46,8 @@ fun createRotatoryCamera(
         children = listOf(camera),
     )
 
-    return Pair(
-        group,
-        camera,
+    return MyCamera(
+        camera = camera,
+        wrapperGroup = group,
     )
 }
