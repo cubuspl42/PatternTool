@@ -157,6 +157,36 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
 
     val floor = buildFloor()
 
+    val myRenderer = MyRenderer.create(
+        canvas = canvas,
+        viewportSize = size,
+    ) {
+        val myCamera = createMyCamera(
+            height = cameraZ,
+            distance = cameraDistance,
+            viewportSize = size,
+            rotation = cameraRotation,
+        )
+
+
+        val scene = createReactiveScene(
+            listOf(
+                THREE.AmbientLight(),
+                createReactivePointLight(
+                    position = Cell.of(lightPosition),
+                ),
+                bezierMeshGroup,
+                myCamera.wrapperGroup,
+                floor,
+            ) + handleBalls,
+        )
+
+        Pair(
+            scene,
+            myCamera.camera,
+        )
+    }
+
     canvas.onMouseDragGestureStarted(
         button = ButtonId.MIDDLE,
     ).forEach { mouseGesture ->
@@ -199,24 +229,6 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
         )
 
         PlatformSystem.log(intersections)
-    }
-
-    createReactiveRenderer(
-        canvas = canvas,
-        camera = camera,
-        viewportSize = size,
-    ) { time ->
-        createReactiveScene(
-            listOf(
-                THREE.AmbientLight(),
-                createReactivePointLight(
-                    position = Cell.of(lightPosition),
-                ),
-                bezierMeshGroup,
-                myCamera.wrapperGroup,
-                floor,
-            ) + handleBalls,
-        )
     }
 
     return@createResponsiveElement canvas
