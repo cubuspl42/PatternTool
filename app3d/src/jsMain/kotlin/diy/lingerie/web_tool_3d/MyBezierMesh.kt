@@ -21,27 +21,27 @@ class MyBezierMesh(
             userBezierMesh: UserBezierMesh,
             color: Int,
         ): MyBezierMesh {
-            val bezierCurve= userBezierMesh.bezierCurve
+            val bezierCurve = userBezierMesh.bezierCurve
             val apexVertex = userBezierMesh.apexVertex
 
             val point0HandleBall = buildHandleBallMesh(
-                position = Cell.of(bezierCurve.point0.toVector3(0.0)),
+                position = userBezierMesh.point0,
             )
 
             val point1HandleBall = buildHandleBallMesh(
-                position = Cell.of(bezierCurve.point1.toVector3(0.0)),
+                position = userBezierMesh.point1,
             )
 
             val point2HandleBall = buildHandleBallMesh(
-                position = Cell.of(bezierCurve.point2.toVector3(0.0)),
+                position = userBezierMesh.point2,
             )
 
             val point3HandleBall = buildHandleBallMesh(
-                position = Cell.of(bezierCurve.point3.toVector3(0.0)),
+                position = userBezierMesh.point3,
             )
 
             val apexHandleBall = buildHandleBallMesh(
-                position = Cell.of(apexVertex),
+                position = userBezierMesh.apexVertex,
             )
 
             val handleBalls = listOf(
@@ -53,8 +53,8 @@ class MyBezierMesh(
             )
 
             val bezierGeometryFactory = BezierGeometryFactory(
-                apexVertex = apexVertex,
-                bezierCurve = bezierCurve,
+                apexVertex = apexVertex.currentValue,
+                bezierCurve = bezierCurve.currentValue,
             )
 
             val bezierMeshGroup = createReactiveDualMeshGroup(

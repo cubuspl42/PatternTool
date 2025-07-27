@@ -19,9 +19,9 @@ private val bezierCurve = CubicBezierBinomial(
 )
 
 val userSystem = UserSystem(
-    userBezierMesh = UserBezierMesh(
-        apexVertex = apexVertex,
-        bezierCurve = bezierCurve,
+    userBezierMesh = UserBezierMesh.create(
+        initialApexVertex = apexVertex,
+        initialBezierCurve = bezierCurve,
     ),
 )
 
