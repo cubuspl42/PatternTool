@@ -13,16 +13,19 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
 import kotlinx.browser.window
 import org.w3c.dom.HTMLCanvasElement
+import three.Float32Array
 import three.THREE
 import three.THREE.Object3D
+import three.Uint16Array
 import three.WebGLRendererParams
+import three.set
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 fun createReactiveGroup(
     position: Cell<Vector3>? = null,
     rotation: Cell<THREE.Euler>? = null,
-    children: List<THREE.Object3D>,
+    children: List<Object3D>,
 ): THREE.Group {
     val group = THREE.Group()
 
@@ -152,6 +155,68 @@ fun createReactiveRenderer(
     return renderer
 }
 
+data class GeometryData(
+    val vertices: List<Vector3>,
+    val faces: List<Face>,
+) {
+    data class Face(
+        val index0: Int,
+        val index1: Int,
+        val index2: Int,
+    ) {
+        fun toList(): List<Int> = listOf(
+            index0,
+            index1,
+            index2,
+        )
+    }
+
+    val flatVertices: Array<Double>
+        get() = vertices.flatMap { it.toList() }.toTypedArray()
+
+    val flatFaces: Array<Int>
+        get() = faces.flatMap { it.toList() }.toTypedArray()
+}
+
+fun createReactiveGeometry(
+    geometryData: Cell<GeometryData>,
+): THREE.BufferGeometry {
+    val nativeVerticesArray = Float32Array(geometryData.currentValue.flatVertices)
+
+    val positionAttribute = THREE.BufferAttribute(
+        array = nativeVerticesArray,
+        itemSize = 3,
+    )
+
+    val nativeFacesArray = Uint16Array(geometryData.currentValue.flatFaces)
+
+    val indexAttribute = THREE.BufferAttribute(
+        array = nativeFacesArray,
+        itemSize = 1,
+    )
+
+    geometryData.newValues.forEach {
+        nativeVerticesArray.set(it.flatVertices)
+        positionAttribute.needsUpdate = true
+
+        nativeFacesArray.set(it.flatFaces)
+        indexAttribute.needsUpdate = true
+    }
+
+    return THREE.BufferGeometry().apply {
+        setAttribute(
+            "position",
+            positionAttribute,
+        )
+
+        // Set the index buffer for the geometry
+        setIndex(indexAttribute)
+
+        // Compute normals for the faces, for proper lighting
+        computeVertexNormals()
+    }
+}
+
 fun createReactiveMesh(
     geometry: THREE.BufferGeometry,
     material: THREE.Material,
@@ -170,12 +235,12 @@ fun createReactiveMesh(
 
     position?.bind(
         target = mesh,
-        selector = THREE.Object3D::position,
+        selector = Object3D::position,
     )
 
     rotation?.bind(
         target = mesh,
-        selector = THREE.Object3D::rotation,
+        selector = Object3D::rotation,
     )
 
     return mesh

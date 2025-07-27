@@ -3,6 +3,7 @@ package diy.lingerie.web_tool_3d
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.math.algebra.linear.vectors.times
+import dev.toolkt.reactive.cell.Cell
 import three.Float32Array
 import three.THREE
 
@@ -12,84 +13,67 @@ private const val m = 16
 
 private const val apexVertexIndex = 0
 
-class BezierGeometryFactory(
-    private val apexVertex: Vector3,
-    private val bezierCurve: CubicBezierBinomial,
-) {
-    fun createGeometry(): THREE.BufferGeometry {
-        val wireVertices = (0 until n).flatMap { i ->
-            (1..m).map { j ->
-                buildVertex(
-                    i = i,
-                    j = j,
-                )
-            }
-        }
-
-        // Build flat vertex array for Three.js
-        val flatVertices = listOf(apexVertex) + wireVertices
-
-        val wireFaces = (0 until n).flatMap { i ->
-            val iNext = (i + 1) % n
-
-            val topFace = listOf(
-                getVertexIndex(iNext, 1),
-                getVertexIndex(i, 1),
-                apexVertexIndex,
-            )
-
-            val quadFaces = (1 until m).flatMap { j ->
-                val jNext = j + 1
-
-                listOf(
-                    getVertexIndex(iNext, j),
-                    getVertexIndex(iNext, jNext),
-                    getVertexIndex(i, jNext),
-                    getVertexIndex(iNext, j),
-                    getVertexIndex(i, jNext),
-                    getVertexIndex(i, j),
-                )
-            }
-
-            topFace + quadFaces
-        }
-
-        // Create a new BufferGeometry
-        val geometry = THREE.BufferGeometry().apply {
-            // Create a BufferAttribute on the geometry
-            setAttribute(
-                "position",
-                THREE.BufferAttribute(
-                    array = Float32Array(
-                        flatVertices.flatMap { it.toList() }.toTypedArray()
-                    ),
-                    itemSize = 3,
-                ),
-            )
-
-            // Set the index buffer for the geometry
-            setIndex(wireFaces.toTypedArray())
-
-            // Compute normals for the faces, for proper lighting
-            computeVertexNormals()
-        }
-
-        return geometry
-    }
-
-    private fun buildVertex(
+fun createUserBezierMeshGeometryData(
+    userBezierMesh: UserBezierMesh,
+): Cell<GeometryData> = Cell.map2(
+    userBezierMesh.bezierCurve,
+    userBezierMesh.apexVertex,
+) { bezierCurveNow, apexVertexNow ->
+    fun buildVertex(
         i: Int,
         j: Int,
     ): Vector3 {
         val ir = i.toDouble() / n
         val jr = j.toDouble() / m
 
-        val baseVertex = bezierCurve.apply(ir).toVector3(0.0)
+        val baseVertex = bezierCurveNow.apply(ir).toVector3(0.0)
 
-        return apexVertex + jr * (baseVertex - apexVertex)
+        return apexVertexNow + jr * (baseVertex - apexVertexNow)
     }
-}
 
+    val wireVertices = (0 until n).flatMap { i ->
+        (1..m).map { j ->
+            buildVertex(
+                i = i,
+                j = j,
+            )
+        }
+    }
+
+    val wireFaces = (0 until n).flatMap { i ->
+        val iNext = (i + 1) % n
+
+        val topFace = GeometryData.Face(
+            getVertexIndex(iNext, 1),
+            getVertexIndex(i, 1),
+            apexVertexIndex,
+        )
+
+        val quadFaces = (1 until m).flatMap { j ->
+            val jNext = j + 1
+
+            listOf(
+                GeometryData.Face(
+                    getVertexIndex(iNext, j),
+                    getVertexIndex(iNext, jNext),
+                    getVertexIndex(i, jNext),
+                ),
+                GeometryData.Face(
+                    getVertexIndex(iNext, j),
+                    getVertexIndex(i, jNext),
+                    getVertexIndex(i, j),
+                ),
+            )
+        }
+
+        listOf(topFace) + quadFaces
+    }
+
+    return@map2 GeometryData(
+        vertices = listOf(apexVertexNow) + wireVertices,
+        faces = wireFaces,
+    )
+}
 
 private fun getVertexIndex(
     i: Int,

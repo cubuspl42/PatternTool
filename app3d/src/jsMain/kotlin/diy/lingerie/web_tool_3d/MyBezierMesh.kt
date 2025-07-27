@@ -51,14 +51,13 @@ class MyBezierMesh(
                 apexHandleBall,
             )
 
-            val bezierGeometryFactory = BezierGeometryFactory(
-                apexVertex = apexVertex.currentValue,
-                bezierCurve = bezierCurve.currentValue,
-            )
-
             val bezierMeshGroup = createReactiveDualMeshGroup(
                 position = Cell.of(Vector3.Zero),
-                geometry = bezierGeometryFactory.createGeometry(),
+                geometry = createReactiveGeometry(
+                    createUserBezierMeshGeometryData(
+                        userBezierMesh = userBezierMesh,
+                    ),
+                ),
                 primaryMaterial = THREE.MeshLambertMaterial(
                     params = MeshLambertMaterialParams(
                         color = color,

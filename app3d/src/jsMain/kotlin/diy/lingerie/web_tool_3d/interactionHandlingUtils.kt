@@ -49,12 +49,12 @@ fun setupInteractionHandlers(
 
         val position: PropertyCell<Vector2> = handleBallUserData.position
 
-        val floorLocalPoint: Cell<THREE.Intersection?> = myRenderer.castRay(
+        val floorIntersection: Cell<THREE.Intersection?> = myRenderer.castRay(
             viewportPoint = mouseGesture.offsetPosition,
             objects = listOf(floor),
         )
 
-        val newCorrectedLocalPoints = floorLocalPoint.newValues.mapNotNull {
+        val newCorrectedLocalPoints = floorIntersection.newValues.mapNotNull {
             val worldPoint = it?.point ?: return@mapNotNull null
             val localPoint = floor.localize(worldPoint = worldPoint).toMathVector3()
             localPoint.xy
