@@ -1,7 +1,6 @@
 package diy.lingerie.web_tool_3d
 
 import dev.toolkt.dom.pure.PureColor
-import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.reactive.cell.Cell
 import three.MeshBasicMaterialParams
@@ -24,19 +23,19 @@ class MyBezierMesh(
             val bezierCurve = userBezierMesh.bezierCurve
             val apexVertex = userBezierMesh.apexVertex
 
-            val point0HandleBall = buildHandleBallMesh(
+            val point0HandleBall = buildFlatHandleBallMesh(
                 position = userBezierMesh.point0,
             )
 
-            val point1HandleBall = buildHandleBallMesh(
+            val point1HandleBall = buildFlatHandleBallMesh(
                 position = userBezierMesh.point1,
             )
 
-            val point2HandleBall = buildHandleBallMesh(
+            val point2HandleBall = buildFlatHandleBallMesh(
                 position = userBezierMesh.point2,
             )
 
-            val point3HandleBall = buildHandleBallMesh(
+            val point3HandleBall = buildFlatHandleBallMesh(
                 position = userBezierMesh.point3,
             )
 
