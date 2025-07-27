@@ -53,8 +53,15 @@ external object THREE {
 
     class WebGLRenderer(params: WebGLRendererParams = definedExternally) {
         fun setSize(width: Double, height: Double)
+
         val domElement: HTMLElement
+
         fun render(scene: Scene, camera: Camera)
+
+        fun setClearColor(
+            color: Int,
+            alpha: Double = definedExternally,
+        ): Unit
     }
 
     interface WebGLRendererParams {
@@ -105,6 +112,13 @@ external object THREE {
         phiLength: Double = definedExternally,
         thetaStart: Double = definedExternally,
         thetaLength: Double = definedExternally,
+    ) : BufferGeometry
+
+    class PlaneGeometry(
+        width: Double = definedExternally,
+        height: Double = definedExternally,
+        widthSegments: Int = definedExternally,
+        heightSegments: Int = definedExternally,
     ) : BufferGeometry
 
     class BufferAttribute(
@@ -201,10 +215,14 @@ inline fun MeshBasicMaterialParams(
 inline fun MeshLambertMaterialParams(
     color: Int,
     wireframe: Boolean = false,
+    transparent: Boolean = false,
+    opacity: Double = 1.0,
 ): THREE.MeshLambertMaterialParams {
     val obj = jsObject()
     obj["color"] = color
     obj["wireframe"] = wireframe
+    obj["transparent"] = transparent
+    obj["opacity"] = opacity
     return obj
 }
 

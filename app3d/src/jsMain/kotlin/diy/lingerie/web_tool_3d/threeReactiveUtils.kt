@@ -1,5 +1,6 @@
 package diy.lingerie.web_tool_3d
 
+import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.reactive.utils.DOMHighResTimeStamp
 import dev.toolkt.dom.reactive.utils.requestAnimationFrames
@@ -107,13 +108,16 @@ fun createReactiveRenderer(
     canvas: HTMLCanvasElement,
     camera: THREE.Camera,
     size: Cell<PureSize>,
+    clearColor: PureColor = PureColor.darkGray,
     buildScene: (time: Cell<Duration>) -> THREE.Scene,
 ): THREE.WebGLRenderer {
     val renderer = THREE.WebGLRenderer(
         WebGLRendererParams(
             canvas = canvas,
         ),
-    )
+    ).apply {
+        setClearColor(clearColor.value)
+    }
 
     size.bind(
         target = renderer,

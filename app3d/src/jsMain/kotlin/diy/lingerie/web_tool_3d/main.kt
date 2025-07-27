@@ -153,6 +153,8 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
         rotation = Cell.of(THREE.Euler()),
     )
 
+    val floor = buildFloor()
+
     canvas.onMouseDragGestureStarted(
         button = ButtonId.MIDDLE,
     ).forEach { mouseGesture ->
@@ -210,6 +212,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
                 ),
                 bezierMeshGroup,
                 cameraGroup,
+                floor,
             ) + handleBalls,
         )
     }
