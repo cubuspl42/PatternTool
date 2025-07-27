@@ -1,6 +1,8 @@
 package diy.lingerie.web_tool_3d
 
+import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.dom.pure.PureColor
+import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.pure.PureUnit
 import dev.toolkt.dom.pure.percent
 import dev.toolkt.dom.pure.px
@@ -19,8 +21,13 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Vector2
 import dev.toolkt.geometry.Vector3
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
+import dev.toolkt.geometry.negateY
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
+import dev.toolkt.geometry.x
+import dev.toolkt.geometry.y
+import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.linear.vectors.Vector3
+import dev.toolkt.math.algebra.linear.vectors.minus
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.event_stream.hold
@@ -45,10 +52,10 @@ private val apexVertex = Vector3(x = 0.0, y = 0.0, z = 1.0)
 private val lightPosition = Vector3(x = 1.0, y = 1.0, z = 1.0)
 
 private val bezierCurve = CubicBezierBinomial(
-    point0 = Vector2(0.0, 1.0),
-    point1 = Vector2(0.5, 1.0),
-    point2 = Vector2(1.0, 0.5),
-    point3 = Vector2(1.0, 0.0),
+    point0 = Vector2(x = 0.0, y = 1.0),
+    point1 = Vector2(x = 0.5, y = 1.0),
+    point2 = Vector2(x = 1.0, y = 0.5),
+    point3 = Vector2(x = 1.0, y = 0.0),
 )
 
 private val bezierGeometryFactory = BezierGeometryFactory(
@@ -128,22 +135,23 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
         children = listOf(camera),
     )
 
-    canvas.onMouseDragGestureStarted(
-        button = ButtonId.MIDDLE,
-    ).forEach { mouseGesture ->
-        val initialCameraRotation = cameraRotation.currentValue
-
-        cameraRotation.bindUntil(
-            boundValue = mouseGesture.offsetPosition.trackTranslation().map { translation ->
-                val delta = translation.tx * 0.01
-
-                initialCameraRotation + delta
-            },
-            until = mouseGesture.onFinished,
-        )
-
-        mouseGesture.offsetPosition
-    }
+    val handleBalls = listOf(
+        buildHandleBallMesh(
+            position = Cell.of(bezierCurve.point0.toVector3(0.0)),
+        ),
+        buildHandleBallMesh(
+            position = Cell.of(bezierCurve.point1.toVector3(0.0)),
+        ),
+        buildHandleBallMesh(
+            position = Cell.of(bezierCurve.point2.toVector3(0.0)),
+        ),
+        buildHandleBallMesh(
+            position = Cell.of(bezierCurve.point3.toVector3(0.0)),
+        ),
+        buildHandleBallMesh(
+            position = Cell.of(apexVertex),
+        ),
+    )
 
     val bezierMeshGroup = createReactiveDualMeshGroup(
         position = Cell.of(Vector3.Zero),
@@ -164,6 +172,50 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
         rotation = Cell.of(THREE.Euler()),
     )
 
+    canvas.onMouseDragGestureStarted(
+        button = ButtonId.MIDDLE,
+    ).forEach { mouseGesture ->
+        val initialCameraRotation = cameraRotation.currentValue
+
+        cameraRotation.bindUntil(
+            boundValue = mouseGesture.offsetPosition.trackTranslation().map { translation ->
+                val delta = translation.tx * 0.01
+
+                initialCameraRotation + delta
+            },
+            until = mouseGesture.onFinished,
+        )
+
+        mouseGesture.offsetPosition
+    }
+
+    canvas.onMouseDragGestureStarted(
+        button = ButtonId.LEFT,
+    ).forEach { mouseGesture ->
+        val gesturePosition = Cell.map2(
+            cell1 = mouseGesture.offsetPosition,
+            cell2 = size,
+        ) {
+                offsetPositionNow,
+                sizeNow,
+            ->
+            offsetPositionNow.toNdc(size = sizeNow)
+        }
+
+        val initialGesturePosition = gesturePosition.currentValue
+
+        val intersections = THREE.Raycaster().apply {
+            setFromCamera(
+                pointer = initialGesturePosition.toThreeVector2(),
+                camera = camera,
+            )
+        }.intersectObjects(
+            objects = handleBalls.toTypedArray(),
+        )
+
+        PlatformSystem.log(intersections)
+    }
+
     createReactiveRenderer(
         canvas = canvas,
         camera = camera,
@@ -176,28 +228,25 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
                     position = Cell.of(lightPosition),
                 ),
                 bezierMeshGroup,
-                buildHandleBallMesh(
-                    position = Cell.of(bezierCurve.point0.toVector3(0.0)),
-                ),
-                buildHandleBallMesh(
-                    position = Cell.of(bezierCurve.point1.toVector3(0.0)),
-                ),
-                buildHandleBallMesh(
-                    position = Cell.of(bezierCurve.point2.toVector3(0.0)),
-                ),
-                buildHandleBallMesh(
-                    position = Cell.of(bezierCurve.point3.toVector3(0.0)),
-                ),
-                buildHandleBallMesh(
-                    position = Cell.of(apexVertex),
-                ),
                 cameraGroup,
-            ),
+            ) + handleBalls,
         )
     }
 
     return@createResponsiveElement canvas
 }
+
+fun Point.toNdc(size: PureSize): Vector2 = (size.relativize(this) * 2.0 - 1.0).negateY()
+
+fun Vector2.toThreeVector2(): THREE.Vector2 = THREE.Vector2(
+    x = x,
+    y = y,
+)
+
+fun Point.toThreeVector2(): THREE.Vector2 = THREE.Vector2(
+    x = x,
+    y = y,
+)
 
 fun Cell<Point>.trackTranslation(): Cell<PrimitiveTransformation.Translation> {
     val initialPoint = currentValue

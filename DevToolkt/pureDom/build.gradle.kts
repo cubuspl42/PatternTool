@@ -20,6 +20,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.kotlinx.benchmark.runtime)
             implementation(project(":core"))
+            implementation(project(":math"))
             implementation(project(":geometry"))
             implementation("xml-apis:xml-apis-ext:1.3.04")
         }

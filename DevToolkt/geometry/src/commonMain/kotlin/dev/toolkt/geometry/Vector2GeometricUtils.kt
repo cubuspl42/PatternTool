@@ -42,3 +42,8 @@ fun Vector2.rotate(
     x = x * angle.cosFi - y * angle.sinFi,
     y = x * angle.sinFi + y * angle.cosFi,
 )
+
+fun Vector2.negateY() = Vector2(
+    x = x,
+    y = -y,
+)

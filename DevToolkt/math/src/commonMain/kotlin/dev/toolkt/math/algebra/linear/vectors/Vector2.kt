@@ -139,3 +139,10 @@ data class Vector2(
 operator fun Double.times(
     vector: Vector2,
 ): Vector2 = vector * this
+
+operator fun Vector2.minus(
+    value: Double,
+): Vector2 = Vector2(
+    a0 = a0 - value,
+    a1 = a1 - value,
+)

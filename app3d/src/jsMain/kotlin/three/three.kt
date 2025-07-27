@@ -7,10 +7,28 @@ import org.w3c.dom.extra.jsObject
 @JsModule("three")
 @JsNonModule
 external object THREE {
-    class Vector3(x: Double = definedExternally, y: Double = definedExternally, z: Double = definedExternally) {
+    class Vector2(
+        x: Double = definedExternally,
+        y: Double = definedExternally,
+    ) {
         var x: Double
+
         var y: Double
+
+        fun toArray(): Array<Double>
+    }
+
+    class Vector3(
+        x: Double = definedExternally,
+        y: Double = definedExternally,
+        z: Double = definedExternally,
+    ) {
+        var x: Double
+
+        var y: Double
+
         var z: Double
+
         fun toArray(): Array<Double>
     }
 
@@ -144,6 +162,23 @@ external object THREE {
         var distance: Double
 
         var decay: Double
+    }
+
+    interface Intersection {
+        val distance: Double
+
+        val `object`: Object3D
+    }
+
+    class Raycaster {
+        fun setFromCamera(
+            pointer: Vector2,
+            camera: Camera,
+        ): Raycaster
+
+        fun intersectObjects(
+            objects: Array<Object3D>,
+        ): Array<Intersection>
     }
 }
 
