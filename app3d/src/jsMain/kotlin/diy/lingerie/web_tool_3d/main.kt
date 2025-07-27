@@ -35,17 +35,8 @@ import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import three.THREE
-import kotlin.random.Random
-
-private const val colorId = 20
-
-private const val cameraDistance = 2.0
-
-private const val cameraZ = 0.5
 
 private val apexVertex = Vector3(x = 0.0, y = 0.0, z = 1.0)
-
-private val lightPosition = Vector3(x = 1.0, y = 1.0, z = 1.0)
 
 private val bezierCurve = CubicBezierBinomial(
     point0 = Vector2(x = 0.0, y = 1.0),
@@ -53,7 +44,6 @@ private val bezierCurve = CubicBezierBinomial(
     point2 = Vector2(x = 1.0, y = 0.5),
     point3 = Vector2(x = 1.0, y = 0.0),
 )
-
 
 private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
@@ -85,7 +75,11 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
         width = Cell.of(100.percent),
         height = Cell.of(100.percent),
     ),
-) { size ->
+) { canvasSize ->
+    val cameraRotation = PropertyCell(
+        initialValue = 0.0,
+    )
+
     val canvas = document.createReactiveHtmlCanvasElement(
         style = ReactiveStyle(
             displayStyle = Cell.of(
@@ -96,48 +90,18 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
         ),
     )
 
-    val color = Random(colorId).nextInt()
-
-    val myBezierMesh = MyBezierMesh.create(
+    val myScene = MyScene.create(
         bezierCurve = bezierCurve,
         apexVertex = apexVertex,
-        color = color,
+        viewportSize = canvasSize,
+        cameraRotation = cameraRotation,
     )
-
-    val cameraRotation = PropertyCell(
-        initialValue = 0.0,
-    )
-
-    val floor = buildFloor()
 
     val myRenderer = MyRenderer.create(
         canvas = canvas,
-        viewportSize = size,
-    ) {
-        val myCamera = createMyCamera(
-            height = cameraZ,
-            distance = cameraDistance,
-            viewportSize = size,
-            rotation = cameraRotation,
-        )
-
-        val scene = createReactiveScene(
-            listOf(
-                THREE.AmbientLight(),
-                createReactivePointLight(
-                    position = Cell.of(lightPosition),
-                ),
-                myBezierMesh.root,
-                myCamera.wrapperGroup,
-                floor,
-            ),
-        )
-
-        Pair(
-            scene,
-            myCamera.camera,
-        )
-    }
+        viewportSize = canvasSize,
+        myScene = myScene,
+    )
 
     canvas.onMouseDragGestureStarted(
         button = ButtonId.MIDDLE,
@@ -161,7 +125,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
     ).forEach { mouseGesture ->
         val intersection = myRenderer.castRay(
             viewportPoint = mouseGesture.offsetPosition.currentValue,
-            objects = myBezierMesh.handleBalls,
+            objects = myScene.myBezierMesh.handleBalls,
         )
 
         PlatformSystem.log(intersection?.`object`)

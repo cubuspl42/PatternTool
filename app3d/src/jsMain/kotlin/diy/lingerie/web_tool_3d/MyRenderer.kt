@@ -7,29 +7,27 @@ import org.w3c.dom.HTMLCanvasElement
 import three.THREE
 
 class MyRenderer(
-    val renderer: THREE.WebGLRenderer,
-    val camera: THREE.PerspectiveCamera,
+    val myScene: MyScene,
     val viewportSize: Cell<PureSize>,
+    val renderer: THREE.WebGLRenderer,
 ) {
     companion object {
         fun create(
+            myScene: MyScene,
             canvas: HTMLCanvasElement,
             viewportSize: Cell<PureSize>,
-            buildScene: () -> Pair<THREE.Scene, THREE.PerspectiveCamera>,
         ): MyRenderer {
-            val (scene, camera) = buildScene()
-
             val renderer = createReactiveRenderer(
                 canvas = canvas,
-                camera = camera,
+                camera = myScene.camera,
                 viewportSize = viewportSize,
             ) { time ->
-                scene
+                myScene.scene
             }
 
             return MyRenderer(
+                myScene = myScene,
                 renderer = renderer,
-                camera = camera,
                 viewportSize = viewportSize,
             )
         }
@@ -71,7 +69,7 @@ class MyRenderer(
         return THREE.Raycaster().apply {
             setFromCamera(
                 pointer = ndcPointNow.toThreeVector2(),
-                camera = camera,
+                camera = myScene.camera,
             )
         }.intersectObjects(
             objects = objects.toTypedArray(),
