@@ -79,6 +79,16 @@ external object THREE {
         depthSegments: Int = definedExternally,
     ) : BufferGeometry
 
+    class SphereGeometry(
+        radius: Double = definedExternally,
+        widthSegments: Int = definedExternally,
+        heightSegments: Int = definedExternally,
+        phiStart: Double = definedExternally,
+        phiLength: Double = definedExternally,
+        thetaStart: Double = definedExternally,
+        thetaLength: Double = definedExternally,
+    ) : BufferGeometry
+
     class BufferAttribute(
         array: Float32Array,
         itemSize: Int,

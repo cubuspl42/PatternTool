@@ -16,7 +16,9 @@ import dev.toolkt.dom.reactive.utils.gestures.onMouseDragGestureStarted
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlCanvasElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Vector2
 import dev.toolkt.geometry.Vector3
+import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.reactive.cell.Cell
@@ -38,7 +40,21 @@ private const val cameraDistance = 2.0
 
 private const val cameraZ = 0.5
 
+private val apexVertex = Vector3(x = 0.0, y = 0.0, z = 1.0)
+
 private val lightPosition = Vector3(x = 1.0, y = 1.0, z = 1.0)
+
+private val bezierCurve = CubicBezierBinomial(
+    point0 = Vector2(0.0, 1.0),
+    point1 = Vector2(0.5, 1.0),
+    point2 = Vector2(1.0, 0.5),
+    point3 = Vector2(1.0, 0.0),
+)
+
+private val bezierGeometryFactory = BezierGeometryFactory(
+    apexVertex = apexVertex,
+    bezierCurve = bezierCurve,
+)
 
 private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
@@ -81,8 +97,6 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
         ),
     )
 
-    val geometry = createBezierGeometry()
-
     val color = Random(colorId).nextInt()
 
     val cameraRotation = PropertyCell(
@@ -115,7 +129,7 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
     )
 
     canvas.onMouseDragGestureStarted(
-        button = ButtonId.LEFT,
+        button = ButtonId.MIDDLE,
     ).forEach { mouseGesture ->
         val initialCameraRotation = cameraRotation.currentValue
 
@@ -131,11 +145,11 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
         mouseGesture.offsetPosition
     }
 
-    val meshGroup = createReactiveDualMeshGroup(
+    val bezierMeshGroup = createReactiveDualMeshGroup(
         position = Cell.of(Vector3.Zero),
-        geometry = geometry,
+        geometry = bezierGeometryFactory.createGeometry(),
         primaryMaterial = THREE.MeshLambertMaterial(
-            MeshLambertMaterialParams(
+            params = MeshLambertMaterialParams(
                 color = color,
             ),
         ),
@@ -161,7 +175,22 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
                 createReactivePointLight(
                     position = Cell.of(lightPosition),
                 ),
-                meshGroup,
+                bezierMeshGroup,
+                buildHandleBallMesh(
+                    position = Cell.of(bezierCurve.point0.toVector3(0.0)),
+                ),
+                buildHandleBallMesh(
+                    position = Cell.of(bezierCurve.point1.toVector3(0.0)),
+                ),
+                buildHandleBallMesh(
+                    position = Cell.of(bezierCurve.point2.toVector3(0.0)),
+                ),
+                buildHandleBallMesh(
+                    position = Cell.of(bezierCurve.point3.toVector3(0.0)),
+                ),
+                buildHandleBallMesh(
+                    position = Cell.of(apexVertex),
+                ),
                 cameraGroup,
             ),
         )

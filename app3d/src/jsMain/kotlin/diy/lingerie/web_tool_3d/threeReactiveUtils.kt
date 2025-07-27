@@ -151,14 +151,20 @@ fun createReactiveRenderer(
 fun createReactiveMesh(
     geometry: THREE.BufferGeometry,
     material: THREE.Material,
-    rotation: Cell<THREE.Euler>,
+    position: Cell<Vector3>? = null,
+    rotation: Cell<THREE.Euler>? = null,
 ): THREE.Mesh {
     val mesh = THREE.Mesh(
         geometry = geometry,
         material = material,
     )
 
-    rotation.bind(
+    position?.bind(
+        target = mesh,
+        selector = THREE.Object3D::position,
+    )
+
+    rotation?.bind(
         target = mesh,
         selector = THREE.Object3D::rotation,
     )
