@@ -75,6 +75,8 @@ external object THREE {
 
         val scale: Vector3
 
+        var userData: Any
+
         fun add(child: Object3D): Object3D
     }
 

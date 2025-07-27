@@ -20,18 +20,18 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 fun createReactiveGroup(
-    position: Cell<Vector3>,
-    rotation: Cell<THREE.Euler>,
+    position: Cell<Vector3>? = null,
+    rotation: Cell<THREE.Euler>? = null,
     children: List<THREE.Object3D>,
 ): THREE.Group {
     val group = THREE.Group()
 
-    position.bind(
+    position?.bind(
         target = group,
         selector = THREE.Group::position,
     )
 
-    rotation.bind(
+    rotation?.bind(
         target = group,
         selector = THREE.Group::rotation,
     )
@@ -155,6 +155,7 @@ fun createReactiveRenderer(
 fun createReactiveMesh(
     geometry: THREE.BufferGeometry,
     material: THREE.Material,
+    userData: Any? = null,
     position: Cell<Vector3>? = null,
     rotation: Cell<THREE.Euler>? = null,
 ): THREE.Mesh {
@@ -162,6 +163,10 @@ fun createReactiveMesh(
         geometry = geometry,
         material = material,
     )
+
+    if (userData != null) {
+        mesh.userData = userData
+    }
 
     position?.bind(
         target = mesh,

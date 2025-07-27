@@ -26,7 +26,6 @@ import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
 import dev.toolkt.math.algebra.linear.vectors.Vector2
-import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.math.algebra.linear.vectors.minus
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
@@ -35,8 +34,6 @@ import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
-import three.MeshBasicMaterialParams
-import three.MeshLambertMaterialParams
 import three.THREE
 import kotlin.random.Random
 
@@ -57,10 +54,6 @@ private val bezierCurve = CubicBezierBinomial(
     point3 = Vector2(x = 1.0, y = 0.0),
 )
 
-private val bezierGeometryFactory = BezierGeometryFactory(
-    apexVertex = apexVertex,
-    bezierCurve = bezierCurve,
-)
 
 private fun createRootElement(): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
@@ -105,54 +98,14 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
 
     val color = Random(colorId).nextInt()
 
+    val myBezierMesh = MyBezierMesh.create(
+        bezierCurve = bezierCurve,
+        apexVertex = apexVertex,
+        color = color,
+    )
+
     val cameraRotation = PropertyCell(
         initialValue = 0.0,
-    )
-
-    val myCamera = createMyCamera(
-        height = cameraZ,
-        distance = cameraDistance,
-        viewportSize = size,
-        rotation = cameraRotation,
-    )
-
-    val camera = myCamera.camera
-
-    val handleBalls = listOf(
-        buildHandleBallMesh(
-            position = Cell.of(bezierCurve.point0.toVector3(0.0)),
-        ),
-        buildHandleBallMesh(
-            position = Cell.of(bezierCurve.point1.toVector3(0.0)),
-        ),
-        buildHandleBallMesh(
-            position = Cell.of(bezierCurve.point2.toVector3(0.0)),
-        ),
-        buildHandleBallMesh(
-            position = Cell.of(bezierCurve.point3.toVector3(0.0)),
-        ),
-        buildHandleBallMesh(
-            position = Cell.of(apexVertex),
-        ),
-    )
-
-    val bezierMeshGroup = createReactiveDualMeshGroup(
-        position = Cell.of(Vector3.Zero),
-        geometry = bezierGeometryFactory.createGeometry(),
-        primaryMaterial = THREE.MeshLambertMaterial(
-            params = MeshLambertMaterialParams(
-                color = color,
-            ),
-        ),
-        secondaryMaterial = THREE.MeshBasicMaterial(
-            MeshBasicMaterialParams(
-                color = PureColor.green.value,
-                wireframe = true,
-                transparent = true,
-                opacity = 0.25,
-            ),
-        ),
-        rotation = Cell.of(THREE.Euler()),
     )
 
     val floor = buildFloor()
@@ -168,17 +121,16 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
             rotation = cameraRotation,
         )
 
-
         val scene = createReactiveScene(
             listOf(
                 THREE.AmbientLight(),
                 createReactivePointLight(
                     position = Cell.of(lightPosition),
                 ),
-                bezierMeshGroup,
+                myBezierMesh.root,
                 myCamera.wrapperGroup,
                 floor,
-            ) + handleBalls,
+            ),
         )
 
         Pair(
@@ -207,28 +159,12 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
     canvas.onMouseDragGestureStarted(
         button = ButtonId.LEFT,
     ).forEach { mouseGesture ->
-        val gesturePosition = Cell.map2(
-            cell1 = mouseGesture.offsetPosition,
-            cell2 = size,
-        ) {
-                offsetPositionNow,
-                sizeNow,
-            ->
-            offsetPositionNow.toNdc(size = sizeNow)
-        }
-
-        val initialGesturePosition = gesturePosition.currentValue
-
-        val intersections = THREE.Raycaster().apply {
-            setFromCamera(
-                pointer = initialGesturePosition.toThreeVector2(),
-                camera = camera,
-            )
-        }.intersectObjects(
-            objects = handleBalls.toTypedArray(),
+        val intersection = myRenderer.castRay(
+            viewportPoint = mouseGesture.offsetPosition.currentValue,
+            objects = myBezierMesh.handleBalls,
         )
 
-        PlatformSystem.log(intersections)
+        PlatformSystem.log(intersection?.`object`)
     }
 
     return@createResponsiveElement canvas
