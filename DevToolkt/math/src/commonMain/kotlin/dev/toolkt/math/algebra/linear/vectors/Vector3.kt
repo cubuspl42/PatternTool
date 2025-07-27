@@ -68,6 +68,14 @@ data class Vector3(
     )
 
     operator fun times(
+        other: Vector3,
+    ): Vector3 = Vector3(
+        a0 = a0 * other.a0,
+        a1 = a1 * other.a1,
+        a2 = a2 * other.a2,
+    )
+
+    operator fun times(
         scalar: Double,
     ): Vector3 = Vector3(
         a0 = a0 * scalar,
@@ -150,3 +158,11 @@ data class Vector3(
 operator fun Double.times(
     vector: Vector3,
 ): Vector3 = vector * this
+
+operator fun Double.div(
+    vector: Vector3,
+): Vector3 = Vector3(
+    a0 = this / vector.a0,
+    a1 = this / vector.a1,
+    a2 = this / vector.a2,
+)

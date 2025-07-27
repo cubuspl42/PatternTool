@@ -30,7 +30,7 @@ val Vector3.z
  * Rotate this vector around the Z axis by the given angle.
  * Only x and y are affected, z remains unchanged.
  */
-fun Vector3.rotateAroundZ(
+fun Vector3.rotateZ(
     angle: RelativeAngle,
 ): Vector3 = Vector3(
     x = x * angle.cosFi - y * angle.sinFi,

@@ -1,5 +1,8 @@
 package dev.toolkt.geometry.transformations
 
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
+import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.geometry.Direction
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.RelativeAngle
@@ -8,9 +11,6 @@ import dev.toolkt.geometry.Vector2
 import dev.toolkt.geometry.rotate
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
-import dev.toolkt.core.numeric.NumericObject
-import dev.toolkt.core.numeric.NumericTolerance
-import dev.toolkt.core.numeric.equalsWithTolerance
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 
 sealed class PrimitiveTransformation : StandaloneTransformation() {
