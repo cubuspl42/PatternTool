@@ -38,7 +38,6 @@ import org.w3c.dom.HTMLElement
 import three.MeshBasicMaterialParams
 import three.MeshLambertMaterialParams
 import three.THREE
-import kotlin.math.PI
 import kotlin.random.Random
 
 private const val colorId = 20
@@ -110,29 +109,11 @@ fun createRendererElement(): HTMLElement = createResponsiveElement(
         initialValue = 0.0,
     )
 
-    val camera = createReactivePerspectiveCamera(
-        position = Cell.of(
-            Vector3(
-                x = 0.0,
-                y = -cameraDistance,
-                z = 0.0,
-            ),
-        ),
-        rotation = Cell.of(
-            THREE.Euler(
-                x = PI / 2,
-            ),
-        ),
+    val (cameraGroup, camera) = createRotatoryCamera(
+        height = cameraZ,
+        distance = cameraDistance,
         size = size,
-        fov = 75.0,
-        near = 0.1,
-        far = 1000.0,
-    )
-
-    val cameraGroup = createReactiveGroup(
-        position = Cell.of(Vector3(x = 0.0, y = 0.0, z = cameraZ)),
-        rotation = cameraRotation.map { THREE.Euler(z = it) },
-        children = listOf(camera),
+        rotation = cameraRotation,
     )
 
     val handleBalls = listOf(
