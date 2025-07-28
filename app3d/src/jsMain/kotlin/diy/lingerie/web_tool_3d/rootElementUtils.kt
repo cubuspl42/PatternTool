@@ -11,15 +11,15 @@ import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
-import diy.lingerie.web_tool_3d.application_state.DocumentState
+import diy.lingerie.web_tool_3d.application_state.ApplicationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 
 fun createRootElement(
-    documentState: DocumentState,
+    applicationState: ApplicationState,
 ): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
-        displayStyle = Cell.Companion.of(
+        displayStyle = Cell.of(
             PureFlexStyle(
                 direction = PureFlexDirection.Column,
             ),
@@ -27,16 +27,16 @@ fun createRootElement(
         boxSizing = PureBoxSizing.BorderBox,
         borderStyle = PureBorderStyle(
             width = 4.px,
-            color = PureColor.Companion.darkGray,
+            color = PureColor.darkGray,
             style = PureBorderStyle.Style.Solid,
         ),
-        width = Cell.Companion.of(PureUnit.Vw.full),
-        height = Cell.Companion.of(PureUnit.Vh.full),
-        backgroundColor = Cell.Companion.of(PureColor.Companion.lightGray),
+        width = Cell.of(PureUnit.Vw.full),
+        height = Cell.of(PureUnit.Vh.full),
+        backgroundColor = Cell.of(PureColor.lightGray),
     ),
-    children = ReactiveList.Companion.of(
+    children = ReactiveList.of(
         createRendererElement(
-            documentState = documentState,
+            applicationState = applicationState,
         ),
     ),
 )
