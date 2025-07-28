@@ -11,11 +11,12 @@ import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
+import diy.lingerie.web_tool_3d.application_state.DocumentState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 
 fun createRootElement(
-    userSystem: UserSystem,
+    documentState: DocumentState,
 ): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
         displayStyle = Cell.Companion.of(
@@ -35,7 +36,7 @@ fun createRootElement(
     ),
     children = ReactiveList.Companion.of(
         createRendererElement(
-            userSystem = userSystem,
+            documentState = documentState,
         ),
     ),
 )

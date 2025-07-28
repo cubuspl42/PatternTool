@@ -4,6 +4,7 @@ import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.geometry.Vector3
 import dev.toolkt.reactive.cell.Cell
+import diy.lingerie.web_tool_3d.application_state.DocumentState
 import three.THREE
 
 private val lightPosition = Vector3(x = 1.0, y = 1.0, z = 1.0)
@@ -22,7 +23,7 @@ class MyScene(
 ) {
     companion object {
         fun create(
-            userSystem: UserSystem,
+            documentState: DocumentState,
             viewportSize: Cell<PureSize>,
             cameraRotation: Cell<Double>,
         ): MyScene {
@@ -36,7 +37,7 @@ class MyScene(
             val floor = buildFloor()
 
             val myBezierMesh = MyBezierMesh.create(
-                userBezierMesh = userSystem.userBezierMesh,
+                userBezierMesh = documentState.userBezierMesh,
                 color = bezierMeshColor.value,
             )
 

@@ -6,13 +6,14 @@ import dev.toolkt.geometry.xy
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
+import diy.lingerie.web_tool_3d.application_state.DocumentState
 import org.w3c.dom.HTMLCanvasElement
 import three.THREE
 import three.localize
 
 fun setupInteractionHandlers(
     canvas: HTMLCanvasElement,
-    userSystem: UserSystem,
+    documentState: DocumentState,
     cameraRotation: PropertyCell<Double>,
     myRenderer: MyRenderer,
 ) {

@@ -7,6 +7,7 @@ import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.Cubi
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.hold
+import diy.lingerie.web_tool_3d.application_state.DocumentState
 import kotlinx.browser.document
 
 private val apexVertex = Vector3(x = 0.0, y = 0.0, z = 1.0)
@@ -18,7 +19,7 @@ private val bezierCurve = CubicBezierBinomial(
     point3 = Vector2(x = 1.0, y = 0.0),
 )
 
-val userSystem = UserSystem(
+val documentState = DocumentState(
     userBezierMesh = UserBezierMesh.create(
         initialApexVertex = apexVertex,
         initialBezierCurve = bezierCurve,
@@ -40,7 +41,7 @@ fun main() {
         type = "DOMContentLoaded",
         callback = {
             document.body!!.appendChild(
-                createRootElement(userSystem = userSystem),
+                createRootElement(documentState = documentState),
             )
         },
     )
