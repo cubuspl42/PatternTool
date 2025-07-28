@@ -14,11 +14,6 @@ sealed class ListenerContainer<EventT> {
         event: EventT,
     )
 
-    abstract fun <TargetT : Any> insertTargeted(
-        target: TargetT,
-        listener: TargetingListener<TargetT, EventT>,
-    ): Handle
-
     abstract fun clear()
 }
 
@@ -38,21 +33,6 @@ class StrongListenerContainer<EventT> : ListenerContainer<EventT>() {
             listener.handle(event)
         }
     }
-
-    // TODO: Prefer insert over insertTargeted
-    override fun <TargetT : Any> insertTargeted(
-        target: TargetT,
-        listener: TargetingListener<TargetT, EventT>,
-    ): Handle = insert(
-        object : Listener<EventT> {
-            override fun handle(event: EventT) {
-                listener.handle(
-                    target = target,
-                    event = event,
-                )
-            }
-        }
-    )
 
     override fun clear() {
         listeners.clear()
