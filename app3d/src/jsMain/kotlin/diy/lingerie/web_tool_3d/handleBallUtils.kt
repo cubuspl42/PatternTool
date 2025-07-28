@@ -1,8 +1,8 @@
 package diy.lingerie.web_tool_3d
 
 import dev.toolkt.dom.pure.PureColor
-import dev.toolkt.math.algebra.linear.vectors.Vector2
-import dev.toolkt.math.algebra.linear.vectors.Vector3
+import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Point3D
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
 import three.MeshLambertMaterialParams
@@ -21,7 +21,7 @@ private val handleBallMaterial = THREE.MeshLambertMaterial(
 )
 
 fun buildHandleBallMesh(
-    position: Cell<Vector3>,
+    position: Cell<Point3D>,
 ): THREE.Mesh {
     val sphereMesh = createReactiveMesh(
         geometry = handleBallGeometry,
@@ -33,7 +33,7 @@ fun buildHandleBallMesh(
 }
 
 fun buildFlatHandleBallMesh(
-    position: PropertyCell<Vector2>,
+    position: PropertyCell<Point>,
 ): THREE.Mesh {
     val sphereMesh = createReactiveMesh(
         geometry = handleBallGeometry,
@@ -42,7 +42,7 @@ fun buildFlatHandleBallMesh(
             position = position,
         ),
         position = position.map {
-            it.toVector3(0.0)
+            it.toPoint3D()
         },
     )
 

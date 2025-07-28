@@ -2,6 +2,8 @@ package dev.toolkt.geometry
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericTolerance
+import dev.toolkt.geometry.transformations.PrimitiveTransformation3D
+import dev.toolkt.geometry.transformations.Transformation3D
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 
 data class Point3D(
@@ -19,6 +21,14 @@ data class Point3D(
             another: Point3D,
         ): Span = Span.Squared(
             valueSquared = (one.pointVector - another.pointVector).magnitudeSquared,
+        )
+
+        fun interpolate(
+            start: Point3D,
+            end: Point3D,
+            ratio: Double,
+        ): Point3D = Point3D(
+            pointVector = start.pointVector + (end.pointVector - start.pointVector) * ratio,
         )
     }
 
@@ -42,10 +52,37 @@ data class Point3D(
 
     val z: Double
         get() = pointVector.z
-//
-//    fun transformBy(
-//        transformation: Transformation,
-//    ): Point3D = transformation.transform(point = this)
+
+    fun withoutZ(): Point = Point(
+        x = x,
+        y = y,
+    )
+
+    val xyPlane: Plane
+        get() = Plane.of(
+            origin = origin,
+            normalDirection = Direction3.ZAxisPlus,
+        )
+
+    fun transformBy(
+        transformation: Transformation3D,
+    ): Point3D = transformation.transform(point = this)
+
+    fun translationTo(
+        target: Point3D,
+    ): PrimitiveTransformation3D.Translation = PrimitiveTransformation3D.Translation(
+        translationVector = target.pointVector - pointVector,
+    )
+
+    fun directionTo(
+        other: Point3D,
+    ): Direction3 {
+        val delta = other.pointVector - pointVector
+
+        return Direction3(
+            normalizedDirectionVector = delta.normalize(),
+        )
+    }
 
     override fun equalsWithTolerance(
         other: NumericObject,

@@ -153,6 +153,14 @@ data class Point(
         castRay(direction = it)
     }
 
+    fun toPoint3D(
+        z: Double = 0.0,
+    ) = Point3D(
+        x = x,
+        y = y,
+        z = z,
+    )
+
     override fun toString(): String = toReprString()
 
     fun toReprString(): String = "Point($x, $y)"

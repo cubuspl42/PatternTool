@@ -23,6 +23,7 @@ fun createRendererElement(
     ),
 ) { canvasSize ->
     val presentationState = applicationState.presentationState
+    val interactionState = applicationState.interactionState
 
     val canvas = document.createReactiveHtmlCanvasElement(
         style = ReactiveStyle(
@@ -49,6 +50,7 @@ fun createRendererElement(
     setupInteractionHandlers(
         canvas = canvas,
         presentationState = presentationState,
+        interactionState = interactionState,
         myRenderer = myRenderer,
     )
 

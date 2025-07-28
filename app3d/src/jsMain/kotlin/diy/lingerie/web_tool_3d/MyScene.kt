@@ -2,12 +2,13 @@ package diy.lingerie.web_tool_3d
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
+import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.Vector3
 import dev.toolkt.reactive.cell.Cell
 import diy.lingerie.web_tool_3d.application_state.ApplicationState
 import three.THREE
 
-private val lightPosition = Vector3(x = 1.0, y = 1.0, z = 1.0)
+private val lightPosition = Point3D(x = 1.0, y = 1.0, z = 1.0)
 
 private val bezierMeshColor = PureColor.blue
 

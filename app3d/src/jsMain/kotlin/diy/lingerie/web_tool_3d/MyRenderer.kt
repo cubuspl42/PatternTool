@@ -2,6 +2,7 @@ package diy.lingerie.web_tool_3d
 
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Ray3
 import dev.toolkt.geometry.negateY
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
@@ -74,12 +75,43 @@ class MyRenderer(
         return THREE.Raycaster().apply {
             setFromCamera(
                 pointer = ndcPointNow.toThreeVector2(),
-                camera = myScene.camera,
+                camera = camera,
             )
         }.intersectObjects(
             objects = objects.toTypedArray(),
         ).firstOrNull()
     }
+
+    fun castRawRay(
+        viewportPoint: Cell<Point>,
+    ): Cell<Ray3> = Cell.map2(
+        cell1 = viewportPoint,
+        cell2 = viewportSize,
+    ) {
+            viewportPointNow,
+            sizeNow,
+        ->
+        castRawRay(
+            viewportPointNow = viewportPointNow,
+            viewportSizeNow = sizeNow,
+        )
+    }
+
+    fun castRawRay(
+        viewportPointNow: Point,
+        viewportSizeNow: PureSize,
+    ): Ray3 {
+        val ndcPointNow = Point(
+            pointVector = viewportPointNow.toNdc(size = viewportSizeNow),
+        )
+
+        return camera.castRay(
+            ndcPointNow,
+        )
+    }
+
+    private val camera: THREE.PerspectiveCamera
+        get() = myScene.camera
 }
 
 private fun Point.toNdc(

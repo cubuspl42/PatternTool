@@ -1,7 +1,7 @@
 package diy.lingerie.web_tool_3d
 
 import dev.toolkt.dom.pure.PureSize
-import dev.toolkt.geometry.Vector3
+import dev.toolkt.geometry.Point3D
 import dev.toolkt.reactive.cell.Cell
 import three.THREE
 import kotlin.math.PI
@@ -23,7 +23,7 @@ fun createMyCamera(
 ): MyCamera {
     val camera = createReactivePerspectiveCamera(
         position = Cell.of(
-            Vector3(
+            Point3D(
                 x = 0.0,
                 y = -distance,
                 z = 0.0,
@@ -41,7 +41,7 @@ fun createMyCamera(
     )
 
     val group = createReactiveGroup(
-        position = Cell.of(Vector3(x = 0.0, y = 0.0, z = height)),
+        position = Cell.of(Point3D(x = 0.0, y = 0.0, z = height)),
         rotation = rotation.map { THREE.Euler(z = it) },
         children = listOf(camera),
     )

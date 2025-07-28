@@ -1,12 +1,12 @@
 package diy.lingerie.web_tool_3d
 
-import dev.toolkt.math.algebra.linear.vectors.Vector2
+import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.PropertyCell
 import three.THREE
 
 sealed class MyObjectUserData {
     data class HandleBallUserData(
-        val position: PropertyCell<Vector2>,
+        val position: PropertyCell<Point>,
     ) : MyObjectUserData()
 }
 

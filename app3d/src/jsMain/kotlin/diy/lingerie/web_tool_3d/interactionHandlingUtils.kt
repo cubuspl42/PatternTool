@@ -4,9 +4,8 @@ import dev.toolkt.dom.reactive.utils.gestures.ButtonId
 import dev.toolkt.dom.reactive.utils.gestures.onMouseDragGestureStarted
 import dev.toolkt.dom.reactive.utils.getKeyDownEventStream
 import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
-import dev.toolkt.geometry.xy
-import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.event_stream.hold
@@ -14,8 +13,6 @@ import diy.lingerie.web_tool_3d.application_state.InteractionState
 import diy.lingerie.web_tool_3d.application_state.PresentationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLCanvasElement
-import three.THREE
-import three.localize
 
 fun setupInteractionHandlers(
     canvas: HTMLCanvasElement,
@@ -26,7 +23,6 @@ fun setupInteractionHandlers(
     val cameraRotation = presentationState.cameraRotation
 
     val myScene = myRenderer.myScene
-    val floor: THREE.Object3D = myScene.floor
 
     canvas.onMouseDragGestureStarted(
         button = ButtonId.MIDDLE,
@@ -56,21 +52,43 @@ fun setupInteractionHandlers(
         val handleBallUserData =
             intersection.`object`.myUserData as? MyObjectUserData.HandleBallUserData ?: return@forEach
 
-        val handlePosition: PropertyCell<Vector2> = handleBallUserData.position
+        val handlePosition: PropertyCell<Point> = handleBallUserData.position
 
-        val floorIntersection: Cell<THREE.Intersection?> = myRenderer.castRay(
-            viewportPoint = mouseGesture.offsetPosition,
-            objects = listOf(floor),
+        val initialGrabPosition = intersection.point.toPoint3D()
+
+//        println("initialGrabPosition:")
+//        println(initialGrabPosition)
+
+        // A 2D translation between the grab point and the desired handle position
+        val initialHandlePosition = handlePosition.currentValue
+
+//        println("initialHandlePosition:")
+//        println(initialHandlePosition)
+
+        val grabTranslation = initialGrabPosition.withoutZ().translationTo(
+            target = initialHandlePosition,
         )
 
-        val newCorrectedLocalPoints = floorIntersection.newValues.mapNotNull {
-            val worldPoint = it?.point ?: return@mapNotNull null
-            val localPoint = floor.localize(worldPoint = worldPoint).toMathVector3()
-            localPoint.xy
-        }
+//        println("grabTranslation:")
+//        println(grabTranslation)
 
-        handlePosition.bindUntil(
-            newValues = newCorrectedLocalPoints,
+        val grabPlane = initialGrabPosition.xyPlane
+
+        interactionState.startHandleDragInteraction(
+            handlePosition = handlePosition,
+            requestedHandlePosition = myRenderer.castRawRay(
+                viewportPoint = mouseGesture.offsetPosition,
+            ).map { pointerRayNow ->
+                // A ray cast from camera is unlikely to be parallel to the grab plane
+                val grabPointNow = grabPlane.findIntersection(pointerRayNow) ?: Point3D.origin
+
+                val requestedHandlePoint = grabPointNow.withoutZ().transformBy(grabTranslation)
+
+//                println("requestedHandlePoint:")
+//                println(requestedHandlePoint)
+
+                requestedHandlePoint
+            },
             until = mouseGesture.onFinished,
         )
     }

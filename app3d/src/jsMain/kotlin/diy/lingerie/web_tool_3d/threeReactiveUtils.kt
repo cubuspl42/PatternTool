@@ -4,9 +4,7 @@ import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.reactive.utils.DOMHighResTimeStamp
 import dev.toolkt.dom.reactive.utils.requestAnimationFrames
-import dev.toolkt.geometry.x
-import dev.toolkt.geometry.y
-import dev.toolkt.geometry.z
+import dev.toolkt.geometry.Point3D
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
@@ -18,12 +16,11 @@ import three.THREE
 import three.THREE.Object3D
 import three.Uint16Array
 import three.WebGLRendererParams
-import three.set
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 fun createReactiveGroup(
-    position: Cell<Vector3>? = null,
+    position: Cell<Point3D>? = null,
     rotation: Cell<THREE.Euler>? = null,
     children: List<Object3D>,
 ): THREE.Group {
@@ -46,7 +43,7 @@ fun createReactiveGroup(
     return group
 }
 
-fun <TargetT : Any> Cell<Vector3>.bind(
+fun <TargetT : Any> Cell<Point3D>.bind(
     target: TargetT,
     selector: (TargetT) -> THREE.Vector3,
 ): Subscription = bind(
@@ -73,7 +70,7 @@ fun <TargetT : Any> Cell<THREE.Euler>.bind(
 }
 
 fun createReactivePerspectiveCamera(
-    position: Cell<Vector3>,
+    position: Cell<Point3D>,
     rotation: Cell<THREE.Euler>,
     size: Cell<PureSize>,
     fov: Double,
@@ -156,7 +153,7 @@ fun createReactiveRenderer(
 }
 
 data class GeometryData(
-    val vertices: List<Vector3>,
+    val vertices: List<Point3D>,
     val faces: List<Face>,
 ) {
     data class Face(
@@ -172,7 +169,7 @@ data class GeometryData(
     }
 
     val flatVertices: Array<Double>
-        get() = vertices.flatMap { it.toList() }.toTypedArray()
+        get() = vertices.flatMap { it.pointVector.toList() }.toTypedArray()
 
     val flatFaces: Array<Int>
         get() = faces.flatMap { it.toList() }.toTypedArray()
@@ -221,7 +218,7 @@ fun createReactiveMesh(
     geometry: THREE.BufferGeometry,
     material: THREE.Material,
     userData: Any? = null,
-    position: Cell<Vector3>? = null,
+    position: Cell<Point3D>? = null,
     rotation: Cell<THREE.Euler>? = null,
 ): THREE.Mesh {
     val mesh = THREE.Mesh(
@@ -250,7 +247,7 @@ fun createReactiveDualMeshGroup(
     geometry: THREE.BufferGeometry,
     primaryMaterial: THREE.Material,
     secondaryMaterial: THREE.Material,
-    position: Cell<Vector3>,
+    position: Cell<Point3D>,
     rotation: Cell<THREE.Euler>,
     secondaryScale: Double = 1.001,
 ): THREE.Group = createReactiveGroup(
@@ -273,7 +270,7 @@ fun createReactiveDualMeshGroup(
 )
 
 fun createReactiveAmbientLight(
-    position: Cell<Vector3>,
+    position: Cell<Point3D>,
 ): THREE.Light {
     val light = THREE.PointLight(0xff0000, 1.0, 100.0)
 
@@ -287,7 +284,7 @@ fun createReactiveAmbientLight(
 
 
 fun createReactivePointLight(
-    position: Cell<Vector3>,
+    position: Cell<Point3D>,
 ): THREE.Light {
     val light = THREE.PointLight(0xff0000, 1.0, 100.0)
 

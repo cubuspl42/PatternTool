@@ -1,11 +1,8 @@
 package diy.lingerie.web_tool_3d
 
-import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
-import dev.toolkt.math.algebra.linear.vectors.Vector3
-import dev.toolkt.math.algebra.linear.vectors.times
+import dev.toolkt.geometry.Point3D
+import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.reactive.cell.Cell
-import three.Float32Array
-import three.THREE
 
 private const val n = 32
 
@@ -17,18 +14,24 @@ fun createUserBezierMeshGeometryData(
     userBezierMesh: UserBezierMesh,
 ): Cell<GeometryData> = Cell.map2(
     userBezierMesh.bezierCurve,
-    userBezierMesh.apexVertex,
-) { bezierCurveNow, apexVertexNow ->
+    userBezierMesh.apexPosition,
+) { bezierCurveNow, apexPositionNow ->
     fun buildVertex(
         i: Int,
         j: Int,
-    ): Vector3 {
+    ): Point3D {
         val ir = i.toDouble() / n
         val jr = j.toDouble() / m
 
-        val baseVertex = bezierCurveNow.apply(ir).toVector3(0.0)
+        val basePoint = bezierCurveNow.evaluate(
+            OpenCurve.Coord(ir),
+        ).toPoint3D()
 
-        return apexVertexNow + jr * (baseVertex - apexVertexNow)
+        return Point3D.interpolate(
+            start = apexPositionNow,
+            end = basePoint,
+            ratio = jr,
+        )
     }
 
     val wireVertices = (0 until n).flatMap { i ->
@@ -70,7 +73,7 @@ fun createUserBezierMeshGeometryData(
     }
 
     return@map2 GeometryData(
-        vertices = listOf(apexVertexNow) + wireVertices,
+        vertices = listOf(apexPositionNow) + wireVertices,
         faces = wireFaces,
     )
 }

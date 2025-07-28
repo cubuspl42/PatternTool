@@ -7,7 +7,7 @@ abstract class ProperFuture<out V> : Future<V>() {
         get() = state.currentValue
 
     final override val onFulfilled: EventStream<Fulfilled<V>>
-        get() = onResult.map { Fulfilled(result = it) }
+        get() = onResult.single().map { Fulfilled(result = it) }
 
     final override fun <Vr> map(
         transform: (V) -> Vr,

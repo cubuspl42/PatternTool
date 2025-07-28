@@ -1,6 +1,7 @@
 package diy.lingerie.web_tool_3d
 
 import dev.toolkt.dom.pure.PureColor
+import dev.toolkt.geometry.Point3D
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.reactive.cell.Cell
 import three.MeshBasicMaterialParams
@@ -21,7 +22,7 @@ class MyBezierMesh(
             color: Int,
         ): MyBezierMesh {
             val bezierCurve = userBezierMesh.bezierCurve
-            val apexVertex = userBezierMesh.apexVertex
+            val apexVertex = userBezierMesh.apexPosition
 
             val point0HandleBall = buildFlatHandleBallMesh(
                 position = userBezierMesh.point0,
@@ -40,7 +41,7 @@ class MyBezierMesh(
             )
 
             val apexHandleBall = buildHandleBallMesh(
-                position = userBezierMesh.apexVertex,
+                position = userBezierMesh.apexPosition,
             )
 
             val handleBalls = listOf(
@@ -52,7 +53,7 @@ class MyBezierMesh(
             )
 
             val bezierMeshGroup = createReactiveDualMeshGroup(
-                position = Cell.of(Vector3.Zero),
+                position = Cell.of(Point3D.origin),
                 geometry = createReactiveGeometry(
                     createUserBezierMeshGeometryData(
                         userBezierMesh = userBezierMesh,

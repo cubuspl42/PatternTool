@@ -33,6 +33,8 @@ external object THREE {
 
         fun applyMatrix4(matrix: Matrix4)
 
+        fun unproject(camera: Camera)
+
         fun toArray(): Array<Double>
     }
 

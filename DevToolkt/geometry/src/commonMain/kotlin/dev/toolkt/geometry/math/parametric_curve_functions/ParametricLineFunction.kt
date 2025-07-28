@@ -1,16 +1,16 @@
 package dev.toolkt.geometry.math.parametric_curve_functions
 
-import dev.toolkt.geometry.findProjectionScale
-import dev.toolkt.geometry.x
-import dev.toolkt.geometry.y
+import dev.toolkt.core.math.avgOf
 import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.divideWithTolerance
-import dev.toolkt.math.algebra.linear.vectors.Vector2
+import dev.toolkt.core.numeric.equalsZeroWithTolerance
+import dev.toolkt.geometry.findProjectionScale
 import dev.toolkt.geometry.math.ParametricPolynomial
 import dev.toolkt.geometry.math.implicit_curve_functions.ImplicitLineFunction
-import dev.toolkt.core.math.avgOf
-import dev.toolkt.core.numeric.NumericTolerance
-import dev.toolkt.core.numeric.equalsZeroWithTolerance
+import dev.toolkt.geometry.x
+import dev.toolkt.geometry.y
+import dev.toolkt.math.algebra.linear.vectors.Vector2
 
 /**
  * Represents a line in 2D space in parametric form: p = s + d * t

@@ -19,6 +19,12 @@ data class Vector3(
             a2 = 0.0,
         )
 
+        val ZUnit = Vector3(
+            a0 = 0.0,
+            a1 = 0.0,
+            a2 = 1.0,
+        )
+
         fun full(
             a: Double,
         ): Vector3 = Vector3(
