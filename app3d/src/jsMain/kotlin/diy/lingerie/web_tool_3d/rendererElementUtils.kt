@@ -22,9 +22,7 @@ fun createRendererElement(
         height = Cell.Companion.of(100.percent),
     ),
 ) { canvasSize ->
-    val cameraRotation = PropertyCell(
-        initialValue = 0.0,
-    )
+    val presentationState = applicationState.presentationState
 
     val canvas = document.createReactiveHtmlCanvasElement(
         style = ReactiveStyle(
@@ -39,7 +37,7 @@ fun createRendererElement(
     val myScene = MyScene.create(
         applicationState = applicationState,
         viewportSize = canvasSize,
-        cameraRotation = cameraRotation,
+        cameraRotation = presentationState.cameraRotation,
     )
 
     val myRenderer = MyRenderer.create(
@@ -50,7 +48,7 @@ fun createRendererElement(
 
     setupInteractionHandlers(
         canvas = canvas,
-        cameraRotation = cameraRotation,
+        cameraRotation = presentationState.cameraRotation,
         myRenderer = myRenderer,
     )
 

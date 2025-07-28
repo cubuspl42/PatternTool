@@ -27,7 +27,6 @@ private val applicationState = ApplicationState(
     documentState = documentState,
 )
 
-
 fun main() {
     document.addEventListener(
         type = "DOMContentLoaded",
