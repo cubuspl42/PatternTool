@@ -48,7 +48,7 @@ fun createRendererElement(
 
     setupInteractionHandlers(
         canvas = canvas,
-        cameraRotation = presentationState.cameraRotation,
+        presentationState = presentationState,
         myRenderer = myRenderer,
     )
 
