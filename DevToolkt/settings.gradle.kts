@@ -15,6 +15,7 @@ include(
     "core",
     "coreSystemTests",
     "domApiCompatExtra",
+    "jsApiCompat",
     "math",
     "geometry",
     "pureDom",

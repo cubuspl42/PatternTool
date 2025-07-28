@@ -50,6 +50,10 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
         }
 
+        jsMain.dependencies {
+            implementation(project(":jsApiCompat"))
+        }
+
         jvmMain.dependencies {}
 
         jvmTest.dependencies {}
