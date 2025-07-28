@@ -1,6 +1,5 @@
 package diy.lingerie.web_tool_3d
 
-import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.dom.reactive.utils.gestures.ButtonId
 import dev.toolkt.dom.reactive.utils.gestures.onMouseDragGestureStarted
 import dev.toolkt.dom.reactive.utils.getKeyDownEventStream
@@ -11,7 +10,7 @@ import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.event_stream.hold
-import diy.lingerie.web_tool_3d.application_state.ApplicationState
+import diy.lingerie.web_tool_3d.application_state.InteractionState
 import diy.lingerie.web_tool_3d.application_state.PresentationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLCanvasElement
@@ -21,6 +20,7 @@ import three.localize
 fun setupInteractionHandlers(
     canvas: HTMLCanvasElement,
     presentationState: PresentationState,
+    interactionState: InteractionState,
     myRenderer: MyRenderer,
 ) {
     val cameraRotation = presentationState.cameraRotation
@@ -56,7 +56,7 @@ fun setupInteractionHandlers(
         val handleBallUserData =
             intersection.`object`.myUserData as? MyObjectUserData.HandleBallUserData ?: return@forEach
 
-        val position: PropertyCell<Vector2> = handleBallUserData.position
+        val handlePosition: PropertyCell<Vector2> = handleBallUserData.position
 
         val floorIntersection: Cell<THREE.Intersection?> = myRenderer.castRay(
             viewportPoint = mouseGesture.offsetPosition,
@@ -69,7 +69,7 @@ fun setupInteractionHandlers(
             localPoint.xy
         }
 
-        position.bindUntil(
+        handlePosition.bindUntil(
             newValues = newCorrectedLocalPoints,
             until = mouseGesture.onFinished,
         )

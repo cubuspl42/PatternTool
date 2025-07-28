@@ -4,4 +4,6 @@ class ApplicationState(
     val documentState: DocumentState,
 ) {
     val presentationState: PresentationState = PresentationState()
+
+    val interactionState: InteractionState = InteractionState()
 }
