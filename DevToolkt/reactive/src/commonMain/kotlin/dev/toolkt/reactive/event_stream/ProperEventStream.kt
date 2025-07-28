@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
+import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.future.Future
 
@@ -70,4 +71,11 @@ abstract class ProperEventStream<E> : EventStream<E>() {
             },
         )
     }
+
+    protected fun <EventT2> StrongEventSource<EventT2>.listen(
+        listener: ListenerFn<EventT2>,
+    ): Subscription = listenInDependent(
+        dependentId = id,
+        listener = listener,
+    )
 }

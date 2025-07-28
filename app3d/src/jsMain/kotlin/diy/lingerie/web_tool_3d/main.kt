@@ -1,11 +1,13 @@
 package diy.lingerie.web_tool_3d
 
+import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.curves.BezierCurve
 import diy.lingerie.web_tool_3d.application_state.ApplicationState
 import diy.lingerie.web_tool_3d.application_state.DocumentState
 import kotlinx.browser.document
+import kotlinx.browser.window
 
 private val apexVertex = Point3D(x = 0.0, y = 0.0, z = 1.0)
 
@@ -28,6 +30,9 @@ private val applicationState = ApplicationState(
 )
 
 fun main() {
+    val windowDynamic: dynamic = window
+    windowDynamic.PlatformSystem = PlatformSystem
+
     document.addEventListener(
         type = "DOMContentLoaded",
         callback = {

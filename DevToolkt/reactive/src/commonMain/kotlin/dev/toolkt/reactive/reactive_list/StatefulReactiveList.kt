@@ -4,7 +4,6 @@ import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.listen
 import dev.toolkt.reactive.event_stream.pinWeak
 
 abstract class StatefulReactiveList<E>(

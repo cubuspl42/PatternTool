@@ -11,7 +11,6 @@ import dev.toolkt.core.range.width
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.listen
 
 class ConcatAllReactiveList<ElementT>(
     private val lists: ReactiveList<ReactiveList<ElementT>>,

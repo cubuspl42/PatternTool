@@ -15,6 +15,9 @@ interface Listener<in EventT> {
         }
     }
 
+    val dependentId: Int?
+        get() = null
+
     /**
      * A function that accepts an event.
      */

@@ -22,7 +22,9 @@ actual class PlatformFinalizationRegistry {
 
         return object : PlatformCleanable {
             override fun clean() {
-                finalizationRegistry.unregister(clean())
+                finalizationRegistry.unregister(
+                    unregisterToken = cleanup,
+                )
 
                 cleanup()
             }
