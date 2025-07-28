@@ -5,6 +5,12 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.future.Future
 
 abstract class ProperEventStream<E> : EventStream<E>() {
+    companion object {
+        private var nextId = 0
+    }
+
+    private var id = nextId++
+
     final override fun <Er> map(
         transform: (E) -> Er,
     ): EventStream<Er> = MapEventStream(
