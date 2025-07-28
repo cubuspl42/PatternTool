@@ -84,8 +84,8 @@ fun setupInteractionHandlers(
 
                 val requestedHandlePoint = grabPointNow.withoutZ().transformBy(grabTranslation)
 
-//                println("requestedHandlePoint:")
-//                println(requestedHandlePoint)
+                println("requestedHandlePoint:")
+                println(requestedHandlePoint)
 
                 requestedHandlePoint
             },
