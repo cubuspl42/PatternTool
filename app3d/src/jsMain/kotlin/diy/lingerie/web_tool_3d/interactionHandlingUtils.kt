@@ -54,23 +54,16 @@ fun setupInteractionHandlers(
 
         val handlePosition: PropertyCell<Point> = handleBallUserData.position
 
+        // The initial point that was grabbed (in the world coordinates)
         val initialGrabPosition = intersection.point.toPoint3D()
 
-//        println("initialGrabPosition:")
-//        println(initialGrabPosition)
+        // The initial 2D position of the handle (in the world 2D coordinates)
+        val initialHandlePosition: Point = handlePosition.currentValue
 
-        // A 2D translation between the grab point and the desired handle position
-        val initialHandlePosition = handlePosition.currentValue
-
-//        println("initialHandlePosition:")
-//        println(initialHandlePosition)
-
+        // A 2D translation between the grab point and the handle position (constrained)
         val grabTranslation = initialGrabPosition.withoutZ().translationTo(
             target = initialHandlePosition,
         )
-
-//        println("grabTranslation:")
-//        println(grabTranslation)
 
         val grabPlane = initialGrabPosition.xyPlane
 
@@ -82,12 +75,7 @@ fun setupInteractionHandlers(
                 // A ray cast from camera is unlikely to be parallel to the grab plane
                 val grabPointNow = grabPlane.findIntersection(pointerRayNow) ?: Point3D.origin
 
-                val requestedHandlePoint = grabPointNow.withoutZ().transformBy(grabTranslation)
-
-//                println("requestedHandlePoint:")
-//                println(requestedHandlePoint)
-
-                requestedHandlePoint
+                grabPointNow.withoutZ().transformBy(grabTranslation)
             },
             until = mouseGesture.onFinished,
         )

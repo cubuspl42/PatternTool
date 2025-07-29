@@ -12,7 +12,7 @@ private val lightPosition = Point3D(x = 20.0, y = 20.0, z = 20.0)
 
 private val bezierMeshColor = PureColor.blue
 
-private const val cameraDistance = 250.0
+private const val cameraDistance = 200.0
 
 private const val cameraZ = 50.0
 

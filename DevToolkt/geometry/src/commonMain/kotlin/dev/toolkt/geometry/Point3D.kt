@@ -60,7 +60,7 @@ data class Point3D(
 
     val xyPlane: Plane
         get() = Plane.of(
-            origin = origin,
+            origin = this,
             normalDirection = Direction3.ZAxisPlus,
         )
 
