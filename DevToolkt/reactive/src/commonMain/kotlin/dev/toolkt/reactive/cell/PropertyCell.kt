@@ -48,7 +48,6 @@ class PropertyCell<ValueT>(
         if (state.currentValue is State.Bound<*>) {
             throw IllegalStateException("The property is already bound")
         }
-        println("Binding!")
 
         val newBoundState = State.Bound(
             boundValue = boundValue,
@@ -57,8 +56,6 @@ class PropertyCell<ValueT>(
         until.onFulfilled.listen(
             listener = object : Listener<Any?> {
                 override fun handle(event: Any?) {
-                    println("Unbinding!")
-
                     val finalUnboundState = State.Unbound(
                         initialValue = newBoundState.exposedValue.currentValue,
                     )
