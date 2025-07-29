@@ -64,9 +64,9 @@ class EventStreamSingleTests {
             )
         }
 
-        val (singleEventStreamWeakRef, streamVerifier) = setup()
+        val (singleEventStreamRef, streamVerifier) = setup()
 
-        ensureNotCollected(weakRef = singleEventStreamWeakRef)
+        ensureNotCollected(weakRef = singleEventStreamRef)
 
         // Emit the single event
         eventEmitter.emit(10)
@@ -81,11 +81,11 @@ class EventStreamSingleTests {
     fun testSingle_letItGo() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
-        val singleEventStreamWeakRef = PlatformWeakReference(eventEmitter.single())
+        val singleEventStreamRef = PlatformWeakReference(eventEmitter.single())
 
         eventEmitter.emit(10)
 
-        ensureCollected(weakRef = singleEventStreamWeakRef)
+        ensureCollected(weakRef = singleEventStreamRef)
     }
 
     @Test

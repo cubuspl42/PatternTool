@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.core.platform.platformNativeSetOf
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 
@@ -8,7 +9,7 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
         Paused, Resumed, Aborted,
     }
 
-    private val strongListenerContainer = StrongListenerContainer<EventT>()
+    private val listeners = platformNativeSetOf<Listener<EventT>>()
 
     final override fun listen(
         listener: Listener<EventT>,
@@ -17,15 +18,21 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
             return Subscription.Noop
         }
 
-        val handle = strongListenerContainer.insert(
-            listener = listener,
-        )
+        val wasAdded = listeners.add(listener)
+
+        if (!wasAdded) {
+            throw IllegalStateException("Listener is already registered")
+        }
 
         potentiallyResume()
 
         return object : Subscription {
             override fun cancel() {
-                handle.remove()
+                // Don't check whether the removal was successful, as in a
+                // corner case this stream might've already aborted. Currently,
+                // the dependents aren't notified about its dependency stream
+                // aborting, so they'll keep subscribing/unsubscribing as normal.
+                listeners.remove(listener)
 
                 potentiallyPause()
             }
@@ -33,7 +40,7 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
     }
 
     protected val listenerCount: Int
-        get() = strongListenerContainer.listenerCount
+        get() = listeners.size
 
     private var state: State = State.Paused
 
@@ -56,7 +63,15 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
     protected fun notify(
         event: EventT,
     ) {
-        strongListenerContainer.notifyAll(event)
+        // Create a snapshot of the listeners, as in consequence of the event
+        // being propagated, new listeners might be added, or existing ones
+        // removed. This way, we ensure that all listeners that were present
+        // at the time of the event being emitted will receive it.
+        val listeners = listeners.copy()
+
+        listeners.forEach {
+            it.handle(event)
+        }
     }
 
     protected fun abort() {
@@ -64,7 +79,7 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
             throw IllegalStateException("The event stream is already aborted")
         }
 
-        strongListenerContainer.clear()
+        listeners.clear()
 
         onAborted()
 

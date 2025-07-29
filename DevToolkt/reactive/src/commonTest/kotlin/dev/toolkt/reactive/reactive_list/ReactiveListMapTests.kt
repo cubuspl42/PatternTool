@@ -2,6 +2,7 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
+import dev.toolkt.reactive.event_stream.listenExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -180,7 +181,7 @@ class ReactiveListMapTests {
 
         var observedCurrentElements: List<String> = listOf()
 
-        mappedList.changes.listen {
+        mappedList.changes.listenExternally {
             observedCurrentElements = mappedList.currentElements
         }
 

@@ -76,6 +76,16 @@ fun <EventT> StrongEventSource<EventT>.listenInDependent(
     },
 )
 
+fun <EventT> StrongEventSource<EventT>.listenExternally(
+    listener: ListenerFn<EventT>,
+): Subscription = listen(
+    object : Listener<EventT> {
+        override fun handle(event: EventT) {
+            listener(event)
+        }
+    },
+)
+
 interface EventSource<out EventT> : StrongEventSource<EventT>
 
 fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(

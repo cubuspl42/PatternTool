@@ -122,11 +122,11 @@ class EventStreamTakeTests {
     fun testTake_letItGo() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
-        val eventStreamWeakRef = PlatformWeakReference(
+        val EventStreamRef = PlatformWeakReference(
             eventEmitter.take(2),
         )
 
-        ensureCollected(eventStreamWeakRef)
+        ensureCollected(EventStreamRef)
     }
 
     @Test

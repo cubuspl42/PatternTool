@@ -3,7 +3,8 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.Listener
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
+import kotlin.test.assertFails
+import kotlin.test.assertIs
 
 /**
  * Tests of the fundamental [EventStream] operations
@@ -22,7 +23,7 @@ class EventStreamTests {
             buffer.add(element)
         }
 
-        val subscription = dependentStream.listen(::add)
+        val subscription = dependentStream.listenExternally(::add)
 
         assertEquals(
             expected = emptyList(),
@@ -55,35 +56,23 @@ class EventStreamTests {
 
     @Test
     fun testListenTwice() {
-        fun test(
-            listener: Listener<Any>,
-        ) {
-            val eventEmitter = EventEmitter<Int>()
-
-            // Create a dependent stream to make the system non-trivial
-            val dependentStream = eventEmitter.map { it.toString() }
-
-            val firstSubscription = dependentStream.listen(listener)
-
-            val secondSubscription = dependentStream.listen(listener)
-
-            assertNotEquals(
-                illegal = firstSubscription,
-                actual = secondSubscription,
-            )
+        val listener = object : Listener<Any> {
+            override fun handle(event: Any) {
+            }
         }
 
-        // As the ::function operator doesn't return stable references on
-        // JavaScript, we ensure that the listener is bound to a function
-        // argument
-        test(
-            object : Listener<Any> {
-                override fun handle(event: Any) {
-                }
-            },
-        )
-    }
+        val eventEmitter = EventEmitter<Int>()
 
+        // Create a dependent stream to make the system non-trivial
+        val dependentStream = eventEmitter.map { it.toString() }
+
+        dependentStream.listen(listener)
+
+        assertIs<IllegalStateException>(
+            assertFails {
+                dependentStream.listen(listener)
+            })
+    }
 
     private class Buffer {
         val list = mutableListOf<String>()
