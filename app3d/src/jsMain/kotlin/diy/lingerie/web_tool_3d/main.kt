@@ -9,13 +9,13 @@ import diy.lingerie.web_tool_3d.application_state.DocumentState
 import kotlinx.browser.document
 import kotlinx.browser.window
 
-private val apexVertex = Point3D(x = 0.0, y = 0.0, z = 1.0)
+private val apexVertex = Point3D(x = 0.0, y = 0.0, z = 100.0)
 
 private val bezierCurve = BezierCurve(
-    Point(x = 0.0, y = 1.0),
-    Point(x = 0.5, y = 1.0),
-    Point(x = 1.0, y = 0.5),
-    Point(x = 1.0, y = 0.0),
+    Point(x = 0.0, y = 100.0),
+    Point(x = 50.0, y = 100.0),
+    Point(x = 100.0, y = 50.0),
+    Point(x = 100.0, y = 0.0),
 )
 
 private val documentState = DocumentState(

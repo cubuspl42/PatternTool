@@ -34,7 +34,10 @@ fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
             override fun handle(event: EventT) {
                 // If the target was collected, we assume that this listener
                 // will soon be removed. For now, let's just ignore the event.
-                val target = targetWeakRef.get() ?: return
+                val target = targetWeakRef.get() ?: run {
+                    println("targetWeakRef == null (!)")
+                    return
+                }
 
                 listener.handle(
                     target = target,
@@ -47,6 +50,7 @@ fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
     val cleanable = finalizationRegistry.register(
         target = target,
     ) {
+        println("Target cleared, cancelling the subscription")
         innerSubscription.cancel()
     }
 

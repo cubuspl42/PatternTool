@@ -8,7 +8,7 @@ import dev.toolkt.reactive.cell.PropertyCell
 import three.MeshLambertMaterialParams
 import three.THREE
 
-private const val handleBallRadius = 0.02
+private const val handleBallRadius = 2.0
 
 private val handleBallGeometry = THREE.SphereGeometry(
     radius = handleBallRadius,

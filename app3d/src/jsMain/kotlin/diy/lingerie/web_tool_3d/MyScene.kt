@@ -8,13 +8,13 @@ import dev.toolkt.reactive.cell.Cell
 import diy.lingerie.web_tool_3d.application_state.ApplicationState
 import three.THREE
 
-private val lightPosition = Point3D(x = 1.0, y = 1.0, z = 1.0)
+private val lightPosition = Point3D(x = 20.0, y = 20.0, z = 20.0)
 
 private val bezierMeshColor = PureColor.blue
 
-private const val cameraDistance = 2.0
+private const val cameraDistance = 250.0
 
-private const val cameraZ = 0.5
+private const val cameraZ = 50.0
 
 class MyScene(
     val floor: THREE.Object3D,
