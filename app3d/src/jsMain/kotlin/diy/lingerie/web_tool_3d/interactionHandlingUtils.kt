@@ -50,7 +50,7 @@ fun setupInteractionHandlers(
         ) ?: return@forEach
 
         val handleBallUserData =
-            intersection.`object`.myUserData as? MyObjectUserData.HandleBallUserData ?: return@forEach
+            intersection.object_.myUserData as? MyObjectUserData.HandleBallUserData ?: return@forEach
 
         val handlePosition: PropertyCell<Point> = handleBallUserData.position
 

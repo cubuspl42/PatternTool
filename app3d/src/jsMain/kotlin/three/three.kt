@@ -198,7 +198,9 @@ external object THREE {
 
         val point: Vector3
 
-        val `object`: Object3D
+        @Suppress("PropertyName")
+        @JsName("object")
+        val object_: Object3D
     }
 
     class Raycaster {
