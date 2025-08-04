@@ -58,6 +58,17 @@ data class Point3D(
         y = y,
     )
 
+    /**
+     * Splits the point into a [Point] and a [Double] representing the z-coordinate.
+     */
+    fun split(): Pair<Point, Double> = Pair(
+        first = Point(
+            x = x,
+            y = y,
+        ),
+        second = z,
+    )
+
     val xyPlane: Plane
         get() = Plane.of(
             origin = this,
