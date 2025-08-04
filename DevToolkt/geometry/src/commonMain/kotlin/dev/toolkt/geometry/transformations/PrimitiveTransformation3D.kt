@@ -138,6 +138,4 @@ sealed class PrimitiveTransformation3D : StandaloneTransformation3D() {
 
     abstract override fun invert(): PrimitiveTransformation3D
 
-    final override val primitiveTransformations: List<PrimitiveTransformation3D>
-        get() = listOf(this)
 }

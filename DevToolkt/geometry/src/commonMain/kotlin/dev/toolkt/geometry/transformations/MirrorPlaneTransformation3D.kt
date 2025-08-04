@@ -10,9 +10,6 @@ data class MirrorPlaneTransformation3D(
 ) : StandaloneTransformation3D() {
     override fun invert(): MirrorPlaneTransformation3D = this
 
-    override val primitiveTransformations: List<PrimitiveTransformation3D>
-        get() = TODO("Not yet implemented")
-
     override fun transform(point: Point3D): Point3D {
         // Find the projection vector onto the plane and apply it twice
         TODO("Not yet implemented")

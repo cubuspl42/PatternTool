@@ -21,9 +21,6 @@ data class CombinedTransformation3D(
 
     companion object;
 
-    override val primitiveTransformations: List<PrimitiveTransformation3D>
-        get() = standaloneTransformations.flatMap { it.primitiveTransformations }
-
     override fun equalsWithTolerance(
         other: NumericObject,
         tolerance: NumericTolerance,

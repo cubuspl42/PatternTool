@@ -5,9 +5,6 @@ import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.Point3D
 
 object Unprojection3D : StandaloneTransformation3D() {
-    override val primitiveTransformations: List<PrimitiveTransformation3D>
-        get() = TODO("Not yet implemented")
-
     override fun transform(point: Point3D): Point3D {
         val (pointXy, z) = point.split()
 
