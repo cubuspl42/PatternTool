@@ -50,31 +50,31 @@ class MyRenderer(
             sizeNow,
         ->
         castRayNow(
-            viewportPointNow = viewportPointNow,
+            viewportCoordNow = viewportPointNow,
             viewportSizeNow = sizeNow,
             objects = objects,
         )
     }
 
     fun castRay(
-        viewportPoint: Point,
+        viewportCoord: Point,
         objects: List<THREE.Object3D>,
     ): THREE.Intersection? = castRayNow(
-        viewportPointNow = viewportPoint,
+        viewportCoordNow = viewportCoord,
         viewportSizeNow = viewportSize.currentValue,
         objects = objects,
     )
 
     private fun castRayNow(
-        viewportPointNow: Point,
+        viewportCoordNow: Point,
         viewportSizeNow: PureSize,
         objects: List<THREE.Object3D>,
     ): THREE.Intersection? {
-        val ndcPointNow = viewportPointNow.toNdc(size = viewportSizeNow)
+        val ndcCoordNow = viewportCoordNow.toNdc(size = viewportSizeNow)
 
         return THREE.Raycaster().apply {
             setFromCamera(
-                pointer = ndcPointNow.toThreeVector2(),
+                pointer = ndcCoordNow.toThreeVector2(),
                 camera = camera,
             )
         }.intersectObjects(

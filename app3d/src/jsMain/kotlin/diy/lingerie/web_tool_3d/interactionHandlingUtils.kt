@@ -45,7 +45,7 @@ fun setupInteractionHandlers(
         button = ButtonId.LEFT,
     ).forEach { mouseGesture ->
         val intersection = myRenderer.castRay(
-            viewportPoint = mouseGesture.offsetPosition.currentValue,
+            viewportCoord = mouseGesture.offsetPosition.currentValue,
             objects = myScene.myBezierMesh.handleBalls,
         ) ?: return@forEach
 
