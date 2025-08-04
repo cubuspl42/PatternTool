@@ -12,11 +12,9 @@ import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.math.algebra.linear.vectors.div
 
 sealed class PrimitiveTransformation3D : StandaloneTransformation3D() {
-    sealed class Specific3D : PrimitiveTransformation3D()
-
     data class Translation(
         val translationVector: Vector3,
-    ) : Specific3D() {
+    ) : PrimitiveTransformation3D() {
         companion object {
             val None = Translation(
                 translationVector = Vector3.Companion.Zero,
@@ -64,7 +62,7 @@ sealed class PrimitiveTransformation3D : StandaloneTransformation3D() {
 
     data class Scaling(
         val scaleVector: Vector3,
-    ) : Specific3D() {
+    ) : PrimitiveTransformation3D() {
         constructor(
             sx: Double,
             sy: Double,
@@ -108,7 +106,7 @@ sealed class PrimitiveTransformation3D : StandaloneTransformation3D() {
 
     data class RotationZ private constructor(
         val angle: RelativeAngle,
-    ) : Specific3D() {
+    ) : PrimitiveTransformation3D() {
         companion object {
             fun relative(
                 angle: RelativeAngle,
