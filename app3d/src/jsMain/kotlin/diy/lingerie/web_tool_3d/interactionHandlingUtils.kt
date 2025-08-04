@@ -13,6 +13,7 @@ import diy.lingerie.web_tool_3d.application_state.InteractionState
 import diy.lingerie.web_tool_3d.application_state.PresentationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLCanvasElement
+import three.THREE
 
 fun setupInteractionHandlers(
     canvas: HTMLCanvasElement,
@@ -44,28 +45,25 @@ fun setupInteractionHandlers(
     canvas.onMouseDragGestureStarted(
         button = ButtonId.LEFT,
     ).forEach { mouseGesture ->
-        val intersection = myRenderer.castRay(
+        val (targetObject, targetPoint) = getObjectAtViewportCoord(
+            myRenderer = myRenderer,
             viewportCoord = mouseGesture.offsetPosition.currentValue,
-            objects = myScene.myBezierMesh.handleBalls,
+            candidates = myScene.myBezierMesh.handleBalls,
         ) ?: return@forEach
 
-        val handleBallUserData =
-            intersection.object_.myUserData as? MyObjectUserData.HandleBallUserData ?: return@forEach
+        val handleBallUserData = targetObject.myUserData as? MyObjectUserData.HandleBallUserData ?: return@forEach
 
         val handlePosition: PropertyCell<Point> = handleBallUserData.position
-
-        // The initial point that was grabbed (in the world coordinates)
-        val initialGrabPosition = intersection.point.toPoint3D()
 
         // The initial 2D position of the handle (in the world 2D coordinates)
         val initialHandlePosition: Point = handlePosition.currentValue
 
         // A 2D translation between the grab point and the handle position (constrained)
-        val grabTranslation = initialGrabPosition.withoutZ().translationTo(
+        val grabTranslation = targetPoint.withoutZ().translationTo(
             target = initialHandlePosition,
         )
 
-        val grabPlane = initialGrabPosition.xyPlane
+        val grabPlane = targetPoint.xyPlane
 
         interactionState.startHandleDragInteraction(
             handlePosition = handlePosition,
@@ -86,6 +84,20 @@ fun setupInteractionHandlers(
             presentationState.resetCamera()
         }
     }
+}
+
+private fun getObjectAtViewportCoord(
+    myRenderer: MyRenderer,
+    candidates: List<THREE.Object3D>,
+    viewportCoord: Point,
+): Pair<THREE.Object3D, Point3D>? {
+    val intersection = myRenderer.castRay(
+        viewportCoord = viewportCoord,
+        objects = candidates,
+    ) ?: return null
+
+    // TODO: Make the intersection point irrelevant
+    return Pair(intersection.object_, intersection.point.toPoint3D())
 }
 
 private fun Cell<Point>.trackTranslation(): Cell<PrimitiveTransformation.Translation> {
