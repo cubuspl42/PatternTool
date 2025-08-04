@@ -7,7 +7,7 @@ import dev.toolkt.geometry.Point3D
 
 data class MirrorPlaneTransformation3D(
     val mirrorPlane: Plane,
-) : StandaloneTransformation3D() {
+) : ComplexTransformation3D() {
     override fun invert(): MirrorPlaneTransformation3D = this
 
     override fun transform(point: Point3D): Point3D {
@@ -21,4 +21,7 @@ data class MirrorPlaneTransformation3D(
     ): Boolean {
         TODO("Not yet implemented")
     }
+
+    override val primitiveTransformations: Iterable<PrimitiveTransformation3D>
+        get() = TODO("Not yet implemented")
 }

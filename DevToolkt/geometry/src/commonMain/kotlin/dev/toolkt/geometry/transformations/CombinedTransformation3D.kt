@@ -2,24 +2,15 @@ package dev.toolkt.geometry.transformations
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericTolerance
-import dev.toolkt.geometry.Point3D
 
 data class CombinedTransformation3D(
-    override val standaloneTransformations: List<StandaloneTransformation3D>,
-) : EffectiveTransformation3D() {
-    override fun transform(
-        point: Point3D,
-    ): Point3D = standaloneTransformations.fold(point) { acc, transformation ->
-        transformation.transform(acc)
-    }
-
-    override fun combineWith(
-        laterTransformations: List<StandaloneTransformation3D>,
-    ): CombinedTransformation3D = CombinedTransformation3D(
-        standaloneTransformations = standaloneTransformations + laterTransformations,
-    )
-
+    val combinedTransformations: List<PrimitiveTransformation3D>,
+) : ComplexTransformation3D() {
     companion object;
+
+    override fun invert(): CombinedTransformation3D = CombinedTransformation3D(
+        combinedTransformations = combinedTransformations.map { it.invert() }.reversed(),
+    )
 
     override fun equalsWithTolerance(
         other: NumericObject,
@@ -27,4 +18,7 @@ data class CombinedTransformation3D(
     ): Boolean {
         TODO("Not yet implemented")
     }
+
+    override val primitiveTransformations: Iterable<PrimitiveTransformation3D>
+        get() = combinedTransformations
 }

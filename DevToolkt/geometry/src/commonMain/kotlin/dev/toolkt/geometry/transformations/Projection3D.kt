@@ -4,7 +4,7 @@ import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.Point3D
 
-object Projection3D : StandaloneTransformation3D() {
+object Projection3D : Transformation3D() {
     override fun transform(point: Point3D): Point3D {
         val (pointXy, z) = point.split()
 

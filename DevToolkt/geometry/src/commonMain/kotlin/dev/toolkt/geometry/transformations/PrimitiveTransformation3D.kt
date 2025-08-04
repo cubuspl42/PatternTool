@@ -8,10 +8,11 @@ import dev.toolkt.geometry.rotateZ
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
 import dev.toolkt.geometry.z
+import dev.toolkt.math.algebra.linear.matrices.matrix4.Matrix4x4
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.math.algebra.linear.vectors.div
 
-sealed class PrimitiveTransformation3D : StandaloneTransformation3D() {
+sealed class PrimitiveTransformation3D : DescriptiveTransformation3D() {
     data class Translation(
         val translationVector: Vector3,
     ) : PrimitiveTransformation3D() {
@@ -58,6 +59,10 @@ sealed class PrimitiveTransformation3D : StandaloneTransformation3D() {
         override fun invert(): Translation = Translation(
             translationVector = -translationVector,
         )
+
+        override fun toMatrix(): Matrix4x4 {
+            TODO("Standard primitive matrix")
+        }
     }
 
     data class Scaling(
@@ -102,6 +107,10 @@ sealed class PrimitiveTransformation3D : StandaloneTransformation3D() {
         override fun invert(): Scaling = Scaling(
             scaleVector = 1.0 / scaleVector,
         )
+
+        override fun toMatrix(): Matrix4x4 {
+            TODO("Standard primitive matrix")
+        }
     }
 
     data class RotationZ private constructor(
@@ -130,12 +139,14 @@ sealed class PrimitiveTransformation3D : StandaloneTransformation3D() {
             TODO("Not yet implemented")
         }
 
-
         override fun invert(): RotationZ = RotationZ(
             angle = -angle,
         )
+
+        override fun toMatrix(): Matrix4x4 {
+            TODO("Standard primitive matrix")
+        }
     }
 
     abstract override fun invert(): PrimitiveTransformation3D
-
 }
