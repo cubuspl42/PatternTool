@@ -49,7 +49,7 @@ fun setupInteractionHandlers(
     canvas.onMouseDragGestureStarted(
         button = ButtonId.LEFT,
     ).forEach { mouseGesture ->
-        val (targetObject, _) = getObjectAtNcdCoord(
+        val targetObject = getObjectAtNcdCoord(
             myRenderer = myRenderer,
             ndcCoord = mouseGesture.offsetPositionNdc.currentValue,
             candidates = myScene.myBezierMesh.handleBalls,
@@ -106,14 +106,13 @@ private fun getObjectAtNcdCoord(
     myRenderer: MyRenderer,
     candidates: List<THREE.Object3D>,
     ndcCoord: Point,
-): Pair<THREE.Object3D, Point3D>? {
+): THREE.Object3D? {
     val intersection = myRenderer.castRay(
         ndcCoord = ndcCoord,
         objects = candidates,
     ) ?: return null
 
-    // TODO: Make the intersection point irrelevant
-    return Pair(intersection.object_, intersection.point.toPoint3D())
+    return intersection.object_
 }
 
 private fun Cell<Point>.trackTranslation(): Cell<PrimitiveTransformation.Translation> {
