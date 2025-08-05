@@ -3,6 +3,7 @@ package diy.lingerie.web_tool_3d
 import dev.toolkt.dom.reactive.utils.gestures.ButtonId
 import dev.toolkt.dom.reactive.utils.gestures.onMouseDragGestureStarted
 import dev.toolkt.dom.reactive.utils.getKeyDownEventStream
+import dev.toolkt.geometry.Plane
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
@@ -14,6 +15,7 @@ import diy.lingerie.web_tool_3d.application_state.PresentationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLCanvasElement
 import three.THREE
+import three.worldPosition
 
 fun setupInteractionHandlers(
     canvas: HTMLCanvasElement,
@@ -24,6 +26,8 @@ fun setupInteractionHandlers(
     val cameraRotation = presentationState.cameraRotation
 
     val myScene = myRenderer.myScene
+
+    val camera = myScene.camera
 
     canvas.onMouseDragGestureStarted(
         button = ButtonId.MIDDLE,
@@ -45,35 +49,47 @@ fun setupInteractionHandlers(
     canvas.onMouseDragGestureStarted(
         button = ButtonId.LEFT,
     ).forEach { mouseGesture ->
-        val (targetObject, targetPoint) = getObjectAtViewportCoord(
+        val (targetObject, _) = getObjectAtNcdCoord(
             myRenderer = myRenderer,
-            viewportCoord = mouseGesture.offsetPosition.currentValue,
+            ndcCoord = mouseGesture.offsetPositionNdc.currentValue,
             candidates = myScene.myBezierMesh.handleBalls,
         ) ?: return@forEach
 
         val handleBallUserData = targetObject.myUserData as? MyObjectUserData.HandleBallUserData ?: return@forEach
 
+        // Handle position in the 2D world XY coordinates (reactive)
         val handlePosition: PropertyCell<Point> = handleBallUserData.position
 
-        // The initial 2D position of the handle (in the world 2D coordinates)
-        val initialHandlePosition: Point = handlePosition.currentValue
+        // The initial pointer offset in the 2D NDC coordinates
+        val initialPointerOffsetNdc = mouseGesture.offsetPositionNdc.currentValue
 
-        // A 2D translation between the grab point and the handle position (constrained)
-        val grabTranslation = targetPoint.withoutZ().translationTo(
-            target = initialHandlePosition,
-        )
+        // The initial handle positon in the 2D NDC coordinates
+        val initialHandlePositionNdc = targetObject.worldPosition.toPoint3D().project(camera = camera).withoutZ()
 
-        val grabPlane = targetPoint.xyPlane
+        // A 2D NDC translation between the grab point and the handle position (constrained)
+        val grabTranslation = initialPointerOffsetNdc.translationTo(target = initialHandlePositionNdc)
+
+        // Corrected pointer offset position by in the 2D NDC coordinates (reactive)
+        val correctedPointerOffsetNdc = mouseGesture.offsetPositionNdc.map { offsetPositionNdcNow ->
+            grabTranslation.transform(offsetPositionNdcNow)
+        }
+
+        // The grab plane is simply the XY plane (Z = 0)
+        val grabPlane = Plane.Xy
 
         interactionState.startHandleDragInteraction(
             handlePosition = handlePosition,
             requestedHandlePosition = myRenderer.castRawRay(
-                viewportPoint = mouseGesture.offsetPosition,
+                ndcCoord = correctedPointerOffsetNdc,
             ).map { pointerRayNow ->
-                // A ray cast from camera is unlikely to be parallel to the grab plane
-                val grabPointNow = grabPlane.findIntersection(pointerRayNow) ?: Point3D.origin
+                // The image of the (corrected) pointer offset on the grab plane
+                val grabPointNow = grabPlane.findIntersection(pointerRayNow) ?: run {
+                    // A ray cast from camera is unlikely to be parallel to the grab plane, but technically it's not
+                    // impossible
+                    return@map Point.origin
+                }
 
-                grabPointNow.withoutZ().transformBy(grabTranslation)
+                grabPointNow.withoutZ()
             },
             until = mouseGesture.onFinished,
         )
@@ -86,13 +102,13 @@ fun setupInteractionHandlers(
     }
 }
 
-private fun getObjectAtViewportCoord(
+private fun getObjectAtNcdCoord(
     myRenderer: MyRenderer,
     candidates: List<THREE.Object3D>,
-    viewportCoord: Point,
+    ndcCoord: Point,
 ): Pair<THREE.Object3D, Point3D>? {
     val intersection = myRenderer.castRay(
-        viewportCoord = viewportCoord,
+        ndcCoord = ndcCoord,
         objects = candidates,
     ) ?: return null
 

@@ -1,6 +1,7 @@
 package dev.toolkt.geometry
 
 import dev.toolkt.geometry.math.NormalPlaneFunction
+import dev.toolkt.math.algebra.linear.vectors.Vector3
 
 class Plane(
     internal val normalPlaneFunction: NormalPlaneFunction,
@@ -13,6 +14,13 @@ class Plane(
             normalPlaneFunction = NormalPlaneFunction(
                 origin = origin.pointVector,
                 normal = normalDirection.normalizedDirectionVector,
+            ),
+        )
+
+        val Xy = Plane(
+            normalPlaneFunction = NormalPlaneFunction(
+                origin = Vector3.Zero,
+                normal = Vector3.ZUnit,
             ),
         )
     }

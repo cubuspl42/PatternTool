@@ -11,8 +11,19 @@ data class PureSize(
     val width: Double,
     val height: Double,
 ) {
-    fun relativize(point: Point): Vector2 = Vector2(
+    fun relativizeVector(point: Point): Vector2 = Vector2(
         x = point.x / width,
         y = point.y / height,
     )
+
+    fun relativize(point: Point): Point = Point(
+        x = point.x / width,
+        y = point.y / height,
+    )
+
+    val sizeVector: Vector2
+        get() = Vector2(
+            x = width,
+            y = height,
+        )
 }

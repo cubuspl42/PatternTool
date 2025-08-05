@@ -2,8 +2,12 @@ package diy.lingerie.web_tool_3d
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericTolerance
+import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.transformations.Transformation3D
+import dev.toolkt.geometry.x
+import dev.toolkt.geometry.y
+import dev.toolkt.math.algebra.linear.vectors.Vector2
 import three.THREE
 
 val THREE.Camera.projectionTransformation: Transformation3D
@@ -60,4 +64,14 @@ fun THREE.Vector3.toPoint3D() = Point3D(
     x = this.x,
     y = this.y,
     z = this.z,
+)
+
+fun Vector2.toThreeVector2(): THREE.Vector2 = THREE.Vector2(
+    x = x,
+    y = y,
+)
+
+fun Point.toThreeVector2(): THREE.Vector2 = THREE.Vector2(
+    x = x,
+    y = y,
 )

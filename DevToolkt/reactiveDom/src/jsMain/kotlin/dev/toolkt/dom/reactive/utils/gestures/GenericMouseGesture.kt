@@ -2,6 +2,7 @@ package dev.toolkt.dom.reactive.utils.gestures
 
 import dev.toolkt.dom.reactive.utils.event.clientPoint
 import dev.toolkt.dom.reactive.utils.event.offsetPoint
+import dev.toolkt.dom.reactive.utils.event.offsetPointNdc
 import dev.toolkt.dom.reactive.utils.getMouseDownEventStream
 import dev.toolkt.dom.reactive.utils.getMouseEnterEventStream
 import dev.toolkt.dom.reactive.utils.getMouseLeaveEventStream
@@ -30,6 +31,9 @@ class GenericMouseGesture(
 
     val offsetPosition: Cell<Point>
         get() = newestMouseEvent.map { it.offsetPoint }
+
+    val offsetPositionNdc: Cell<Point>
+        get() = newestMouseEvent.map { it.offsetPointNdc }
 }
 
 class SvgMouseGesture(

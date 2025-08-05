@@ -4,8 +4,6 @@ import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Ray3
 import dev.toolkt.geometry.negateY
-import dev.toolkt.geometry.x
-import dev.toolkt.geometry.y
 import dev.toolkt.math.algebra.linear.vectors.Vector2
 import dev.toolkt.math.algebra.linear.vectors.minus
 import dev.toolkt.reactive.cell.Cell
@@ -40,74 +38,61 @@ class MyRenderer(
     }
 
     fun castRay(
-        viewportPoint: Cell<Point>,
+        ndcCoord: Cell<Point>,
         objects: List<THREE.Object3D>,
     ): Cell<THREE.Intersection?> = Cell.map2(
-        cell1 = viewportPoint,
+        cell1 = ndcCoord,
         cell2 = viewportSize,
     ) {
-            viewportPointNow,
+            ndcCoordNow,
             sizeNow,
         ->
         castRayNow(
-            viewportCoordNow = viewportPointNow,
-            viewportSizeNow = sizeNow,
+            ndcCoordNow = ndcCoordNow,
             objects = objects,
         )
     }
 
     fun castRay(
-        viewportCoord: Point,
+        ndcCoord: Point,
         objects: List<THREE.Object3D>,
     ): THREE.Intersection? = castRayNow(
-        viewportCoordNow = viewportCoord,
-        viewportSizeNow = viewportSize.currentValue,
+        ndcCoordNow = ndcCoord,
         objects = objects,
     )
 
     private fun castRayNow(
-        viewportCoordNow: Point,
-        viewportSizeNow: PureSize,
+        ndcCoordNow: Point,
         objects: List<THREE.Object3D>,
-    ): THREE.Intersection? {
-        val ndcCoordNow = viewportCoordNow.toNdc(size = viewportSizeNow)
-
-        return THREE.Raycaster().apply {
-            setFromCamera(
-                pointer = ndcCoordNow.toThreeVector2(),
-                camera = camera,
-            )
-        }.intersectObjects(
-            objects = objects.toTypedArray(),
-        ).firstOrNull()
-    }
+    ): THREE.Intersection? = THREE.Raycaster().apply {
+        setFromCamera(
+            pointer = ndcCoordNow.toThreeVector2(),
+            camera = camera,
+        )
+    }.intersectObjects(
+        objects = objects.toTypedArray(),
+    ).firstOrNull()
 
     fun castRawRay(
-        viewportPoint: Cell<Point>,
+        ndcCoord: Cell<Point>,
     ): Cell<Ray3> = Cell.map2(
-        cell1 = viewportPoint,
+        cell1 = ndcCoord,
         cell2 = viewportSize,
     ) {
-            viewportPointNow,
+            ndcPointNow,
             sizeNow,
         ->
         castRawRay(
-            viewportPointNow = viewportPointNow,
-            viewportSizeNow = sizeNow,
+            ndcCoordNow = ndcPointNow,
         )
     }
 
     fun castRawRay(
-        viewportPointNow: Point,
-        viewportSizeNow: PureSize,
+        ndcCoordNow: Point,
     ): Ray3 {
-        val ndcPointNow = Point(
-            pointVector = viewportPointNow.toNdc(size = viewportSizeNow),
-        )
-
         val ndcRay = Ray3.of(
-            origin = ndcPointNow.toPoint3D(z = 0.0),
-            target = ndcPointNow.toPoint3D(z = 0.5),
+            origin = ndcCoordNow.toPoint3D(z = 0.0),
+            target = ndcCoordNow.toPoint3D(z = 0.5),
         )
 
         return ndcRay.transformBy(
@@ -115,15 +100,9 @@ class MyRenderer(
         )
     }
 
-    private val camera: THREE.PerspectiveCamera
+    val camera: THREE.PerspectiveCamera
         get() = myScene.camera
 }
 
-private fun Point.toNdc(
-    size: PureSize,
-): Vector2 = (size.relativize(this) * 2.0 - 1.0).negateY()
 
-private fun Vector2.toThreeVector2(): THREE.Vector2 = THREE.Vector2(
-    x = x,
-    y = y,
-)
+

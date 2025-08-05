@@ -97,6 +97,13 @@ data class Vector2(
         a1 = a1 / scalar,
     )
 
+    operator fun div(
+        other: Vector2,
+    ): Vector2 = Vector2(
+        a0 = a0 / other.a0,
+        a1 = a1 / other.a1,
+    )
+
     fun normalizeOrNull(): Vector2? {
         val normalized = normalize()
         return normalized.takeIf { it.isNormalized() }
