@@ -2,9 +2,13 @@ package dev.toolkt.geometry.transformations
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericTolerance
+import dev.toolkt.geometry.Direction
+import dev.toolkt.geometry.Direction3
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.RelativeAngle
+import dev.toolkt.geometry.Span
 import dev.toolkt.geometry.rotateZ
+import dev.toolkt.geometry.transformations.PrimitiveTransformation.Translation
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
 import dev.toolkt.geometry.z
@@ -19,6 +23,13 @@ sealed class PrimitiveTransformation3D : DescriptiveTransformation3D() {
         companion object {
             val None = Translation(
                 translationVector = Vector3.Companion.Zero,
+            )
+
+            fun inDirection(
+                direction: Direction3,
+                distance: Span,
+            ): PrimitiveTransformation3D.Translation = Translation(
+                translationVector = direction.normalizedDirectionVector * distance.value,
             )
         }
 

@@ -1,6 +1,7 @@
 package dev.toolkt.geometry
 
 import dev.toolkt.geometry.math.parametric_curve_functions.ParametricLineFunction3
+import dev.toolkt.geometry.transformations.Transformation3D
 
 class Ray3(
     val origin: Point3D,
@@ -11,6 +12,12 @@ class Ray3(
         v = direction.normalizedDirectionVector,
     )
 
+    val target: Point3D
+        get() = origin.translateByDistance(
+            direction = direction,
+            distance = Span.One,
+        )
+
     companion object {
         fun of(
             origin: Point3D,
@@ -20,4 +27,11 @@ class Ray3(
             direction = origin.directionTo(target),
         )
     }
+
+    fun transformBy(
+        transformation: Transformation3D,
+    ): Ray3 = Ray3.of(
+        origin = transformation.transform(origin),
+        target = transformation.transform(target),
+    )
 }

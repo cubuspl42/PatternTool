@@ -2,6 +2,7 @@ package dev.toolkt.geometry
 
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericTolerance
+import dev.toolkt.geometry.transformations.PrimitiveTransformation.Translation
 import dev.toolkt.geometry.transformations.PrimitiveTransformation3D
 import dev.toolkt.geometry.transformations.Transformation3D
 import dev.toolkt.math.algebra.linear.vectors.Vector3
@@ -83,6 +84,16 @@ data class Point3D(
         target: Point3D,
     ): PrimitiveTransformation3D.Translation = PrimitiveTransformation3D.Translation(
         translationVector = target.pointVector - pointVector,
+    )
+
+    fun translateByDistance(
+        direction: Direction3,
+        distance: Span,
+    ): Point3D = transformBy(
+        PrimitiveTransformation3D.Translation.inDirection(
+            direction = direction,
+            distance = distance,
+        ),
     )
 
     fun directionTo(

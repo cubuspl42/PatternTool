@@ -1,27 +1,42 @@
 package diy.lingerie.web_tool_3d
 
-import dev.toolkt.geometry.Point
+import dev.toolkt.core.numeric.NumericObject
+import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.geometry.Point3D
-import dev.toolkt.geometry.Ray3
+import dev.toolkt.geometry.transformations.Transformation3D
 import three.THREE
-import three.worldPosition
 
-fun THREE.Camera.castRay(
-    /**
-     * A 2D camera NDC point
-     */
-    ndcPoint: Point,
-): Ray3 {
-    // A 3D NDC target point in the far direction
-    val targetNdcPoint = ndcPoint.toPoint3D(z = 1.0)
+val THREE.Camera.projectionTransformation: Transformation3D
+    get() = object : Transformation3D() {
+        override fun transform(
+            point: Point3D,
+        ): Point3D = point.project(camera = this@projectionTransformation)
 
-    val targetWorldPoint = targetNdcPoint.unproject(camera = this@castRay)
+        override fun invert(): Transformation3D = unprojectionTransformation
 
-    return Ray3.of(
-        origin = this@castRay.worldPosition.toPoint3D(),
-        target = targetWorldPoint,
-    )
-}
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericTolerance,
+        ): Boolean {
+            TODO("Not yet implemented")
+        }
+    }
+
+val THREE.Camera.unprojectionTransformation: Transformation3D
+    get() = object : Transformation3D() {
+        override fun transform(
+            point: Point3D,
+        ): Point3D = point.unproject(camera = this@unprojectionTransformation)
+
+        override fun invert(): Transformation3D = projectionTransformation
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericTolerance,
+        ): Boolean {
+            TODO("Not yet implemented")
+        }
+    }
 
 fun Point3D.project(
     camera: THREE.Camera,

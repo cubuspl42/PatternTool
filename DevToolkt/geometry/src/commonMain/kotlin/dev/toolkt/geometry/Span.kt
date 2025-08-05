@@ -14,6 +14,16 @@ sealed class Span : SpatialObject, Comparable<Span> {
         override val valueSquared: Double = 0.0
     }
 
+    data object One : Span() {
+        override fun times(factor: Double): Span = Plain(
+            value = factor,
+        )
+
+        override val value: Double = 1.0
+
+        override val valueSquared: Double = 1.0
+    }
+
     data class Plain(
         override val value: Double,
     ) : Span() {

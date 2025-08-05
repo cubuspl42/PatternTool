@@ -105,8 +105,13 @@ class MyRenderer(
             pointVector = viewportPointNow.toNdc(size = viewportSizeNow),
         )
 
-        return camera.castRay(
-            ndcPointNow,
+        val ndcRay = Ray3.of(
+            origin = ndcPointNow.toPoint3D(z = 0.0),
+            target = ndcPointNow.toPoint3D(z = 0.5),
+        )
+
+        return ndcRay.transformBy(
+            transformation = camera.unprojectionTransformation,
         )
     }
 
