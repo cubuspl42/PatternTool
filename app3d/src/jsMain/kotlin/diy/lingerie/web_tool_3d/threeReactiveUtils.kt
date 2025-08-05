@@ -73,13 +73,16 @@ fun createReactivePerspectiveCamera(
     position: Cell<Point3D>,
     rotation: Cell<THREE.Euler>,
     size: Cell<PureSize>,
+    /**
+     * Vertical field of view (in degrees)
+     */
     fov: Double,
     near: Double,
     far: Double,
 ): THREE.PerspectiveCamera {
     val camera = THREE.PerspectiveCamera(
         fov,
-        1.0,
+        1.0, // Temporary value, will be adjusted dynamically
         near,
         far,
     )

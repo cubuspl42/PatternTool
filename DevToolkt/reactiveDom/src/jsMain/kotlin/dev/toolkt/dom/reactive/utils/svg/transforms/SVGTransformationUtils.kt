@@ -51,6 +51,15 @@ fun Universal.toSvgTransform(
     )
 }
 
+fun PrimitiveTransformation.FlipY.toSvgTransform(
+    svgElement: SVGSVGElement,
+): SVGTransform = svgElement.createSVGTransform().apply {
+    setScale(
+        sx = 1f,
+        sy = -1f,
+    )
+}
+
 fun PrimitiveTransformation.toSvgTransform(
     svgElement: SVGSVGElement,
 ): SVGTransform = when (this) {
@@ -58,6 +67,7 @@ fun PrimitiveTransformation.toSvgTransform(
     is Scaling -> toSvgTransform(svgElement)
     is Translation -> toSvgTransform(svgElement)
     is Universal -> toSvgTransform(svgElement)
+    PrimitiveTransformation.FlipY -> toSvgTransform(svgElement)
 }
 
 fun SVGTransformList.bind(
