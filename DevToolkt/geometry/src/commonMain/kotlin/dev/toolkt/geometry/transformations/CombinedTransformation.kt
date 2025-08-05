@@ -13,6 +13,10 @@ data class CombinedTransformation(
         transformation.transform(acc)
     }
 
+    override fun invert(): CombinedTransformation = CombinedTransformation(
+        standaloneTransformations = standaloneTransformations.map { it.invert() }.reversed(),
+    )
+
     override fun combineWith(
         laterTransformations: List<StandaloneTransformation>,
     ): CombinedTransformation = CombinedTransformation(

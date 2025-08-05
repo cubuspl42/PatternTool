@@ -1,10 +1,10 @@
 package dev.toolkt.geometry.transformations
 
-import dev.toolkt.geometry.Point
-import dev.toolkt.geometry.transformations.PrimitiveTransformation.Universal
 import dev.toolkt.core.numeric.NumericObject
 import dev.toolkt.core.numeric.NumericTolerance
 import dev.toolkt.core.numeric.equalsWithTolerance
+import dev.toolkt.geometry.Point
+import dev.toolkt.geometry.transformations.PrimitiveTransformation.Universal
 
 sealed class Transformation : NumericObject {
     object Identity : Transformation() {
@@ -25,6 +25,8 @@ sealed class Transformation : NumericObject {
 
         override fun transform(point: Point): Point = point
 
+        override fun invert(): Identity = Identity
+
         override fun equalsWithTolerance(
             other: NumericObject,
             tolerance: NumericTolerance,
@@ -40,6 +42,12 @@ sealed class Transformation : NumericObject {
             standaloneTransformations = transformations.flatMap {
                 it.standaloneTransformations
             },
+        )
+
+        fun combine(
+            vararg transformations: Transformation,
+        ): CombinedTransformation = combine(
+            transformations = transformations.toList(),
         )
     }
 
@@ -121,5 +129,7 @@ sealed class Transformation : NumericObject {
     abstract fun transform(
         point: Point,
     ): Point
+
+    abstract fun invert(): Transformation
 }
 

@@ -10,5 +10,5 @@ sealed class StandaloneTransformation : EffectiveTransformation() {
         standaloneTransformations = listOf(this) + laterTransformations,
     )
 
-    abstract fun invert(): StandaloneTransformation
+    abstract override fun invert(): StandaloneTransformation
 }

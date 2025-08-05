@@ -241,6 +241,30 @@ sealed class PrimitiveTransformation : StandaloneTransformation() {
         )
     }
 
+    data object FlipY : Specific() {
+        override fun toSvgTransformationString(): String = "scale(1, -1)"
+
+        override fun transform(point: Point): Point = Point(
+            x = point.x,
+            y = -point.y,
+        )
+
+        override fun equalsWithTolerance(
+            other: NumericObject,
+            tolerance: NumericTolerance,
+        ): Boolean {
+            TODO("Not yet implemented")
+        }
+
+        override val toUniversal: Universal
+            get() = Universal(
+                a = 1.0,
+                d = -1.0,
+            )
+
+        override fun invert(): FlipY = this
+    }
+
     data class Rotation private constructor(
         val angle: RelativeAngle,
     ) : Specific() {
