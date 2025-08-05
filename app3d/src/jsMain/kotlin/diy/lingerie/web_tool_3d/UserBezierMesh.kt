@@ -1,5 +1,6 @@
 package diy.lingerie.web_tool_3d
 
+import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.reactive.cell.Cell
@@ -9,6 +10,12 @@ class UserBezierMesh private constructor(
     initialApexVertex: Point3D,
     initialBezierCurve: BezierCurve,
 ) {
+    class Handle(
+        initialPosition: Point,
+    ) {
+        val position = PropertyCell(initialValue = initialPosition)
+    }
+
     companion object {
         fun create(
             initialApexVertex: Point3D,
@@ -21,25 +28,33 @@ class UserBezierMesh private constructor(
 
     val apexPosition = PropertyCell(initialValue = initialApexVertex)
 
-    val point0 = PropertyCell(initialValue = initialBezierCurve.firstControl)
+    val handle0 = Handle(
+        initialPosition = initialBezierCurve.start,
+    )
 
-    val point1 = PropertyCell(initialValue = initialBezierCurve.secondControl)
+    val handle1 = Handle(
+        initialPosition = initialBezierCurve.firstControl,
+    )
 
-    val point2 = PropertyCell(initialValue = initialBezierCurve.end)
+    val handle2 = Handle(
+        initialPosition = initialBezierCurve.secondControl,
+    )
 
-    val point3 = PropertyCell(initialValue = initialBezierCurve.start)
+    val handle3 = Handle(
+        initialPosition = initialBezierCurve.end,
+    )
 
     val bezierCurve: Cell<BezierCurve> = Cell.map4(
-        point0,
-        point1,
-        point2,
-        point3,
-    ) { point0Now, point1Now, point2Now, point3Now ->
+        handle0.position,
+        handle1.position,
+        handle2.position,
+        handle3.position,
+    ) { handle0Position0Now, handle1PositionNow, handle2PositionNow, handle3PositionNow ->
         BezierCurve(
-            start = point0Now,
-            firstControl = point1Now,
-            secondControl = point2Now,
-            end = point3Now,
+            start = handle0Position0Now,
+            firstControl = handle1PositionNow,
+            secondControl = handle2PositionNow,
+            end = handle3PositionNow,
         )
     }
 }

@@ -5,10 +5,8 @@ import dev.toolkt.dom.reactive.utils.gestures.onMouseDragGestureStarted
 import dev.toolkt.dom.reactive.utils.getKeyDownEventStream
 import dev.toolkt.geometry.Plane
 import dev.toolkt.geometry.Point
-import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.event_stream.hold
 import diy.lingerie.web_tool_3d.application_state.InteractionState
 import diy.lingerie.web_tool_3d.application_state.PresentationState
@@ -57,8 +55,7 @@ fun setupInteractionHandlers(
 
         val handleBallUserData = targetObject.myUserData as? MyObjectUserData.HandleBallUserData ?: return@forEach
 
-        // Handle position in the 2D world XY coordinates (reactive)
-        val handlePosition: PropertyCell<Point> = handleBallUserData.position
+        val handle: UserBezierMesh.Handle = handleBallUserData.handle
 
         // The initial pointer offset in the 2D NDC coordinates
         val initialPointerOffsetNdc = mouseGesture.offsetPositionNdc.currentValue
@@ -78,7 +75,7 @@ fun setupInteractionHandlers(
         val grabPlane = Plane.Xy
 
         interactionState.startHandleDragInteraction(
-            handlePosition = handlePosition,
+            handle = handle,
             requestedHandlePosition = myRenderer.castRawRay(
                 ndcCoord = correctedPointerOffsetNdc,
             ).map { pointerRayNow ->

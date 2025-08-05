@@ -3,38 +3,56 @@ package diy.lingerie.web_tool_3d.application_state
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
-import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.future.Future
+import diy.lingerie.web_tool_3d.UserBezierMesh
 
 class InteractionState(
     private val documentState: DocumentState,
 ) {
-    class HandleDragInteraction(
-        val requestedHandlePosition: Cell<Point>,
-    )
+    sealed class PrimaryInteraction
 
-    private val ongoingHandleDragInteraction: MutableCell<HandleDragInteraction?> = MutableCell(
+    class HandleFocusInteraction(
+        val focusedHandle: UserBezierMesh.Handle,
+    ) : PrimaryInteraction()
+
+    class HandleDragInteraction(
+        val draggedHandle: UserBezierMesh.Handle,
+        val requestedHandlePosition: Cell<Point>,
+    ) : PrimaryInteraction()
+
+    private val mutableOngoingPrimaryInteraction: MutableCell<PrimaryInteraction?> = MutableCell(
         initialValue = null,
     )
 
+    val ongoingPrimaryInteraction: Cell<PrimaryInteraction?>
+        get() = mutableOngoingPrimaryInteraction
+
+    fun startHandleFocusInteraction(
+        handle: UserBezierMesh.Handle,
+        until: Future<Unit>,
+    ) {
+
+    }
+
     fun startHandleDragInteraction(
-        handlePosition: PropertyCell<Point>,
+        handle: UserBezierMesh.Handle,
         requestedHandlePosition: Cell<Point>,
         until: Future<Unit>,
     ): HandleDragInteraction? {
-        if (ongoingHandleDragInteraction.currentValue != null) return null
+        if (mutableOngoingPrimaryInteraction.currentValue != null) return null
 
         val newHandleDragInteraction = HandleDragInteraction(
+            draggedHandle = handle,
             requestedHandlePosition = requestedHandlePosition,
         )
 
-        ongoingHandleDragInteraction.set(newHandleDragInteraction)
+        mutableOngoingPrimaryInteraction.set(newHandleDragInteraction)
 
         until.onFulfilled.forEach {
-            ongoingHandleDragInteraction.set(null)
+            mutableOngoingPrimaryInteraction.set(null)
         }
 
-        handlePosition.bindUntil(
+        handle.position.bindUntil(
             boundValue = requestedHandlePosition,
             until = until,
         )

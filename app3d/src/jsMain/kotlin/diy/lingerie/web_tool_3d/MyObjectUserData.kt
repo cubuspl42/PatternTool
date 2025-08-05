@@ -1,12 +1,10 @@
 package diy.lingerie.web_tool_3d
 
-import dev.toolkt.geometry.Point
-import dev.toolkt.reactive.cell.PropertyCell
 import three.THREE
 
 sealed class MyObjectUserData {
     data class HandleBallUserData(
-        val position: PropertyCell<Point>,
+        val handle: UserBezierMesh.Handle,
     ) : MyObjectUserData()
 }
 

@@ -33,15 +33,15 @@ fun buildHandleBallMesh(
 }
 
 fun buildFlatHandleBallMesh(
-    position: PropertyCell<Point>,
+    handle: UserBezierMesh.Handle,
 ): THREE.Mesh {
     val sphereMesh = createReactiveMesh(
         geometry = handleBallGeometry,
         material = handleBallMaterial,
         userData = MyObjectUserData.HandleBallUserData(
-            position = position,
+            handle = handle,
         ),
-        position = position.map {
+        position = handle.position.map {
             it.toPoint3D()
         },
     )
