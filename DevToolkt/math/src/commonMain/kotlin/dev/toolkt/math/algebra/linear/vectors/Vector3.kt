@@ -159,6 +159,13 @@ data class Vector3(
 
         else -> true
     }
+
+    fun toVector4(a3: Double): Vector4 = Vector4(
+        a0 = a0,
+        a1 = a1,
+        a2 = a2,
+        a3 = a3,
+    )
 }
 
 operator fun Double.times(

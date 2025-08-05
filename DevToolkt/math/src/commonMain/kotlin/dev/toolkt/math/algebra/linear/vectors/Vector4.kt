@@ -38,6 +38,13 @@ data class Vector4(
     val magnitude: Double
         get() = sqrt(magnitudeSquared)
 
+    val subVector3: Vector3
+        get() = Vector3(
+            a0 = a0,
+            a1 = a1,
+            a2 = a2,
+        )
+
     fun isNormalized(): Boolean = magnitudeSquared.equalsWithTolerance(1.0)
 
     fun normalize(): Vector4 = this / magnitude
