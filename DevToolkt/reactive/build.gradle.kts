@@ -39,6 +39,7 @@ kotlin {
         freeCompilerArgs.addAll(
             listOf(
                 "-Xconsistent-data-class-copy-visibility",
+                "-Xcontext-parameters",
             ),
         )
     }
