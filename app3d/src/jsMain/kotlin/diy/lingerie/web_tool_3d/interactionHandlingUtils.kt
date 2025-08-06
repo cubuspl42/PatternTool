@@ -7,6 +7,7 @@ import dev.toolkt.geometry.Plane
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.event_stream.hold
 import diy.lingerie.web_tool_3d.application_state.InteractionState
 import diy.lingerie.web_tool_3d.application_state.PresentationState
@@ -22,11 +23,31 @@ fun setupInteractionHandlers(
     myRenderer: MyRenderer,
 ) {
     val cameraRotation = presentationState.cameraRotation
-
     val myScene = myRenderer.myScene
-
     val camera = myScene.camera
 
+    setupCameraRotationHandler(
+        canvas = canvas,
+        cameraRotation = cameraRotation,
+    )
+
+    setupDragHandler(
+        canvas = canvas,
+        myRenderer = myRenderer,
+        myScene = myScene,
+        camera = camera,
+        interactionState = interactionState,
+    )
+
+    setupCameraResetHandler(
+        presentationState = presentationState,
+    )
+}
+
+private fun setupCameraRotationHandler(
+    canvas: HTMLCanvasElement,
+    cameraRotation: PropertyCell<Double>,
+) {
     canvas.onMouseDragGestureStarted(
         button = ButtonId.MIDDLE,
     ).forEach { mouseGesture ->
@@ -43,7 +64,15 @@ fun setupInteractionHandlers(
 
         mouseGesture.offsetPosition
     }
+}
 
+private fun setupDragHandler(
+    canvas: HTMLCanvasElement,
+    myRenderer: MyRenderer,
+    myScene: MyScene,
+    camera: THREE.PerspectiveCamera,
+    interactionState: InteractionState,
+) {
     canvas.onMouseDragGestureStarted(
         button = ButtonId.LEFT,
     ).forEach { mouseGesture ->
@@ -91,7 +120,11 @@ fun setupInteractionHandlers(
             until = mouseGesture.onFinished,
         )
     }
+}
 
+private fun setupCameraResetHandler(
+    presentationState: PresentationState,
+) {
     document.body!!.getKeyDownEventStream().forEach {
         if (it.key == "0") {
             presentationState.resetCamera()
