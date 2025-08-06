@@ -76,18 +76,24 @@ private fun setupDragHandler(
     canvas.onMouseDragGestureStarted(
         button = ButtonId.LEFT,
     ).forEach { mouseGesture ->
+        // The initial pointer offset in the 2D NDC coordinates
+        val initialPointerOffsetNdc = mouseGesture.offsetPositionNdc.currentValue
+
+        // The 3D object at the initial pointer offset in the 2D NDC coordinates
+        // If there's no object at that position, abort
         val targetObject = getObjectAtNcdCoord(
             myRenderer = myRenderer,
-            ndcCoord = mouseGesture.offsetPositionNdc.currentValue,
+            ndcCoord = initialPointerOffsetNdc,
+            // Consider only the handle ball objects
             candidates = myScene.myBezierMesh.handleBalls,
         ) ?: return@forEach
 
+        // The handle ball user data
+        // If the object is not a handle ball (which is not expected, as we considered only handle balls), abort
         val handleBallUserData = targetObject.myUserData as? MyObjectUserData.HandleBallUserData ?: return@forEach
 
+        // The handle manipulated by the handle ball
         val handle: UserBezierMesh.Handle = handleBallUserData.handle
-
-        // The initial pointer offset in the 2D NDC coordinates
-        val initialPointerOffsetNdc = mouseGesture.offsetPositionNdc.currentValue
 
         // The initial handle positon in the 2D NDC coordinates
         val initialHandlePositionNdc = targetObject.worldPosition.toPoint3D().project(camera = camera).withoutZ()
