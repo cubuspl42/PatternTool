@@ -110,8 +110,7 @@ private fun setupDragHandler(
             ).map { pointerRayNow ->
                 // The image of the (corrected) pointer offset on the grab plane
                 val grabPointNow = grabPlane.findIntersection(pointerRayNow) ?: run {
-                    // A ray cast from camera is unlikely to be parallel to the grab plane, but technically it's not
-                    // impossible
+                    // If we point towards "the sky", there won't be any intersection at all
                     return@map Point.origin
                 }
 
