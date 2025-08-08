@@ -170,8 +170,10 @@ external object THREE {
 
     class Mesh(
         geometry: BufferGeometry,
-        material: Material,
-    ) : Object3D
+        material: Material = definedExternally,
+    ) : Object3D {
+        var material: Material
+    }
 
     abstract class Light() : Object3D {
         var color: Int

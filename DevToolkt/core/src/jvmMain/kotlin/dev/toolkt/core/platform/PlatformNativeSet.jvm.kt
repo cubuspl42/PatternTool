@@ -1,7 +1,9 @@
 package dev.toolkt.core.platform
 
-actual class PlatformNativeSet<E : Any> actual constructor() {
-    private val mutableSet = mutableSetOf<E>()
+actual class PlatformNativeSet<E : Any>(
+    private val mutableSet: MutableSet<E> = mutableSetOf<E>(),
+) {
+    actual constructor() : this(mutableSet = mutableSetOf<E>())
 
     actual val size: Int
         get() = mutableSet.size
@@ -24,8 +26,5 @@ actual class PlatformNativeSet<E : Any> actual constructor() {
         mutableSet.forEach(callback)
     }
 
-
-    actual fun copy(): PlatformNativeSet<E> {
-        TODO("Not yet implemented")
-    }
+    actual fun copy(): PlatformNativeSet<E> = PlatformNativeSet(mutableSet = mutableSet.toMutableSet())
 }

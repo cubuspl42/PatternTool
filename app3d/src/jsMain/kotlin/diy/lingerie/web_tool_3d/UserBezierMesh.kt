@@ -1,9 +1,11 @@
 package diy.lingerie.web_tool_3d
 
+import dev.toolkt.geometry.Plane
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.cell.PropertyCell
 
 class UserBezierMesh private constructor(
@@ -13,7 +15,13 @@ class UserBezierMesh private constructor(
     class Handle(
         initialPosition: Point,
     ) {
-        val position = PropertyCell(initialValue = initialPosition)
+        companion object {
+            val plane = Plane.Xy
+        }
+
+        val position = MutableCell(initialValue = initialPosition)
+
+        val worldPosition: Cell<Point3D> = position.map { it.toPoint3D() }
     }
 
     companion object {

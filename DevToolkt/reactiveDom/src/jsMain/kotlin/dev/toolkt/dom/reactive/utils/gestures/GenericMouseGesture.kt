@@ -10,6 +10,7 @@ import dev.toolkt.dom.reactive.utils.getMouseMoveEventStream
 import dev.toolkt.dom.reactive.utils.getMouseUpEventStream
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.cell.switch
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.event_stream.mergeWith
@@ -36,6 +37,19 @@ class GenericMouseGesture(
         get() = newestMouseEvent.map { it.offsetPointNdc }
 }
 
+class MouseDragGesture(
+    private val button: ButtonId,
+    private val targetElement: Element,
+    val initialMouseEvent: MouseEvent,
+) {
+    fun trackMouseMovement(): Cell<MouseEvent> = targetElement.getMouseMoveEventStream().hold(
+        initialValue = initialMouseEvent,
+    )
+
+    val onReleased: EventStream<MouseEvent>
+        get() = targetElement.getMouseUpEventStream(button = button)
+}
+
 class SvgMouseGesture(
     val point: Cell<Point>,
     override val onFinished: Future<Unit>,
@@ -49,22 +63,39 @@ fun Element.onMouseOverGestureStarted(): EventStream<GenericMouseGesture> =
         )
     }
 
+fun Element.trackMouseClientPoint(): Cell<Point?> = trackMouseFeature { it.clientPoint }
+
+fun Element.trackMouseOffsetPoint(): Cell<Point?> = trackMouseFeature { it.offsetPoint }
+
+fun Element.trackMouseOffsetPointNdc(): Cell<Point?> = trackMouseFeature { it.offsetPointNdc }
+
+private fun <FeatureT : Any> Element.trackMouseFeature(
+    extractFeature: (MouseEvent) -> FeatureT,
+): Cell<FeatureT?> = Future.oscillate(
+    initialValue = Cell.of(null),
+    switchPhase1 = {
+        getMouseEnterEventStream().next().map { mouseEnterEvent ->
+            getMouseMoveEventStream().map(extractFeature).hold(extractFeature(mouseEnterEvent))
+        }
+    },
+    switchPhase2 = {
+        getMouseLeaveEventStream().next().map { Cell.of(null) }
+    },
+).switch()
+
 enum class ButtonId(val id: Short) {
     LEFT(0), MIDDLE(1), RIGHT(2),
 }
 
 fun Element.onMouseDragGestureStarted(
     button: ButtonId,
-): EventStream<GenericMouseGesture> = this.getMouseDownEventStream(
+): EventStream<MouseDragGesture> = this.getMouseDownEventStream(
     button = button,
 ).map { mouseDownEvent ->
-    val terminatingEventStream = getMouseUpEventStream(button = button).mergeWith(
-        getMouseLeaveEventStream(),
-    )
-
-    GenericMouseGesture(
-        newestMouseEvent = getMouseMoveEventStream().hold(mouseDownEvent),
-        onFinished = terminatingEventStream.next().unit(),
+    MouseDragGesture(
+        button = button,
+        targetElement = this,
+        initialMouseEvent = mouseDownEvent,
     )
 }
 

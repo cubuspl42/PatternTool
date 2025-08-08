@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.cell
 
+import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.hold
@@ -121,6 +122,10 @@ sealed class Cell<out V> {
         return target
     }
 
+    /**
+     * Weak bind (!)
+     * TODO: Better comment, consistent naming?
+     */
     abstract fun <T : Any> bind(
         target: T,
         update: (T, V) -> Unit,
@@ -148,6 +153,33 @@ sealed class Cell<out V> {
         nestedEventStream = map(transform),
     )
 }
+fun <V> Cell<V>.connect(
+    targetCell: MutableCell<V>,
+    doDisconnect: EventStream<Unit>,
+) {
+    val subscription = connect(targetCell = targetCell)
+
+    // This stinks
+    doDisconnect.forEach {
+        subscription.cancel()
+    }
+}
+
+fun <V> Cell<V>.connect(
+    targetCell: MutableCell<V>,
+): Subscription {
+    targetCell.set(currentValue)
+
+    return newValues.listen(
+        object : Listener<V> {
+            override fun handle(event: V) {
+                targetCell.set(event)
+            }
+        }
+    )
+}
+
+fun <V> Cell<Cell<V>>.switch() = switchOf { it }
 
 fun <V : Any, Vr : Any> Cell<V?>.mapNotNull(
     transform: (V) -> Vr,

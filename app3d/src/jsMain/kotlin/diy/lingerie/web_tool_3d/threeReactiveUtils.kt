@@ -219,15 +219,21 @@ fun createReactiveGeometry(
 
 fun createReactiveMesh(
     geometry: THREE.BufferGeometry,
-    material: THREE.Material,
+    material: Cell<THREE.Material>,
     userData: Any? = null,
     position: Cell<Point3D>? = null,
     rotation: Cell<THREE.Euler>? = null,
 ): THREE.Mesh {
     val mesh = THREE.Mesh(
         geometry = geometry,
-        material = material,
     )
+
+    material.bind(
+        target = mesh,
+    ) { mesh, materialNow ->
+
+        mesh.material = materialNow
+    }
 
     if (userData != null) {
         mesh.userData = userData

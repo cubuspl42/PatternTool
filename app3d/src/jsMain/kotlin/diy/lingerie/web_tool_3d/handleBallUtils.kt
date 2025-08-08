@@ -1,10 +1,9 @@
 package diy.lingerie.web_tool_3d
 
 import dev.toolkt.dom.pure.PureColor
-import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.cell.PropertyCell
+import diy.lingerie.web_tool_3d.application_state.InteractionState
 import three.MeshLambertMaterialParams
 import three.THREE
 
@@ -20,12 +19,18 @@ private val handleBallMaterial = THREE.MeshLambertMaterial(
     ),
 )
 
+private val handleBallFocusMaterial = THREE.MeshLambertMaterial(
+    params = MeshLambertMaterialParams(
+        color = PureColor.lightBlue.value,
+    ),
+)
+
 fun buildHandleBallMesh(
     position: Cell<Point3D>,
 ): THREE.Mesh {
     val sphereMesh = createReactiveMesh(
         geometry = handleBallGeometry,
-        material = handleBallMaterial,
+        material = Cell.of(handleBallMaterial),
         position = position,
     )
 
@@ -33,11 +38,19 @@ fun buildHandleBallMesh(
 }
 
 fun buildFlatHandleBallMesh(
+    interactionState: InteractionState,
     handle: UserBezierMesh.Handle,
 ): THREE.Mesh {
+    val isFocused = interactionState.focusedHandle.map { it == handle }
+
     val sphereMesh = createReactiveMesh(
         geometry = handleBallGeometry,
-        material = handleBallMaterial,
+        material = isFocused.map { isFocusedNow ->
+            when {
+                isFocusedNow -> handleBallFocusMaterial
+                else -> handleBallMaterial
+            }
+        },
         userData = MyObjectUserData.HandleBallUserData(
             handle = handle,
         ),

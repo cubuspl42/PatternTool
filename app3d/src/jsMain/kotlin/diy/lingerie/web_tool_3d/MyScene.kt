@@ -38,6 +38,7 @@ class MyScene(
             val floor = buildFloor()
 
             val myBezierMesh = MyBezierMesh.create(
+                interactionState = applicationState.interactionState,
                 userBezierMesh = applicationState.documentState.userBezierMesh,
                 color = bezierMeshColor.value,
             )

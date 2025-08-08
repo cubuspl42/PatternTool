@@ -128,6 +128,9 @@ abstract class EventStream<out E> : EventSource<E> {
 
     abstract fun next(): Future<E>
 
+    fun onNext(): Future<Unit> = next().unit()
+
+    // This stinks
     abstract fun forEach(
         effect: (E) -> Unit,
     )

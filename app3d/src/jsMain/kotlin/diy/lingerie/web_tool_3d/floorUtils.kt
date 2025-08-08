@@ -1,6 +1,7 @@
 package diy.lingerie.web_tool_3d
 
 import dev.toolkt.dom.pure.PureColor
+import dev.toolkt.reactive.cell.Cell
 import three.MeshLambertMaterialParams
 import three.THREE
 
@@ -22,7 +23,7 @@ private val floorMaterial = THREE.MeshLambertMaterial(
 fun buildFloor(): THREE.Mesh {
     val floorMesh = createReactiveMesh(
         geometry = floorGeometry,
-        material = floorMaterial,
+        material = Cell.of(floorMaterial),
     )
 
     return floorMesh

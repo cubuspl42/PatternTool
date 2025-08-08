@@ -6,7 +6,7 @@ import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createResponsiveElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlCanvasElement
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.cell.PropertyCell
+import dev.toolkt.reactive.managed_io.executeBound
 import diy.lingerie.web_tool_3d.application_state.ApplicationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLElement
@@ -47,11 +47,13 @@ fun createRendererElement(
         myScene = myScene,
     )
 
-    setupInteractionHandlers(
+    handleInteractionStateEvents(
         canvas = canvas,
         presentationState = presentationState,
         interactionState = interactionState,
         myRenderer = myRenderer,
+    ).executeBound(
+        target = canvas,
     )
 
     return@createResponsiveElement canvas

@@ -16,6 +16,8 @@ data class PureColor(
 
         val green = PureColor(0, 255, 0)
 
+        val lightBlue = PureColor(173, 216, 230)
+
         val blue = PureColor(0, 0, 255)
 
         val lightGray = PureColor(211, 211, 211)

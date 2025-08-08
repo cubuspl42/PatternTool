@@ -67,6 +67,13 @@ interface StrongEventSource<out EventT> {
     ): Subscription
 }
 
+fun <EventT> StrongEventSource<EventT>.pin(): Subscription = listen(
+    object : Listener<EventT> {
+        override fun handle(event: EventT) {
+        }
+    },
+)
+
 fun <EventT> StrongEventSource<EventT>.listenInDependent(
     dependentId: Int,
     listener: ListenerFn<EventT>,

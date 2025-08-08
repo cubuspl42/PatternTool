@@ -4,6 +4,9 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.NeverEventStream
 import dev.toolkt.reactive.event_stream.hold
+import dev.toolkt.reactive.managed_io.Program
+import dev.toolkt.reactive.managed_io.Schedule
+import dev.toolkt.reactive.managed_io.executeCurrent
 
 abstract class Future<out V> {
     sealed class State<out V>
@@ -91,6 +94,12 @@ abstract class Future<out V> {
 
     @Suppress("FunctionName")
     fun null_(): Future<Nothing?> = map { null }
+
+    fun thenExecute(
+        action: (V) -> Schedule,
+    ): Schedule = onResult.single().map {
+        action(it)
+    }.hold(Program.Noop).executeCurrent()
 
     abstract val onResult: EventStream<V>
 
