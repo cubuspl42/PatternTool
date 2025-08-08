@@ -44,7 +44,7 @@ external object THREE {
         fun add(obj: Object3D): Scene
     }
 
-    open class Camera : Object3D
+    abstract class Camera : Object3D
 
     class PerspectiveCamera(
         fov: Double,
@@ -76,7 +76,7 @@ external object THREE {
         var canvas: HTMLElement?
     }
 
-    open class Object3D {
+    abstract class Object3D {
         val position: Vector3
 
         val rotation: Euler
@@ -95,19 +95,24 @@ external object THREE {
 
     class Group : Object3D
 
-    class Euler(x: Double = definedExternally, y: Double = definedExternally, z: Double = definedExternally) {
+    class Euler(
+        x: Double = definedExternally,
+        y: Double = definedExternally,
+        z: Double = definedExternally,
+    ) {
         var x: Double
+
         var y: Double
+
         var z: Double
     }
 
-
     open class BufferGeometry {
-        fun setAttribute(name: String, attribute: BufferAttribute): BufferGeometry
+        fun setAttribute(name: String, attribute: BufferAttributeBase): BufferGeometry
 
         fun setIndex(indices: Array<Int>): BufferGeometry
 
-        fun setIndex(indices: BufferAttribute): BufferGeometry
+        fun setIndex(indices: BufferAttributeBase): BufferGeometry
 
         fun computeVertexNormals(): BufferGeometry
     }
@@ -138,14 +143,7 @@ external object THREE {
         heightSegments: Int = definedExternally,
     ) : BufferGeometry
 
-    class BufferAttribute(
-        array: TypedArray<*>,
-        itemSize: Int,
-    ) {
-        var needsUpdate: Boolean
-    }
-
-    open class Material {
+    abstract class Material {
         val wireframe: Boolean
     }
 
@@ -167,6 +165,41 @@ external object THREE {
     class MeshLambertMaterial(
         params: MeshLambertMaterialParams = definedExternally,
     ) : Material
+
+
+    class InstancedBufferGeometry : BufferGeometry {
+        var instanceCount: Int
+    }
+
+    abstract class BufferAttributeBase {
+        var needsUpdate: Boolean
+    }
+
+    class BufferAttribute(
+        array: TypedArray<*>,
+        itemSize: Int,
+        normalized: Boolean = definedExternally,
+    ) : BufferAttributeBase
+
+    class InstancedBufferAttribute(
+        array: TypedArray<*>,
+        itemSize: Int,
+        normalized: Boolean = definedExternally,
+    ) : BufferAttributeBase
+
+    interface RawShaderMaterialParams {
+        val vertexShader: String
+        val fragmentShader: String
+    }
+
+    class RawShaderMaterial(
+        params: RawShaderMaterialParams = definedExternally,
+    ) : Material
+
+    class LineSegments(
+        geometry: BufferGeometry,
+        material: Material = definedExternally,
+    ) : Object3D
 
     class Mesh(
         geometry: BufferGeometry,
@@ -278,6 +311,17 @@ inline fun WebGLRendererParams(
 ): THREE.WebGLRendererParams {
     val obj = jsObject()
     obj["canvas"] = canvas
+    return obj
+}
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun RawShaderMaterialParams(
+    vertexShader: String,
+    fragmentShader: String,
+): THREE.RawShaderMaterialParams {
+    val obj = jsObject()
+    obj["vertexShader"] = vertexShader
+    obj["fragmentShader"] = fragmentShader
     return obj
 }
 
