@@ -16,17 +16,17 @@ fun createLineGridGeometry(
      */
     sideWidth: Int,
 ): LineGridGeometry {
-    val n = sideWidth
+    val n = sideWidth / 2
     val nD = sideWidth.toDouble()
 
     // The count of vertices on a single side (not including corners)
-    val m = n - 1
+    val m = 2 * n - 1
 
     // Corner vertices
-    val corner0 = THREE.Vector3(0.0, 0.0, 0.0)
-    val corner1 = THREE.Vector3(nD, 0.0, 0.0)
+    val corner0 = THREE.Vector3(-nD, -nD, 0.0)
+    val corner1 = THREE.Vector3(nD, -nD, 0.0)
     val corner2 = THREE.Vector3(nD, nD, 0.0)
-    val corner3 = THREE.Vector3(0.0, nD, 0.0)
+    val corner3 = THREE.Vector3(-nD, nD, 0.0)
 
     val sideLines = listOf(
         // Top side
@@ -43,20 +43,20 @@ fun createLineGridGeometry(
         corner0,
     )
 
-    val verticalLines = (1..m).flatMap { j ->
+    val verticalLines = (-m..m).flatMap { j ->
         val jD = j.toDouble()
 
         listOf(
-            THREE.Vector3(jD, 0.0, 0.0),
+            THREE.Vector3(jD, -nD, 0.0),
             THREE.Vector3(jD, nD, 0.0),
         )
     }
 
-    val horizontalLines = (1..m).flatMap { i ->
+    val horizontalLines = (-m..m).flatMap { i ->
         val iD = i.toDouble()
 
         listOf(
-            THREE.Vector3(0.0, iD, 0.0),
+            THREE.Vector3(-nD, iD, 0.0),
             THREE.Vector3(nD, iD, 0.0),
         )
     }
