@@ -3,7 +3,6 @@ package diy.lingerie.web_tool_3d
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.geometry.Point3D
-import dev.toolkt.geometry.Vector3
 import dev.toolkt.reactive.cell.Cell
 import diy.lingerie.web_tool_3d.application_state.ApplicationState
 import three.THREE
@@ -35,7 +34,7 @@ class MyScene(
                 rotation = cameraRotation,
             )
 
-            val floor = buildFloor()
+            val floorGrid = buildFloorGrid()
 
             val myBezierMesh = MyBezierMesh.create(
                 interactionState = applicationState.interactionState,
@@ -51,13 +50,13 @@ class MyScene(
                         position = Cell.of(lightPosition),
                     ),
                     myBezierMesh.root,
-                    floor,
+                    floorGrid,
                 ),
             )
 
             return MyScene(
                 myCamera = myCamera,
-                floor = floor,
+                floor = floorGrid,
                 myBezierMesh = myBezierMesh,
                 scene = scene,
             )

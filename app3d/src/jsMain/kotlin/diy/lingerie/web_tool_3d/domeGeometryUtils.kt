@@ -3,6 +3,7 @@ package diy.lingerie.web_tool_3d
 import dev.toolkt.core.math.sq
 import three.Float32Array
 import three.THREE
+import three.toList
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -95,9 +96,3 @@ private fun getVertexIndex(
     i: Int,
     j: Int,
 ): Int = 1 + i * m + (j - 1)
-
-private fun THREE.Vector3.toList(): List<Double> = listOf(
-    this.x,
-    this.y,
-    this.z,
-)

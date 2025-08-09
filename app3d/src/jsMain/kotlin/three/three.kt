@@ -166,6 +166,17 @@ external object THREE {
         params: MeshLambertMaterialParams = definedExternally,
     ) : Material
 
+    interface LineBasicMaterialParams {
+        val color: Int
+        val linewidth: Int?
+    }
+
+    class LineBasicMaterial(
+        params: LineBasicMaterialParams = definedExternally,
+    ) : Material {
+        var color: Int
+        var linewidth: Int
+    }
 
     class InstancedBufferGeometry : BufferGeometry {
         var instanceCount: Int
@@ -325,6 +336,17 @@ inline fun RawShaderMaterialParams(
     return obj
 }
 
+@Suppress("NOTHING_TO_INLINE")
+fun LineBasicMaterialParams(
+    color: Int,
+    linewidth: Double = 1.0,
+): THREE.LineBasicMaterialParams {
+    val obj = jsObject()
+    obj["color"] = color
+    obj["linewidth"] = linewidth
+    return obj
+}
+
 abstract external class TypedArray<T> {
     val length: Int
 
@@ -357,3 +379,9 @@ inline operator fun Uint16Array.get(index: Int): Int = asDynamic()[index]
 inline operator fun Uint16Array.set(index: Int, newItem: Int) {
     asDynamic()[index] = newItem
 }
+
+fun THREE.Vector3.toList(): List<Double> = listOf(
+    this.x,
+    this.y,
+    this.z,
+)
