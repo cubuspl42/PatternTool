@@ -26,6 +26,11 @@ class Ray(
             startingPoint = point,
             direction = direction,
         )
+
+        fun between(
+            origin: Point,
+            target: Point,
+        ): Ray = TODO()
     }
 
     val opposite: Ray
@@ -65,5 +70,9 @@ class Ray(
             |  direction = ${direction.toReprString().indentLater()},
             |)
         """.trimMargin()
+    }
+
+    fun findPoint(distance: Span): Point {
+        TODO("Not yet implemented")
     }
 }

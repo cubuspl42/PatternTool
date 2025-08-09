@@ -3,9 +3,6 @@ package diy.lingerie.web_tool_3d
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Ray3
-import dev.toolkt.geometry.negateY
-import dev.toolkt.math.algebra.linear.vectors.Vector2
-import dev.toolkt.math.algebra.linear.vectors.minus
 import dev.toolkt.reactive.cell.Cell
 import org.w3c.dom.HTMLCanvasElement
 import three.THREE
@@ -90,7 +87,7 @@ class MyRenderer(
     fun castRawRay(
         ndcCoordNow: Point,
     ): Ray3 {
-        val ndcRay = Ray3.of(
+        val ndcRay = Ray3.between(
             origin = ndcCoordNow.toPoint3D(z = 0.0),
             target = ndcCoordNow.toPoint3D(z = 0.5),
         )

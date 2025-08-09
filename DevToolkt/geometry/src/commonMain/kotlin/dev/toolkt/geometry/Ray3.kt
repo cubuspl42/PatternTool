@@ -19,7 +19,7 @@ class Ray3(
         )
 
     companion object {
-        fun of(
+        fun between(
             origin: Point3D,
             target: Point3D,
         ): Ray3 = Ray3(
@@ -30,8 +30,18 @@ class Ray3(
 
     fun transformBy(
         transformation: Transformation3D,
-    ): Ray3 = Ray3.of(
+    ): Ray3 = between(
         origin = transformation.transform(origin),
         target = transformation.transform(target),
     )
+
+    fun findPoint(distance: Span): Point3D {
+        TODO("Not yet implemented")
+    }
+
+    val opposite: Ray3
+        get() = Ray3(
+            origin = origin,
+            direction = direction.opposite,
+        )
 }

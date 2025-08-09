@@ -32,4 +32,9 @@ value class Direction3 internal constructor(
     init {
         require(normalizedDirectionVector.isNormalized())
     }
+
+    val opposite: Direction3
+        get() = Direction3(
+            normalizedDirectionVector = -normalizedDirectionVector,
+        )
 }
