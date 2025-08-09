@@ -1,6 +1,7 @@
 package diy.lingerie.web_tool
 
 import dev.toolkt.dom.pure.style.PurePointerEvents
+import dev.toolkt.dom.reactive.utils.gestures.ButtonId
 import dev.toolkt.dom.reactive.utils.gestures.onSvgDragGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.track
 import dev.toolkt.geometry.Point
@@ -20,7 +21,7 @@ fun <ElementT : SVGElement> createDraggableSvgElement(
 
     val trackedDragGesture = draggableElement.onSvgDragGestureStarted(
         container = container,
-        button = 0,
+        button = ButtonId.LEFT,
     ).track()
 
     trackedDragGesture.newValues.filterNotNull().forEach { newDragGesture ->
