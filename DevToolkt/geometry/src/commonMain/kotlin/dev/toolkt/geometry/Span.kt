@@ -75,6 +75,10 @@ sealed class Span : SpatialObject, Comparable<Span> {
 
     operator fun div(other: Span): Double = sqrt(valueSquared / other.valueSquared)
 
+    operator fun minus(other: Span): Span {
+        return Span.of(value - other.value)
+    }
+
     abstract val value: Double
 
     abstract val valueSquared: Double
