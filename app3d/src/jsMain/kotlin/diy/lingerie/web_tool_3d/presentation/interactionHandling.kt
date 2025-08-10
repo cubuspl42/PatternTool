@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool_3d
+package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.dom.reactive.utils.event.offsetPoint
 import dev.toolkt.dom.reactive.utils.event.offsetPointNdc
@@ -15,6 +15,7 @@ import dev.toolkt.reactive.managed_io.Program
 import dev.toolkt.reactive.managed_io.Schedule
 import dev.toolkt.reactive.managed_io.executeCurrentOf
 import dev.toolkt.reactive.managed_io.forEachInvoke
+import diy.lingerie.web_tool_3d.UserBezierMesh
 import diy.lingerie.web_tool_3d.application_state.InteractionState
 import diy.lingerie.web_tool_3d.application_state.PresentationState
 import kotlinx.browser.document

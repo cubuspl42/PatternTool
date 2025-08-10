@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool_3d
+package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureUnit

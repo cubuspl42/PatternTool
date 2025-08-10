@@ -1,11 +1,10 @@
-package diy.lingerie.web_tool_3d
+package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.reactive.utils.DOMHighResTimeStamp
 import dev.toolkt.dom.reactive.utils.requestAnimationFrames
 import dev.toolkt.geometry.Point3D
-import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell

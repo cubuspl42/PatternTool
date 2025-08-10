@@ -1,8 +1,9 @@
-package diy.lingerie.web_tool_3d
+package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.reactive.cell.Cell
+import diy.lingerie.web_tool_3d.UserBezierMesh
 import diy.lingerie.web_tool_3d.application_state.InteractionState
 import three.MeshLambertMaterialParams
 import three.THREE

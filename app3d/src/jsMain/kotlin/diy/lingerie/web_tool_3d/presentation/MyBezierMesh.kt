@@ -1,8 +1,9 @@
-package diy.lingerie.web_tool_3d
+package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.reactive.cell.Cell
+import diy.lingerie.web_tool_3d.UserBezierMesh
 import diy.lingerie.web_tool_3d.application_state.InteractionState
 import three.MeshBasicMaterialParams
 import three.MeshLambertMaterialParams
@@ -27,22 +28,22 @@ class MyBezierMesh(
 
             val point0HandleBall = buildFlatHandleBallMesh(
                 handle = userBezierMesh.handle0,
-                interactionState=interactionState,
+                interactionState = interactionState,
             )
 
             val point1HandleBall = buildFlatHandleBallMesh(
                 handle = userBezierMesh.handle1,
-                interactionState=interactionState,
+                interactionState = interactionState,
             )
 
             val point2HandleBall = buildFlatHandleBallMesh(
                 handle = userBezierMesh.handle2,
-                interactionState=interactionState,
+                interactionState = interactionState,
             )
 
             val point3HandleBall = buildFlatHandleBallMesh(
                 handle = userBezierMesh.handle3,
-                interactionState=interactionState,
+                interactionState = interactionState,
             )
 
             val apexHandleBall = buildHandleBallMesh(
@@ -58,7 +59,7 @@ class MyBezierMesh(
             )
 
             val bezierMeshGroup = createReactiveDualMeshGroup(
-                position = Cell.of(Point3D.origin),
+                position = Cell.Companion.of(Point3D.Companion.origin),
                 geometry = createReactiveGeometry(
                     createUserBezierMeshGeometryData(
                         userBezierMesh = userBezierMesh,
@@ -71,13 +72,13 @@ class MyBezierMesh(
                 ),
                 secondaryMaterial = THREE.MeshBasicMaterial(
                     MeshBasicMaterialParams(
-                        color = PureColor.green.value,
+                        color = PureColor.Companion.green.value,
                         wireframe = true,
                         transparent = true,
                         opacity = 0.25,
                     ),
                 ),
-                rotation = Cell.of(THREE.Euler()),
+                rotation = Cell.Companion.of(THREE.Euler()),
             )
 
             return MyBezierMesh(

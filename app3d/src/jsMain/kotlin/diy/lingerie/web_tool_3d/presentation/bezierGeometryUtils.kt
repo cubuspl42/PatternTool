@@ -1,8 +1,9 @@
-package diy.lingerie.web_tool_3d
+package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.curves.OpenCurve
 import dev.toolkt.reactive.cell.Cell
+import diy.lingerie.web_tool_3d.UserBezierMesh
 
 private const val n = 32
 

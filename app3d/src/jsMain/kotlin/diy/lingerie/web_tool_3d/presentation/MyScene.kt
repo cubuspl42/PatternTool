@@ -1,9 +1,10 @@
-package diy.lingerie.web_tool_3d
+package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.reactive.cell.Cell
+import diy.lingerie.web_tool_3d.presentation.MyBezierMesh
 import diy.lingerie.web_tool_3d.application_state.ApplicationState
 import three.THREE
 
@@ -36,7 +37,7 @@ class MyScene(
 
             val floorGrid = buildFloorGrid()
 
-            val myBezierMesh = MyBezierMesh.create(
+            val myBezierMesh = MyBezierMesh.Companion.create(
                 interactionState = applicationState.interactionState,
                 userBezierMesh = applicationState.documentState.userBezierMesh,
                 color = bezierMeshColor.value,

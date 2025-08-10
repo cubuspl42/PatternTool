@@ -6,6 +6,7 @@ import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.curves.BezierCurve
 import diy.lingerie.web_tool_3d.application_state.ApplicationState
 import diy.lingerie.web_tool_3d.application_state.DocumentState
+import diy.lingerie.web_tool_3d.presentation.createRootElement
 import kotlinx.browser.document
 import kotlinx.browser.window
 

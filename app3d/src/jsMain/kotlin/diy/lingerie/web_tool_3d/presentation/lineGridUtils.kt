@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool_3d
+package diy.lingerie.web_tool_3d.presentation
 
 import three.Float32Array
 import three.THREE
