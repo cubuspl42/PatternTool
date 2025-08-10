@@ -17,6 +17,9 @@ class FabricPiece(
     value class ParticleStateMap(
         val particleStateById: Map<ParticleId, ParticleState>,
     ) {
+        val states: Collection<ParticleState>
+            get() = particleStateById.values
+
         fun getParticleState(
             particleId: ParticleId,
         ): ParticleState = particleStateById[particleId]
@@ -222,6 +225,9 @@ class FabricPiece(
             )
         }
     }
+
+    val particleStates: Collection<ParticleState>
+        get() = particleStateMap.states
 
     /**
      * Simulate the behavior of the fabric piece for a given [stepDuration] under the influence of an external force.

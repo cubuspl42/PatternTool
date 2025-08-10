@@ -294,7 +294,7 @@ fun createReactiveAmbientLight(
 fun createReactivePointLight(
     position: Cell<Point3D>,
 ): THREE.Light {
-    val light = THREE.PointLight(0xff0000, 1.0, 100.0)
+    val light = THREE.PointLight(0xff0000, 1.0, 10.0)
 
     position.bind(
         target = light,

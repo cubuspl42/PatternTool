@@ -76,7 +76,7 @@ fun createLineGridGeometry(
     }
 
     return LineGridGeometry(
-        geometry,
+        geometry = geometry,
     )
 }
 
