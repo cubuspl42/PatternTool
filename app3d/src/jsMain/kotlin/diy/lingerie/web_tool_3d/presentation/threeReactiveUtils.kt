@@ -133,6 +133,7 @@ fun createReactiveRenderer(
 
     var initialTimestamp: DOMHighResTimeStamp? = null
 
+    // The subscription is ignored (improve this?)
     window.requestAnimationFrames { timestamp ->
         val previousTimestamp = when (val foundInitialTimestamp = initialTimestamp) {
             null -> {

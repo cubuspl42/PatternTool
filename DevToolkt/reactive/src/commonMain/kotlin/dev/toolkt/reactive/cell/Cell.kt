@@ -14,6 +14,20 @@ sealed class Cell<out V> {
     )
 
     companion object {
+        fun <V> selfLooped(
+            placeholderValue: V,
+            block: (Cell<V>) -> Cell<V>,
+        ): Cell<V> {
+            val (_, cell) = loopedPair(
+                placeholderValue = placeholderValue,
+                block = {
+                    Pair(Unit, block(it))
+                },
+            )
+
+            return cell
+        }
+
         fun <V, R> looped(
             placeholderValue: V,
             block: (Cell<V>) -> Pair<R, Cell<V>>,
@@ -153,6 +167,7 @@ sealed class Cell<out V> {
         nestedEventStream = map(transform),
     )
 }
+
 fun <V> Cell<V>.connect(
     targetCell: MutableCell<V>,
     doDisconnect: EventStream<Unit>,
@@ -175,7 +190,7 @@ fun <V> Cell<V>.connect(
             override fun handle(event: V) {
                 targetCell.set(event)
             }
-        }
+        },
     )
 }
 

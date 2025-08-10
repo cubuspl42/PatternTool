@@ -2,7 +2,7 @@ package diy.lingerie.web_tool_3d.application_state.physics
 
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.math.algebra.linear.vectors.Vector3
-import diy.lingerie.web_tool_3d.application_state.inSeconds
+import dev.toolkt.dom.reactive.utils.inSeconds
 import kotlin.time.Duration
 
 value class Velocity(

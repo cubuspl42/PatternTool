@@ -10,6 +10,7 @@ import dev.toolkt.reactive.event_stream.getEventStream
 import kotlinx.browser.window
 import org.w3c.dom.Window
 import org.w3c.dom.events.Event
+import kotlin.time.Duration
 
 typealias DOMHighResTimeStamp = Double
 
@@ -26,12 +27,10 @@ fun Window.trackSize(): Cell<PureSize> = onResize().fetch { this.currentSize }
 fun Window.requestAnimationFrames(
     callback: (timestamp: DOMHighResTimeStamp) -> Unit,
 ): Subscription = object : Subscription {
-    var handle = requestSingleFrame()
+    var handle: Int = requestNextFrame()
 
-    private fun requestSingleFrame(): Int = requestAnimationFrame { timestamp ->
-        requestAnimationFrame {
-            handle = requestSingleFrame()
-        }
+    private fun requestNextFrame(): Int = requestAnimationFrame { timestamp ->
+        handle = requestNextFrame()
 
         callback(timestamp)
     }
@@ -41,8 +40,38 @@ fun Window.requestAnimationFrames(
     }
 }
 
+fun Window.setTimeouts(
+    delay: Duration,
+    callback: () -> Unit,
+): Subscription = object : Subscription {
+    var handle: Int = setNextTimeout()
+
+    private fun setNextTimeout(): Int = setTimeout(
+        handler = {
+            handle = setNextTimeout()
+
+            callback()
+        },
+        timeout = delay.inWholeMilliseconds.toInt(),
+    )
+
+    override fun cancel() {
+        clearTimeout(handle)
+    }
+}
+
 private class AnimationFrameEventStream() : DependentEventStream<Unit>() {
     override fun observe(): Subscription = window.requestAnimationFrames { notify(Unit) }
 }
 
 fun createAnimationFrameStream(): EventStream<Unit> = AnimationFrameEventStream()
+
+fun createTimeoutStream(
+    delay: Duration,
+) = object : DependentEventStream<Unit>() {
+    override fun observe(): Subscription = window.setTimeouts(
+        delay = delay,
+    ) {
+        notify(Unit)
+    }
+}

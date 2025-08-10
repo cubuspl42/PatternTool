@@ -1,7 +1,10 @@
-package diy.lingerie.web_tool_3d.application_state
+package dev.toolkt.dom.reactive.utils
 
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
 val Duration.inSeconds: Double
     get() = toDouble(DurationUnit.SECONDS)
+
+val Duration.inMilliseconds: Double
+    get() = toDouble(DurationUnit.MILLISECONDS)

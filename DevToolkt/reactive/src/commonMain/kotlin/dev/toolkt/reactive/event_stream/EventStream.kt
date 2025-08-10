@@ -178,6 +178,20 @@ fun <E> EventStream<E>.hold(
     newValues = this,
 )
 
+fun <V, R> EventStream<V>.accum(
+    initialValue: R,
+    transform: (previousValue: R, newEvent: V) -> R,
+): Cell<R> = Cell.selfLooped(
+    placeholderValue = initialValue,
+) { loopedCell ->
+    map { newEvent ->
+        transform(
+            loopedCell.currentValue,
+            newEvent,
+        )
+    }.hold(initialValue = initialValue)
+}
+
 fun <E> EventStream<Any?>.fetch(
     getValue: () -> E,
 ): Cell<E> = HoldCell(
