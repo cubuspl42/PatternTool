@@ -145,6 +145,17 @@ external object THREE {
         heightSegments: Int = definedExternally,
     ) : BufferGeometry
 
+    class CylinderGeometry(
+        radiusTop: Double = definedExternally,
+        radiusBottom: Double = definedExternally,
+        height: Double = definedExternally,
+        radialSegments: Int = definedExternally,
+        heightSegments: Int = definedExternally,
+        openEnded: Boolean = definedExternally,
+        thetaStart: Double = definedExternally,
+        thetaLength: Double = definedExternally,
+    ) : BufferGeometry
+
     abstract class Material {
         val wireframe: Boolean
     }

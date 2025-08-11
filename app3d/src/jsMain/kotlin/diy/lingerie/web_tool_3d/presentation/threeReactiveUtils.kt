@@ -5,6 +5,8 @@ import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.reactive.utils.DOMHighResTimeStamp
 import dev.toolkt.dom.reactive.utils.requestAnimationFrames
 import dev.toolkt.geometry.Point3D
+import dev.toolkt.geometry.transformations.PrimitiveTransformation3D
+import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
@@ -52,6 +54,19 @@ fun <TargetT : Any> Cell<Point3D>.bind(
         this.x = positionNow.x
         this.y = positionNow.y
         this.z = positionNow.z
+    }
+}
+
+fun <TargetT : Any> Cell<PrimitiveTransformation3D.Scaling>.bind(
+    target: TargetT,
+    selector: (TargetT) -> THREE.Vector3,
+): Subscription = bind(
+    target = target,
+) { target, positionNow ->
+    selector(target).apply {
+        this.x = positionNow.sx
+        this.y = positionNow.sy
+        this.z = positionNow.sz
     }
 }
 
@@ -221,6 +236,7 @@ fun createReactiveMesh(
     geometry: THREE.BufferGeometry,
     material: Cell<THREE.Material>,
     userData: Any? = null,
+    scale: Cell<PrimitiveTransformation3D.Scaling>? = null,
     position: Cell<Point3D>? = null,
     rotation: Cell<THREE.Euler>? = null,
 ): THREE.Mesh {
@@ -231,13 +247,17 @@ fun createReactiveMesh(
     material.bind(
         target = mesh,
     ) { mesh, materialNow ->
-
         mesh.material = materialNow
     }
 
     if (userData != null) {
         mesh.userData = userData
     }
+
+    scale?.bind(
+        target = mesh,
+        selector = Object3D::scale,
+    )
 
     position?.bind(
         target = mesh,

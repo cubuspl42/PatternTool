@@ -31,6 +31,13 @@ data class Point3D(
         ): Point3D = Point3D(
             pointVector = start.pointVector + (end.pointVector - start.pointVector) * ratio,
         )
+
+        fun midPoint(
+            a: Point3D,
+            b: Point3D,
+        ): Point3D = Point3D(
+            pointVector = a.pointVector + (b.pointVector - a.pointVector) / 2.0,
+        )
     }
 
     constructor(
