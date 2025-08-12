@@ -18,7 +18,7 @@ kotlin {
     js(IR) {
         browser {
             webpackTask {
-                mainOutputFileName = "app.js"
+                mainOutputFileName = "bundle.js"
             }
         }
 
