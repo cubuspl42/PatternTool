@@ -6,7 +6,6 @@ import dev.toolkt.dom.reactive.utils.DOMHighResTimeStamp
 import dev.toolkt.dom.reactive.utils.requestAnimationFrames
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.transformations.PrimitiveTransformation3D
-import dev.toolkt.math.algebra.linear.vectors.Vector3
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
