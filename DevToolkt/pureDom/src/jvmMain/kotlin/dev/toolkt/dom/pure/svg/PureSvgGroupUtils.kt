@@ -17,7 +17,7 @@ fun SVGGElement.toPureGroup(): PureSvgGroup = PureSvgGroup(
 fun Transformation.Companion.fromSvgTransformList(
     transformList: SVGTransformList,
 ): Transformation {
-    val consolidatedMatrix = transformList.consolidate().matrix
+    val consolidatedMatrix = transformList.consolidate()?.matrix ?: return Transformation.Identity
 
     return PrimitiveTransformation.Universal(
         a = consolidatedMatrix.a.toDouble(),

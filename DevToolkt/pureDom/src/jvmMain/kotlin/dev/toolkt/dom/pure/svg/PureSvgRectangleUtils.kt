@@ -15,3 +15,5 @@ fun SVGRectElement.toPureRect(): PureSvgRectangle = PureSvgRectangle(
     ),
     stroke = extractStroke(),
 )
+
+

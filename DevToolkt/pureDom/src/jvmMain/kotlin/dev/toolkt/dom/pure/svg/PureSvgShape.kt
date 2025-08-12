@@ -16,7 +16,7 @@ abstract class PureSvgShape : PureSvgGraphicsElement() {
     ) : NumericObject {
         companion object {
             val default = Stroke(
-                color = PureColor.Companion.black,
+                color = PureColor.black,
                 width = 1.0,
             )
         }

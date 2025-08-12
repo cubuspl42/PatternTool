@@ -130,7 +130,7 @@ data class PureSvgRoot(
     }
 
     fun flatten(
-        baseTransformation: Transformation,
+        baseTransformation: Transformation = Transformation.Identity,
     ): List<PureSvgShape> = graphicsElements.flatMap {
         it.flatten(baseTransformation = baseTransformation)
     }

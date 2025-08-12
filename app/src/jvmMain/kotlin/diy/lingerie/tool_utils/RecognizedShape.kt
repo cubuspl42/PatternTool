@@ -12,7 +12,6 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Ray
 import dev.toolkt.geometry.splines.OpenSpline
 import dev.toolkt.geometry.splines.Spline
-import dev.toolkt.geometry.transformations.Transformation
 import diy.lingerie.geometry.svg_utils.importSvgPath
 
 sealed class RecognizedShape {
@@ -20,9 +19,7 @@ sealed class RecognizedShape {
         fun interpretSvg(
             svgRoot: PureSvgRoot,
         ): List<RecognizedShape> {
-            val svgShapes = svgRoot.flatten(
-                baseTransformation = Transformation.Identity,
-            )
+            val svgShapes = svgRoot.flatten()
 
             val (svgRects, otherSvgShapes) = svgShapes.partition {
                 it is PureSvgRectangle
@@ -154,7 +151,7 @@ sealed class RecognizedShape {
 
             println("(SVG path, color: $hexColorString)")
 
-            val spline = Spline.Companion.importSvgPath(svgPath = svgPath)
+            val spline = Spline.importSvgPath(svgPath = svgPath)
 
             val lineSegment = (spline as? OpenSpline)?.toLineSegment()
 
