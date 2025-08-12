@@ -23,4 +23,5 @@ include(
     "pureDom",
     "reactive",
     "reactiveDom",
+    "threeJsCompat",
 )

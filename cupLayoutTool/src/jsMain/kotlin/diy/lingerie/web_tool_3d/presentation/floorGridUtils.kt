@@ -1,8 +1,8 @@
 package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.dom.pure.PureColor
-import three.LineBasicMaterialParams
-import three.THREE
+import dev.toolkt.js.threejs.LineBasicMaterialParams
+import dev.toolkt.js.threejs.THREE
 
 private const val floorWidth = 32
 

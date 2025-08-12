@@ -5,7 +5,7 @@ import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
 import dev.toolkt.geometry.z
 import dev.toolkt.math.algebra.linear.vectors.Vector3
-import three.THREE
+import dev.toolkt.js.threejs.THREE
 
 fun THREE.Vector3.toMathVector3() = Vector3(
     x = this.x,

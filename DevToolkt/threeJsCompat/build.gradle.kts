@@ -10,13 +10,13 @@ repositories {
 
 kotlin {
     js(IR) {
-        browser {
-        }
+        browser {}
     }
 
     sourceSets {
         jsMain.dependencies {
             implementation(project(":jsApiCompat"))
+            implementation(npm("path-data-polyfill", "1.0.10"))
         }
     }
 }

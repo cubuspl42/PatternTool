@@ -20,7 +20,7 @@ import diy.lingerie.web_tool_3d.application_state.InteractionState
 import diy.lingerie.web_tool_3d.application_state.PresentationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLCanvasElement
-import three.THREE
+import dev.toolkt.js.threejs.THREE
 
 fun handleInteractionStateEvents(
     canvas: HTMLCanvasElement,

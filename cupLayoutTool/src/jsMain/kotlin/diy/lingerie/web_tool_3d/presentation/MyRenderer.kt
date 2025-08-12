@@ -5,7 +5,7 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Ray3
 import dev.toolkt.reactive.cell.Cell
 import org.w3c.dom.HTMLCanvasElement
-import three.THREE
+import dev.toolkt.js.threejs.THREE
 
 class MyRenderer(
     val myScene: MyScene,

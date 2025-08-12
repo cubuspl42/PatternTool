@@ -8,7 +8,7 @@ import dev.toolkt.geometry.Span
 import dev.toolkt.reactive.cell.Cell
 import diy.lingerie.web_tool_3d.application_state.ApplicationState
 import diy.lingerie.web_tool_3d.application_state.FlatFabricPiece
-import three.THREE
+import dev.toolkt.js.threejs.THREE
 
 private val lightPosition = Point3D(x = 20.0, y = 20.0, z = 20.0)
 

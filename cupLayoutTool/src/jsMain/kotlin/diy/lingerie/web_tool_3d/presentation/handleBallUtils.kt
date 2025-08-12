@@ -5,8 +5,8 @@ import dev.toolkt.geometry.Point3D
 import dev.toolkt.reactive.cell.Cell
 import diy.lingerie.web_tool_3d.UserBezierMesh
 import diy.lingerie.web_tool_3d.application_state.InteractionState
-import three.MeshLambertMaterialParams
-import three.THREE
+import dev.toolkt.js.threejs.MeshLambertMaterialParams
+import dev.toolkt.js.threejs.THREE
 
 private const val handleBallRadius = 2.0
 
