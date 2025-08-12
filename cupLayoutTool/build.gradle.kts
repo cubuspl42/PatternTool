@@ -1,5 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.allopen)
@@ -16,7 +14,7 @@ kotlin {
     js(IR) {
         browser {
             webpackTask {
-                mainOutputFileName = "app.js"
+                mainOutputFileName = "bundle.js"
             }
         }
 
