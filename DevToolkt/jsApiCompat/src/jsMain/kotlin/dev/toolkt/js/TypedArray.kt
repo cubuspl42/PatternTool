@@ -1,4 +1,4 @@
-package three
+package dev.toolkt.js
 
 abstract external class TypedArray<T> {
     val length: Int

@@ -1,7 +1,7 @@
 package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.core.math.sq
-import three.Float32Array
+import dev.toolkt.js.Float32Array
 import three.THREE
 import three.toList
 import kotlin.math.PI

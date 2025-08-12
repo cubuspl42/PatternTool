@@ -1,5 +1,6 @@
 package three
 
+import dev.toolkt.js.TypedArray
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.extra.jsObject
