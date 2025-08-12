@@ -8,10 +8,9 @@ import diy.lingerie.web_tool_3d.application_state.physics.Acceleration
 import diy.lingerie.web_tool_3d.application_state.physics.Force
 import diy.lingerie.web_tool_3d.application_state.physics.Mass
 import diy.lingerie.web_tool_3d.application_state.physics.Velocity
-import org.w3c.dom.events.KeyboardEventInit
 import kotlin.time.Duration
 
-class FabricPiece(
+data class FabricNet(
     val particleStateMap: ParticleStateMap,
     val springs: Set<Spring>,
 ) {
@@ -172,7 +171,7 @@ class FabricPiece(
              * The horizontal/vertical rest distance between the particles.
              */
             springRestLength: Span,
-        ): FabricPiece {
+        ): FabricNet {
             val n = width + 1
             val m = height + 1
 
@@ -236,7 +235,7 @@ class FabricPiece(
                 }
             }.toSet()
 
-            return FabricPiece(
+            return FabricNet(
                 particleStateMap = ParticleStateMap(
                     particleStateById = initialParticleStateById,
                 ),
@@ -257,7 +256,7 @@ class FabricPiece(
     fun simulate(
         externalForce: Force,
         stepDuration: Duration,
-    ): FabricPiece {
+    ): FabricNet {
         val resultantForceByParticleId = springs.flatMap { spring ->
             spring.correct(
                 particleStateMap = particleStateMap,
@@ -268,7 +267,7 @@ class FabricPiece(
             )
         }
 
-        return FabricPiece(
+        return FabricNet(
             particleStateMap = particleStateMap.applyForces(
                 forceByParticleId = resultantForceByParticleId,
                 stepDuration = stepDuration,

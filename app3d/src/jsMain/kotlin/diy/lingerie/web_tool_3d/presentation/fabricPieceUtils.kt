@@ -2,8 +2,8 @@ package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.reactive.cell.Cell
-import diy.lingerie.web_tool_3d.application_state.FabricPiece
-import diy.lingerie.web_tool_3d.application_state.ReactiveFabricPiece
+import diy.lingerie.web_tool_3d.application_state.FabricNet
+import diy.lingerie.web_tool_3d.application_state.ReactiveFabricNet
 import three.LineBasicMaterialParams
 import three.MeshLambertMaterialParams
 import three.THREE
@@ -31,7 +31,7 @@ private val springLineMaterial = THREE.LineBasicMaterial(
 )
 
 fun createFabricPieceObject3D(
-    fabricPiece: ReactiveFabricPiece,
+    fabricPiece: ReactiveFabricNet,
 ): THREE.Object3D {
 
     return createReactiveGroup(
@@ -44,14 +44,14 @@ fun createFabricPieceObject3D(
 }
 
 fun createSpringMesh(
-    fabricPiece: FabricPiece,
+    fabricNet: FabricNet,
 ): THREE.Object3D {
-    val linePoints = fabricPiece.springs.flatMap { spring ->
-        val firstParticleState = fabricPiece.particleStateMap.getParticleState(
+    val linePoints = fabricNet.springs.flatMap { spring ->
+        val firstParticleState = fabricNet.particleStateMap.getParticleState(
             particleId = spring.firstParticleId,
         )
 
-        val secondParticleState = fabricPiece.particleStateMap.getParticleState(
+        val secondParticleState = fabricNet.particleStateMap.getParticleState(
             particleId = spring.secondParticleId,
         )
 
@@ -75,7 +75,7 @@ fun createSpringMesh(
 }
 
 fun createParticleObject3D(
-    reactiveParticle: ReactiveFabricPiece.ReactiveParticle,
+    reactiveParticle: ReactiveFabricNet.ReactiveParticle,
 ): THREE.Object3D = createReactiveMesh(
     geometry = fabricParticleGeometry,
     material = Cell.of(fabricParticleMaterial),

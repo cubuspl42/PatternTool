@@ -12,11 +12,11 @@ class SimulationState {
         val stepDuration = (1.0 / 60.0).seconds
     }
 
-    val fabricPiece = ReactiveFabricPiece.diff(
-        fabricPiece = createTimeoutStream(
+    val fabricNet = ReactiveFabricNet.diff(
+        fabricNet = createTimeoutStream(
             delay = stepDuration,
         ).accum(
-            initialValue = FabricPiece.rectangular(
+            initialValue = FabricNet.rectangular(
                 width = 16,
                 height = 16,
                 springRestLength = Span.of(4.0),
