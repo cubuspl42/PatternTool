@@ -16,6 +16,7 @@ includeBuild(
 )
 
 include(
+    "toolUtils",
     "app",
     "app3d",
 )
