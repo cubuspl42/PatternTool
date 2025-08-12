@@ -32,16 +32,13 @@ private val springLineMaterial = THREE.LineBasicMaterial(
 
 fun createFabricPieceObject3D(
     fabricPiece: ReactiveFabricNet,
-): THREE.Object3D {
-
-    return createReactiveGroup(
-        children = fabricPiece.particles.values.map {
-            createParticleObject3D(
-                reactiveParticle = it,
-            )
-        }
-    )
-}
+): THREE.Object3D = createReactiveGroup(
+    children = fabricPiece.particles.values.map {
+        createParticleObject3D(
+            reactiveParticle = it,
+        )
+    }
+)
 
 fun createSpringMesh(
     fabricNet: FabricNet,
