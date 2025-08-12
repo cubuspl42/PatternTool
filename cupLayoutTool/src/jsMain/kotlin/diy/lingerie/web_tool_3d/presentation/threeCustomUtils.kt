@@ -1,7 +1,8 @@
-package three
+package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.js.Float32Array
+import dev.toolkt.js.threejs.THREE
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 
 fun List<Point3D>.toBufferAttribute(): THREE.BufferAttribute = map { it.pointVector }.toBufferAttribute()

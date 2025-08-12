@@ -2,8 +2,8 @@ package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.core.math.sq
 import dev.toolkt.js.Float32Array
-import three.THREE
-import three.toList
+import dev.toolkt.js.threejs.THREE
+import dev.toolkt.js.threejs.toList
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin

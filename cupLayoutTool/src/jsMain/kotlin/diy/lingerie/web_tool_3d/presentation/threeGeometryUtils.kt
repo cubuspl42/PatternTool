@@ -8,7 +8,7 @@ import dev.toolkt.geometry.transformations.Transformation3D
 import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
 import dev.toolkt.math.algebra.linear.vectors.Vector2
-import three.THREE
+import dev.toolkt.js.threejs.THREE
 
 val THREE.Camera.projectionTransformation: Transformation3D
     get() = object : Transformation3D() {

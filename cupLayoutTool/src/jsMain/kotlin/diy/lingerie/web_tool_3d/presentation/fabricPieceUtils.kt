@@ -4,10 +4,9 @@ import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.reactive.cell.Cell
 import diy.lingerie.web_tool_3d.application_state.FabricNet
 import diy.lingerie.web_tool_3d.application_state.ReactiveFabricNet
-import three.LineBasicMaterialParams
-import three.MeshLambertMaterialParams
-import three.THREE
-import three.setPositionAttribute
+import dev.toolkt.js.threejs.LineBasicMaterialParams
+import dev.toolkt.js.threejs.MeshLambertMaterialParams
+import dev.toolkt.js.threejs.THREE
 
 private const val fabricParticleRadius = 0.75
 

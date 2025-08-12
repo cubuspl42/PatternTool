@@ -1,6 +1,6 @@
 package org.w3c.dom.extra.svg
 
-import org.w3c.dom.extra.jsObject
+import dev.toolkt.js.jsObject
 import org.w3c.dom.svg.SVGPathElement
 
 external interface SVGPathDataSettings {

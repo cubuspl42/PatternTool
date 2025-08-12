@@ -1,9 +1,9 @@
-package three
+package dev.toolkt.js.threejs
 
 import dev.toolkt.js.TypedArray
+import dev.toolkt.js.jsObject
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.extra.jsObject
 
 @JsModule("three")
 @JsNonModule
@@ -91,7 +91,6 @@ external object THREE {
         fun add(child: Object3D): Object3D
 
         fun getWorldPosition(target: Vector3)
-
     }
 
     class Group : Object3D

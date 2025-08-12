@@ -3,7 +3,7 @@ package diy.lingerie.web_tool_3d.presentation
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.reactive.cell.Cell
-import three.THREE
+import dev.toolkt.js.threejs.THREE
 import kotlin.math.PI
 
 data class MyCamera(

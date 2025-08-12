@@ -32,6 +32,7 @@ kotlin {
             implementation("dev.toolkt:pureDom")
             implementation("dev.toolkt:reactive")
             implementation("dev.toolkt:reactiveDom")
+            implementation("dev.toolkt:threeJsCompat")
             implementation(npm("three", "0.178.0"))
             implementation(npm("path-data-polyfill", "1.0.10"))
         }

@@ -1,8 +1,8 @@
 package diy.lingerie.web_tool_3d.presentation
 
 import dev.toolkt.js.Float32Array
-import three.THREE
-import three.toList
+import dev.toolkt.js.threejs.THREE
+import dev.toolkt.js.threejs.toList
 
 private const val cornerCount = 4
 
