@@ -1,6 +1,7 @@
 package three
 
 import dev.toolkt.geometry.Point3D
+import dev.toolkt.js.Float32Array
 import dev.toolkt.math.algebra.linear.vectors.Vector3
 
 fun List<Point3D>.toBufferAttribute(): THREE.BufferAttribute = map { it.pointVector }.toBufferAttribute()

@@ -6,15 +6,15 @@ import dev.toolkt.dom.reactive.utils.DOMHighResTimeStamp
 import dev.toolkt.dom.reactive.utils.requestAnimationFrames
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.transformations.PrimitiveTransformation3D
+import dev.toolkt.js.Float32Array
+import dev.toolkt.js.Uint16Array
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
 import kotlinx.browser.window
 import org.w3c.dom.HTMLCanvasElement
-import three.Float32Array
 import three.THREE
 import three.THREE.Object3D
-import three.Uint16Array
 import three.WebGLRendererParams
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds

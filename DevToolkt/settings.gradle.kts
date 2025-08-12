@@ -14,13 +14,13 @@ rootProject.name = "DevToolkt"
 include(
     "core",
     "coreSystemTests",
+    "coreTestUtils",
     "domApiCompatExtra",
+    "geometry",
+    "geometryTestUtils",
     "jsApiCompat",
     "math",
-    "geometry",
     "pureDom",
     "reactive",
     "reactiveDom",
-    "coreTestUtils",
-    "geometryTestUtils",
 )
