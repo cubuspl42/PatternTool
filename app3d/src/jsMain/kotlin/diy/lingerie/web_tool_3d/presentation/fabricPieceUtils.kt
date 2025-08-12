@@ -3,6 +3,7 @@ package diy.lingerie.web_tool_3d.presentation
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.reactive.cell.Cell
 import diy.lingerie.web_tool_3d.application_state.FabricPiece
+import diy.lingerie.web_tool_3d.application_state.ReactiveFabricPiece
 import three.LineBasicMaterialParams
 import three.MeshLambertMaterialParams
 import three.THREE
@@ -30,31 +31,15 @@ private val springLineMaterial = THREE.LineBasicMaterial(
 )
 
 fun createFabricPieceObject3D(
-    fabricPiece: FabricPiece,
+    fabricPiece: ReactiveFabricPiece,
 ): THREE.Object3D {
-    val lines = fabricPiece.springs.map { spring ->
-        val firstParticleState = fabricPiece.particleStateMap.getParticleState(
-            particleId = spring.firstParticleId,
-        )
-
-        val secondParticleState = fabricPiece.particleStateMap.getParticleState(
-            particleId = spring.secondParticleId,
-        )
-
-        Pair(
-            firstParticleState.position,
-            secondParticleState.position,
-        )
-    }
 
     return createReactiveGroup(
-        children = fabricPiece.particleStates.map {
+        children = fabricPiece.particles.values.map {
             createParticleObject3D(
-                particleState = it,
+                reactiveParticle = it,
             )
-        } + createSpringMesh(
-            fabricPiece = fabricPiece,
-        ),
+        }
     )
 }
 
@@ -90,9 +75,9 @@ fun createSpringMesh(
 }
 
 fun createParticleObject3D(
-    particleState: FabricPiece.ParticleState,
+    reactiveParticle: ReactiveFabricPiece.ReactiveParticle,
 ): THREE.Object3D = createReactiveMesh(
     geometry = fabricParticleGeometry,
     material = Cell.of(fabricParticleMaterial),
-    position = Cell.of(particleState.position),
+    position = reactiveParticle.position,
 )

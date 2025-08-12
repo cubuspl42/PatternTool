@@ -8,6 +8,7 @@ import diy.lingerie.web_tool_3d.application_state.physics.Acceleration
 import diy.lingerie.web_tool_3d.application_state.physics.Force
 import diy.lingerie.web_tool_3d.application_state.physics.Mass
 import diy.lingerie.web_tool_3d.application_state.physics.Velocity
+import org.w3c.dom.events.KeyboardEventInit
 import kotlin.time.Duration
 
 class FabricPiece(
@@ -17,6 +18,9 @@ class FabricPiece(
     value class ParticleStateMap(
         val particleStateById: Map<ParticleId, ParticleState>,
     ) {
+        val ids: Set<ParticleId>
+            get() = particleStateById.keys
+
         val states: Collection<ParticleState>
             get() = particleStateById.values
 
@@ -30,6 +34,10 @@ class FabricPiece(
             stepDuration: Duration,
         ): ParticleStateMap = ParticleStateMap(
             particleStateById = particleStateById.mapValues { (particleId, particleState) ->
+                if (particleState.kind == ParticleState.Kind.Static) {
+                    return@mapValues particleState
+                }
+
                 val oldVelocity = particleState.velocity
 
                 val newVelocity = when (val force = forceByParticleId[particleId]) {
@@ -48,13 +56,13 @@ class FabricPiece(
                     }
                 }
 
-                val newPosition = Velocity.Companion.move(
+                val newPosition = Velocity.move(
                     point = particleState.position,
                     velocity = newVelocity,
                     duration = stepDuration,
                 )
 
-                ParticleState(
+                particleState.copy(
                     position = newPosition,
                     velocity = newVelocity,
                 )
@@ -73,15 +81,22 @@ class FabricPiece(
     }
 
     data class ParticleState(
+        val kind: Kind,
         val position: Point3D,
         val velocity: Velocity,
     ) {
-        companion object {
-            val mass: Mass = Mass(massValue = 0.001)
+        enum class Kind {
+            Static, Dynamic,
+        }
 
-            fun stationary(
+        companion object {
+            val mass: Mass = Mass(massValue = 1.0)
+
+            fun create(
+                kind: Kind = Kind.Dynamic,
                 position: Point3D,
             ): ParticleState = ParticleState(
+                kind = kind,
                 position = position,
                 velocity = Velocity.Zero,
             )
@@ -99,7 +114,7 @@ class FabricPiece(
         )
 
         companion object {
-            const val stretchCoefficient: Double = 0.9
+            const val stretchCoefficient: Double = 1000.0
         }
 
         fun correct(
@@ -176,7 +191,11 @@ class FabricPiece(
                 (0 until n).map { j ->
                     val jD = j.toDouble()
 
-                    getParticleId(i = i, j = j) to ParticleState.stationary(
+                    getParticleId(i = i, j = j) to ParticleState.create(
+                        kind = when {
+                            i == 0 && j == 0 -> ParticleState.Kind.Static
+                            else -> ParticleState.Kind.Dynamic
+                        },
                         position = Point(
                             pointVector = Vector2(jD, iD) * spacingValue,
                         ).toPoint3D(),
@@ -187,7 +206,7 @@ class FabricPiece(
             val springs = (0 until m).flatMap { i ->
                 val iNext = i + 1
 
-                (1 until n).flatMap { j ->
+                (0 until n).flatMap { j ->
                     val jNext = j + 1
 
                     val bottomSpring = when {
@@ -226,6 +245,9 @@ class FabricPiece(
         }
     }
 
+    val particleIds: Set<ParticleId>
+        get() = particleStateMap.ids
+
     val particleStates: Collection<ParticleState>
         get() = particleStateMap.states
 
@@ -255,3 +277,4 @@ class FabricPiece(
         )
     }
 }
+

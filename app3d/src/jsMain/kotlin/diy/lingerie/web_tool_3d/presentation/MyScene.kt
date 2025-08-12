@@ -46,11 +46,6 @@ class MyScene(
                 color = bezierMeshColor.value,
             )
 
-            val fabricPiece = FabricPiece.rectangular(
-                width = 16,
-                height = 16,
-                springRestLength = Span.of(4.0),
-            )
 
             val scene = createReactiveScene(
                 listOf(
@@ -62,7 +57,7 @@ class MyScene(
 //                    myBezierMesh.root,
                     floorGrid,
                     createFabricPieceObject3D(
-                        fabricPiece = fabricPiece,
+                        fabricPiece = applicationState.simulationState.fabricPiece,
                     ),
                 ),
             )
