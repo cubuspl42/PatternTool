@@ -10,16 +10,13 @@ import dev.toolkt.dom.reactive.utils.gestures.GenericMouseGesture
 import dev.toolkt.dom.reactive.utils.gestures.onMouseOverGestureStarted
 import dev.toolkt.dom.reactive.utils.gestures.track
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgCircleElement
-import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgGroupElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgLineElement
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
-import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGElement
-import org.w3c.dom.svg.SVGGElement
 import org.w3c.dom.svg.SVGLineElement
 import org.w3c.dom.svg.SVGSVGElement
 

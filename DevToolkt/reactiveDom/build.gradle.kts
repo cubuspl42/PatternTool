@@ -9,30 +9,20 @@ repositories {
 }
 
 kotlin {
-    jvm()
-
     js(IR) {
         browser()
-        nodejs()
     }
 
     sourceSets {
         jsMain.dependencies {
             implementation(npm("path-data-polyfill", "1.0.10"))
 
+            implementation(project(":domApiCompatExtra"))
             implementation(project(":core"))
             implementation(project(":math"))
             implementation(project(":geometry"))
             implementation(project(":pureDom"))
             implementation(project(":reactive"))
-        }
-
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-        }
-
-        jsMain.dependencies {
-            implementation(project(":domApiCompatExtra"))
         }
     }
 }
