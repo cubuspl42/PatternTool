@@ -17,6 +17,6 @@ includeBuild(
 
 include(
     "toolUtils",
-    "app",
+    "geometrySandboxTool",
     "app3d",
 )
