@@ -27,6 +27,17 @@ fun Document.createReactiveElement(
     )
 }
 
+fun <ElementT : Element> Document.createReactiveElement(
+    createElement: Document.() -> ElementT,
+    style: ReactiveStyle? = null,
+    children: ReactiveList<Node>? = null,
+): ElementT = createElement().apply {
+    bind(
+        style = style,
+        children = children,
+    )
+}
+
 private fun Document.createElement(
     namespace: String? = null,
     name: String,
