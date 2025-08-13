@@ -44,35 +44,29 @@ fun Document.createReactiveSvgCircleElement(
     position: Cell<Point>,
     radius: Double,
     children: ReactiveList<SVGElement>? = null,
-): SVGCircleElement {
-    val circleElement = createReactiveElement(
-        createElement = Document::createSvgCircleElement,
-        style = style,
-        children = children,
-    )
-
+): SVGCircleElement = createReactiveElement(
+    createElement = Document::createSvgCircleElement,
+    style = style,
+    children = children,
+).apply {
     position.bind(
-        target = circleElement,
-        xAnimatedLength = circleElement.cx,
-        yAnimatedLength = circleElement.cy,
+        target = this,
+        xAnimatedLength = this.cx,
+        yAnimatedLength = this.cy,
     )
 
-    circleElement.r.baseValue = radius
-
-    return circleElement
+    this.r.baseValue = radius
 }
 
 fun Document.createReactiveSvgPathElement(
     style: ReactiveStyle? = null,
     pathSegments: ReactiveList<SVGPathSegment>,
-): SVGPathElement {
-    val pathElement = createReactiveElement(
-        createElement = Document::createSvgPathElement,
-        style = style,
-    )
-
+): SVGPathElement = createReactiveElement(
+    createElement = Document::createSvgPathElement,
+    style = style,
+).apply {
     pathSegments.elements.bind(
-        target = pathElement,
+        target = this,
     ) { pathElement, pathSegments ->
         val pathData = pathSegments.toTypedArray()
 
@@ -80,50 +74,40 @@ fun Document.createReactiveSvgPathElement(
             pathData = pathData,
         )
     }
-
-    return pathElement
 }
 
 fun Document.createReactiveSvgPolylineElement(
     style: ReactiveStyle? = null,
     points: ReactiveList<SVGPoint>,
-): SVGElement {
-    val polylineElement = createReactiveElement(
-        createElement = Document::createSvgPolylineElement,
-        style = style,
-    )
-
+): SVGElement = createReactiveElement(
+    createElement = Document::createSvgPolylineElement,
+    style = style,
+).apply {
     points.bind(
-        target = polylineElement,
+        target = this,
         extract = SVGPolylineElement::pointList,
     )
-
-    return polylineElement
 }
 
 fun Document.createReactiveSvgLineElement(
     style: ReactiveStyle? = null,
     start: Cell<Point>,
     end: Cell<Point>,
-): SVGLineElement {
-    val lineElement = createReactiveElement(
-        createElement = Document::createSvgLineElement,
-        style = style,
-    )
-
+): SVGLineElement = createReactiveElement(
+    createElement = Document::createSvgLineElement,
+    style = style,
+).apply {
     start.bind(
-        target = lineElement,
-        xAnimatedLength = lineElement.x1,
-        yAnimatedLength = lineElement.y1,
+        target = this,
+        xAnimatedLength = this.x1,
+        yAnimatedLength = this.y1,
     )
 
     end.bind(
-        target = lineElement,
-        xAnimatedLength = lineElement.x2,
-        yAnimatedLength = lineElement.y2,
+        target = this,
+        xAnimatedLength = this.x2,
+        yAnimatedLength = this.y2,
     )
-
-    return lineElement
 }
 
 fun Document.createReactiveSvgGroupElement(
