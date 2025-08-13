@@ -145,21 +145,17 @@ private fun <SvgGraphicsElementT : SVGGraphicsElement> Document.createReactiveSv
     style: ReactiveStyle? = null,
     transformation: Cell<Transformation>? = null,
     children: ReactiveList<Node>? = null,
-): SvgGraphicsElementT {
-    val svgGraphicsElement = createReactiveElement(
-        createElement = createSvgGraphicsElement,
-        style = style,
-        children = children,
-    )
-
+): SvgGraphicsElementT = createReactiveElement(
+    createElement = createSvgGraphicsElement,
+    style = style,
+    children = children,
+).apply {
     transformation?.let {
-        svgGraphicsElement.transform.baseVal.bind(
+        transform.baseVal.bind(
             svgElement = svgElement,
             transformation = it,
         )
     }
-
-    return svgGraphicsElement
 }
 
 var SVGAnimatedLength.baseValue: Double
