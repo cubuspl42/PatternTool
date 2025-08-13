@@ -1,4 +1,4 @@
-package dev.toolkt.dom.reactive.widget
+package dev.toolkt.dom.reactive.extra.widget
 
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexStyle

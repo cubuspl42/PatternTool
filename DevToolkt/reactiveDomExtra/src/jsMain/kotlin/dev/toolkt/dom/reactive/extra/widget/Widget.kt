@@ -1,4 +1,4 @@
-package dev.toolkt.dom.reactive.widget
+package dev.toolkt.dom.reactive.extra.widget
 
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import org.w3c.dom.Node
