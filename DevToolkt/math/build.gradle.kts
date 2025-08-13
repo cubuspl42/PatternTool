@@ -11,10 +11,6 @@ plugins {
 
 group = "dev.toolkt"
 
-repositories {
-    mavenCentral()
-}
-
 kotlin {
     jvm()
 
