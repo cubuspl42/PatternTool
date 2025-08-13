@@ -10,16 +10,16 @@ plugins {
 subprojects {
     repositories {
         mavenCentral()
+    }
 
-        plugins.withId(kotlinMultiplatformPluginId) {
-            configure<KotlinMultiplatformExtension> {
-                compilerOptions {
-                    freeCompilerArgs.addAll(
-                        listOf(
-                            "-Xconsistent-data-class-copy-visibility",
-                        ),
-                    )
-                }
+    plugins.withId(kotlinMultiplatformPluginId) {
+        configure<KotlinMultiplatformExtension> {
+            compilerOptions {
+                freeCompilerArgs.addAll(
+                    listOf(
+                        "-Xconsistent-data-class-copy-visibility",
+                    ),
+                )
             }
         }
     }
