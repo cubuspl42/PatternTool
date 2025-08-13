@@ -17,30 +17,42 @@ fun Document.createReactiveElement(
     name: String,
     style: ReactiveStyle? = null,
     children: ReactiveList<Node>? = null,
-): Element {
-    val element = when {
-        namespace != null -> this.createElementNS(
-            namespace = namespace,
-            qualifiedName = name,
-        )
+): Element = createElement(
+    namespace = namespace,
+    name = name,
+).apply {
+    bind(
+        style = style,
+        children = children,
+    )
+}
 
-        else -> this.createElement(
-            localName = name,
-        )
+private fun Document.createElement(
+    namespace: String? = null,
+    name: String,
+): Element = when {
+    namespace != null -> this.createElementNS(
+        namespace = namespace,
+        qualifiedName = name,
+    )
 
-    }
+    else -> this.createElement(
+        localName = name,
+    )
+}
 
-    @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE") (element as ElementCSSInlineStyle)
+private fun Element.bind(
+    style: ReactiveStyle? = null,
+    children: ReactiveList<Node>? = null,
+) {
+    @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE") (this as ElementCSSInlineStyle)
 
     style?.bind(
-        styleDeclaration = element.style,
+        styleDeclaration = this.style,
     )
 
     children?.bind(
-        target = element,
+        target = this,
         extract = Node::childNodesList,
     )
-
-    return element
 }
-
