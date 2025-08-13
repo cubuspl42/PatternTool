@@ -17,15 +17,6 @@ repositories {
 }
 
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll(
-            listOf(
-                "-Xexpect-actual-classes",
-                "-Xconsistent-data-class-copy-visibility",
-            ),
-        )
-    }
-
     jvm()
 
     js(IR) {
