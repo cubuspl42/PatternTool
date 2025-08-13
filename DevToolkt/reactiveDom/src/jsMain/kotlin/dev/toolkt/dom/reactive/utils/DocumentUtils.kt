@@ -9,24 +9,6 @@ import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.css.ElementCSSInlineStyle
 
-fun Document.createReactiveElement(
-    namespace: String? = null,
-    /**
-     * A name of a styleable element
-     */
-    name: String,
-    style: ReactiveStyle? = null,
-    children: ReactiveList<Node>? = null,
-): Element = createElement(
-    namespace = namespace,
-    name = name,
-).apply {
-    bind(
-        style = style,
-        children = children,
-    )
-}
-
 fun <ElementT : Element> Document.createReactiveElement(
     createElement: Document.() -> ElementT,
     style: ReactiveStyle? = null,
@@ -35,20 +17,6 @@ fun <ElementT : Element> Document.createReactiveElement(
     bind(
         style = style,
         children = children,
-    )
-}
-
-private fun Document.createElement(
-    namespace: String? = null,
-    name: String,
-): Element = when {
-    namespace != null -> this.createElementNS(
-        namespace = namespace,
-        qualifiedName = name,
-    )
-
-    else -> this.createElement(
-        localName = name,
     )
 }
 
