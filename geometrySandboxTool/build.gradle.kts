@@ -8,10 +8,6 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
 }
 
-repositories {
-    mavenCentral()
-}
-
 kotlin {
     jvm()
 
