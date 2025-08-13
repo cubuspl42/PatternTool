@@ -25,11 +25,10 @@ fun <T : PureInputType> Document.createReactiveHtmlInputElement(
     style: ReactiveStyle? = null,
     children: ReactiveList<Node>? = null,
 ): HTMLTypedInputElement<T> {
-    val inputElement = createReactiveElement(
-        name = "input",
+    val inputElement = createReactiveHtmlInputElement(
         style = style,
         children = children,
-    ) as HTMLInputElement
+    )
 
     inputElement.type = type.type
 

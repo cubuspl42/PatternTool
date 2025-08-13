@@ -8,46 +8,52 @@ import dev.toolkt.reactive.event_stream.getEventStream
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.Node
 import org.w3c.dom.events.MouseEvent
+import org.w3c.dom.extra.createButtonElement
+import org.w3c.dom.extra.createDivElement
+import org.w3c.dom.extra.createInputElement
+import org.w3c.dom.extra.createSpanElement
 
 fun Document.createReactiveHtmlButtonElement(
     style: ReactiveStyle? = null,
     children: ReactiveList<Node>? = null,
 ): HTMLButtonElement = createReactiveElement(
-    name = "button",
+    createElement = Document::createButtonElement,
     style = style,
     children = children,
-) as HTMLButtonElement
+)
 
 fun Document.createReactiveHtmlDivElement(
     style: ReactiveStyle? = null,
     children: ReactiveList<Node>? = null,
 ): HTMLDivElement = createReactiveElement(
-    name = "div",
+    createElement = Document::createDivElement,
     style = style,
     children = children,
-) as HTMLDivElement
+)
 
 fun Document.createReactiveHtmlSpanElement(
     style: ReactiveStyle? = null,
     children: ReactiveList<Node>? = null,
 ): HTMLSpanElement = createReactiveElement(
-    name = "span",
+    createElement = Document::createSpanElement,
     style = style,
     children = children,
-) as HTMLSpanElement
+)
 
-fun Document.createReactiveHtmlCanvasElement(
+fun Document.createReactiveHtmlInputElement(
     style: ReactiveStyle? = null,
-): HTMLCanvasElement = createReactiveElement(
+    children: ReactiveList<Node>? = null,
+): HTMLInputElement = createReactiveElement(
+    createElement = Document::createInputElement,
     style = style,
-    name = "canvas",
-) as HTMLCanvasElement
+    children = children,
+)
 
 fun HTMLElement.getClickEventStream(): EventStream<MouseEvent> = this.getEventStream(
     type = "click"
