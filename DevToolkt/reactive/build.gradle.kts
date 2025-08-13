@@ -34,15 +34,6 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
         }
     }
-
-    compilerOptions {
-        freeCompilerArgs.addAll(
-            listOf(
-                "-Xconsistent-data-class-copy-visibility",
-                "-Xcontext-parameters",
-            ),
-        )
-    }
 }
 
 fun KotlinJsSubTargetDsl.testWithExtendedTimeout() {
