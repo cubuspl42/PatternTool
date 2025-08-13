@@ -23,5 +23,6 @@ include(
     "pureDom",
     "reactive",
     "reactiveDom",
+    "reactiveDomExtra",
     "threeJsCompat",
 )

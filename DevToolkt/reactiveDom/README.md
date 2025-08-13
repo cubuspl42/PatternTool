@@ -1,3 +1,3 @@
 # `reactiveDom`
 
-Reactive compatibility layer for the JavaScript Document Object Model.
+Reactive, relatively unopinionated compatibility layer for the JavaScript Document Object Model.
