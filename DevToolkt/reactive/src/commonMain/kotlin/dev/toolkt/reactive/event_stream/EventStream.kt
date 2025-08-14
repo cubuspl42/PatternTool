@@ -103,7 +103,7 @@ abstract class EventStream<out E> : EventSource<E> {
 
         fun <E> mergeAll(
             sources: List<EventStream<E>>,
-        ): EventStream<E> = MergeAllEventStream(
+        ): EventStream<E> = StaticMergeAllEventStream(
             sources = sources,
         )
     }

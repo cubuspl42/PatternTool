@@ -3,7 +3,7 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 
-class MergeAllEventStream<E>(
+class StaticMergeAllEventStream<E>(
     private val sources: List<EventStream<E>>,
 ) : DependentEventStream<E>() {
     override fun observe(): Subscription = object : Subscription, Listener<E> {

@@ -40,6 +40,16 @@ class MutableReactiveList<E>(
         mutableContent[index] = newValue
     }
 
+    fun add(
+        index: Int,
+        element: E,
+    ) {
+        addAll(
+            index = index,
+            elements = listOf(element),
+        )
+    }
+
     fun addAll(
         index: Int,
         elements: List<E>,
@@ -69,9 +79,7 @@ class MutableReactiveList<E>(
         indexRange: IntRange,
         changedElements: List<E>,
     ) {
-        if (indexRange.first !in 0..mutableContent.size ||
-            indexRange.last !in 0 until mutableContent.size
-        ) {
+        if (indexRange.first !in 0..mutableContent.size || indexRange.last !in 0 until mutableContent.size) {
             throw IndexOutOfBoundsException("Index range $indexRange is out of bounds for list of size ${mutableContent.size}.")
         }
 
@@ -112,9 +120,7 @@ class MutableReactiveList<E>(
     }
 
     fun removeRange(indexRange: IntRange) {
-        if (indexRange.first !in 0..mutableContent.size ||
-            indexRange.last !in 0 until mutableContent.size
-        ) {
+        if (indexRange.first !in 0..mutableContent.size || indexRange.last !in 0 until mutableContent.size) {
             throw IndexOutOfBoundsException("Index range $indexRange is out of bounds for list of size ${mutableContent.size}.")
         }
 
