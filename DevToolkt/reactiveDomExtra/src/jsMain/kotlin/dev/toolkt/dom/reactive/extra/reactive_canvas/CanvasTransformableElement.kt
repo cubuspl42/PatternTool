@@ -1,4 +1,4 @@
-package dev.toolkt.dom.reactive.extra
+package dev.toolkt.dom.reactive.extra.reactive_canvas
 
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.reactive.cell.Cell
@@ -21,20 +21,23 @@ abstract class CanvasTransformableElement : CanvasRenderableElement() {
             )
         }
 
-        renderTransformed(context = context)
+        renderTransformable(context = context)
     }
 
     final override val onChanged: EventStream<Unit> by lazy {
         val transformationChanges = transformation?.changes ?: EventStream.Never
 
-        onContentChanged.mergeWith(transformationChanges).units()
+        onTransformableChanged.mergeWith(transformationChanges).units()
     }
 
     protected abstract val transformation: Cell<Transformation>?
 
-    abstract fun renderTransformed(
+    /**
+     * Renders the element after the transformation is applied to the context.
+     */
+    protected abstract fun renderTransformable(
         context: CanvasRenderingContext2D,
     )
 
-    abstract val onContentChanged: EventStream<Unit>
+    abstract val onTransformableChanged: EventStream<Unit>
 }

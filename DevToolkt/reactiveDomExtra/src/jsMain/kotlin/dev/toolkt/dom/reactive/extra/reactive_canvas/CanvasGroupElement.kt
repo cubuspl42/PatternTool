@@ -1,4 +1,4 @@
-package dev.toolkt.dom.reactive.extra
+package dev.toolkt.dom.reactive.extra.reactive_canvas
 
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.reactive.cell.Cell
@@ -11,7 +11,7 @@ class CanvasGroupElement(
     override val transformation: Cell<Transformation>? = null,
     private val children: ReactiveList<CanvasRenderableElement>,
 ) : CanvasTransformableElement() {
-    override fun renderTransformed(context: CanvasRenderingContext2D) {
+    override fun renderTransformable(context: CanvasRenderingContext2D) {
         children.currentElements.forEach {
             context.save()
 
@@ -21,7 +21,7 @@ class CanvasGroupElement(
         }
     }
 
-    override val onContentChanged: EventStream<Unit> = children.mergeAllOf {
+    override val onTransformableChanged: EventStream<Unit> = children.mergeAllOf {
         it.onChanged
     }
 }

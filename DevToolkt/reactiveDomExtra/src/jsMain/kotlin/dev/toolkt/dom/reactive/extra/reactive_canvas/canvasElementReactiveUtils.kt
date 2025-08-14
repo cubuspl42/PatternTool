@@ -1,4 +1,4 @@
-package dev.toolkt.dom.reactive.extra
+package dev.toolkt.dom.reactive.extra.reactive_canvas
 
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.reactive.DiscardSubscription
