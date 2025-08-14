@@ -19,4 +19,5 @@ include(
     "toolUtils",
     "geometrySandboxTool",
     "cupLayoutTool",
+    "canvasDemoTool",
 )

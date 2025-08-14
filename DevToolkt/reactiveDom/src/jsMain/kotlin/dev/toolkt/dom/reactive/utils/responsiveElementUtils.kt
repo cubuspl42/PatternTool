@@ -12,25 +12,35 @@ import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.Node
 
-fun createResponsiveElement(
-    style: ReactiveStyle = ReactiveStyle(
-        displayStyle = Cell.of(
-            PureFlexStyle(
-                grow = 1.0,
+fun createResponsiveFlexElement(
+    buildChild: (size: Cell<PureSize>) -> Element,
+): HTMLElement = createResponsiveElement(
+    createGrowingWrapper = { wrappedChildren ->
+        document.createReactiveHtmlDivElement(
+            style = ReactiveStyle(
+                displayStyle = Cell.of(
+                    PureFlexStyle(
+                        grow = 1.0,
+                    ),
+                ),
             ),
-        ),
-    ),
-    buildInner: (size: Cell<PureSize>) -> Element,
-): HTMLElement = ReactiveList.looped { childrenLooped ->
-    val divElement = document.createReactiveHtmlDivElement(
-        style = style,
-        children = childrenLooped,
-    )
+            children = wrappedChildren,
+        )
+    },
+    buildChild = buildChild,
+)
+
+fun <ElementT : Element> createResponsiveElement(
+    createGrowingWrapper: (children: ReactiveList<Node>) -> ElementT,
+    buildChild: (size: Cell<PureSize>) -> Element,
+): ElementT = ReactiveList.looped { childrenLooped ->
+    val divElement = createGrowingWrapper(childrenLooped)
 
     val children = ReactiveList.singleNotNull(
         divElement.getNewestContentRect().resultOrNull.mapNotNull { rect ->
-            buildInner(
+            buildChild(
                 rect.map { it.size },
             )
         },

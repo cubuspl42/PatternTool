@@ -9,7 +9,7 @@ import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.pure.style.PureStrokeStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
-import dev.toolkt.dom.reactive.utils.createResponsiveElement
+import dev.toolkt.dom.reactive.utils.createResponsiveFlexElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlSpanElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgGroupElement
@@ -73,7 +73,7 @@ internal fun createCurveInfoView(
 
 private fun createPolynomialPlot(
     polynomial: Cell<Polynomial>,
-): Element = createResponsiveElement { size ->
+): Element = createResponsiveFlexElement { size ->
     ReactiveList.looped { childrenLooped ->
         val svgElement = document.createReactiveSvgSvgElement(
             style = ReactiveStyle(
