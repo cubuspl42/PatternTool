@@ -12,6 +12,7 @@ kotlin {
 
     sourceSets {
         jsMain.dependencies {
+            implementation(project(":core"))
             implementation(project(":jsApiCompat"))
         }
     }
