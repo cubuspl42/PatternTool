@@ -171,6 +171,12 @@ abstract class ReactiveList<out E> {
             lists = lists,
         )
 
+        fun <EventT> mergeAll(
+            eventStreams: ReactiveList<EventStream<EventT>>,
+        ): EventStream<EventT> = DynamicMergeAllEventStream(
+            eventStreams = eventStreams,
+        )
+
         fun <E, R> looped(
             block: (ReactiveList<E>) -> Pair<R, ReactiveList<E>>,
         ): R {
@@ -209,6 +215,12 @@ fun <E, Er> ReactiveList<E>.fuseOf(
     transform: (E) -> Cell<Er>,
 ): ReactiveList<Er> = ReactiveList.fuse(
     cells = this.map(transform = transform),
+)
+
+fun <E, Er> ReactiveList<E>.mergeAllOf(
+    transform: (E) -> EventStream<Er>,
+): EventStream<Er> = ReactiveList.mergeAll(
+    eventStreams = this.map(transform = transform),
 )
 
 internal fun <E> ReactiveList<E>.copyNow(

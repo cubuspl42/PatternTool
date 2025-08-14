@@ -4,7 +4,7 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 
 // This is a very naive implementation, it could be improved (but there might be no single one obviously preferable
-// diff strategy
+// diff strategy)
 class DiffReactiveList<ElementT>(
     private val source: Cell<List<ElementT>>,
 ) : ActiveReactiveList<ElementT>() {
