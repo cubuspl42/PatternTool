@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool
+package diy.lingerie.geometry_sandbox_tool
 
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.curves.BezierCurve

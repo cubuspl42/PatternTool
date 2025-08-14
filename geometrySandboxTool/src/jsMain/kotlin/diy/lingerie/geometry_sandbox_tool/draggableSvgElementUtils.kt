@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool
+package diy.lingerie.geometry_sandbox_tool
 
 import dev.toolkt.dom.pure.style.PurePointerEvents
 import dev.toolkt.dom.reactive.utils.gestures.ButtonId
