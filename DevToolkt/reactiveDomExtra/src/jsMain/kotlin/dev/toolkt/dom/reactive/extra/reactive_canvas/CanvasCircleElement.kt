@@ -1,4 +1,4 @@
-package dev.toolkt.dom.reactive.extra
+package dev.toolkt.dom.reactive.extra.reactive_canvas
 
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.reactive.cell.Cell
@@ -8,11 +8,13 @@ import kotlin.math.PI
 
 class CanvasCircleElement(
     override val transformation: Cell<Transformation>? = null,
+    override val stroke: Cell<CanvasStroke>?,
+    override val fill: Cell<CanvasFill>?,
     private val radius: Cell<Double>,
-) : CanvasTransformableElement() {
-    override fun renderTransformed(context: CanvasRenderingContext2D) {
-        context.beginPath()
-
+) : CanvasPathElement() {
+    override fun describePath(
+        context: CanvasRenderingContext2D,
+    ) {
         context.arc(
             x = 0.0,
             y = 0.0,
@@ -20,9 +22,7 @@ class CanvasCircleElement(
             startAngle = 0.0,
             endAngle = 2 * PI,
         )
-
-        context.fill()
     }
 
-    override val onContentChanged: EventStream<Unit> = radius.changes.units()
+    override val onPathChanged: EventStream<Unit> = radius.changes.units()
 }

@@ -5,13 +5,16 @@ import dev.toolkt.dom.pure.PureUnit
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexStyle
-import dev.toolkt.dom.reactive.extra.CanvasCircleElement
-import dev.toolkt.dom.reactive.extra.CanvasGroupElement
-import dev.toolkt.dom.reactive.extra.createReactiveCanvasElement
+import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasCircleElement
+import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasGroupElement
+import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasPathElement
+import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasPolylineElement
+import dev.toolkt.dom.reactive.extra.reactive_canvas.createReactiveCanvasElement
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createResponsiveFlexElement
 import dev.toolkt.dom.reactive.utils.createTimeoutStream
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
+import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.accum
 import dev.toolkt.reactive.reactive_list.ReactiveList
@@ -52,7 +55,23 @@ private fun createRootElement(): HTMLDivElement {
                     root = CanvasGroupElement(
                         children = ReactiveList.of(
                             CanvasCircleElement(
+                                fill = Cell.of(
+                                    CanvasPathElement.CanvasFill(
+                                        color = PureColor.red,
+                                    ),
+                                ),
+                                stroke = null,
                                 radius = radius,
+                            ),
+                            CanvasPolylineElement(
+                                stroke = Cell.of(
+                                    CanvasPathElement.CanvasStroke.Default,
+                                ),
+                                points = ReactiveList.of(
+                                    Point(x = 100.0, y = 100.0),
+                                    Point(x = 200.0, y = 200.0),
+                                    Point(x = 300.0, y = 100.0),
+                                ),
                             ),
                         ),
                     ),
