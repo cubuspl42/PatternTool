@@ -1,6 +1,7 @@
 package diy.lingerie.web_tool
 
 import dev.toolkt.dom.pure.style.PureFlexDirection
+import dev.toolkt.dom.pure.style.PureFlexItemStyle
 import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
@@ -17,10 +18,12 @@ internal fun createCurveInfoView(
     intersectionPolynomial: Cell<Polynomial>,
 ): Element = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
+        flexItemStyle = PureFlexItemStyle(
+            grow = 1.0,
+        ),
         displayStyle = Cell.of(
             PureFlexStyle(
                 direction = PureFlexDirection.Column,
-                grow = 1.0,
             ),
         ),
     ),

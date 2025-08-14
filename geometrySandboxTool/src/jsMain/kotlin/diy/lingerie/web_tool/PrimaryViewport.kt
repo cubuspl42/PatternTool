@@ -5,6 +5,7 @@ import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureBorderStyle
 import dev.toolkt.dom.pure.style.PureBoxSizing
 import dev.toolkt.dom.pure.style.PureFill
+import dev.toolkt.dom.pure.style.PureFlexItemStyle
 import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.pure.style.PurePointerEvents
 import dev.toolkt.dom.reactive.style.ReactiveStyle
@@ -31,11 +32,10 @@ internal fun createPrimaryViewport(
 ): PrimaryViewport = ReactiveList.looped { childrenLooped ->
     val svgElement = document.createReactiveSvgSvgElement(
         style = ReactiveStyle(
-            displayStyle = Cell.of(
-                PureFlexStyle(
-                    grow = 1.0,
-                ),
+            flexItemStyle = PureFlexItemStyle(
+                grow = 1.0,
             ),
+            displayStyle = Cell.of(PureFlexStyle()),
         ),
         children = childrenLooped,
     )
@@ -71,11 +71,10 @@ internal fun createPrimaryViewport(
         PrimaryViewport(
             element = document.createReactiveHtmlDivElement(
                 style = ReactiveStyle(
-                    displayStyle = Cell.of(
-                        PureFlexStyle(
-                            grow = 1.0,
-                        ),
+                    flexItemStyle = PureFlexItemStyle(
+                        grow = 1.0,
                     ),
+                    displayStyle = Cell.of(PureFlexStyle()),
                     boxSizing = PureBoxSizing.BorderBox,
                     borderStyle = PureBorderStyle(
                         width = 4.px,
