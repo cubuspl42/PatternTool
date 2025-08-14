@@ -3,11 +3,13 @@ package diy.lingerie.web_tool
 import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
+import dev.toolkt.dom.pure.style.PurePosition
 import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasGroupElement
 import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasLineElement
 import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasPathElement
 import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasPolylineElement
 import dev.toolkt.dom.reactive.extra.reactive_canvas.createReactiveCanvasElement
+import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createResponsiveFlexElement
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
@@ -21,8 +23,13 @@ import org.w3c.dom.Element
 
 fun createCanvasPolynomialPlot(
     polynomial: Cell<Polynomial>,
-): Element = createResponsiveFlexElement { size ->
+): Element = createResponsiveFlexElement(
+    position = PurePosition.Relative,
+) { size ->
     createReactiveCanvasElement(
+        style = ReactiveStyle(
+            position = PurePosition.Absolute,
+        ),
         size = size,
         root = CanvasGroupElement(
             transformation = size.map {

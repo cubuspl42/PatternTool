@@ -2,22 +2,26 @@ package dev.toolkt.dom.reactive.extra.reactive_canvas
 
 import dev.toolkt.core.annotations.NoCapture
 import dev.toolkt.dom.pure.PureSize
+import dev.toolkt.dom.reactive.style.ReactiveStyle
+import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlCanvasElement
 import dev.toolkt.reactive.DiscardSubscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.listenWeak
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.extra.createCanvasElement
 import org.w3c.dom.extra.getContext2D
 import kotlin.math.roundToInt
 
 fun createReactiveCanvasElement(
+    style: ReactiveStyle? = null,
     size: Cell<PureSize>,
     root: CanvasRenderableElement,
 ): HTMLCanvasElement {
     @NoCapture
-    val canvasElement = document.createCanvasElement()
+    val canvasElement = document.createReactiveHtmlCanvasElement(
+        style = style,
+    )
 
     fun renderContent(
         canvasElement: HTMLCanvasElement,

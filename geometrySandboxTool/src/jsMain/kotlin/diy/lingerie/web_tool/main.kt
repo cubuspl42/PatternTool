@@ -25,8 +25,6 @@ fun main() {
     val rootElement = createRootElement()
 
     document.body!!.apply {
-        style.margin = "0"
-
         appendChild(rootElement)
     }
 }
@@ -68,11 +66,11 @@ private fun createRootElement(): HTMLDivElement {
         style = ReactiveStyle(
             displayStyle = Cell.of(
                 PureFlexStyle(
+                    grow = 1.0,
                     direction = PureFlexDirection.Row,
+                    alignItems = PureFlexAlignItems.Stretch,
                 ),
             ),
-            width = Cell.of(PureUnit.Vw.full),
-            height = Cell.of(PureUnit.Vh.full),
             backgroundColor = Cell.of(PureColor.lightGray),
         ),
         children = ReactiveList.of(
@@ -80,8 +78,8 @@ private fun createRootElement(): HTMLDivElement {
                 style = ReactiveStyle(
                     displayStyle = Cell.of(
                         PureFlexStyle(
-                            direction = PureFlexDirection.Column,
                             grow = 1.0,
+                            direction = PureFlexDirection.Column,
                         ),
                     ),
                     backgroundColor = Cell.of(PureColor.lightGray),

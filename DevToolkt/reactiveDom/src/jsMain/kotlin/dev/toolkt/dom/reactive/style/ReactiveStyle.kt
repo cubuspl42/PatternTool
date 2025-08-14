@@ -7,8 +7,8 @@ import dev.toolkt.dom.pure.style.PureBoxSizing
 import dev.toolkt.dom.pure.style.PureDisplayStyle
 import dev.toolkt.dom.pure.style.PureFill
 import dev.toolkt.dom.pure.style.PurePointerEvents
+import dev.toolkt.dom.pure.style.PurePosition
 import dev.toolkt.dom.pure.style.PurePropertyKind
-import dev.toolkt.dom.pure.style.PurePropertyValue
 import dev.toolkt.dom.pure.style.PureStrokeStyle
 import dev.toolkt.dom.pure.style.PureTextAlign
 import dev.toolkt.dom.pure.style.PureVerticalAlign
@@ -19,6 +19,8 @@ data class ReactiveStyle(
     val displayStyle: Cell<PureDisplayStyle>? = null,
     val width: Cell<PureDimension<*>>? = null,
     val height: Cell<PureDimension<*>>? = null,
+    val minWidth: Cell<PureDimension<*>>? = null,
+    val minHeight: Cell<PureDimension<*>>? = null,
     val backgroundColor: Cell<PureColor>? = null,
     val textAlign: Cell<PureTextAlign>? = null,
     val verticalAlign: Cell<PureVerticalAlign>? = null,
@@ -29,6 +31,8 @@ data class ReactiveStyle(
     val pointerEvents: Cell<PurePointerEvents>? = null,
     val padding: PureEdgeInsets? = null,
     val margin: PureEdgeInsets? = null,
+    val position: PurePosition? = null,
+    val inset: PureInset? = null,
 ) {
     companion object {
         val Default = ReactiveStyle()
@@ -49,6 +53,16 @@ data class ReactiveStyle(
         height?.bind(
             styleDeclaration = styleDeclaration,
             kind = PurePropertyKind.Height,
+        )
+
+        minWidth?.bind(
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.MinWidth,
+        )
+
+        minHeight?.bind(
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.MinHeight,
         )
 
         backgroundColor?.bind(
@@ -98,6 +112,17 @@ data class ReactiveStyle(
 
         padding?.applyProperties(
             insetKind = PureEdgeInsets.InsetKind.Padding,
+            applier = StyleDeclarationApplier(
+                styleDeclaration = styleDeclaration,
+            ),
+        )
+
+        position?.applyTo(
+            styleDeclaration = styleDeclaration,
+            kind = PurePropertyKind.Position,
+        )
+
+        inset?.applyProperties(
             applier = StyleDeclarationApplier(
                 styleDeclaration = styleDeclaration,
             ),
