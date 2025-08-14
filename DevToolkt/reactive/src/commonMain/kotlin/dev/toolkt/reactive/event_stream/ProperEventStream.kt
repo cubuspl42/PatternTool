@@ -10,7 +10,7 @@ abstract class ProperEventStream<E> : EventStream<E>() {
         private var nextId = 0
     }
 
-    protected var id = nextId++
+    internal var id = nextId++
 
     final override fun <Er> map(
         transform: (E) -> Er,
