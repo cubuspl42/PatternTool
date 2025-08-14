@@ -6,6 +6,7 @@ import dev.toolkt.dom.pure.style.PureBorderStyle
 import dev.toolkt.dom.pure.style.PureBoxSizing
 import dev.toolkt.dom.pure.style.PureDisplayStyle
 import dev.toolkt.dom.pure.style.PureFill
+import dev.toolkt.dom.pure.style.PureFlexItemStyle
 import dev.toolkt.dom.pure.style.PurePointerEvents
 import dev.toolkt.dom.pure.style.PurePosition
 import dev.toolkt.dom.pure.style.PurePropertyKind
@@ -16,6 +17,7 @@ import dev.toolkt.reactive.cell.Cell
 import org.w3c.dom.css.CSSStyleDeclaration
 
 data class ReactiveStyle(
+    val flexItemStyle: PureFlexItemStyle? = null,
     val displayStyle: Cell<PureDisplayStyle>? = null,
     val width: Cell<PureDimension<*>>? = null,
     val height: Cell<PureDimension<*>>? = null,
@@ -41,6 +43,10 @@ data class ReactiveStyle(
     fun bind(
         styleDeclaration: CSSStyleDeclaration,
     ) {
+        flexItemStyle?.applyTo(
+            styleDeclaration = styleDeclaration,
+        )
+
         displayStyle?.bind(
             styleDeclaration = styleDeclaration,
         )

@@ -2,6 +2,7 @@ package dev.toolkt.dom.reactive.utils
 
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.pure.size
+import dev.toolkt.dom.pure.style.PureFlexItemStyle
 import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.pure.style.PurePosition
 import dev.toolkt.dom.reactive.style.ReactiveStyle
@@ -23,11 +24,10 @@ fun createResponsiveFlexElement(
         document.createReactiveHtmlDivElement(
             style = ReactiveStyle(
                 position = position,
-                displayStyle = Cell.of(
-                    PureFlexStyle(
-                        grow = 1.0,
-                    ),
+                flexItemStyle = PureFlexItemStyle(
+                    grow = 1.0,
                 ),
+                displayStyle = Cell.of(PureFlexStyle()),
             ),
             children = wrappedChildren,
         )

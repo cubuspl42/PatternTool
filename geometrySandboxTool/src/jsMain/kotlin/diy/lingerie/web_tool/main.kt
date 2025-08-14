@@ -5,6 +5,7 @@ import dev.toolkt.dom.pure.PureUnit
 import dev.toolkt.dom.pure.px
 import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
+import dev.toolkt.dom.pure.style.PureFlexItemStyle
 import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
@@ -64,9 +65,11 @@ private fun createRootElement(): HTMLDivElement {
 
     return document.createReactiveHtmlDivElement(
         style = ReactiveStyle(
+            flexItemStyle = PureFlexItemStyle(
+                grow = 1.0,
+            ),
             displayStyle = Cell.of(
                 PureFlexStyle(
-                    grow = 1.0,
                     direction = PureFlexDirection.Row,
                     alignItems = PureFlexAlignItems.Stretch,
                 ),
@@ -76,9 +79,11 @@ private fun createRootElement(): HTMLDivElement {
         children = ReactiveList.of(
             document.createReactiveHtmlDivElement(
                 style = ReactiveStyle(
+                    flexItemStyle = PureFlexItemStyle(
+                        grow = 1.0,
+                    ),
                     displayStyle = Cell.of(
                         PureFlexStyle(
-                            grow = 1.0,
                             direction = PureFlexDirection.Column,
                         ),
                     ),
