@@ -46,6 +46,7 @@ kotlin {
         jsMain.dependencies {
             implementation("dev.toolkt:domApiCompatExtra")
             implementation("dev.toolkt:reactiveDom")
+            implementation("dev.toolkt:reactiveDomExtra")
             implementation(npm("path-data-polyfill", "1.0.10"))
         }
     }

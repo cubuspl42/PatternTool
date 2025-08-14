@@ -7,7 +7,6 @@ data class PureStrokeStyle(
     val color: PureColor? = null,
     val width: PureDimension<*>? = null,
 ) : PurePropertyGroup() {
-
     override fun applyProperties(applier: PurePropertyApplier) {
         applier.applyProperty(
             kind = PurePropertyKind.Stroke,
