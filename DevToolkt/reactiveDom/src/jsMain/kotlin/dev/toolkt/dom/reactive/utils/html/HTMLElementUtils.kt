@@ -8,6 +8,7 @@ import dev.toolkt.reactive.event_stream.getEventStream
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
@@ -15,6 +16,7 @@ import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.Node
 import org.w3c.dom.events.MouseEvent
 import org.w3c.dom.extra.createButtonElement
+import org.w3c.dom.extra.createCanvasElement
 import org.w3c.dom.extra.createDivElement
 import org.w3c.dom.extra.createInputElement
 import org.w3c.dom.extra.createSpanElement
@@ -53,6 +55,13 @@ fun Document.createReactiveHtmlInputElement(
     createElement = Document::createInputElement,
     style = style,
     children = children,
+)
+
+fun Document.createReactiveHtmlCanvasElement(
+    style: ReactiveStyle? = null,
+): HTMLCanvasElement = createReactiveElement(
+    createElement = Document::createCanvasElement,
+    style = style,
 )
 
 fun HTMLElement.getClickEventStream(): EventStream<MouseEvent> = this.getEventStream(

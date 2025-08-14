@@ -3,6 +3,7 @@ package dev.toolkt.dom.reactive.utils
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.pure.size
 import dev.toolkt.dom.pure.style.PureFlexStyle
+import dev.toolkt.dom.pure.style.PurePosition
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.reactive.cell.Cell
@@ -15,11 +16,13 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 
 fun createResponsiveFlexElement(
+    position: PurePosition? = null,
     buildChild: (size: Cell<PureSize>) -> Element,
 ): HTMLElement = createResponsiveElement(
     createGrowingWrapper = { wrappedChildren ->
         document.createReactiveHtmlDivElement(
             style = ReactiveStyle(
+                position = position,
                 displayStyle = Cell.of(
                     PureFlexStyle(
                         grow = 1.0,
