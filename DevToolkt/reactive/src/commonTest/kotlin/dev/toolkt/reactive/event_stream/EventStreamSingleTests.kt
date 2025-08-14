@@ -8,8 +8,10 @@ import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class EventStreamSingleTests {
     @Test
@@ -85,7 +87,29 @@ class EventStreamSingleTests {
 
         eventEmitter.emit(10)
 
+        PlatformSystem.collectGarbageSuspend()
+
         ensureCollected(weakRef = singleEventStreamRef)
+
+        assertFalse(
+            actual = eventEmitter.hasListeners,
+        )
+    }
+
+    @Test
+    @Ignore // FIXME: Make it pass!
+    fun testSingle_letItGo_noEmit() = runTestDefault {
+        val eventEmitter = EventEmitter<Int>()
+
+        val singleEventStreamRef = PlatformWeakReference(eventEmitter.single())
+
+        PlatformSystem.collectGarbageSuspend()
+
+        ensureCollected(weakRef = singleEventStreamRef)
+
+        assertFalse(
+            actual = eventEmitter.hasListeners,
+        )
     }
 
     @Test
