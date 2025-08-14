@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool
+package diy.lingerie.canvas_demo_tool
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureUnit
