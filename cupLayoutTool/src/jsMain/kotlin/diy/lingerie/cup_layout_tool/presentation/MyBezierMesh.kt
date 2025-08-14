@@ -1,0 +1,105 @@
+package diy.lingerie.cup_layout_tool.presentation
+
+import dev.toolkt.dom.pure.PureColor
+import dev.toolkt.geometry.Point3D
+import dev.toolkt.reactive.cell.Cell
+import diy.lingerie.cup_layout_tool.UserBezierMesh
+import diy.lingerie.cup_layout_tool.application_state.InteractionState
+import dev.toolkt.js.threejs.MeshBasicMaterialParams
+import dev.toolkt.js.threejs.MeshLambertMaterialParams
+import dev.toolkt.js.threejs.THREE
+
+class MyBezierMesh(
+    val root: THREE.Object3D,
+    val point0HandleBall: THREE.Object3D,
+    val point1HandleBall: THREE.Object3D,
+    val point2HandleBall: THREE.Object3D,
+    val point3HandleBall: THREE.Object3D,
+    val apexHandleBall: THREE.Object3D,
+) {
+    companion object {
+        fun create(
+            interactionState: InteractionState,
+            userBezierMesh: UserBezierMesh,
+            color: Int,
+        ): MyBezierMesh {
+            val bezierCurve = userBezierMesh.bezierCurve
+            val apexVertex = userBezierMesh.apexPosition
+
+            val point0HandleBall = buildFlatHandleBallMesh(
+                handle = userBezierMesh.handle0,
+                interactionState = interactionState,
+            )
+
+            val point1HandleBall = buildFlatHandleBallMesh(
+                handle = userBezierMesh.handle1,
+                interactionState = interactionState,
+            )
+
+            val point2HandleBall = buildFlatHandleBallMesh(
+                handle = userBezierMesh.handle2,
+                interactionState = interactionState,
+            )
+
+            val point3HandleBall = buildFlatHandleBallMesh(
+                handle = userBezierMesh.handle3,
+                interactionState = interactionState,
+            )
+
+            val apexHandleBall = buildHandleBallMesh(
+                position = userBezierMesh.apexPosition,
+            )
+
+            val handleBalls = listOf(
+                point0HandleBall,
+                point1HandleBall,
+                point2HandleBall,
+                point3HandleBall,
+                apexHandleBall,
+            )
+
+            val bezierMeshGroup = createReactiveDualMeshGroup(
+                position = Cell.Companion.of(Point3D.Companion.origin),
+                geometry = createReactiveGeometry(
+                    createUserBezierMeshGeometryData(
+                        userBezierMesh = userBezierMesh,
+                    ),
+                ),
+                primaryMaterial = THREE.MeshLambertMaterial(
+                    params = MeshLambertMaterialParams(
+                        color = color,
+                    ),
+                ),
+                secondaryMaterial = THREE.MeshBasicMaterial(
+                    MeshBasicMaterialParams(
+                        color = PureColor.Companion.green.value,
+                        wireframe = true,
+                        transparent = true,
+                        opacity = 0.25,
+                    ),
+                ),
+                rotation = Cell.Companion.of(THREE.Euler()),
+            )
+
+            return MyBezierMesh(
+                root = createReactiveGroup(
+                    children = listOf(bezierMeshGroup) + handleBalls,
+                ),
+                point0HandleBall = point0HandleBall,
+                point1HandleBall = point1HandleBall,
+                point2HandleBall = point2HandleBall,
+                point3HandleBall = point3HandleBall,
+                apexHandleBall = apexHandleBall,
+            )
+        }
+    }
+
+    val handleBalls: List<THREE.Object3D>
+        get() = listOf(
+            point0HandleBall,
+            point1HandleBall,
+            point2HandleBall,
+            point3HandleBall,
+            apexHandleBall,
+        )
+}
