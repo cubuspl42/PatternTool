@@ -75,6 +75,14 @@ fun <EventT> StrongEventSource<EventT>.pin(): Subscription = listen(
 )
 
 fun <EventT> StrongEventSource<EventT>.listenInDependent(
+    dependent: ProperEventStream<*>,
+    listener: ListenerFn<EventT>,
+): Subscription = listenInDependent(
+    dependentId = dependent.id,
+    listener = listener,
+)
+
+fun <EventT> StrongEventSource<EventT>.listenInDependent(
     dependentId: Int,
     listener: ListenerFn<EventT>,
 ): Subscription = listen(

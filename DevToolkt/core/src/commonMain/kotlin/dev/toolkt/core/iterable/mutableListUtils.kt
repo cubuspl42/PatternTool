@@ -1,5 +1,6 @@
 package dev.toolkt.core.iterable
 
+// Thought: Rename to `removeAll`?
 fun <E> MutableList<E>.removeRange(indexRange: IntRange) {
     val startIndex = indexRange.first
     val endIndex = indexRange.last
@@ -32,3 +33,10 @@ fun <E> MutableList<E>.append(element: E): Int {
     add(element)
     return indices.last
 }
+
+fun <E> MutableList<E>.subList(
+    indexRange: OpenEndRange<Int>,
+): List<E> = subList(
+    fromIndex = indexRange.start,
+    toIndex = indexRange.endExclusive,
+)
