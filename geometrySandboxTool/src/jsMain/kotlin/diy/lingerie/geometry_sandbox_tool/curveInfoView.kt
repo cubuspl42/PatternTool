@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool
+package diy.lingerie.geometry_sandbox_tool
 
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexItemStyle

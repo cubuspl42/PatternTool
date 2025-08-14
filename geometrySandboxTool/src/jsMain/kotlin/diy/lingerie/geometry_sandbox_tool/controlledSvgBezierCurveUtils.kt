@@ -1,4 +1,4 @@
-package diy.lingerie.web_tool
+package diy.lingerie.geometry_sandbox_tool
 
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.px
@@ -12,15 +12,26 @@ import kotlinx.browser.document
 import org.w3c.dom.svg.SVGGElement
 import org.w3c.dom.svg.SVGSVGElement
 
-fun createControlledSvgLineCurve(
+fun createControlledSvgBezierCurve(
     svgElement: SVGSVGElement,
-    userLineSegment: UserLineSegment,
+    userBezierCurve: UserBezierCurve,
     color: PureColor,
 ): SVGGElement = document.createReactiveSvgGroupElement(
     svgElement = svgElement,
     transformation = null,
-    children = ReactiveList.Companion.of(
-        userLineSegment.reactiveLineSegment.createReactiveSvgLineElement(
+    children = ReactiveList.of(
+        userBezierCurve.reactiveBezierCurve.createReactiveExtendedSvgPolylineElement(
+            svgElement = svgElement,
+        ),
+        createControlLineElement(
+            start = userBezierCurve.start,
+            end = userBezierCurve.firstControl,
+        ),
+        createControlLineElement(
+            start = userBezierCurve.secondControl,
+            end = userBezierCurve.end,
+        ),
+        userBezierCurve.reactiveBezierCurve.createReactiveSvgPathElement(
             style = ReactiveStyle(
                 fill = Cell.Companion.of(PureFill.None),
                 strokeStyle = PureStrokeStyle(
@@ -31,11 +42,20 @@ fun createControlledSvgLineCurve(
         ),
         createCircleHandleElement(
             container = svgElement,
-            position = userLineSegment.start,
+            position = userBezierCurve.start,
         ),
         createCircleHandleElement(
             container = svgElement,
-            position = userLineSegment.end,
+            position = userBezierCurve.firstControl,
+        ),
+        createCircleHandleElement(
+            container = svgElement,
+            position = userBezierCurve.secondControl,
+        ),
+        createCircleHandleElement(
+            container = svgElement,
+            position = userBezierCurve.end,
         ),
     ),
 )
+
