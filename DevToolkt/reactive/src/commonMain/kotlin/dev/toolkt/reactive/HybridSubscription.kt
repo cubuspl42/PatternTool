@@ -1,5 +1,7 @@
 package dev.toolkt.reactive
 
+import dev.toolkt.core.platform.PlatformCleanable
+import dev.toolkt.core.platform.PlatformFinalizationRegistry
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.event_stream.EventSource
 import dev.toolkt.reactive.event_stream.TargetingListener
@@ -23,11 +25,13 @@ interface HybridSubscription : Subscription {
     }
 
     companion object {
+        private val finalizationRegistry = PlatformFinalizationRegistry()
+
         fun <TargetT : Any, EventT> EventSource<EventT>.listenHybrid(
             target: TargetT,
             targetingListener: TargetingListener<TargetT, EventT>,
         ): HybridSubscription = object : HybridSubscription {
-            private var currentMode: StrengthMode<TargetT> = StrengthMode.Weak(
+            private var currentMode: StrengthMode<TargetT> = enterWeakMode(
                 target = target,
             )
 
@@ -36,8 +40,7 @@ interface HybridSubscription : Subscription {
                     override fun handle(event: EventT) {
                         // If the target was collected, we assume that this listener
                         // will soon be removed. For now, let's just ignore the event.
-                        // TODO: Actually implement finalization registry listener removal
-                        val target = currentMode.target ?: return
+                        val target = currentMode.getReachableTarget() ?: return
 
                         targetingListener.handle(
                             target = target,
@@ -48,20 +51,25 @@ interface HybridSubscription : Subscription {
             )
 
             override fun cancel() {
-                val innerSubscription = this.innerSubscription ?: throw IllegalStateException(
-                    "The hybrid subscription is already cancelled"
-                )
+                val weakMode = currentMode as? StrengthMode.Weak<TargetT>
+                weakMode?.cleanable?.unregister()
 
-                innerSubscription.cancel()
+                innerSubscription?.cancel()
                 this.innerSubscription = null
             }
 
             override fun strengthen(): StrengthenResult {
-                val currentMode = this.currentMode as? StrengthMode.Weak<TargetT> ?: throw IllegalStateException(
+                val weakMode = this.currentMode as? StrengthMode.Weak<TargetT> ?: throw IllegalStateException(
                     "Cannot strengthen a subscription that is not weak."
                 )
 
-                val target = currentMode.weakTarget.get() ?: return StrengthenResult.Collected
+                val target = weakMode.weakTarget.get() ?: return StrengthenResult.Collected
+                val cleanable = weakMode.cleanable
+
+                // Unregister the cleanable, removing stress from the finalization register. It should be impossible
+                // to observe actual finalization when the hybrid subscription is in the strong mode, though, as we
+                // hold a strong reference to the target object then.
+                cleanable.unregister()
 
                 this.currentMode = StrengthMode.Strong(
                     target = target,
@@ -71,14 +79,31 @@ interface HybridSubscription : Subscription {
             }
 
             override fun weaken() {
-                val currentMode = this.currentMode as? StrengthMode.Strong<TargetT> ?: throw IllegalStateException(
+                val strongMode = this.currentMode as? StrengthMode.Strong<TargetT> ?: throw IllegalStateException(
                     "Cannot weaken a subscription that is not strong."
                 )
 
-                val target = currentMode.target
+                this.currentMode = enterWeakMode(
+                    target = strongMode.target,
+                )
+            }
 
-                this.currentMode = StrengthMode.Weak(
+            private fun enterWeakMode(
+                target: TargetT,
+            ): StrengthMode.Weak<TargetT> {
+                val cleanable = finalizationRegistry.register(
                     target = target,
+                    cleanup = {
+                        val subscription = innerSubscription
+                            ?: throw IllegalStateException("The subscription is already cancelled at the time of finalization")
+
+                        subscription.cancel()
+                    },
+                )
+
+                return StrengthMode.Weak(
+                    target = target,
+                    cleanable = cleanable,
                 )
             }
         }
@@ -96,11 +121,11 @@ private sealed class StrengthMode<TargetT : Any> {
      */
     class Weak<TargetT : Any>(
         target: TargetT,
+        val cleanable: PlatformCleanable,
     ) : StrengthMode<TargetT>() {
         val weakTarget = PlatformWeakReference(target)
 
-        override val target: TargetT?
-            get() = weakTarget.get()
+        override fun getReachableTarget(): TargetT? = weakTarget.get()
     }
 
     /**
@@ -108,9 +133,11 @@ private sealed class StrengthMode<TargetT : Any> {
      * target is not collected by the garbage collector as long as the
      * subscription is active.
      */
-    class Strong<TargetT : Any>(
-        override val target: TargetT,
-    ) : StrengthMode<TargetT>()
+    data class Strong<TargetT : Any>(
+        val target: TargetT,
+    ) : StrengthMode<TargetT>() {
+        override fun getReachableTarget(): TargetT? = target
+    }
 
-    abstract val target: TargetT?
+    abstract fun getReachableTarget(): TargetT?
 }
