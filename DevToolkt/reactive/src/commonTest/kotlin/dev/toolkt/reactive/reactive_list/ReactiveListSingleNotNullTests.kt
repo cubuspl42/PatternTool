@@ -2,13 +2,11 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
-import dev.toolkt.core.platform.collectGarbageSuspend
 import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.MutableCell
-import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -200,7 +198,7 @@ class ReactiveListSingleNotNullTests {
             element = mutableCell,
         ).changes
 
-        PlatformSystem.collectGarbageSuspend()
+        PlatformSystem.collectGarbageForced()
 
         assertFalse(mutableCell.hasListeners)
     }
@@ -214,7 +212,7 @@ class ReactiveListSingleNotNullTests {
                 element = mutableCell,
             )
 
-            PlatformSystem.collectGarbageSuspend()
+            PlatformSystem.collectGarbageForced()
 
             mutableCell.set(10)
 
@@ -245,7 +243,7 @@ class ReactiveListSingleNotNullTests {
 
         val changes = reactiveList.changes
 
-        PlatformSystem.collectGarbageSuspend()
+        PlatformSystem.collectGarbageForced()
 
         mutableCell.set(10)
 

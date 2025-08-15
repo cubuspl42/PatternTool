@@ -2,7 +2,6 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
-import dev.toolkt.core.platform.collectGarbageSuspend
 import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
@@ -87,7 +86,7 @@ class EventStreamSingleTests {
 
         eventEmitter.emit(10)
 
-        PlatformSystem.collectGarbageSuspend()
+        PlatformSystem.collectGarbageForced()
 
         ensureCollected(weakRef = singleEventStreamRef)
 
@@ -103,7 +102,7 @@ class EventStreamSingleTests {
 
         val singleEventStreamRef = PlatformWeakReference(eventEmitter.single())
 
-        PlatformSystem.collectGarbageSuspend()
+        PlatformSystem.collectGarbageForced()
 
         ensureCollected(weakRef = singleEventStreamRef)
 
@@ -140,7 +139,7 @@ class EventStreamSingleTests {
             eventStream = eventEmitter.single(),
         )
 
-        PlatformSystem.collectGarbageSuspend()
+        PlatformSystem.collectGarbageForced()
 
         // Emit the single event
         eventEmitter.emit(10)

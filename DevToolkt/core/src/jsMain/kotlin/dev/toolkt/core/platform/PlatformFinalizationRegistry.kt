@@ -21,12 +21,32 @@ actual class PlatformFinalizationRegistry {
         )
 
         return object : PlatformCleanable {
+            private var wasCleaned = false
+
             override fun clean() {
+                if (wasCleaned) {
+                    return
+                }
+
                 finalizationRegistry.unregister(
                     unregisterToken = cleanup,
                 )
 
                 cleanup()
+
+                wasCleaned = true
+            }
+
+            override fun unregister() {
+                if (wasCleaned) {
+                    return
+                }
+
+                finalizationRegistry.unregister(
+                    unregisterToken = cleanup,
+                )
+
+                wasCleaned = true
             }
         }
     }

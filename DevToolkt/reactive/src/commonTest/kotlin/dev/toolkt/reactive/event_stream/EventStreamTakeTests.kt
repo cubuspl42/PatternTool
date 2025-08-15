@@ -2,12 +2,10 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
-import dev.toolkt.core.platform.collectGarbageSuspend
 import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -160,7 +158,7 @@ class EventStreamTakeTests {
             eventStream = eventEmitter.take(2),
         )
 
-        PlatformSystem.collectGarbageSuspend()
+        PlatformSystem.collectGarbageForced()
 
         eventEmitter.emit(10)
 

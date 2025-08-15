@@ -2,7 +2,6 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
-import dev.toolkt.core.platform.collectGarbageSuspend
 import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.cell.Cell
@@ -66,7 +65,7 @@ class EventStreamHoldTests {
             actual = heldCell.currentValue,
         )
 
-        PlatformSystem.collectGarbageSuspend()
+        PlatformSystem.collectGarbageForced()
 
         eventEmitter.emit(2)
 
