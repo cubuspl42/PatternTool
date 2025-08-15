@@ -3,7 +3,15 @@
 package dev.toolkt.core.platform
 
 interface PlatformCleanable {
+    /**
+     * Unregisters the cleanable and invokes the cleaning action.
+     */
     fun clean()
+
+    /**
+     * Unregisters the cleanable without invoking the cleaning action.
+     */
+    fun unregister()
 }
 
 expect class PlatformFinalizationRegistry {

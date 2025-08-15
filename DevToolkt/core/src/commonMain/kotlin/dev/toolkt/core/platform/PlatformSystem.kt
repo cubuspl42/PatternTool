@@ -5,15 +5,18 @@ import kotlin.time.Duration.Companion.milliseconds
 
 expect object PlatformSystem {
     /**
-     * Collects garbage in a best-effort manner. This utility is meant to help with testing and debugging memory
-     * management issues, especially involved with weak references and memory leaks.
+     * Hints the system to start a garbage collection run in a best-effort manner. This utility is meant to help with
+     * testing and debugging memory management issues, especially involved with weak references and memory leaks.
      */
     fun collectGarbage()
 
-    fun log(value: Any?)
-}
+    /**
+     * A suspending functions that does everything in its power to trigger garbage collection on the given target.
+     */
+    suspend fun collectGarbageForced()
 
-suspend fun PlatformSystem.collectGarbageSuspend() {
-    collectGarbage()
-    delay(1.milliseconds)
+    /**
+     * Logs a value to the platform-specific console (or the standard output).
+     */
+    fun log(value: Any?)
 }

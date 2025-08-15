@@ -18,6 +18,7 @@ subprojects {
                 freeCompilerArgs.addAll(
                     listOf(
                         "-Xconsistent-data-class-copy-visibility",
+                        "-Xexpect-actual-classes",
                     ),
                 )
             }
