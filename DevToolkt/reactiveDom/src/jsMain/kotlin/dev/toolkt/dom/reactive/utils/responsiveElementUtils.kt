@@ -36,7 +36,7 @@ fun createResponsiveFlexElement(
 )
 
 fun <ElementT : Element> createResponsiveElement(
-    createGrowingWrapper: (children: ReactiveList<Node>) -> ElementT,
+    createGrowingWrapper: (wrappedChildren: ReactiveList<Node>) -> ElementT,
     buildChild: (size: Cell<PureSize>) -> Element,
 ): ElementT = ReactiveList.looped { childrenLooped ->
     val divElement = createGrowingWrapper(childrenLooped)
