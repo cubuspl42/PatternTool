@@ -96,7 +96,6 @@ class EventStreamSingleTests {
     }
 
     @Test
-    @Ignore // FIXME: Make it pass!
     fun testSingle_letItGo_noEmit() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
