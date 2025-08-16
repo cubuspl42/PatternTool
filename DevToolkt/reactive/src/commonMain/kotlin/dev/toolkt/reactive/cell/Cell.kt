@@ -1,10 +1,14 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.forEach
 import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.event_stream.takeUntilNull
+import dev.toolkt.reactive.managed_io.ProactionContext
+import dev.toolkt.reactive.managed_io.Trigger
+import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.managed_io.interrupted
 import dev.toolkt.reactive.reactive_list.LoopedCell
 
 sealed class Cell<out V> {
@@ -111,6 +115,11 @@ sealed class Cell<out V> {
 
     abstract val newValues: EventStream<V>
 
+    // TODO: Add tests
+    context(momentContext: MomentContext) fun sample(): V {
+        TODO()
+    }
+
     abstract val currentValue: V
 
     abstract val changes: EventStream<Change<V>>
@@ -168,31 +177,41 @@ sealed class Cell<out V> {
     )
 }
 
-fun <V> Cell<V>.connect(
+fun <V> Cell<V>.forEach(
+    action: context(ProactionContext) (V) -> Unit,
+): Trigger = Trigger.initialized(
+    init = {
+        action(sample())
+    },
+    effect = newValues.forEach { newValue ->
+        action(newValue)
+    },
+)
+
+/**
+ * @return An effect:
+ *
+ * Once triggered, binds this cell to [targetCell] (until the effect is cancelled).
+ */
+fun <V> Cell<V>.forwardTo(
+    targetCell: MutableCell<V>,
+): Trigger = forEach { newValue ->
+    targetCell.set(newValue = newValue)
+}
+
+/**
+ * @return An effect:
+ *
+ * Once triggered, binds this cell to [targetCell] (until [doDisconnect] emits an event, or the effect is cancelled).
+ */
+fun <V> Cell<V>.forwardToUntil(
     targetCell: MutableCell<V>,
     doDisconnect: EventStream<Unit>,
-) {
-    val subscription = connect(targetCell = targetCell)
-
-    // This stinks
-    doDisconnect.forEach {
-        subscription.cancel()
-    }
-}
-
-fun <V> Cell<V>.connect(
-    targetCell: MutableCell<V>,
-): Subscription {
-    targetCell.set(currentValue)
-
-    return newValues.listen(
-        object : Listener<V> {
-            override fun handle(event: V) {
-                targetCell.set(event)
-            }
-        },
-    )
-}
+): Trigger = forwardTo(
+    targetCell = targetCell,
+).interrupted(
+    doInterrupt = doDisconnect,
+)
 
 fun <V> Cell<Cell<V>>.switch() = switchOf { it }
 

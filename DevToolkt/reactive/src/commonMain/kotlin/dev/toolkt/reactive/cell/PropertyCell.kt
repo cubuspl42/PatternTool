@@ -18,7 +18,7 @@ class PropertyCell<ValueT>(
                 get() = mutableValue
 
             fun set(newValue: ValueT) {
-                mutableValue.set(newValue = newValue)
+                mutableValue.setUnmanaged(newValue = newValue)
             }
         }
 
@@ -60,12 +60,12 @@ class PropertyCell<ValueT>(
                         initialValue = newBoundState.exposedValue.currentValue,
                     )
 
-                    mutableState.set(finalUnboundState)
+                    mutableState.setUnmanaged(finalUnboundState)
                 }
             },
         )
 
-        mutableState.set(newBoundState)
+        mutableState.setUnmanaged(newBoundState)
     }
 
     fun bindUntil(

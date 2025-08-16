@@ -22,7 +22,7 @@ class MutableCellTests {
             actual = mutableCell.currentValue,
         )
 
-        mutableCell.set(1)
+        mutableCell.setUnmanaged(1)
 
         assertEquals(
             expected = 1,
@@ -39,7 +39,7 @@ class MutableCellTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableCell.set(2)
+        mutableCell.setUnmanaged(2)
 
         assertEquals(
             expected = 2,

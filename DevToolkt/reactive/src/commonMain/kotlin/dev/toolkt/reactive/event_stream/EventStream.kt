@@ -4,6 +4,12 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.HoldCell
 import dev.toolkt.reactive.future.Future
+import dev.toolkt.reactive.managed_io.ProactionContext
+import dev.toolkt.reactive.managed_io.Effect
+import dev.toolkt.reactive.managed_io.Trigger
+import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.managed_io.ReactionContext
+import dev.toolkt.reactive.managed_io.TriggerBase
 
 typealias TargetingListenerFn<TargetT, EventT> = (TargetT, EventT) -> Unit
 
@@ -112,6 +118,13 @@ abstract class EventStream<out E> : EventSource<E> {
         transform: (E) -> Er,
     ): EventStream<Er>
 
+    // TODO: Add tests
+    fun <Er> mapAt(
+        transform: context(ReactionContext) (E) -> Er,
+    ): EventStream<Er> {
+        TODO()
+    }
+
     abstract fun <Er : Any> mapNotNull(
         transform: (E) -> Er?,
     ): EventStream<Er>
@@ -124,14 +137,20 @@ abstract class EventStream<out E> : EventSource<E> {
         count: Int,
     ): EventStream<E>
 
-    abstract fun single(): EventStream<E>
+    abstract fun singleUnmanaged(): EventStream<E>
+
+
+    // TODO: Add tests
+    context(momentContext: MomentContext) fun single(): EventStream<E> {
+        TODO()
+    }
 
     abstract fun next(): Future<E>
 
     fun onNext(): Future<Unit> = next().unit()
 
     // This stinks
-    abstract fun forEach(
+    abstract fun forEachUnmanaged(
         effect: (E) -> Unit,
     )
 
@@ -153,6 +172,24 @@ abstract class EventStream<out E> : EventSource<E> {
 
     fun units(): EventStream<Unit> = map { }
 }
+
+fun <E> EventStream<E>.forEach(
+    action: context(ProactionContext) (E) -> Unit,
+): Trigger = object : TriggerBase() {
+    context(reactionContext: ReactionContext) override fun startInternally(): Effect.Handle = subscribe(
+        action = action,
+    )
+}
+
+// TODO: Add tests
+context(reactionContext: ReactionContext) fun <E> EventStream<E>.subscribe(
+    action: context(ProactionContext) (E) -> Unit,
+): Effect.Handle {
+    TODO() // The most low-level ReactionContext operation?
+}
+
+context(reactionContext: ReactionContext)
+
 
 fun <E : Any> EventStream<E?>.filterNotNull(): EventStream<E> = mapNotNull { it }
 
