@@ -34,11 +34,11 @@ class CellSwitchTests {
             actual = switchedCell.currentValue,
         )
 
-        mutableCell1.set(9)
+        mutableCell1.setUnmanaged(9)
 
-        mutableCell2.set(-3)
+        mutableCell2.setUnmanaged(-3)
 
-        mutableCell1.set(8)
+        mutableCell1.setUnmanaged(8)
 
         assertEquals(
             expected = 8,
@@ -59,7 +59,7 @@ class CellSwitchTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableNestedCell.set(mutableCell2)
+        mutableNestedCell.setUnmanaged(mutableCell2)
 
         assertEquals(
             expected = -3,
@@ -76,13 +76,13 @@ class CellSwitchTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableCell1.set(11)
+        mutableCell1.setUnmanaged(11)
 
-        mutableCell2.set(-4)
+        mutableCell2.setUnmanaged(-4)
 
-        mutableCell1.set(12)
+        mutableCell1.setUnmanaged(12)
 
-        mutableCell2.set(-5)
+        mutableCell2.setUnmanaged(-5)
 
         assertEquals(
             expected = -5,

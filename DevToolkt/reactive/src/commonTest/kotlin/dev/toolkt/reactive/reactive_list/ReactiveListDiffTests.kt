@@ -2,7 +2,6 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -34,7 +33,7 @@ class ReactiveListDiffTests {
             eventStream = diffReactiveList.changes,
         )
 
-        mutableListCell.set(
+        mutableListCell.setUnmanaged(
             listOf(11, 21, 31, 41),
         )
 
@@ -69,7 +68,7 @@ class ReactiveListDiffTests {
             eventStream = diffReactiveList.changes,
         )
 
-        mutableListCell.set(emptyList())
+        mutableListCell.setUnmanaged(emptyList())
 
         assertEquals(
             expected = emptyList(),

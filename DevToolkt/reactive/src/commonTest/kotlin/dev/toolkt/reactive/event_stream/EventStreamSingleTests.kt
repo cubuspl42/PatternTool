@@ -7,7 +7,6 @@ import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -17,7 +16,7 @@ class EventStreamSingleTests {
     fun testSingle() {
         val eventEmitter = EventEmitter<Int>()
 
-        val nextStream = eventEmitter.single()
+        val nextStream = eventEmitter.singleUnmanaged()
 
         val streamVerifier = EventStreamVerifier(
             eventStream = nextStream,
@@ -53,7 +52,7 @@ class EventStreamSingleTests {
         val eventEmitter = EventEmitter<Int>()
 
         fun setup(): Pair<PlatformWeakReference<EventStream<Int>>, EventStreamVerifier<Int>> {
-            val singleEventStream = eventEmitter.single()
+            val singleEventStream = eventEmitter.singleUnmanaged()
 
             val streamVerifier = EventStreamVerifier(
                 eventStream = singleEventStream,
@@ -82,7 +81,7 @@ class EventStreamSingleTests {
     fun testSingle_letItGo() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
-        val singleEventStreamRef = PlatformWeakReference(eventEmitter.single())
+        val singleEventStreamRef = PlatformWeakReference(eventEmitter.singleUnmanaged())
 
         eventEmitter.emit(10)
 
@@ -99,7 +98,7 @@ class EventStreamSingleTests {
     fun testSingle_letItGo_noEmit() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
-        val singleEventStreamRef = PlatformWeakReference(eventEmitter.single())
+        val singleEventStreamRef = PlatformWeakReference(eventEmitter.singleUnmanaged())
 
         PlatformSystem.collectGarbageForced()
 
@@ -114,7 +113,7 @@ class EventStreamSingleTests {
     fun testSingle_missed() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
-        val singleEventStream = eventEmitter.single()
+        val singleEventStream = eventEmitter.singleUnmanaged()
 
         eventEmitter.emit(10)
 
@@ -135,7 +134,7 @@ class EventStreamSingleTests {
         val eventEmitter = EventEmitter<Int>()
 
         val streamVerifier = DetachedEventStreamVerifier(
-            eventStream = eventEmitter.single(),
+            eventStream = eventEmitter.singleUnmanaged(),
         )
 
         PlatformSystem.collectGarbageForced()

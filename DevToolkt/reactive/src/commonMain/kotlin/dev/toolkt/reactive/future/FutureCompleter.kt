@@ -13,7 +13,7 @@ class FutureCompleter<V> : ProperFuture<V>() {
         when (mutableState.currentValue) {
             is Fulfilled<V> -> throw IllegalStateException("The future is already fulfilled")
             Pending -> {
-                mutableState.set(Fulfilled(result = result))
+                mutableState.setUnmanaged(Fulfilled(result = result))
             }
         }
     }

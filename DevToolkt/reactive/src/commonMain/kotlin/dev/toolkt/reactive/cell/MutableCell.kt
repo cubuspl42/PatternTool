@@ -2,10 +2,21 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.managed_io.ProactionContext
+import dev.toolkt.reactive.managed_io.MomentContext
 
 class MutableCell<V>(
     initialValue: V,
 ) : ProperCell<V>() {
+    companion object {
+        // TODO: Add tests
+        context(momentContext: MomentContext) fun <V> create(
+            initialValue: V,
+        ): MutableCell<V> {
+            TODO()
+        }
+    }
+
     private val newValueEmitter = EventEmitter<V>()
 
     private var mutableValue: V = initialValue
@@ -19,7 +30,19 @@ class MutableCell<V>(
     override val currentValue: V
         get() = mutableValue
 
-    fun set(
+    context(proactionContext: ProactionContext) fun set(
+        newValue: V,
+    ) {
+        proactionContext.enqueueReaction { reactionContext ->
+            reactionContext.enqueueMutation {
+                mutableValue = newValue
+            }
+
+            newValueEmitter.emit(newValue)
+        }
+    }
+
+    fun setUnmanaged(
         newValue: V,
     ) {
         newValueEmitter.emit(newValue)

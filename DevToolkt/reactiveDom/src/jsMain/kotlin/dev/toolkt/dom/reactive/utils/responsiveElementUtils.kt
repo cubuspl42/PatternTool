@@ -10,15 +10,16 @@ import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.mapNotNull
 import dev.toolkt.reactive.future.resultOrNull
+import dev.toolkt.reactive.managed_io.ReactionContext
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 
-fun createResponsiveFlexElement(
+context(reactionContext: ReactionContext) fun createResponsiveFlexElement(
     position: PurePosition? = null,
-    buildChild: (size: Cell<PureSize>) -> Element,
+    buildChild: context(ReactionContext) (size: Cell<PureSize>) -> Element,
 ): HTMLElement = createResponsiveElement(
     createGrowingWrapper = { wrappedChildren ->
         document.createReactiveHtmlDivElement(
@@ -35,9 +36,9 @@ fun createResponsiveFlexElement(
     buildChild = buildChild,
 )
 
-fun <ElementT : Element> createResponsiveElement(
+context(reactionContext: ReactionContext) fun <ElementT : Element> createResponsiveElement(
     createGrowingWrapper: (wrappedChildren: ReactiveList<Node>) -> ElementT,
-    buildChild: (size: Cell<PureSize>) -> Element,
+    buildChild: context(ReactionContext) (size: Cell<PureSize>) -> Element,
 ): ElementT = ReactiveList.looped { childrenLooped ->
     val divElement = createGrowingWrapper(childrenLooped)
 

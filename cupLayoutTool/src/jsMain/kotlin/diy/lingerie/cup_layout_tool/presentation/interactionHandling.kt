@@ -11,26 +11,30 @@ import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
 import dev.toolkt.reactive.event_stream.hold
-import dev.toolkt.reactive.managed_io.Program
-import dev.toolkt.reactive.managed_io.Schedule
-import dev.toolkt.reactive.managed_io.executeCurrentOf
-import dev.toolkt.reactive.managed_io.forEachInvoke
 import diy.lingerie.cup_layout_tool.UserBezierMesh
-import diy.lingerie.cup_layout_tool.application_state.InteractionState
+import diy.lingerie.cup_layout_tool.application_state.interaction_state.InteractionState
 import diy.lingerie.cup_layout_tool.application_state.PresentationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLCanvasElement
 import dev.toolkt.js.threejs.THREE
+import dev.toolkt.reactive.event_stream.forEach
+import dev.toolkt.reactive.managed_io.Effect
+import dev.toolkt.reactive.managed_io.Trigger
+import dev.toolkt.reactive.managed_io.Triggers
+import dev.toolkt.reactive.managed_io.activateOf
+import diy.lingerie.cup_layout_tool.application_state.interaction_state.manipulation_states.idle_state.ilde_focus_states.FocusedHandleState
+import diy.lingerie.cup_layout_tool.application_state.interaction_state.manipulation_states.HandleDragState
+import diy.lingerie.cup_layout_tool.application_state.interaction_state.manipulation_states.idle_state.IdleState
 
 fun handleInteractionStateEvents(
     canvas: HTMLCanvasElement,
     presentationState: PresentationState,
     interactionState: InteractionState,
     myRenderer: MyRenderer,
-): Schedule {
+): Trigger {
     val cameraRotation = presentationState.cameraRotation
 
-    return Program.parallel(
+    return Triggers.combine(
         handleCameraRotation(
             canvas = canvas,
             cameraRotation = cameraRotation,
@@ -49,9 +53,9 @@ fun handleInteractionStateEvents(
 private fun handleCameraRotation(
     canvas: HTMLCanvasElement,
     cameraRotation: PropertyCell<Double>,
-): Schedule = canvas.onMouseDragGestureStarted(
+): Trigger = canvas.onMouseDragGestureStarted(
     button = ButtonId.MIDDLE,
-).forEachInvoke { mouseGesture ->
+).forEach { mouseGesture ->
     val initialCameraRotation = cameraRotation.currentValue
 
     val pointerOffset = mouseGesture.trackMouseMovement().map { it.offsetPoint }
@@ -68,7 +72,7 @@ private fun handleCameraRotation(
 
 private fun handleCameraReset(
     presentationState: PresentationState,
-): Schedule = document.body!!.getKeyDownEventStream().forEachInvoke {
+): Trigger = document.body!!.getKeyDownEventStream().forEach {
     if (it.key == "0") {
         presentationState.resetCamera()
     }
@@ -78,22 +82,24 @@ fun handleManipulationStateEvents(
     canvas: HTMLCanvasElement,
     myRenderer: MyRenderer,
     interactionState: InteractionState,
-): Program<*> = Program.prepare {
+): Trigger {
     val canvasMouseOffsetPointNdc = canvas.trackMouseOffsetPointNdc()
 
-    interactionState.manipulationState.executeCurrentOf { manipulationStateNow ->
+    return interactionState.manipulationState.activateOf { manipulationStateNow ->
         when (manipulationStateNow) {
-            is InteractionState.IdleState -> handleIdleStateEvents(
+            is IdleState -> handleIdleStateEvents(
                 canvas = canvas,
                 canvasMouseOffsetPointNdc = canvasMouseOffsetPointNdc,
                 myRenderer = myRenderer,
                 idleState = manipulationStateNow,
             )
 
-            is InteractionState.HandleDragState -> handleHandleDragStateKeyboardEvents(
+            is HandleDragState -> handleHandleDragStateKeyboardEvents(
                 canvas = canvas,
                 handleDragState = manipulationStateNow,
             )
+
+            else -> Triggers.Noop
         }
     }
 }
@@ -102,86 +108,78 @@ fun handleIdleStateEvents(
     canvas: HTMLCanvasElement,
     canvasMouseOffsetPointNdc: Cell<Point?>,
     myRenderer: MyRenderer,
-    idleState: InteractionState.IdleState,
-): Program<*> {
+    idleState: IdleState,
+): Trigger {
     val myScene = myRenderer.myScene
 
-    return Program.parallel(
-        canvasMouseOffsetPointNdc.forEachInvoke { offsetPointNdcNow ->
-            if (offsetPointNdcNow == null) {
-                idleState.clearFocus()
+    val indicatedObject = canvasMouseOffsetPointNdc.map {
+        val offsetPointNdcNow = it ?: return@map null
 
-                return@forEachInvoke
-            }
+        val targetObject = getObjectAtNcdCoord(
+            myRenderer = myRenderer,
+            ndcCoord = offsetPointNdcNow,
+            candidates = myScene.myBezierMesh.handleBalls,
+        ) ?: return@map null
 
-            val targetObject = getObjectAtNcdCoord(
-                myRenderer = myRenderer,
-                ndcCoord = offsetPointNdcNow,
-                candidates = myScene.myBezierMesh.handleBalls,
-            ) ?: run {
-                idleState.clearFocus()
+        val handleBallUserData = targetObject.myUserData as? MyObjectUserData.HandleBallUserData ?: return@map null
 
-                return@forEachInvoke
-            }
+        IdleState.HandleIndicatedObject(
+            handle = handleBallUserData.handle,
+        )
+    }
 
-            val handleBallUserData = targetObject.myUserData as? MyObjectUserData.HandleBallUserData ?: run {
-                idleState.clearFocus()
 
-                return@forEachInvoke
-            }
+    return Effect.prepared {
+        idleState.indicatedObject.bind(indicatedObject)
 
-            idleState.focusHandle(
-                handle = handleBallUserData.handle,
-            )
-        },
         handleFocusedHandleStateEvents(
             canvas = canvas,
             myRenderer = myRenderer,
             idleState = idleState,
-        ),
-    )
+        )
+    }
 }
 
 fun handleFocusedHandleStateEvents(
     canvas: HTMLCanvasElement,
     myRenderer: MyRenderer,
-    idleState: InteractionState.IdleState,
-): Program<*> = idleState.focusState.executeCurrentOf { focusStateNow ->
+    idleState: IdleState,
+): Trigger = idleState.focusState.activateOf { focusStateNow ->
     when (focusStateNow) {
-        is InteractionState.FocusedHandleState -> handleFocusedHandleStateEvents(
+        is FocusedHandleState -> handleFocusedHandleStateEvents(
             canvas = canvas,
             myRenderer = myRenderer,
             focusedHandleState = focusStateNow,
         )
 
-        else -> Program.Noop
+        else -> Triggers.Noop
     }
 }
 
 fun handleFocusedHandleStateEvents(
     canvas: HTMLCanvasElement,
     myRenderer: MyRenderer,
-    focusedHandleState: InteractionState.FocusedHandleState,
-): Schedule = canvas.onMouseDragGestureStarted(
-    button = ButtonId.LEFT,
-).single().forEachInvoke { mouseDragGesture ->
-    focusedHandleState.drag(
-        targetPosition = findPointerTargetPoint(
-            myRenderer = myRenderer,
-            handle = focusedHandleState.focusedHandle,
-            pointerOffsetCoordNdc = mouseDragGesture.trackMouseMovement().map { it.offsetPointNdc },
-        ),
-        doCommit = mouseDragGesture.onReleased.units(),
+    focusedHandleState: FocusedHandleState,
+): Trigger = Effect.preparedPure {
+    focusedHandleState.doDragSlot.bind(
+        canvas.onMouseDragGestureStarted(
+            button = ButtonId.LEFT,
+        ).single().map { mouseDragGesture ->
+            FocusedHandleState.DragCommand(
+                targetPosition = mouseDragGesture.trackMouseMovement().map { it.offsetPointNdc },
+                doCommit = mouseDragGesture.onReleased.units(),
+            )
+        },
     )
 }
 
 fun handleHandleDragStateKeyboardEvents(
     canvas: HTMLCanvasElement,
-    handleDragState: InteractionState.HandleDragState,
-): Schedule = canvas.getKeyDownEventStream().forEachInvoke {
-    if (it.key == "Escape") {
-        handleDragState.abort()
-    }
+    handleDragState: HandleDragState,
+): Trigger = Effect.preparedPure {
+    handleDragState.doAbortSlot.bind(
+        canvas.getKeyDownEventStream().filter { it.key == "Escape" }.units(),
+    )
 }
 
 fun findPointerTargetPoint(

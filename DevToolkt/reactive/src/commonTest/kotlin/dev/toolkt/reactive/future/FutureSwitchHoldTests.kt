@@ -22,8 +22,8 @@ class FutureSwitchHoldTests {
             eventStream = switchHoldCell.newValues,
         )
 
-        mutableCell1.set(-11)
-        mutableCell2.set(11)
+        mutableCell1.setUnmanaged(-11)
+        mutableCell2.setUnmanaged(11)
 
         assertEquals(
             expected = -11,
@@ -47,8 +47,8 @@ class FutureSwitchHoldTests {
             actual = newValuesVerifier.removeReceivedEvents(),
         )
 
-        mutableCell1.set(-12)
-        mutableCell2.set(12)
+        mutableCell1.setUnmanaged(-12)
+        mutableCell2.setUnmanaged(12)
 
         assertEquals(
             expected = 12,

@@ -33,7 +33,7 @@ class ReactiveListSingleTests {
             eventStream = singleReactiveList.changes,
         )
 
-        mutableCell.set(20)
+        mutableCell.setUnmanaged(20)
 
         assertEquals(
             expected = listOf(20),

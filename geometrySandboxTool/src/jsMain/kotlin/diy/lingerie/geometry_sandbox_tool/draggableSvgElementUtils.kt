@@ -24,7 +24,7 @@ fun <ElementT : SVGElement> createDraggableSvgElement(
         button = ButtonId.LEFT,
     ).track()
 
-    trackedDragGesture.newValues.filterNotNull().forEach { newDragGesture ->
+    trackedDragGesture.newValues.filterNotNull().forEachUnmanaged { newDragGesture ->
         position.bindUntil(
             boundValue = newDragGesture.point,
             until = newDragGesture.onFinished,

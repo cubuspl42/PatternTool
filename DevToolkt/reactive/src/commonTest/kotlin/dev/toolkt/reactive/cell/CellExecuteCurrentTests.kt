@@ -54,7 +54,7 @@ class CellExecuteCurrentTests {
             actual = variable1,
         )
 
-        mutableCell.set(program1)
+        mutableCell.setUnmanaged(program1)
 
         eventSEmitter.emit(Unit)
 
