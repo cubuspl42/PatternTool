@@ -4,7 +4,7 @@ import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.reactive.cell.Cell
 import diy.lingerie.cup_layout_tool.UserBezierMesh
-import diy.lingerie.cup_layout_tool.application_state.InteractionState
+import diy.lingerie.cup_layout_tool.application_state.interaction_state.InteractionState
 import dev.toolkt.js.threejs.MeshBasicMaterialParams
 import dev.toolkt.js.threejs.MeshLambertMaterialParams
 import dev.toolkt.js.threejs.THREE

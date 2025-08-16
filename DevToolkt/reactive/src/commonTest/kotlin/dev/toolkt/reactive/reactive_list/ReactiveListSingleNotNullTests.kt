@@ -72,7 +72,7 @@ class ReactiveListSingleNotNullTests {
             eventStream = singleReactiveList.changes,
         )
 
-        mutableCell.set(null)
+        mutableCell.setUnmanaged(null)
 
         assertEquals(
             expected = emptyList(),
@@ -104,7 +104,7 @@ class ReactiveListSingleNotNullTests {
         )
 
 
-        mutableCell.set(10)
+        mutableCell.setUnmanaged(10)
 
         assertEquals(
             expected = listOf(10),
@@ -137,7 +137,7 @@ class ReactiveListSingleNotNullTests {
         )
 
 
-        mutableCell.set(20)
+        mutableCell.setUnmanaged(20)
 
         assertEquals(
             expected = listOf(20),
@@ -173,7 +173,7 @@ class ReactiveListSingleNotNullTests {
             eventStream = singleReactiveList.changes,
         )
 
-        mutableCell.set(null)
+        mutableCell.setUnmanaged(null)
 
         if (mutableCellChangesVerifier.removeReceivedEvents() != listOf(null)) {
             throw AssertionError("Unexpected MutableCell behavior")
@@ -214,7 +214,7 @@ class ReactiveListSingleNotNullTests {
 
             PlatformSystem.collectGarbageForced()
 
-            mutableCell.set(10)
+            mutableCell.setUnmanaged(10)
 
             assertEquals(
                 expected = listOf(10),
@@ -245,13 +245,13 @@ class ReactiveListSingleNotNullTests {
 
         PlatformSystem.collectGarbageForced()
 
-        mutableCell.set(10)
+        mutableCell.setUnmanaged(10)
 
         val changesVerifier = EventStreamVerifier(
             eventStream = changes,
         )
 
-        mutableCell.set(20)
+        mutableCell.setUnmanaged(20)
 
         assertEquals(
             expected = listOf(
@@ -347,7 +347,7 @@ class ReactiveListSingleNotNullTests {
 
         ensureNotCollected(weakRef = outReactiveListWeakRef)
 
-        mutableCell.set(null)
+        mutableCell.setUnmanaged(null)
 
         assertEquals(
             expected = listOf(

@@ -19,6 +19,7 @@ subprojects {
                     listOf(
                         "-Xconsistent-data-class-copy-visibility",
                         "-Xexpect-actual-classes",
+                        "-Xcontext-parameters",
                     ),
                 )
             }

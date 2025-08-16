@@ -31,7 +31,7 @@ class CellCalmTests {
             eventStream = calmedCall.newValues,
         )
 
-        mutableCell.set(20)
+        mutableCell.setUnmanaged(20)
 
         assertEquals(
             expected = listOf(20),
@@ -51,7 +51,7 @@ class CellCalmTests {
             eventStream = calmedCall.newValues,
         )
 
-        mutableCell.set(10)
+        mutableCell.setUnmanaged(10)
 
         assertEquals(
             expected = emptyList(),

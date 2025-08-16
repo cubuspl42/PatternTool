@@ -20,7 +20,7 @@ class FutureMapTests {
             actual = mapFuture.currentState,
         )
 
-        futureCompleter.complete(1)
+        futureCompleter.completeUnmanaged(1)
 
         assertEquals(
             expected = listOf("1"),

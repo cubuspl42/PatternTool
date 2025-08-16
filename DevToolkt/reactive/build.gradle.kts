@@ -26,6 +26,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(project(":coreTestUtils"))
+            implementation(project(":reactiveTestUtils"))
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
         }

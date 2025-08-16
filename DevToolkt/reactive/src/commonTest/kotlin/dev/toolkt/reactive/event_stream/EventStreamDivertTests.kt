@@ -36,7 +36,7 @@ class EventStreamDivertTests {
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        mutableStreamCell.set(eventEmitter2)
+        mutableStreamCell.setUnmanaged(eventEmitter2)
 
         eventEmitter1.emit(3)
 
@@ -51,7 +51,7 @@ class EventStreamDivertTests {
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        mutableStreamCell.set(eventEmitter1)
+        mutableStreamCell.setUnmanaged(eventEmitter1)
 
         eventEmitter1.emit(4)
 

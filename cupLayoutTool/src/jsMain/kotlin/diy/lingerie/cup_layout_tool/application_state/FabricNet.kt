@@ -43,7 +43,7 @@ data class FabricNet(
                     null -> oldVelocity
 
                     else -> {
-                        val acceleration = Acceleration.Companion.calculate(
+                        val acceleration = Acceleration.calculate(
                             force = force,
                             mass = ParticleState.mass,
                         )
@@ -127,7 +127,7 @@ data class FabricNet(
                 particleId = secondParticleId,
             ).position
 
-            val distance = Point3D.Companion.distanceBetween(firstPosition, secondPosition)
+            val distance = Point3D.distanceBetween(firstPosition, secondPosition)
 
             // The correction force is positive if the particles are too far
             // and (attraction) negative if the particles are too close (repulsion)
@@ -139,14 +139,14 @@ data class FabricNet(
             return listOf(
                 ParticleCorrection(
                     particleId = firstParticleId,
-                    correctionForce = Force.Companion.inDirection(
+                    correctionForce = Force.inDirection(
                         forceValue = correctionForceValue,
                         direction3 = firstDirection,
                     ),
                 ),
                 ParticleCorrection(
                     particleId = secondParticleId,
-                    correctionForce = Force.Companion.inDirection(
+                    correctionForce = Force.inDirection(
                         forceValue = correctionForceValue,
                         direction3 = secondDirection,
                     ),
@@ -262,7 +262,7 @@ data class FabricNet(
                 particleStateMap = particleStateMap,
             )
         }.groupBy { it.particleId }.mapValues { (_, particleCorrection) ->
-            Force.Companion.resultant(
+            Force.resultant(
                 forces = particleCorrection.map { it.correctionForce } + externalForce,
             )
         }

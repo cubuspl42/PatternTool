@@ -37,3 +37,4 @@ class EventStreamVerifier<E>(
         this.subscription = null
     }
 }
+

@@ -56,8 +56,8 @@ class ReactiveListFuseTests {
         )
 
         // Mutate some of the original cells
-        mutableCell1.set(101)
-        mutableCell2.set(201) // A duplicate
+        mutableCell1.setUnmanaged(101)
+        mutableCell2.setUnmanaged(201) // A duplicate
 
         assertEquals(
             expected = listOf(0, 101, 201, 300, 400, 201),
@@ -149,7 +149,7 @@ class ReactiveListFuseTests {
         )
 
         // Mutate a cell from the left side
-        mutableCell1.set(101)
+        mutableCell1.setUnmanaged(101)
 
         // This seems to fail non-deterministically...
         assertEquals(
@@ -170,7 +170,7 @@ class ReactiveListFuseTests {
         )
 
         // Mutate a cell from the right side
-        mutableCell4.set(401)
+        mutableCell4.setUnmanaged(401)
 
         assertEquals(
             expected = listOf(0, 101, 310, 320, 330, 401),
@@ -200,9 +200,9 @@ class ReactiveListFuseTests {
         }
 
         // Mutate all remaining cells
-        mutableCell0.set(1)
-        mutableCell3c.set(331)
-        mutableCell4.set(402)
+        mutableCell0.setUnmanaged(1)
+        mutableCell3c.setUnmanaged(331)
+        mutableCell4.setUnmanaged(402)
 
         assertEquals(
             expected = listOf(1, 331, 402),
@@ -301,9 +301,9 @@ class ReactiveListFuseTests {
         )
 
         // Mutate some of the new cells
-        mutableCell2a.set(211) // A cell duplicated in the new cells
-        mutableCell2b.set(221) // A unique cell
-        mutableCell3.set(301) // A cell duplicated in the original list
+        mutableCell2a.setUnmanaged(211) // A cell duplicated in the new cells
+        mutableCell2b.setUnmanaged(221) // A unique cell
+        mutableCell3.setUnmanaged(301) // A cell duplicated in the original list
 
         assertEquals(
             expected = listOf(
@@ -425,8 +425,8 @@ class ReactiveListFuseTests {
         )
 
         // Mutate the removed cells
-        mutableCell1.set(101) // A duplicate
-        mutableCell2.set(201) // A unique cell
+        mutableCell1.setUnmanaged(101) // A duplicate
+        mutableCell2.setUnmanaged(201) // A unique cell
 
         assertEquals(
             expected = listOf(
@@ -516,8 +516,8 @@ class ReactiveListFuseTests {
         )
 
         // Mutate some of the changed cells
-        mutableCell3.set(301) // A removed cell
-        mutableCell2b.set(221) // A new cell
+        mutableCell3.setUnmanaged(301) // A removed cell
+        mutableCell2b.setUnmanaged(221) // A new cell
 
         assertEquals(
             expected = listOf(
@@ -601,8 +601,8 @@ class ReactiveListFuseTests {
         )
 
         // Mutate some of the changed cells
-        mutableCell2.set(201) // A not really removed cell
-        mutableCell1.set(101) // A removed cell
+        mutableCell2.setUnmanaged(201) // A not really removed cell
+        mutableCell1.setUnmanaged(101) // A removed cell
 
         assertEquals(
             expected = listOf(
@@ -663,7 +663,7 @@ class ReactiveListFuseTests {
         )
 
         mutableCells.removeAt(2)
-        mutableCell1.set(101)
+        mutableCell1.setUnmanaged(101)
 
         changesVerifier1.cancel()
         changesVerifier1.removeReceivedEvents()
@@ -681,7 +681,7 @@ class ReactiveListFuseTests {
             actual = fuseReactiveList.currentElements,
         )
 
-        mutableCell3.set(301)
+        mutableCell3.setUnmanaged(301)
 
         assertEquals(
             expected = listOf(
@@ -735,7 +735,7 @@ class ReactiveListFuseTests {
 
         ensureCollected(weakRef = outReactiveListWeakRef)
 
-        mutableCell1.set(11)
+        mutableCell1.setUnmanaged(11)
 
         assertEquals(
             expected = listOf(

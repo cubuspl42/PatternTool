@@ -158,7 +158,7 @@ fun createReactiveRenderer(
             else -> foundInitialTimestamp
         }
 
-        mutableTime.set((timestamp - previousTimestamp).milliseconds)
+        mutableTime.setUnmanaged((timestamp - previousTimestamp).milliseconds)
 
         renderer.render(
             scene = scene,
@@ -209,7 +209,7 @@ fun createReactiveGeometry(
         itemSize = 1,
     )
 
-    geometryData.newValues.forEach {
+    geometryData.newValues.forEachUnmanaged {
         nativeVerticesArray.set(it.flatVertices)
         positionAttribute.needsUpdate = true
 

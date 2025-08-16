@@ -37,7 +37,7 @@ class CellMap4Tests {
             actual = mappedCell.currentValue,
         )
 
-        mutableCell0.set(1)
+        mutableCell0.setUnmanaged(1)
     }
 
     @Test
@@ -71,7 +71,7 @@ class CellMap4Tests {
             eventStream = mappedCell.newValues,
         )
 
-        mutableCell0.set(1)
+        mutableCell0.setUnmanaged(1)
 
         assertEquals(
             expected = "1:10:20:30",
@@ -83,7 +83,7 @@ class CellMap4Tests {
             actual = newValuesVerifier.removeReceivedEvents(),
         )
 
-        mutableCell1.set(11)
+        mutableCell1.setUnmanaged(11)
 
         assertEquals(
             expected = "1:11:20:30",
@@ -95,7 +95,7 @@ class CellMap4Tests {
             actual = newValuesVerifier.removeReceivedEvents(),
         )
 
-        mutableCell2.set(21)
+        mutableCell2.setUnmanaged(21)
 
         assertEquals(
             expected = "1:11:21:30",
@@ -107,7 +107,7 @@ class CellMap4Tests {
             actual = newValuesVerifier.removeReceivedEvents(),
         )
 
-        mutableCell3.set(31)
+        mutableCell3.setUnmanaged(31)
 
         assertEquals(
             expected = "1:11:21:31",

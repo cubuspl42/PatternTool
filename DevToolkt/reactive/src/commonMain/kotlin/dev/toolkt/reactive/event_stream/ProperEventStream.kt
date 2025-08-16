@@ -4,6 +4,7 @@ import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.future.Future
+import dev.toolkt.reactive.managed_io.MomentContext
 
 abstract class ProperEventStream<E> : EventStream<E>() {
     companion object {
@@ -48,7 +49,7 @@ abstract class ProperEventStream<E> : EventStream<E>() {
         }
     }
 
-    final override fun single(): EventStream<E> = SingleEventStream(source = this)
+    final override fun singleUnmanaged(): EventStream<E> = SingleEventStream(source = this)
 
     final override fun next(): Future<E> = NextFuture(source = this)
 
@@ -60,7 +61,7 @@ abstract class ProperEventStream<E> : EventStream<E>() {
         listener = forward,
     )
 
-    override fun forEach(
+    override fun forEachUnmanaged(
         effect: (E) -> Unit,
     ) {
         listen(

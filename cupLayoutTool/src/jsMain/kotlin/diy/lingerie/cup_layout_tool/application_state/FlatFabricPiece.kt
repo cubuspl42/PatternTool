@@ -28,19 +28,19 @@ data class FlatFabricPiece(
      */
     sealed class ThreadDirection {
         data object IPlus : ThreadDirection() {
-            override val direction: Direction = Direction.Companion.YAxisPlus
+            override val direction: Direction = Direction.YAxisPlus
         }
 
         data object IMinus : ThreadDirection() {
-            override val direction: Direction = Direction.Companion.YAxisMinus
+            override val direction: Direction = Direction.YAxisMinus
         }
 
         data object JPlus : ThreadDirection() {
-            override val direction: Direction = Direction.Companion.XAxisPlus
+            override val direction: Direction = Direction.XAxisPlus
         }
 
         data object JMinus : ThreadDirection() {
-            override val direction: Direction = Direction.Companion.XAxisMinus
+            override val direction: Direction = Direction.XAxisMinus
         }
 
         /**

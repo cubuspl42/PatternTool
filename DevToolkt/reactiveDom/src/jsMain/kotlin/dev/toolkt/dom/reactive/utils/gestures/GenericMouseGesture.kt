@@ -71,7 +71,7 @@ fun Element.trackMouseOffsetPointNdc(): Cell<Point?> = trackMouseFeature { it.of
 
 private fun <FeatureT : Any> Element.trackMouseFeature(
     extractFeature: (MouseEvent) -> FeatureT,
-): Cell<FeatureT?> = Future.oscillate(
+): Cell<FeatureT?> = Future.oscillateUnmanaged2(
     initialValue = Cell.of(null),
     switchPhase1 = {
         getMouseEnterEventStream().next().map { mouseEnterEvent ->
@@ -119,7 +119,7 @@ fun SVGElement.onSvgDragGestureStarted(
     )
 }
 
-fun <MouseGestureT : MouseGesture> EventStream<MouseGestureT>.track(): Cell<MouseGestureT?> = Future.oscillate(
+fun <MouseGestureT : MouseGesture> EventStream<MouseGestureT>.track(): Cell<MouseGestureT?> = Future.oscillateUnmanaged2(
     initialValue = null,
     switchPhase1 = { next() },
     switchPhase2 = { gesture -> gesture.onFinished.null_() },
