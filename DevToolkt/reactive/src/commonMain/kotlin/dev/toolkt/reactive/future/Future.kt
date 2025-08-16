@@ -154,33 +154,24 @@ abstract class Future<out V> {
 
     abstract val currentState: State<V>
 
-    // TODO: Add tests
-    context(momentContext: MomentContext)
-    fun sampleState(): State<V> {
-        TODO()
-    }
-
     abstract val onFulfilled: EventStream<Fulfilled<V>>
 
     abstract fun <Vr> map(
         transform: (V) -> Vr,
     ): Future<Vr>
 
-    // TODO: Add tests
     context(momentContext: MomentContext) fun <Vr> mapAt(
         transform: context(MomentContext) (V) -> Vr,
     ): Future<Vr> {
         TODO()
     }
 
-    // TODO: Add tests
     fun <Vr> mapRe(
         transform: context(ReactionContext) (V) -> Vr,
     ): Effect<Future<Vr>> {
         TODO()
     }
 }
-
 
 val <V> Future<V>.resultOrNull: Cell<V?>
     get() = state.map {

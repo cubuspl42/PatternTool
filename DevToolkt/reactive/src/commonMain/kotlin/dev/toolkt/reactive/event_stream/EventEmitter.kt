@@ -5,7 +5,7 @@ class EventEmitter<E> : ManagedEventStream<E>() {
         notify(event)
     }
 
-    val hasListeners: Boolean
+    override val hasListeners: Boolean
         get() = listenerCount > 0
 
     override fun onResumed() {

@@ -20,7 +20,7 @@ class FutureHoldTests {
             actual = holdCell.currentValue,
         )
 
-        futureCompleter.complete(1)
+        futureCompleter.completeUnmanaged(1)
 
         assertEquals(
             expected = listOf(1),
