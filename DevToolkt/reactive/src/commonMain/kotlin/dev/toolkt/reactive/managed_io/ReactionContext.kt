@@ -19,6 +19,12 @@ abstract class ReactionContext : MomentContext() {
 }
 
 object Reactions {
+    fun <ResultT> external(
+        block: context(ReactionContext) () -> ResultT,
+    ): ResultT {
+        TODO()
+    }
+
     context(reactionContext: ReactionContext) fun defer(
         action: context(ProactionContext) () -> Unit,
     ) {

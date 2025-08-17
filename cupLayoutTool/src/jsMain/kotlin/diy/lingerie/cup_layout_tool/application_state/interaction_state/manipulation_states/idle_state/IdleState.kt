@@ -1,7 +1,7 @@
 package diy.lingerie.cup_layout_tool.application_state.interaction_state.manipulation_states.idle_state
 
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.event_stream.CellSlot
+import dev.toolkt.reactive.cell.CellSlot
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.managed_io.Effect
 import dev.toolkt.reactive.managed_io.actuateOf

@@ -115,7 +115,6 @@ sealed class Cell<out V> {
 
     abstract val newValues: EventStream<V>
 
-    // TODO: Add tests
     context(momentContext: MomentContext) fun sample(): V {
         TODO()
     }
