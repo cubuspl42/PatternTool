@@ -15,14 +15,14 @@ class EventStreamMapTests {
             eventStream = mappedStream,
         )
 
-        eventEmitter.emit(1)
+        eventEmitter.emitUnmanaged(1)
 
         assertEquals(
             expected = listOf("1"),
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emit(2)
+        eventEmitter.emitUnmanaged(2)
 
         assertEquals(
             expected = listOf("2"),

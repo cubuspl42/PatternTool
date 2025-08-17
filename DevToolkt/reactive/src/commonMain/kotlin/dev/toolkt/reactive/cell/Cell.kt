@@ -11,6 +11,7 @@ import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.interrupted
 import dev.toolkt.reactive.reactive_list.LoopedCell
 
+// "ValueT"?
 sealed class Cell<out V> {
     data class Change<out V>(
         val oldValue: V,

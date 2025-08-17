@@ -39,14 +39,14 @@ class MutableCell<V>(
                 mutableValue = newValue
             }
 
-            newValueEmitter.emit(newValue)
+            newValueEmitter.emitUnmanaged(newValue)
         }
     }
 
     fun setUnmanaged(
         newValue: V,
     ) {
-        newValueEmitter.emit(newValue)
+        newValueEmitter.emitUnmanaged(newValue)
         mutableValue = newValue
     }
 }

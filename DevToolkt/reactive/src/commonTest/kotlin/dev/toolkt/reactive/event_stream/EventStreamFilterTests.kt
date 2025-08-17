@@ -15,23 +15,23 @@ class EventStreamFilterTests {
             eventStream = mappedStream,
         )
 
-        eventEmitter.emit(2)
+        eventEmitter.emitUnmanaged(2)
 
-        eventEmitter.emit(3)
+        eventEmitter.emitUnmanaged(3)
 
-        eventEmitter.emit(5)
+        eventEmitter.emitUnmanaged(5)
 
-        eventEmitter.emit(4)
+        eventEmitter.emitUnmanaged(4)
 
         assertEquals(
             expected = listOf(2, 4),
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emit(3)
+        eventEmitter.emitUnmanaged(3)
 
 
-        eventEmitter.emit(5)
+        eventEmitter.emitUnmanaged(5)
 
         assertEquals(
             expected = emptyList(),

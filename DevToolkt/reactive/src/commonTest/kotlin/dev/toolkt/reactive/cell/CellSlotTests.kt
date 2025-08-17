@@ -11,12 +11,9 @@ import kotlin.test.assertFalse
 class CellSlotTests {
     @Test
     fun testCreate() {
-        val cellSlot: CellSlot<Int> = Reactions.external {
-            CellSlot.create(
-                initialValue = 0,
-            )
-        }
-
+        val cellSlot: CellSlot<Int> = CellSlot.createExternally(
+            initialValue = 0,
+        )
 
         val eventStreamVerifier = EventStreamVerifier(
             eventStream = cellSlot.newValues,
@@ -24,9 +21,7 @@ class CellSlotTests {
 
         assertEquals(
             expected = 0,
-            actual = Reactions.external {
-                cellSlot.sample()
-            },
+            actual = cellSlot.sampleExternally(),
         )
 
         assertEquals(
@@ -37,25 +32,19 @@ class CellSlotTests {
 
     @Test
     fun testBind_once() {
-        val cellSlot: CellSlot<Int> = Reactions.external {
-            CellSlot.create(
-                initialValue = 0,
-            )
-        }
+        val cellSlot: CellSlot<Int> = CellSlot.createExternally(
+            initialValue = 0,
+        )
 
         val eventStreamVerifier = EventStreamVerifier(
             eventStream = cellSlot.newValues,
         )
 
-        val mutableCell = Reactions.external {
-            MutableCell.create(
-                initialValue = 10,
-            )
-        }
+        val mutableCell = MutableCell.createExternally(
+            initialValue = 10,
+        )
 
-        Proactions.external {
-            cellSlot.bind(mutableCell)
-        }
+        cellSlot.bindExternally(mutableCell)
 
         assertEquals(
             expected = listOf(10),
@@ -64,9 +53,7 @@ class CellSlotTests {
 
         assertEquals(
             expected = 10,
-            actual = Reactions.external {
-                cellSlot.sample()
-            },
+            actual = cellSlot.sampleExternally(),
         )
 
         assertEquals(
@@ -119,11 +106,9 @@ class CellSlotTests {
 
     @Test
     fun testBind_twice() {
-        val cellSlot: CellSlot<Int> = Reactions.external {
-            CellSlot.create(
-                initialValue = 0,
-            )
-        }
+        val cellSlot: CellSlot<Int> = CellSlot.createExternally(
+            initialValue = 0,
+        )
 
         val eventStreamVerifier = EventStreamVerifier(
             eventStream = cellSlot.newValues,
@@ -165,8 +150,7 @@ class CellSlotTests {
 
         // Sample the new cell
         assertEquals(
-            expected = 20,
-            actual = cellSlot.sampleExternally()
+            expected = 20, actual = cellSlot.sampleExternally()
         )
 
         assertEquals(

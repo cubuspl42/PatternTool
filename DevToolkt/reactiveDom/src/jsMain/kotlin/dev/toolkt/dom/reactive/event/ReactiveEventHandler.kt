@@ -30,7 +30,7 @@ fun <E : ReactiveEvent> ReactiveEventHandler<E>.attach(
             if (resolution == ReactiveEventHandler.Resolution.PreventDefault) {
                 rawEvent.preventDefault()
             } else {
-                emitter.emit(wrappedEvent)
+                emitter.emitUnmanaged(wrappedEvent)
             }
         },
     )

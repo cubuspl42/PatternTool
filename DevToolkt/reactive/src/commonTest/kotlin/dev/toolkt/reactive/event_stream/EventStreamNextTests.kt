@@ -21,10 +21,10 @@ class EventStreamNextTests {
 
         assertEquals(
             expected = Future.Pending,
-            actual = nextFuture.currentState,
+            actual = nextFuture.currentStateUnmanaged,
         )
 
-        eventEmitter.emit(10)
+        eventEmitter.emitUnmanaged(10)
 
         assertEquals(
             expected = listOf(10),
@@ -35,10 +35,10 @@ class EventStreamNextTests {
             expected = Future.Fulfilled(
                 result = 10,
             ),
-            actual = nextFuture.currentState,
+            actual = nextFuture.currentStateUnmanaged,
         )
 
-        eventEmitter.emit(20)
+        eventEmitter.emitUnmanaged(20)
 
         assertEquals(
             expected = emptyList(),
@@ -49,7 +49,7 @@ class EventStreamNextTests {
             expected = Future.Fulfilled(
                 result = 10,
             ),
-            actual = nextFuture.currentState,
+            actual = nextFuture.currentStateUnmanaged,
         )
     }
 
@@ -77,7 +77,7 @@ class EventStreamNextTests {
         val (outFutureWeakRef, onResultVerifier) = setup()
 
         // Emit the single event
-        eventEmitter.emit(10)
+        eventEmitter.emitUnmanaged(10)
 
         assertEquals(
             expected = listOf(10),

@@ -28,7 +28,7 @@ class CellExecuteCurrentTests {
 
         val resultCell = mutableCell.executeCurrent()
 
-        eventSEmitter.emit(Unit)
+        eventSEmitter.emitUnmanaged(Unit)
 
         assertEquals(
             expected = 10,
@@ -42,7 +42,7 @@ class CellExecuteCurrentTests {
 
         val (_, processHandle) = resultCell.execute()
 
-        eventSEmitter.emit(Unit)
+        eventSEmitter.emitUnmanaged(Unit)
 
         assertEquals(
             expected = 11,
@@ -56,7 +56,7 @@ class CellExecuteCurrentTests {
 
         mutableCell.setUnmanaged(program1)
 
-        eventSEmitter.emit(Unit)
+        eventSEmitter.emitUnmanaged(Unit)
 
         assertEquals(
             expected = 11,
@@ -70,7 +70,7 @@ class CellExecuteCurrentTests {
 
         processHandle.stop()
 
-        eventSEmitter.emit(Unit)
+        eventSEmitter.emitUnmanaged(Unit)
 
         assertEquals(
             expected = 11,

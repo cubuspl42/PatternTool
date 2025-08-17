@@ -37,14 +37,14 @@ class EventStreamTakeTests {
             eventStream = takeStream,
         )
 
-        eventEmitter.emit(1)
+        eventEmitter.emitUnmanaged(1)
 
         assertEquals(
             expected = emptyList(),
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emit(2)
+        eventEmitter.emitUnmanaged(2)
 
         assertEquals(
             expected = emptyList(),
@@ -62,21 +62,21 @@ class EventStreamTakeTests {
             eventStream = takeStream,
         )
 
-        eventEmitter.emit(10)
+        eventEmitter.emitUnmanaged(10)
 
         assertEquals(
             expected = listOf(10),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emit(20)
+        eventEmitter.emitUnmanaged(20)
 
         assertEquals(
             expected = emptyList(),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emit(30)
+        eventEmitter.emitUnmanaged(30)
 
         assertEquals(
             expected = emptyList(),
@@ -94,21 +94,21 @@ class EventStreamTakeTests {
             eventStream = takeStream,
         )
 
-        eventEmitter.emit(10)
+        eventEmitter.emitUnmanaged(10)
 
         assertEquals(
             expected = listOf(10),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emit(20)
+        eventEmitter.emitUnmanaged(20)
 
         assertEquals(
             expected = listOf(20),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emit(30)
+        eventEmitter.emitUnmanaged(30)
 
         assertEquals(
             expected = emptyList(),
@@ -133,15 +133,15 @@ class EventStreamTakeTests {
 
         val takeStream = eventEmitter.take(2)
 
-        eventEmitter.emit(10)
-        eventEmitter.emit(20)
+        eventEmitter.emitUnmanaged(10)
+        eventEmitter.emitUnmanaged(20)
 
         val streamVerifier = EventStreamVerifier(
             eventStream = takeStream,
         )
 
-        eventEmitter.emit(30)
-        eventEmitter.emit(40)
+        eventEmitter.emitUnmanaged(30)
+        eventEmitter.emitUnmanaged(40)
 
         assertEquals(
             expected = emptyList(),
@@ -160,21 +160,21 @@ class EventStreamTakeTests {
 
         PlatformSystem.collectGarbageForced()
 
-        eventEmitter.emit(10)
+        eventEmitter.emitUnmanaged(10)
 
         assertEquals(
             expected = listOf(10),
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emit(20)
+        eventEmitter.emitUnmanaged(20)
 
         assertEquals(
             expected = listOf(20),
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emit(30)
+        eventEmitter.emitUnmanaged(30)
 
         assertEquals(
             expected = emptyList(),
