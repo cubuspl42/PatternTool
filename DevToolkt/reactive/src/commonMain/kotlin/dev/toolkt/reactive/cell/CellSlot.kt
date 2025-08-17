@@ -31,6 +31,6 @@ class CellSlot<ValueT> private constructor(
     context(actionContext: ActionContext) fun bind(
         cell: Cell<ValueT>,
     ) {
-        mutableCell.setLater(cell)
+        mutableCell.set(cell)
     }
 }

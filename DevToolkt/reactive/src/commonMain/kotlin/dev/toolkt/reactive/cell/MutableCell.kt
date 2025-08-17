@@ -4,7 +4,6 @@ import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.Actions
 
 // TODO: Make the constructor private
 class MutableCell<V>(
@@ -52,14 +51,5 @@ class MutableCell<V>(
     ) {
         newValueEmitter.emitUnmanaged(newValue)
         mutableValue = newValue
-    }
-}
-
-context(actionContext: ActionContext) fun <V> MutableCell<V>.setLater(
-    newValue: V,
-) {
-    // Thought: Does it really make any difference? Shouldn't reaction and action context be merged?
-    Actions.defer {
-        set(newValue)
     }
 }
