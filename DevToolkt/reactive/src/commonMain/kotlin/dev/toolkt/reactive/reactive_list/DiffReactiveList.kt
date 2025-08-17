@@ -11,12 +11,12 @@ class DiffReactiveList<ElementT>(
     override val changes: EventStream<Change<ElementT>> = source.newValues.map { newElements ->
         Change.single(
             update = Change.Update.change(
-                indexRange = source.currentValue.indices,
+                indexRange = source.currentValueUnmanaged.indices,
                 changedElements = newElements,
             ),
         )
     }
 
     override val currentElements: List<ElementT>
-        get() = source.currentValue
+        get() = source.currentValueUnmanaged
 }

@@ -27,7 +27,7 @@ class FutureSwitchHoldTests {
 
         assertEquals(
             expected = -11,
-            actual = switchHoldCell.currentValue,
+            actual = switchHoldCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -39,7 +39,7 @@ class FutureSwitchHoldTests {
 
         assertEquals(
             expected = 11,
-            actual = switchHoldCell.currentValue,
+            actual = switchHoldCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -52,7 +52,7 @@ class FutureSwitchHoldTests {
 
         assertEquals(
             expected = 12,
-            actual = switchHoldCell.currentValue,
+            actual = switchHoldCell.currentValueUnmanaged,
         )
 
         assertEquals(

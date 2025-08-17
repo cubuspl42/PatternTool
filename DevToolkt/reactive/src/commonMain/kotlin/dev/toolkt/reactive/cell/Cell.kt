@@ -116,11 +116,9 @@ sealed class Cell<out V> {
 
     abstract val newValues: EventStream<V>
 
-    context(momentContext: MomentContext) fun sample(): V {
-        TODO()
-    }
+    abstract context(momentContext: MomentContext) fun sample(): V
 
-    abstract val currentValue: V
+    abstract val currentValueUnmanaged: V
 
     abstract val changes: EventStream<Change<V>>
 
@@ -243,7 +241,7 @@ fun <V, T : Any> Cell<V>.bindNested(
 ): Subscription = object : Subscription {
     private var innerSubscription = bindInner(
         target,
-        currentValue,
+        currentValueUnmanaged,
     )
 
     private val outerSubscription = bind(

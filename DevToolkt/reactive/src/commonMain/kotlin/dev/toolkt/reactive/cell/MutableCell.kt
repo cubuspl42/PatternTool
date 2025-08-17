@@ -32,16 +32,17 @@ class MutableCell<V>(
     override val newValues: EventStream<V>
         get() = newValueEmitter
 
-    override val currentValue: V
+    context(momentContext: MomentContext) override fun sample(): V = mutableValue
+
+    override val currentValueUnmanaged: V
         get() = mutableValue
 
     context(actionContext: ActionContext) fun set(
         newValue: V,
     ) {
-
-//        reactionContext.enqueueMutation {
-//            mutableValue = newValue
-//        }
+        actionContext.enqueueMutation {
+            mutableValue = newValue
+        }
 
         newValueEmitter.emit(newValue)
     }

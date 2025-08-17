@@ -1,13 +1,21 @@
 package dev.toolkt.reactive.managed_io
 
-interface ActionContext : MomentContext
+interface ActionContext : MomentContext {
+    fun enqueueMutation(
+        mutate: () -> Unit,
+    )
+}
 
-private class ActionContextImpl : ActionContext {
+private class Transaction private constructor() : ActionContext {
     companion object {
         fun <ResultT> execute(
             block: context(ActionContext) () -> ResultT,
-        ): ResultT {
-            TODO()
+        ): ResultT = with(Transaction()) {
+            val result = block()
+
+            finish()
+
+            return@with result
         }
     }
 
@@ -16,18 +24,20 @@ private class ActionContextImpl : ActionContext {
     private val enqueuedMutations = mutableListOf<() -> Unit>()
 
     fun finish() {
-        enqueuedReactions.forEach { action ->
-            TODO()
+        enqueuedMutations.forEach { mutate ->
+            mutate()
         }
+    }
+
+    override fun enqueueMutation(mutate: () -> Unit) {
+        enqueuedMutations.add(mutate)
     }
 }
 
 object Actions {
     fun <ResultT> external(
         block: context(ActionContext) () -> ResultT,
-    ): ResultT = with(ActionContextImpl()) {
-        block()
-    }
+    ): ResultT = Transaction.execute(block = block)
 
     context(actionContext: ActionContext) fun defer(
         action: context(ActionContext) () -> Unit,

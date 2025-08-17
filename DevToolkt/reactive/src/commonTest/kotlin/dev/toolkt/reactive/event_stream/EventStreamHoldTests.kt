@@ -22,7 +22,7 @@ class EventStreamHoldTests {
 
         assertEquals(
             expected = 0,
-            actual = heldCell.currentValue,
+            actual = heldCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -36,7 +36,7 @@ class EventStreamHoldTests {
 
         assertEquals(
             expected = 3,
-            actual = heldCell.currentValue,
+            actual = heldCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -62,7 +62,7 @@ class EventStreamHoldTests {
 
         assertEquals(
             expected = 0,
-            actual = heldCell.currentValue,
+            actual = heldCell.currentValueUnmanaged,
         )
 
         PlatformSystem.collectGarbageForced()
@@ -71,7 +71,7 @@ class EventStreamHoldTests {
 
         assertEquals(
             expected = 2,
-            actual = heldCell.currentValue,
+            actual = heldCell.currentValueUnmanaged,
         )
     }
 

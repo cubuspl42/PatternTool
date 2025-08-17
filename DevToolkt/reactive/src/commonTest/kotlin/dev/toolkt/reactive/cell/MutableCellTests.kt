@@ -19,14 +19,14 @@ class MutableCellTests {
 
         assertEquals(
             expected = 0,
-            actual = mutableCell.currentValue,
+            actual = mutableCell.currentValueUnmanaged,
         )
 
         mutableCell.setUnmanaged(1)
 
         assertEquals(
             expected = 1,
-            actual = mutableCell.currentValue,
+            actual = mutableCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -43,7 +43,7 @@ class MutableCellTests {
 
         assertEquals(
             expected = 2,
-            actual = mutableCell.currentValue,
+            actual = mutableCell.currentValueUnmanaged,
         )
 
         assertEquals(

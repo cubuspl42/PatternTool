@@ -34,7 +34,7 @@ class CellMap4Tests {
 
         assertEquals(
             expected = "0:10:20:30",
-            actual = mappedCell.currentValue,
+            actual = mappedCell.currentValueUnmanaged,
         )
 
         mutableCell0.setUnmanaged(1)
@@ -75,7 +75,7 @@ class CellMap4Tests {
 
         assertEquals(
             expected = "1:10:20:30",
-            actual = mappedCell.currentValue,
+            actual = mappedCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -87,7 +87,7 @@ class CellMap4Tests {
 
         assertEquals(
             expected = "1:11:20:30",
-            actual = mappedCell.currentValue,
+            actual = mappedCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -99,7 +99,7 @@ class CellMap4Tests {
 
         assertEquals(
             expected = "1:11:21:30",
-            actual = mappedCell.currentValue,
+            actual = mappedCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -111,7 +111,7 @@ class CellMap4Tests {
 
         assertEquals(
             expected = "1:11:21:31",
-            actual = mappedCell.currentValue,
+            actual = mappedCell.currentValueUnmanaged,
         )
 
         assertEquals(

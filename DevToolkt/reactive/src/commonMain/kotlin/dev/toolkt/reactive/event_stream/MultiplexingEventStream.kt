@@ -17,7 +17,7 @@ abstract class MultiplexingEventStream<N, E> : DependentEventStream<E>() {
         }
 
         private var innerSubscription: Subscription = subscribeToInner(
-            innerStream = extractInnerStream(nestedObject.currentValue),
+            innerStream = extractInnerStream(nestedObject.currentValueUnmanaged),
         )
 
         private fun subscribeToInner(

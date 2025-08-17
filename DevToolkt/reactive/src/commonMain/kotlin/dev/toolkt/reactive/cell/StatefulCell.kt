@@ -5,6 +5,7 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.pinWeak
+import dev.toolkt.reactive.managed_io.MomentContext
 
 /**
  * A cell with an inherent state, i.e. such that is not a pure function of its sources (that cannot be recomputed).
@@ -38,6 +39,8 @@ abstract class StatefulCell<V>(
         }
     }
 
-    override val currentValue: V
+    final override val currentValueUnmanaged: V
         get() = storedValue
+
+    context(momentContext: MomentContext) final override fun sample(): V = storedValue
 }

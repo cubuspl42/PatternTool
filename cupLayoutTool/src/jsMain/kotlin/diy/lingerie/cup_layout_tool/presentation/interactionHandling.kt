@@ -56,7 +56,7 @@ private fun handleCameraRotation(
 ): Trigger = canvas.onMouseDragGestureStarted(
     button = ButtonId.MIDDLE,
 ).forEach { mouseGesture ->
-    val initialCameraRotation = cameraRotation.currentValue
+    val initialCameraRotation = cameraRotation.currentValueUnmanaged
 
     val pointerOffset = mouseGesture.trackMouseMovement().map { it.offsetPoint }
 
@@ -189,10 +189,10 @@ fun findPointerTargetPoint(
 ): Cell<Point?> {
     val camera = myRenderer.camera
 
-    val initialPointerOffsetNdc = pointerOffsetCoordNdc.currentValue
+    val initialPointerOffsetNdc = pointerOffsetCoordNdc.currentValueUnmanaged
 
     // The initial handle positon in the 2D NDC coordinates
-    val initialHandlePositionNdc = handle.worldPosition.currentValue.project(camera = camera).withoutZ()
+    val initialHandlePositionNdc = handle.worldPosition.currentValueUnmanaged.project(camera = camera).withoutZ()
 
     // A 2D NDC translation between the grab point and the handle position (constrained)
     val pointerCorrection = initialPointerOffsetNdc.translationTo(target = initialHandlePositionNdc)
@@ -225,7 +225,7 @@ private fun getObjectAtNcdCoord(
 }
 
 private fun Cell<Point>.trackTranslation(): Cell<PrimitiveTransformation.Translation> {
-    val initialPoint = currentValue
+    val initialPoint = currentValueUnmanaged
 
     return newValues.map {
         initialPoint.translationTo(it)

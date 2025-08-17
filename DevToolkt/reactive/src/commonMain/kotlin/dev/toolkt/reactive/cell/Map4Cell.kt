@@ -10,41 +10,41 @@ class Map4Cell<V1, V2, V3, V4, Vr>(
     transform: (V1, V2, V3, V4) -> Vr,
 ) : StatefulCell<Vr>(
     initialValue = transform(
-        source1.currentValue,
-        source2.currentValue,
-        source3.currentValue,
-        source4.currentValue,
+        source1.currentValueUnmanaged,
+        source2.currentValueUnmanaged,
+        source3.currentValueUnmanaged,
+        source4.currentValueUnmanaged,
     ),
     givenValues = EventStream.mergeAll(
         source1.newValues.map { newValue1 ->
             transform(
                 newValue1,
-                source2.currentValue,
-                source3.currentValue,
-                source4.currentValue,
+                source2.currentValueUnmanaged,
+                source3.currentValueUnmanaged,
+                source4.currentValueUnmanaged,
             )
         },
         source2.newValues.map { newValue2 ->
             transform(
-                source1.currentValue,
+                source1.currentValueUnmanaged,
                 newValue2,
-                source3.currentValue,
-                source4.currentValue,
+                source3.currentValueUnmanaged,
+                source4.currentValueUnmanaged,
             )
         },
         source3.newValues.map { newValue3 ->
             transform(
-                source1.currentValue,
-                source2.currentValue,
+                source1.currentValueUnmanaged,
+                source2.currentValueUnmanaged,
                 newValue3,
-                source4.currentValue,
+                source4.currentValueUnmanaged,
             )
         },
         source4.newValues.map { newValue4 ->
             transform(
-                source1.currentValue,
-                source2.currentValue,
-                source3.currentValue,
+                source1.currentValueUnmanaged,
+                source2.currentValueUnmanaged,
+                source3.currentValueUnmanaged,
                 newValue4,
             )
         },

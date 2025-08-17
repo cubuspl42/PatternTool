@@ -7,7 +7,7 @@ abstract class ProperCell<out V> : Cell<V>() {
     final override val changes: EventStream<Change<V>>
         get() = newValues.map { newValue ->
             Change(
-                oldValue = currentValue,
+                oldValue = currentValueUnmanaged,
                 newValue = newValue,
             )
         }
@@ -27,7 +27,7 @@ abstract class ProperCell<out V> : Cell<V>() {
         create: (V) -> T,
         update: (T, V) -> Unit,
     ): Pair<T, Subscription> {
-        val target = create(currentValue)
+        val target = create(currentValueUnmanaged)
 
         val subscription = newValues.pipe(
             target = target,
@@ -41,7 +41,7 @@ abstract class ProperCell<out V> : Cell<V>() {
         target: T,
         update: (T, V) -> Unit,
     ): Subscription {
-        update(target, currentValue)
+        update(target, currentValueUnmanaged)
 
         val subscription = newValues.pipe(
             target = target,

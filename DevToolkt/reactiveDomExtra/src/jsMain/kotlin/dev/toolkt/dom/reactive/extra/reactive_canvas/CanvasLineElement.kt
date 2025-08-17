@@ -14,9 +14,9 @@ class CanvasLineElement(
     private val end: Cell<Point>,
 ) : CanvasPathElement() {
     override fun describePath(context: CanvasRenderingContext2D) {
-        context.moveTo(start.currentValue)
+        context.moveTo(start.currentValueUnmanaged)
 
-        context.lineTo(end.currentValue)
+        context.lineTo(end.currentValueUnmanaged)
     }
 
     override val onPathChanged: EventStream<Unit> = EventStream.Companion.mergeAll(

@@ -11,6 +11,6 @@ class MapCell<V, Vr>(
      */
     transform: (V) -> Vr,
 ) : StatefulCell<Vr>(
-    initialValue = transform(source.currentValue),
+    initialValue = transform(source.currentValueUnmanaged),
     givenValues = source.newValues.map(transform),
 )

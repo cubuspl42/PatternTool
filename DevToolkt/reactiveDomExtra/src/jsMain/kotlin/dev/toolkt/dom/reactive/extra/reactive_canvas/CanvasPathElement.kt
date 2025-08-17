@@ -22,13 +22,13 @@ abstract class CanvasPathElement : CanvasTransformableElement() {
     )
 
     final override fun renderTransformable(context: CanvasRenderingContext2D) {
-        val strokeNow = stroke?.currentValue
+        val strokeNow = stroke?.currentValueUnmanaged
 
         strokeNow?.let { strokeNow ->
             context.setStrokeStyle(color = strokeNow.color)
         }
 
-        val fillNow = fill?.currentValue
+        val fillNow = fill?.currentValueUnmanaged
 
         fillNow?.let { fillNow ->
             context.setFillStyle(color = fillNow.color)

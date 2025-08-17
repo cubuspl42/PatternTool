@@ -4,6 +4,7 @@ import dev.toolkt.reactive.cell.ProperCell
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.LoopedEventStream
+import dev.toolkt.reactive.managed_io.MomentContext
 
 class LoopedCell<V>(
     private val placeholderValue: V,
@@ -15,8 +16,10 @@ class LoopedCell<V>(
     override val newValues: EventStream<V>
         get() = newValuesLooped
 
-    override val currentValue: V
-        get() = this.loopedCell?.currentValue ?: placeholderValue
+    context(momentContext: MomentContext) override fun sample(): V = currentValueUnmanaged
+
+    override val currentValueUnmanaged: V
+        get() = this.loopedCell?.currentValueUnmanaged ?: placeholderValue
 
     fun loop(
         cell: Cell<V>,
@@ -29,7 +32,7 @@ class LoopedCell<V>(
 
         newValuesLooped.loop(
             eventStream = cell.newValues,
-            initialEvent = cell.currentValue,
+            initialEvent = cell.currentValueUnmanaged,
         )
     }
 }

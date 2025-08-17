@@ -8,19 +8,19 @@ class Map2Cell<V1, V2, Vr>(
     transform: (V1, V2) -> Vr,
 ) : StatefulCell<Vr>(
     initialValue = transform(
-        source1.currentValue,
-        source2.currentValue,
+        source1.currentValueUnmanaged,
+        source2.currentValueUnmanaged,
     ),
     givenValues = EventStream.mergeAll(
         source1.newValues.map { newValue1 ->
             transform(
                 newValue1,
-                source2.currentValue,
+                source2.currentValueUnmanaged,
             )
         },
         source2.newValues.map { newValue2 ->
             transform(
-                source1.currentValue,
+                source1.currentValueUnmanaged,
                 newValue2,
             )
         },

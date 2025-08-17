@@ -17,7 +17,7 @@ class FutureHoldTests {
 
         assertEquals(
             expected = -1,
-            actual = holdCell.currentValue,
+            actual = holdCell.currentValueUnmanaged,
         )
 
         futureCompleter.completeUnmanaged(1)
@@ -29,7 +29,7 @@ class FutureHoldTests {
 
         assertEquals(
             expected = 1,
-            actual = holdCell.currentValue,
+            actual = holdCell.currentValueUnmanaged,
         )
     }
 }
