@@ -3,7 +3,7 @@ package dev.toolkt.reactive.cell
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.core.platform.test_utils.runTestDefault
-import dev.toolkt.reactive.managed_io.Reactions
+import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,7 +18,7 @@ class CellMapAtTests {
 
         val sampledMutableCell = MutableCell.createExternally(initialValue = 'A')
 
-        val mappedCellWeakRef = Reactions.external {
+        val mappedCellWeakRef = Actions.external {
             sourceMutableCell.mapAt { "$it:${sampledMutableCell.sample()}" }
         }.let { mappedCell ->
             assertTrue(
@@ -92,7 +92,7 @@ class CellMapAtTests {
 
         val sampledMutableCell = MutableCell.createExternally(initialValue = 'X')
 
-        val mappedCellWeakRef = Reactions.external {
+        val mappedCellWeakRef = Actions.external {
             sourceMutableCell.mapAt { "$it:${sampledMutableCell.sample()}" }
         }.let { mappedCell ->
             assertTrue(

@@ -1,9 +1,9 @@
 package dev.toolkt.reactive.future
 
-import dev.toolkt.reactive.managed_io.Reactions
+import dev.toolkt.reactive.managed_io.Actions
 
 fun <ValueT> FutureCompleter<ValueT>.completeExternally(
     value: ValueT,
-) = Reactions.external {
+) = Actions.external {
     complete(value)
 }

@@ -8,7 +8,7 @@ import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.managed_io.Effect
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Program
-import dev.toolkt.reactive.managed_io.ReactionContext
+import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.Schedule
 import dev.toolkt.reactive.managed_io.executeCurrent
 
@@ -181,7 +181,7 @@ abstract class Future<out V> {
 
     // "lookMap"?
     fun <Vr> mapRe(
-        transform: context(ReactionContext) (V) -> Vr,
+        transform: context(ActionContext) (V) -> Vr,
     ): Effect<Future<Vr>> {
         TODO()
     }

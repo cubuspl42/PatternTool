@@ -1,15 +1,15 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.managed_io.Reactions
+import dev.toolkt.reactive.managed_io.Actions
 
 fun <V> CellSlot.Companion.createExternally(
     initialValue: V,
-): CellSlot<V> = Reactions.external {
+): CellSlot<V> = Actions.external {
     CellSlot.create(initialValue = initialValue)
 }
 
 fun <ValueT> CellSlot<ValueT>.bindExternally(
     cell: Cell<ValueT>,
-) = Reactions.external {
+) = Actions.external {
     bind(cell)
 }

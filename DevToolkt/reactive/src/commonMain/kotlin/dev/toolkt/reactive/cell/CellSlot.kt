@@ -1,14 +1,14 @@
 package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.managed_io.ReactionContext
+import dev.toolkt.reactive.managed_io.ActionContext
 
 class CellSlot<ValueT> private constructor(
     private val mutableCell: MutableCell<Cell<ValueT>>,
     private val switchedCell: Cell<ValueT>,
 ) : ProperCell<ValueT>() {
     companion object {
-        context(reactionContext: ReactionContext) fun <ValueT> create(
+        context(actionContext: ActionContext) fun <ValueT> create(
             initialValue: ValueT,
         ): CellSlot<ValueT> {
             val mutableCell = MutableCell.create(
@@ -28,7 +28,7 @@ class CellSlot<ValueT> private constructor(
     override val currentValue: ValueT
         get() = switchedCell.currentValue
 
-    context(reactionContext: ReactionContext) fun bind(
+    context(actionContext: ActionContext) fun bind(
         cell: Cell<ValueT>,
     ) {
         mutableCell.setLater(cell)

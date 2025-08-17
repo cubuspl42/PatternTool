@@ -1,19 +1,19 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.managed_io.Reactions
+import dev.toolkt.reactive.managed_io.Actions
 
 fun <V> MutableCell.Companion.createExternally(
     initialValue: V,
-): MutableCell<V> = Reactions.external {
+): MutableCell<V> = Actions.external {
     MutableCell.create(initialValue = initialValue)
 }
 
 fun <V> MutableCell<V>.setExternally(
     newValue: V,
-) = Reactions.external {
+) = Actions.external {
     set(newValue = newValue)
 }
 
-fun <V> Cell<V>.sampleExternally(): V = Reactions.external {
+fun <V> Cell<V>.sampleExternally(): V = Actions.external {
     sample()
 }
