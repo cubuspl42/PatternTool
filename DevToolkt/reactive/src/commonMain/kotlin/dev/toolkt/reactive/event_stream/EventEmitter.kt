@@ -6,9 +6,12 @@ import dev.toolkt.reactive.managed_io.ProactionContext
 // TODO: Make the constructor private
 class EventEmitter<EventT> : ManagedEventStream<EventT>() {
     companion object {
-        context(momentContext: MomentContext) fun <EventT> create(): EventEmitter<EventT> {
-            TODO()
-        }
+        /**
+         * Creates a new [EventEmitter].
+         *
+         * [MomentContext] is needed only to give the emitter its identity.
+         */
+        context(momentContext: MomentContext) fun <EventT> create(): EventEmitter<EventT> = EventEmitter()
     }
 
     fun emitUnmanaged(event: EventT) {
@@ -16,7 +19,8 @@ class EventEmitter<EventT> : ManagedEventStream<EventT>() {
     }
 
     context(proactionContext: ProactionContext) fun emit(event: EventT) {
-        TODO()
+        // FIXME: This should make the tests fail
+        emitUnmanaged(event)
     }
 
     val hasListeners: Boolean

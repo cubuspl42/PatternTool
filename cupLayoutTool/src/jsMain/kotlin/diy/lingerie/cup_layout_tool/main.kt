@@ -5,6 +5,7 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.reactive.managed_io.ReactionContext
+import dev.toolkt.reactive.managed_io.Reactions
 import diy.lingerie.cup_layout_tool.application_state.ApplicationState
 import diy.lingerie.cup_layout_tool.application_state.DocumentState
 import diy.lingerie.cup_layout_tool.presentation.createRootElement
@@ -35,7 +36,7 @@ fun main() {
         type = "DOMContentLoaded",
         callback = {
             document.body!!.appendChild(
-                with(ReactionContext.Placeholder) {
+                Reactions.external {
                     val applicationState = ApplicationState.enter(
                         documentState = documentState,
                     ).start().result

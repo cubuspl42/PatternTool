@@ -7,15 +7,21 @@ import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.ReactionContext
 import dev.toolkt.reactive.managed_io.Reactions
 
+// TODO: Make the constructor private
 class MutableCell<V>(
     initialValue: V,
 ) : ProperCell<V>() {
     companion object {
+        /**
+         * Creates a new [MutableCell] with the given [initialValue].
+         *
+         * [MomentContext] is needed only to give the mutable cell its identity.
+         */
         context(momentContext: MomentContext) fun <V> create(
             initialValue: V,
-        ): MutableCell<V> {
-            TODO()
-        }
+        ): MutableCell<V> = MutableCell(
+            initialValue = initialValue,
+        )
     }
 
     private val newValueEmitter = EventEmitter<V>()
