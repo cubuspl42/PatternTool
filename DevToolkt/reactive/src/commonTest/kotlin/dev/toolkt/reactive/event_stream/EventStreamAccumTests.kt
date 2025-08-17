@@ -23,7 +23,7 @@ class EventStreamAccumTests {
 
         assertEquals(
             expected = "abc",
-            actual = accumCell.currentValue,
+            actual = accumCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -35,7 +35,7 @@ class EventStreamAccumTests {
 
         assertEquals(
             expected = "abc0",
-            actual = accumCell.currentValue,
+            actual = accumCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -52,7 +52,7 @@ class EventStreamAccumTests {
 
         assertEquals(
             expected = "abc01",
-            actual = accumCell.currentValue,
+            actual = accumCell.currentValueUnmanaged,
         )
 
         assertEquals(

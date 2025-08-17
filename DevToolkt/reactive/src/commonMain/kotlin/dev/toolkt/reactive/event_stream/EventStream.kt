@@ -135,6 +135,12 @@ abstract class EventStream<out E> : EventSource<E> {
         predicate: (E) -> Boolean,
     ): EventStream<E>
 
+    fun filterAt(
+        predicate: context(ActionContext) (E) -> Boolean,
+    ): EventStream<E> {
+        TODO()
+    }
+
     abstract fun take(
         count: Int,
     ): EventStream<E>
@@ -222,7 +228,7 @@ fun <V, R> EventStream<V>.accum(
 ) { loopedCell ->
     map { newEvent ->
         transform(
-            loopedCell.currentValue,
+            loopedCell.currentValueUnmanaged,
             newEvent,
         )
     }.hold(initialValue = initialValue)

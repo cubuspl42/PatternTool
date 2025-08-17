@@ -15,7 +15,7 @@ class CellCalmTests {
 
         assertEquals(
             expected = 10,
-            actual = calmedCall.currentValue,
+            actual = calmedCall.currentValueUnmanaged,
         )
     }
 

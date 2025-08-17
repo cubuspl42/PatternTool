@@ -31,7 +31,7 @@ class CellSwitchTests {
 
         assertEquals(
             expected = 10,
-            actual = switchedCell.currentValue,
+            actual = switchedCell.currentValueUnmanaged,
         )
 
         mutableCell1.setUnmanaged(9)
@@ -42,7 +42,7 @@ class CellSwitchTests {
 
         assertEquals(
             expected = 8,
-            actual = switchedCell.currentValue,
+            actual = switchedCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -63,7 +63,7 @@ class CellSwitchTests {
 
         assertEquals(
             expected = -3,
-            actual = switchedCell.currentValue,
+            actual = switchedCell.currentValueUnmanaged,
         )
 
         assertEquals(
@@ -86,7 +86,7 @@ class CellSwitchTests {
 
         assertEquals(
             expected = -5,
-            actual = switchedCell.currentValue,
+            actual = switchedCell.currentValueUnmanaged,
         )
 
         assertEquals(

@@ -14,7 +14,7 @@ class ReactiveFabricNet(
         fun diff(
             fabricNet: Cell<FabricNet>,
         ): ReactiveFabricNet {
-            val particleIds = fabricNet.currentValue.particleIds
+            val particleIds = fabricNet.currentValueUnmanaged.particleIds
 
             return ReactiveFabricNet(
                 particles = particleIds.associateWith { particleId ->

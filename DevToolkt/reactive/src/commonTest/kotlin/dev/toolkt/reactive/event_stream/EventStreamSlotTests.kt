@@ -83,7 +83,7 @@ class EventStreamSlotTests {
         )
 
         // Emit an event from the second event stream
-        eventEmitter1.emitExternally(10)
+        eventEmitter2.emitExternally(10)
 
         assertEquals(
             expected = listOf(10),

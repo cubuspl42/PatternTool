@@ -7,7 +7,7 @@ class SingleNotNullReactiveList<ElementT : Any>(
     private val elementCell: Cell<ElementT?>,
 ) : ActiveReactiveList<ElementT>() {
     override val changes: EventStream<Change<ElementT>> = elementCell.newValues.mapNotNull { newValue ->
-        val oldValue = elementCell.currentValue
+        val oldValue = elementCell.currentValueUnmanaged
 
         val update = when (newValue) {
             null -> when (oldValue) {
@@ -35,5 +35,5 @@ class SingleNotNullReactiveList<ElementT : Any>(
     }
 
     override val currentElements: List<ElementT>
-        get() = listOfNotNull(elementCell.currentValue)
+        get() = listOfNotNull(elementCell.currentValueUnmanaged)
 }

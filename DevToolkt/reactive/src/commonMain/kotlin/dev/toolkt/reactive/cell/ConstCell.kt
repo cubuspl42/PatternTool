@@ -3,15 +3,19 @@ package dev.toolkt.reactive.cell
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.NeverEventStream
+import dev.toolkt.reactive.managed_io.MomentContext
 
 class ConstCell<V>(
     val constValue: V,
 ) : Cell<V>() {
-    override val currentValue: V
+    override val currentValueUnmanaged: V
         get() = constValue
 
     override val newValues: NeverEventStream
         get() = NeverEventStream
+
+    context(momentContext: MomentContext)
+    override fun sample(): V = constValue
 
     override val changes: EventStream<Change<V>>
         get() = NeverEventStream

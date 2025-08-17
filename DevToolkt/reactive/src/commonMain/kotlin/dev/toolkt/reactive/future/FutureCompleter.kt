@@ -28,7 +28,7 @@ class FutureCompleter<V> : ProperFuture<V>() {
     fun completeUnmanaged(
         result: V,
     ) {
-        when (mutableState.currentValue) {
+        when (mutableState.currentValueUnmanaged) {
             is Fulfilled<V> -> throw IllegalStateException("The future is already fulfilled")
             Pending -> {
                 mutableState.setUnmanaged(Fulfilled(result = result))

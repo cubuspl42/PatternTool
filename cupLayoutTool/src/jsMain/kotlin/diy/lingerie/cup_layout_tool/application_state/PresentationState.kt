@@ -8,7 +8,7 @@ class PresentationState {
     )
 
     fun resetCamera() {
-        val cameraRotationState = cameraRotation.state.currentValue as? PropertyCell.State.Unbound ?: return
+        val cameraRotationState = cameraRotation.state.currentValueUnmanaged as? PropertyCell.State.Unbound ?: return
 
         cameraRotationState.set(0.0)
     }

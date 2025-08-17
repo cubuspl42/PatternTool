@@ -102,7 +102,7 @@ abstract class AbstractSchedule : Program<Nothing?> {
 fun <E> Cell<E>.forEachInvoke(
     @ProcedureFunction action: (E) -> Unit,
 ): Schedule {
-    action(currentValue)
+    action(currentValueUnmanaged)
 
     return newValues.forEachInvoke(action)
 }
@@ -164,7 +164,7 @@ fun <V, R> Cell<V>.executeCurrentOf(
 fun <V> Cell<Program<V>>.executeCurrent(): Program<Cell<V>> {
     return object : Program<Cell<V>> {
         override fun execute(): Pair<Cell<V>, ProcessHandle> {
-            val initialProgram = currentValue
+            val initialProgram = currentValueUnmanaged
 
             val (initialValue, initialProcessHandle) = initialProgram.execute()
 

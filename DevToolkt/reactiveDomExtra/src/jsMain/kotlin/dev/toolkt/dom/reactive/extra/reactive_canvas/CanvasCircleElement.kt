@@ -18,7 +18,7 @@ class CanvasCircleElement(
         context.arc(
             x = 0.0,
             y = 0.0,
-            radius = radius.currentValue,
+            radius = radius.currentValueUnmanaged,
             startAngle = 0.0,
             endAngle = 2 * PI,
         )

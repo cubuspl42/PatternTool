@@ -195,14 +195,14 @@ data class GeometryData(
 fun createReactiveGeometry(
     geometryData: Cell<GeometryData>,
 ): THREE.BufferGeometry {
-    val nativeVerticesArray = Float32Array(geometryData.currentValue.flatVertices)
+    val nativeVerticesArray = Float32Array(geometryData.currentValueUnmanaged.flatVertices)
 
     val positionAttribute = THREE.BufferAttribute(
         array = nativeVerticesArray,
         itemSize = 3,
     )
 
-    val nativeFacesArray = Uint16Array(geometryData.currentValue.flatFaces)
+    val nativeFacesArray = Uint16Array(geometryData.currentValueUnmanaged.flatFaces)
 
     val indexAttribute = THREE.BufferAttribute(
         array = nativeFacesArray,

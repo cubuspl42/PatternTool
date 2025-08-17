@@ -16,5 +16,5 @@ class SingleReactiveList<ElementT>(
     }
 
     override val currentElements: List<ElementT>
-        get() = listOf(elementCell.currentValue)
+        get() = listOf(elementCell.currentValueUnmanaged)
 }

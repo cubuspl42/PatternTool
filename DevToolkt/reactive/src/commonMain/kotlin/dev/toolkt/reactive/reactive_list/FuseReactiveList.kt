@@ -47,7 +47,7 @@ class FuseReactiveList<ElementT>(
                     ReactiveList.Change.single(
                         update = ReactiveList.Change.Update.change(
                             indexRange = indexRange,
-                            changedElements = updatedCells.map { it.currentValue },
+                            changedElements = updatedCells.map { it.currentValueUnmanaged },
                         ),
                     ),
                 )
@@ -109,6 +109,6 @@ class FuseReactiveList<ElementT>(
 
     override val currentElements: List<ElementT>
         get() = source.currentElements.map {
-            it.currentValue
+            it.currentValueUnmanaged
         }
 }

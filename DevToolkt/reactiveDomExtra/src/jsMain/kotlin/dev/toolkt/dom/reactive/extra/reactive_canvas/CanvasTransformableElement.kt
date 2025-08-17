@@ -10,7 +10,7 @@ abstract class CanvasTransformableElement : CanvasRenderableElement() {
     final override fun render(
         context: CanvasRenderingContext2D,
     ) {
-        transformation?.currentValue?.toUniversal?.let { transformationNow ->
+        transformation?.currentValueUnmanaged?.toUniversal?.let { transformationNow ->
             context.transform(
                 a = transformationNow.a,
                 b = transformationNow.b,

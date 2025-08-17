@@ -2,6 +2,7 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.managed_io.ActionContext
+import dev.toolkt.reactive.managed_io.MomentContext
 
 class CellSlot<ValueT> private constructor(
     private val mutableCell: MutableCell<Cell<ValueT>>,
@@ -25,8 +26,11 @@ class CellSlot<ValueT> private constructor(
     override val newValues: EventStream<ValueT>
         get() = switchedCell.newValues
 
-    override val currentValue: ValueT
-        get() = switchedCell.currentValue
+    context(momentContext: MomentContext)
+    override fun sample(): ValueT = switchedCell.sample()
+
+    override val currentValueUnmanaged: ValueT
+        get() = switchedCell.currentValueUnmanaged
 
     context(actionContext: ActionContext) fun bind(
         cell: Cell<ValueT>,

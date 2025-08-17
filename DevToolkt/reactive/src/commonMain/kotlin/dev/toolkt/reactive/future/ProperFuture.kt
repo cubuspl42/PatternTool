@@ -4,7 +4,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 
 abstract class ProperFuture<out V> : Future<V>() {
     final override val currentStateUnmanaged: State<V>
-        get() = state.currentValue
+        get() = state.currentValueUnmanaged
 
     final override val onFulfilled: EventStream<Fulfilled<V>>
         get() = onResult.singleUnmanaged().map { Fulfilled(result = it) }

@@ -4,6 +4,7 @@ import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.future.Future
+import dev.toolkt.reactive.managed_io.MomentContext
 
 class PropertyCell<ValueT>(
     initialValue: ValueT,
@@ -45,7 +46,7 @@ class PropertyCell<ValueT>(
         boundValue: Cell<ValueT>,
         until: Future<Unit>,
     ) {
-        if (state.currentValue is State.Bound<*>) {
+        if (state.currentValueUnmanaged is State.Bound<*>) {
             throw IllegalStateException("The property is already bound")
         }
 
@@ -57,7 +58,7 @@ class PropertyCell<ValueT>(
             listener = object : Listener<Any?> {
                 override fun handle(event: Any?) {
                     val finalUnboundState = State.Unbound(
-                        initialValue = newBoundState.exposedValue.currentValue,
+                        initialValue = newBoundState.exposedValue.currentValueUnmanaged,
                     )
 
                     mutableState.setUnmanaged(finalUnboundState)
@@ -73,7 +74,7 @@ class PropertyCell<ValueT>(
         until: Future<Unit>,
     ) {
         bindUntil(
-            boundValue = newValues.hold(currentValue),
+            boundValue = newValues.hold(currentValueUnmanaged),
             until = until,
         )
     }
@@ -81,6 +82,8 @@ class PropertyCell<ValueT>(
     override val newValues: EventStream<ValueT>
         get() = exposedValue.newValues
 
-    override val currentValue: ValueT
-        get() = exposedValue.currentValue
+    context(momentContext: MomentContext) override fun sample(): ValueT = exposedValue.sample()
+
+    override val currentValueUnmanaged: ValueT
+        get() = exposedValue.currentValueUnmanaged
 }
