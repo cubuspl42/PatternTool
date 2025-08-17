@@ -1,6 +1,5 @@
-package dev.toolkt.reactive.cell
+package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.managed_io.Proactions
 import dev.toolkt.reactive.managed_io.Reactions
 

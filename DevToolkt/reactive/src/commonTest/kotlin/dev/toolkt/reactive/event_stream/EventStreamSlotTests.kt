@@ -1,8 +1,5 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.cell.bindExternally
-import dev.toolkt.reactive.cell.createExternally
-import dev.toolkt.reactive.cell.emitExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals

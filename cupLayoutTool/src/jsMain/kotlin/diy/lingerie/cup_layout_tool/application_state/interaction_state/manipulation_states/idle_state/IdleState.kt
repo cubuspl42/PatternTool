@@ -25,7 +25,9 @@ class IdleState private constructor(
 
     companion object {
         fun enter(): Effect<IdleState> = Effect.prepared {
-            val indicatedObject = CellSlot.create<IndicatedObject?>()
+            val indicatedObject = CellSlot.create<IndicatedObject?>(
+                initialValue = null,
+            )
 
             indicatedObject.actuateOf { indicatedObject ->
                 when (indicatedObject) {

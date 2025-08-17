@@ -1,7 +1,5 @@
-package dev.toolkt.reactive.cell
+package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.EventStreamSlot
 import dev.toolkt.reactive.managed_io.Reactions
 
 fun <EventT> EventStreamSlot.Companion.createExternally(): EventStreamSlot<EventT> = Reactions.external {
