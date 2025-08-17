@@ -1,16 +1,8 @@
 package dev.toolkt.reactive.managed_io
 
-abstract class ReactionContext : MomentContext() {
-    internal abstract fun enqueueProaction(
-        proaction: context (ProactionContext) () -> Unit,
-    )
+interface ReactionContext : MomentContext
 
-    internal abstract fun enqueueMutation(
-        mutation: () -> Unit,
-    )
-}
-
-private class ReactionContextImpl : ReactionContext() {
+private class ReactionContextImpl : ReactionContext {
     companion object {
         fun <ResultT> execute(
             block: context(ReactionContext) () -> ResultT,
@@ -22,19 +14,6 @@ private class ReactionContextImpl : ReactionContext() {
     private val enqueuedProactions = mutableListOf<context(ProactionContext) () -> Unit>()
 
     private val enqueuedMutations = mutableListOf<() -> Unit>()
-
-    override fun enqueueProaction(
-        proaction: context(ProactionContext) () -> Unit,
-    ) {
-        enqueuedProactions.add(proaction)
-    }
-
-    // Shouldn't this be present only in the (pro)action context?
-    override fun enqueueMutation(
-        mutation: () -> Unit,
-    ) {
-        enqueuedMutations.add(mutation)
-    }
 
     fun finish() {
         enqueuedProactions.forEach { proaction ->
@@ -53,8 +32,8 @@ object Reactions {
     context(reactionContext: ReactionContext) fun defer(
         proaction: context(ProactionContext) () -> Unit,
     ) {
-        reactionContext.enqueueProaction(
-            proaction = proaction,
-        )
+//        reactionContext.enqueueProaction(
+//            proaction = proaction,
+//        )
     }
 }

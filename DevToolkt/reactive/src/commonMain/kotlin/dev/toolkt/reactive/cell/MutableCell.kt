@@ -40,13 +40,12 @@ class MutableCell<V>(
     context(proactionContext: ProactionContext) fun set(
         newValue: V,
     ) {
-        proactionContext.enqueueReaction { reactionContext ->
-            reactionContext.enqueueMutation {
-                mutableValue = newValue
-            }
 
-            newValueEmitter.emitUnmanaged(newValue)
-        }
+//        reactionContext.enqueueMutation {
+//            mutableValue = newValue
+//        }
+
+        newValueEmitter.emit(newValue)
     }
 
     fun setUnmanaged(
