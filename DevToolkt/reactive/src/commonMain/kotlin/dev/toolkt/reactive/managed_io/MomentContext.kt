@@ -1,7 +1,8 @@
 package dev.toolkt.reactive.managed_io
 
-abstract class MomentContext
-private class MomentContextImpl : MomentContext()
+interface MomentContext
+
+private class MomentContextImpl : MomentContext
 
 object Moments {
     fun <ResultT> external(
