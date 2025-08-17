@@ -1,5 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.reactive.managed_io.Transaction
+
 class SingleEventStream<EventT>(
     private val source: EventStream<EventT>,
 ) : StatefulEventStream<SingleEventStream<EventT>, EventT>() {
@@ -10,6 +12,7 @@ class SingleEventStream<EventT>(
         // extremely easy to miss.
         listener = object : TargetingListener<SingleEventStream<EventT>, EventT> {
             override fun handle(
+                transaction: Transaction,
                 target: SingleEventStream<EventT>,
                 event: EventT,
             ) {
@@ -18,7 +21,10 @@ class SingleEventStream<EventT>(
                     throw AssertionError("The single event was already emitted")
                 }
 
-                target.notify(event = event)
+                target.notify(
+                    transaction = transaction,
+                    event = event
+                )
 
                 target.wasEmitted = true
 

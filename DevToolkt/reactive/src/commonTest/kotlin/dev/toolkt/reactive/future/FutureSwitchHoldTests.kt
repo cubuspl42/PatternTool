@@ -3,6 +3,7 @@ package dev.toolkt.reactive.future
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.setExternally
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -22,8 +23,8 @@ class FutureSwitchHoldTests {
             eventStream = switchHoldCell.newValues,
         )
 
-        mutableCell1.setUnmanaged(-11)
-        mutableCell2.setUnmanaged(11)
+        mutableCell1.setExternally(-11)
+        mutableCell2.setExternally(11)
 
         assertEquals(
             expected = -11,
@@ -47,8 +48,8 @@ class FutureSwitchHoldTests {
             actual = newValuesVerifier.removeReceivedEvents(),
         )
 
-        mutableCell1.setUnmanaged(-12)
-        mutableCell2.setUnmanaged(12)
+        mutableCell1.setExternally(-12)
+        mutableCell2.setExternally(12)
 
         assertEquals(
             expected = 12,

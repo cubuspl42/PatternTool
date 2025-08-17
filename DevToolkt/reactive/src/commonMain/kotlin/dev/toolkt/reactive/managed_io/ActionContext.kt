@@ -6,7 +6,7 @@ interface ActionContext : MomentContext {
     )
 }
 
-private class Transaction private constructor() : ActionContext {
+class Transaction private constructor() : ActionContext {
     companion object {
         fun <ResultT> execute(
             block: context(ActionContext) () -> ResultT,

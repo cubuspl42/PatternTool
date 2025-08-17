@@ -20,15 +20,27 @@ abstract class StatefulReactiveList<E>(
 
         private val self = this // Kotlin doesn't ofer a label for `this@DependentEventStream` (why?)
 
-        override fun observe(): Subscription = givenChanges.listen { change ->
-            // Notify the listeners about the change...
-            self.notify(event = change)
+        override fun observe(): Subscription = givenChanges.listen(
+            listener = object : dev.toolkt.reactive.Listener<Change<E>> {
+                override val dependentId = id
 
-            // ...and apply it (only if needed)
-            val reactiveList = weakReactiveList.get() ?: return@listen
+                override fun handle(
+                    transaction: dev.toolkt.reactive.managed_io.Transaction,
+                    event: Change<E>,
+                ) {
+                    // Notify the listeners about the change...
+                    self.notify(
+                        transaction = transaction,
+                        event = event,
+                    )
 
-            change.applyTo(reactiveList.storedElements)
-        }
+                    // ...and apply it (only if needed)
+                    val reactiveList = weakReactiveList.get() ?: return
+
+                    event.applyTo(reactiveList.storedElements)
+                }
+            },
+        )
 
         init {
             // Pin the event stream to keep the stored elements up-to-date even when there are no listeners

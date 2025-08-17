@@ -2,6 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.managed_io.Transaction
 
 class StaticMergeAllEventStream<E>(
     private val sources: List<EventStream<E>>,
@@ -17,8 +18,14 @@ class StaticMergeAllEventStream<E>(
             }
         }
 
-        override fun handle(event: E) {
-            notify(event = event)
+        override fun handle(
+            transaction: Transaction,
+            event: E,
+        ) {
+            notify(
+                transaction = transaction,
+                event = event,
+            )
         }
     }
 }

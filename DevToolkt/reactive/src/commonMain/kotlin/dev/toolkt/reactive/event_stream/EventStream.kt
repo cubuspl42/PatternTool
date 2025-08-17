@@ -8,6 +8,7 @@ import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.Effect
 import dev.toolkt.reactive.managed_io.Trigger
 import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.managed_io.Transaction
 import dev.toolkt.reactive.managed_io.TriggerBase
 
 typealias TargetingListenerFn<TargetT, EventT> = (TargetT, EventT) -> Unit
@@ -15,6 +16,7 @@ typealias TargetingListenerFn<TargetT, EventT> = (TargetT, EventT) -> Unit
 interface TargetingListener<in TargetT : Any, in EventT> {
     object Noop : TargetingListener<Any, Any?> {
         override fun handle(
+            transaction: Transaction,
             target: Any,
             event: Any?,
         ) {
@@ -26,6 +28,7 @@ interface TargetingListener<in TargetT : Any, in EventT> {
             fn: TargetingListenerFn<TargetT, EventT>,
         ): TargetingListener<TargetT, EventT> = object : TargetingListener<TargetT, EventT> {
             override fun handle(
+                transaction: Transaction,
                 target: TargetT,
                 event: EventT,
             ) {
@@ -38,12 +41,13 @@ interface TargetingListener<in TargetT : Any, in EventT> {
      * A function that accepts a target and an event.
      */
     fun handle(
+        transaction: Transaction,
         target: TargetT,
         event: EventT,
     )
 }
 
-fun <TargetT : Any, EventT> EventSource<EventT>.bind(
+internal fun <TargetT : Any, EventT> EventSource<EventT>.bind(
     target: TargetT,
     listener: TargetingListener<TargetT, EventT>,
 ): BoundTargetedListener<TargetT, EventT> = listener.bindTarget(
@@ -59,7 +63,7 @@ fun <TargetT : Any, EventT> TargetingListener<TargetT, EventT>.bindTarget(
     listener = this,
 )
 
-fun <TargetT : Any, EventT> EventSource<EventT>.bind(
+internal fun <TargetT : Any, EventT> EventSource<EventT>.bind(
     listener: TargetingListener<TargetT, EventT>,
 ): SourcedListener<TargetT, EventT> = SourcedListener(
     source = this,
@@ -117,15 +121,12 @@ abstract class EventStream<out E> : EventSource<E> {
         transform: (E) -> Er,
     ): EventStream<Er>
 
-    // "lookMap"?
-    // or...
-    // map [with MomentContext]
-    // pureMap [without any context] (just to stress the pureness)
     fun <Er> mapAt(
-        transform: context(ActionContext) (E) -> Er,
-    ): EventStream<Er> {
-        TODO()
-    }
+        transform: context(MomentContext) (E) -> Er,
+    ): EventStream<Er> = MapAtEventStream(
+        source = this,
+        transform = transform,
+    )
 
     abstract fun <Er : Any> mapNotNull(
         transform: (E) -> Er?,

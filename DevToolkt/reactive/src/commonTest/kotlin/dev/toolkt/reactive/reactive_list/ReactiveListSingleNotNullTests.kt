@@ -7,6 +7,7 @@ import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -72,7 +73,7 @@ class ReactiveListSingleNotNullTests {
             eventStream = singleReactiveList.changes,
         )
 
-        mutableCell.setUnmanaged(null)
+        mutableCell.setExternally(null)
 
         assertEquals(
             expected = emptyList(),
@@ -104,7 +105,7 @@ class ReactiveListSingleNotNullTests {
         )
 
 
-        mutableCell.setUnmanaged(10)
+        mutableCell.setExternally(10)
 
         assertEquals(
             expected = listOf(10),
@@ -137,7 +138,7 @@ class ReactiveListSingleNotNullTests {
         )
 
 
-        mutableCell.setUnmanaged(20)
+        mutableCell.setExternally(20)
 
         assertEquals(
             expected = listOf(20),
@@ -173,7 +174,7 @@ class ReactiveListSingleNotNullTests {
             eventStream = singleReactiveList.changes,
         )
 
-        mutableCell.setUnmanaged(null)
+        mutableCell.setExternally(null)
 
         if (mutableCellChangesVerifier.removeReceivedEvents() != listOf(null)) {
             throw AssertionError("Unexpected MutableCell behavior")
@@ -214,7 +215,7 @@ class ReactiveListSingleNotNullTests {
 
             PlatformSystem.collectGarbageForced()
 
-            mutableCell.setUnmanaged(10)
+            mutableCell.setExternally(10)
 
             assertEquals(
                 expected = listOf(10),
@@ -245,13 +246,13 @@ class ReactiveListSingleNotNullTests {
 
         PlatformSystem.collectGarbageForced()
 
-        mutableCell.setUnmanaged(10)
+        mutableCell.setExternally(10)
 
         val changesVerifier = EventStreamVerifier(
             eventStream = changes,
         )
 
-        mutableCell.setUnmanaged(20)
+        mutableCell.setExternally(20)
 
         assertEquals(
             expected = listOf(
@@ -347,7 +348,7 @@ class ReactiveListSingleNotNullTests {
 
         ensureNotCollected(weakRef = outReactiveListWeakRef)
 
-        mutableCell.setUnmanaged(null)
+        mutableCell.setExternally(null)
 
         assertEquals(
             expected = listOf(

@@ -1,5 +1,7 @@
 package dev.toolkt.reactive
 
+import dev.toolkt.reactive.managed_io.Transaction
+
 typealias ListenerFn<E> = (E) -> Unit
 
 interface Listener<in EventT> {
@@ -8,6 +10,7 @@ interface Listener<in EventT> {
             fn: ListenerFn<EventT>,
         ): Listener<EventT> = object : Listener<EventT> {
             override fun handle(
+                transaction: Transaction,
                 event: EventT,
             ) {
                 fn(event)
@@ -19,9 +22,10 @@ interface Listener<in EventT> {
         get() = null
 
     /**
-     * A function that accepts an event.
+     * Handles the [event] within the [transaction].
      */
     fun handle(
+        transaction: Transaction,
         event: EventT,
     )
 }

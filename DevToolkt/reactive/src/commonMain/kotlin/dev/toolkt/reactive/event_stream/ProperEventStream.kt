@@ -5,6 +5,7 @@ import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.managed_io.Transaction
 
 abstract class ProperEventStream<E> : EventStream<E>() {
     companion object {
@@ -66,7 +67,10 @@ abstract class ProperEventStream<E> : EventStream<E>() {
     ) {
         listen(
             listener = object : Listener<E> {
-                override fun handle(event: E) {
+                override fun handle(
+                    transaction: Transaction,
+                    event: E,
+                ) {
                     effect(event)
                 }
             },

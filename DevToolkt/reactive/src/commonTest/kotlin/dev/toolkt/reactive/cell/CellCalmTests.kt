@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.cell
 
+import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,7 +32,7 @@ class CellCalmTests {
             eventStream = calmedCall.newValues,
         )
 
-        mutableCell.setUnmanaged(20)
+        mutableCell.setExternally(20)
 
         assertEquals(
             expected = listOf(20),
@@ -51,7 +52,7 @@ class CellCalmTests {
             eventStream = calmedCall.newValues,
         )
 
-        mutableCell.setUnmanaged(10)
+        mutableCell.setExternally(10)
 
         assertEquals(
             expected = emptyList(),

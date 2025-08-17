@@ -107,13 +107,17 @@ fun <E> Cell<E>.forEachInvoke(
     return newValues.forEachInvoke(action)
 }
 
+// TODO: Nuke in favor of effects
 fun <E> EventStream<E>.forEachInvoke(
     @ProcedureFunction action: (E) -> Unit,
 ): Schedule = object : AbstractSchedule() {
     override fun start(): ProcessHandle {
         val subscription = listen(
             object : Listener<E> {
-                override fun handle(event: E) {
+                override fun handle(
+                    transaction: Transaction,
+                    event: E,
+                ) {
                     action(event)
                 }
             },
@@ -129,6 +133,7 @@ fun <E> EventStream<E>.forEachInvoke(
 
 var nextInvokeEachId = 0
 
+// TODO: Nuke in favor of effects
 fun <E, R> EventStream<E>.invokeEach(
     @ProcedureFunction transform: (E) -> R,
 ): Program<EventStream<R>> {
@@ -140,7 +145,10 @@ fun <E, R> EventStream<E>.invokeEach(
 
             val subscription = this@invokeEach.listen(
                 object : Listener<E> {
-                    override fun handle(event: E) {
+                    override fun handle(
+                        transaction: Transaction,
+                        event: E,
+                    ) {
                         eventEmitter.emitUnmanaged(transform(event))
                     }
                 },

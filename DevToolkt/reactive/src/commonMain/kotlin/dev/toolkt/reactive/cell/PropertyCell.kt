@@ -5,6 +5,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.managed_io.Transaction
 
 class PropertyCell<ValueT>(
     initialValue: ValueT,
@@ -56,7 +57,10 @@ class PropertyCell<ValueT>(
 
         until.onFulfilled.listen(
             listener = object : Listener<Any?> {
-                override fun handle(event: Any?) {
+                override fun handle(
+                    transaction: Transaction,
+                    event: Any?,
+                ) {
                     val finalUnboundState = State.Unbound(
                         initialValue = newBoundState.exposedValue.currentValueUnmanaged,
                     )

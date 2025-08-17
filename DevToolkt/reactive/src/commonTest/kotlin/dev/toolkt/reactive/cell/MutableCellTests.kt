@@ -2,6 +2,7 @@ package dev.toolkt.reactive
 
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -22,7 +23,7 @@ class MutableCellTests {
             actual = mutableCell.currentValueUnmanaged,
         )
 
-        mutableCell.setUnmanaged(1)
+        mutableCell.setExternally(1)
 
         assertEquals(
             expected = 1,
@@ -39,7 +40,7 @@ class MutableCellTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableCell.setUnmanaged(2)
+        mutableCell.setExternally(2)
 
         assertEquals(
             expected = 2,
