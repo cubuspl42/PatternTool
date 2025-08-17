@@ -12,6 +12,7 @@ expect object PlatformSystem {
 
     /**
      * A suspending functions that does everything in its power to trigger garbage collection on the given target.
+     * TODO: Use an exponential progressive algorithm, make it a test utils?
      */
     suspend fun collectGarbageForced()
 

@@ -5,7 +5,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.subscribe
 import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.future.resultOrNull
-import dev.toolkt.reactive.future.withPlaceholderSwitched
+import dev.toolkt.reactive.future.placeholdStatic
 
 interface Effect<out ResultT> {
     companion object {
@@ -88,7 +88,7 @@ interface Effect<out ResultT> {
                 selectNextValueEffectFuture(firstValue).mapAt { nextValueEffect: Effect<V> ->
                     recurse(firstValueEffect = nextValueEffect)
                 }.waitEffectively().map { successorCellFuture: Future<Cell<V>> ->
-                    successorCellFuture.withPlaceholderSwitched(placeholderValue = firstValue)
+                    successorCellFuture.placeholdStatic(placeholderValue = firstValue)
                 }
             }
 

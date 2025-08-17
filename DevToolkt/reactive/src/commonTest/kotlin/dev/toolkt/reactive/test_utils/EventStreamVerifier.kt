@@ -14,6 +14,20 @@ import dev.toolkt.reactive.event_stream.listenWeak
 class EventStreamVerifier<E>(
     eventStream: EventStream<E>,
 ) {
+    companion object {
+        fun <E> listen(
+            eventStream: EventStream<E>,
+        ): Pair<EventStreamVerifier<E>, Subscription> {
+            TODO()
+        }
+
+        fun <E> listenForever(
+            eventStream: EventStream<E>,
+        ): EventStreamVerifier<E> {
+            TODO()
+        }
+    }
+
     private val mutableReceivedEvents = mutableListOf<E>()
 
     private var subscription: Subscription? = eventStream.listenWeak(

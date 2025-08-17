@@ -31,7 +31,7 @@ class MutableReactiveList<E>(
             newValue = newValue,
         )
 
-        changeEmitter.emit(
+        changeEmitter.emitUnmanaged(
             Change.single(
                 update = update,
             ) ?: throw AssertionError("The change is not effective"),
@@ -67,7 +67,7 @@ class MutableReactiveList<E>(
             update = update,
         )
 
-        changeEmitter.emit(change)
+        changeEmitter.emitUnmanaged(change)
 
         mutableContent.addAll(
             index = index,
@@ -92,7 +92,7 @@ class MutableReactiveList<E>(
             update = update,
         )
 
-        changeEmitter.emit(change)
+        changeEmitter.emitUnmanaged(change)
 
         mutableContent.removeRange(indexRange)
 
@@ -114,7 +114,7 @@ class MutableReactiveList<E>(
             update = update,
         )
 
-        changeEmitter.emit(change)
+        changeEmitter.emitUnmanaged(change)
 
         mutableContent.append(element)
     }
@@ -128,7 +128,7 @@ class MutableReactiveList<E>(
             indexRange = indexRange,
         )
 
-        changeEmitter.emit(
+        changeEmitter.emitUnmanaged(
             Change.single(
                 update = update,
             ),
@@ -146,7 +146,7 @@ class MutableReactiveList<E>(
             index = index,
         )
 
-        changeEmitter.emit(
+        changeEmitter.emitUnmanaged(
             Change.single(
                 update = update,
             ),

@@ -2,110 +2,75 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
-import dev.toolkt.core.platform.test_utils.ensureCollected
-import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
-import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
+import dev.toolkt.reactive.cell.createExternally
+import dev.toolkt.reactive.cell.emitExternally
+import dev.toolkt.reactive.managed_io.Reactions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class EventStreamSingleTests {
     @Test
-    fun testSingle() {
-        val eventEmitter = EventEmitter<Int>()
+    fun testSingle_caught() = runTestDefault {
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
-        val nextStream = eventEmitter.singleUnmanaged()
-
-        val streamVerifier = EventStreamVerifier(
-            eventStream = nextStream,
-        )
-
-        // Emit the single event
-        eventEmitter.emit(10)
-
-        assertEquals(
-            expected = listOf(10),
-            actual = streamVerifier.removeReceivedEvents(),
-        )
-
-        // Emit some event after the single event
-        eventEmitter.emit(20)
-
-        assertEquals(
-            expected = emptyList(),
-            actual = streamVerifier.removeReceivedEvents(),
-        )
-
-        // Emit yet another event (just to be sure)
-        eventEmitter.emit(30)
-
-        assertEquals(
-            expected = emptyList(),
-            actual = streamVerifier.removeReceivedEvents(),
-        )
-    }
-
-    @Test
-    fun testSingle_keepAlive() = runTestDefault {
-        val eventEmitter = EventEmitter<Int>()
-
-        fun setup(): Pair<PlatformWeakReference<EventStream<Int>>, EventStreamVerifier<Int>> {
-            val singleEventStream = eventEmitter.singleUnmanaged()
-
-            val streamVerifier = EventStreamVerifier(
-                eventStream = singleEventStream,
-            )
-
-            return Pair(
+        val (singleEventStreamWeakRef, streamVerifier) = Reactions.external {
+            // Create the single stream without storing a direct reference,
+            eventEmitter.single()
+        }.let { singleEventStream ->
+            Pair(
+                // Store only a weak reference, to make sure that we don't "help" tbe
+                // single stream object in the aspect of being non-collectible.
+                // We'll still have an indirect reference via the subscription, which
+                // should keep the single stream alive if it's implemented correctly.
                 PlatformWeakReference(singleEventStream),
-                streamVerifier,
+                // Start listening before the single event is emitted
+                EventStreamVerifier(eventStream = singleEventStream),
             )
         }
 
-        val (singleEventStreamRef, streamVerifier) = setup()
+        // Verify that the single event stream subscribed to the source stream
+        assertTrue(
+            actual = eventEmitter.hasListeners,
+        )
 
-        ensureNotCollected(weakRef = singleEventStreamRef)
+        // Emit the single event from the source stream
+        eventEmitter.emitExternally(10)
 
-        // Emit the single event
-        eventEmitter.emit(10)
+        // Verify that the single event stream unsubscribed from the source stream
+        // after the single event was emitted
+        assertFalse(
+            actual = eventEmitter.hasListeners,
+        )
 
+        // Verify that the single event was received
         assertEquals(
             expected = listOf(10),
             actual = streamVerifier.removeReceivedEvents(),
         )
-    }
 
-    @Test
-    fun testSingle_letItGo() = runTestDefault {
-        val eventEmitter = EventEmitter<Int>()
+        // Emit another event from the source stream
+        eventEmitter.emitExternally(20)
 
-        val singleEventStreamRef = PlatformWeakReference(eventEmitter.singleUnmanaged())
-
-        eventEmitter.emit(10)
-
-        PlatformSystem.collectGarbageForced()
-
-        ensureCollected(weakRef = singleEventStreamRef)
-
-        assertFalse(
-            actual = eventEmitter.hasListeners,
+        // Verify that the new event was ignored
+        assertEquals(
+            expected = emptyList(),
+            actual = streamVerifier.removeReceivedEvents(),
         )
-    }
 
-    @Test
-    fun testSingle_letItGo_noEmit() = runTestDefault {
-        val eventEmitter = EventEmitter<Int>()
-
-        val singleEventStreamRef = PlatformWeakReference(eventEmitter.singleUnmanaged())
-
+        // Force garbage collection
         PlatformSystem.collectGarbageForced()
 
-        ensureCollected(weakRef = singleEventStreamRef)
-
-        assertFalse(
-            actual = eventEmitter.hasListeners,
+        // Verify that the single event stream allowed itself to be collected
+        // after it emitted the single event, even though we still hold an indirect
+        // reference to it via the subscription.
+        // TODO: Is this easy/reasonable to implement?
+        assertNull(
+            actual = singleEventStreamWeakRef.get(),
         )
     }
 
@@ -113,38 +78,99 @@ class EventStreamSingleTests {
     fun testSingle_missed() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
-        val singleEventStream = eventEmitter.singleUnmanaged()
 
-        eventEmitter.emit(10)
+        val (singleEventStreamWeakRef, streamVerifier) = Reactions.external {
+            eventEmitter.single()
+        }.let { singleEventStream ->
+            // Verify that the single event stream subscribed to the source stream,
+            // proving that it's active even without any listeners
+            assertTrue(
+                actual = eventEmitter.hasListeners,
+            )
 
-        val streamVerifier = DetachedEventStreamVerifier(
-            eventStream = singleEventStream,
+            // Emit the single event (it is missed, as there are no listeners yet)
+            eventEmitter.emitExternally(10)
+
+            // Verify that the single event stream unsubscribed from the source stream
+            // after the single event was emitted (even without listeners)
+            assertFalse(
+                actual = eventEmitter.hasListeners,
+            )
+
+            Pair(
+                // Store only a weak reference, to make sure that we don't "help" tbe
+                // single stream object in the aspect of being non-collectible.
+                // We'll still have an indirect reference via the subscription, which
+                // should keep the single stream alive if it's implemented correctly.
+                PlatformWeakReference(singleEventStream),
+                // Start listening before the single event is emitted
+                EventStreamVerifier(eventStream = singleEventStream),
+            )
+        }
+
+        // Verify that the source stream still has no listeners, even after we
+        // started listening to it, proving that the single stream is aware that
+        // the single event was already emitted.
+        assertFalse(
+            actual = eventEmitter.hasListeners,
         )
 
-        eventEmitter.emit(20)
+        // Emit another event from the source stream
+        eventEmitter.emitExternally(20)
 
+        // Verify that no events were received, proving that the single event
+        // stream managed internal state even before we started listening and
+        // is not going to emit any events after the single one
         assertEquals(
             expected = emptyList(),
             actual = streamVerifier.removeReceivedEvents(),
         )
-    }
-
-    @Test
-    fun testSingle_detached() = runTestDefault {
-        val eventEmitter = EventEmitter<Int>()
-
-        val streamVerifier = DetachedEventStreamVerifier(
-            eventStream = eventEmitter.singleUnmanaged(),
-        )
 
         PlatformSystem.collectGarbageForced()
 
-        // Emit the single event
-        eventEmitter.emit(10)
+        // Verify that the single event stream allowed itself to be collected
+        // after it emitted the single event, even though we still hold an indirect
+        // reference to it via the subscription.
+        // TODO: Is this easy/reasonable to implement?
+        assertNull(
+            actual = singleEventStreamWeakRef.get(),
+        )
+    }
 
-        assertEquals(
-            expected = listOf(10),
-            actual = streamVerifier.removeReceivedEvents(),
+    @Test
+    fun testSingle_silent() = runTestDefault {
+        // Create an event emitter that will not emit any events
+        val eventEmitter = EventEmitter<Int>()
+
+        val singleEventStreamWeakRef = Reactions.external {
+            // Create a single event stream which we'll never listen to.
+            eventEmitter.single()
+        }.let {
+            // Store only a weak reference, so it's a candidate for garbage collection (as we don't listen either).
+            // It's not possible for the single stream object to be aware of this!
+            PlatformWeakReference(it)
+        }
+
+        // Verify that the single event stream subscribed to the source stream
+        // (the garbage collection couldn't have happened yet)
+        assertTrue(
+            actual = eventEmitter.hasListeners,
+        )
+
+        // Force garbage collection
+        PlatformSystem.collectGarbageForced()
+
+        // Verify that the single event stream allowed itself to be collected,
+        // even though it was managing some internal state while waiting for
+        // the first listener
+        assertNull(
+            actual = singleEventStreamWeakRef.get(),
+        )
+
+        // Verify that the single event unsubscribed from the source stream
+        // as a part of the cleanup process
+        assertFalse(
+            actual = eventEmitter.hasListeners,
         )
     }
 }

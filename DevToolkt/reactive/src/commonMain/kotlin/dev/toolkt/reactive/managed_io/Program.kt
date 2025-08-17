@@ -141,7 +141,7 @@ fun <E, R> EventStream<E>.invokeEach(
             val subscription = this@invokeEach.listen(
                 object : Listener<E> {
                     override fun handle(event: E) {
-                        eventEmitter.emit(transform(event))
+                        eventEmitter.emitUnmanaged(transform(event))
                     }
                 },
             )

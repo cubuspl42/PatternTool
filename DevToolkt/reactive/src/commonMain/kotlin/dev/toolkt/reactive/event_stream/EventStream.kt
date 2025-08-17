@@ -118,7 +118,10 @@ abstract class EventStream<out E> : EventSource<E> {
         transform: (E) -> Er,
     ): EventStream<Er>
 
-    // TODO: Add tests
+    // "lookMap"?
+    // or...
+    // map [with MomentContext]
+    // pureMap [without any context] (just to stress the pureness)
     fun <Er> mapAt(
         transform: context(ReactionContext) (E) -> Er,
     ): EventStream<Er> {
@@ -139,7 +142,6 @@ abstract class EventStream<out E> : EventSource<E> {
 
     abstract fun singleUnmanaged(): EventStream<E>
 
-    // TODO: Add tests
     context(momentContext: MomentContext) fun single(): EventStream<E> {
         TODO()
     }

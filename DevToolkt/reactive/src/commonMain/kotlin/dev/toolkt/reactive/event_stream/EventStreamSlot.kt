@@ -7,7 +7,6 @@ import dev.toolkt.reactive.managed_io.ReactionContext
 import dev.toolkt.reactive.managed_io.Reactions
 
 
-// TODO: Add tests
 class EventStreamSlot<EventT>(
     private val mutableEventStream: MutableCell<EventStream<EventT>>,
 ) : ProperEventStream<EventT>() {

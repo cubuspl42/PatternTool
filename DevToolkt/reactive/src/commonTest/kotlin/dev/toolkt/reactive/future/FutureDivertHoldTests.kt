@@ -22,8 +22,8 @@ class FutureDivertHoldTests {
             eventStream = divertHoldStream,
         )
 
-        eventEmitter1.emit(-11)
-        eventEmitter2.emit(11)
+        eventEmitter1.emitUnmanaged(-11)
+        eventEmitter2.emitUnmanaged(11)
 
         assertEquals(
             expected = listOf(-11),
@@ -32,8 +32,8 @@ class FutureDivertHoldTests {
 
         futureCompleter.completeUnmanaged(eventEmitter2)
 
-        eventEmitter1.emit(-12)
-        eventEmitter2.emit(12)
+        eventEmitter1.emitUnmanaged(-12)
+        eventEmitter2.emitUnmanaged(12)
 
         assertEquals(
             expected = listOf(12),

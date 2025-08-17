@@ -17,7 +17,7 @@ class FutureMapTests {
 
         assertEquals(
             expected = Future.Pending,
-            actual = mapFuture.currentState,
+            actual = mapFuture.currentStateUnmanaged,
         )
 
         futureCompleter.completeUnmanaged(1)
@@ -31,7 +31,7 @@ class FutureMapTests {
             expected = Future.Fulfilled(
                 result = "1",
             ),
-            actual = mapFuture.currentState,
+            actual = mapFuture.currentStateUnmanaged,
         )
     }
 }

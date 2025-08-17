@@ -24,7 +24,7 @@ abstract class Future<out V> {
     object Hang : Future<Nothing>() {
         override val state: Cell<State<Nothing>> = Cell.Companion.of(Pending)
 
-        override val currentState: State<Nothing> = Pending
+        override val currentStateUnmanaged: State<Nothing> = Pending
 
         override val onFulfilled: EventStream<Fulfilled<Nothing>> = EventStream.Never
 
@@ -41,7 +41,7 @@ abstract class Future<out V> {
 
         override val state: Cell<State<V>> = Cell.of(fulfilledState)
 
-        override val currentState: State<V> = fulfilledState
+        override val currentStateUnmanaged: State<V> = fulfilledState
 
         override val onFulfilled: EventStream<Fulfilled<V>> = NeverEventStream
 
@@ -57,6 +57,10 @@ abstract class Future<out V> {
             constResult: V,
         ): Future<V> = Prefilled(constResult)
 
+        fun <V> join(
+            future: Future<Future<V>>,
+        ): Future<V> = TODO()
+
         context(momentContext: MomentContext) fun <V, V1 : V, V2 : V> oscillate2(
             initialValue: V1,
             selectNextValueFuture1: context(MomentContext) (V1) -> Future<V2>,
@@ -64,24 +68,32 @@ abstract class Future<out V> {
         ): Cell<V> = object {
             context(momentContext: MomentContext) fun enterPhase1(
                 value1: V1,
-            ): Cell<V> = selectNextValueFuture1(value1).mapAt { value2 ->
-                enterPhase2(value2)
-            }.withPlaceholderSwitched(
-                placeholderValue = value1
+            ): Cell<V> = enterPhaseX(
+                valueX = value1,
+                selectNextValueFutureX = selectNextValueFuture1,
+                enterPhaseY = { enterPhase2(it) },
             )
 
             context(momentContext: MomentContext) fun enterPhase2(
                 value2: V2,
-            ): Cell<V> = selectNextValueFuture2(value2).mapAt { value1 ->
-                enterPhase1(value1)
-            }.withPlaceholderSwitched(
-                placeholderValue = value2
+            ): Cell<V> = enterPhaseX(
+                valueX = value2,
+                selectNextValueFutureX = selectNextValueFuture2,
+                enterPhaseY = { enterPhase1(it) },
             )
 
-            val result = enterPhase1(
-                value1 = initialValue,
+            private inline fun <V, Vx : V, Vy> enterPhaseX(
+                valueX: Vx,
+                selectNextValueFutureX: context(MomentContext) (Vx) -> Future<Vy>,
+                crossinline enterPhaseY: context(MomentContext) (Vy) -> Cell<V>,
+            ): Cell<V> = selectNextValueFutureX(valueX).mapAt { valueY ->
+                enterPhaseY(valueY)
+            }.placeholdStatic(
+                placeholderValue = valueX,
             )
-        }.result
+        }.enterPhase1(
+            value1 = initialValue,
+        )
 
         fun <V, V1 : V, V2 : V> oscillateUnmanaged2(
             initialValue: V1,
@@ -104,6 +116,7 @@ abstract class Future<out V> {
                 recurse = ::enterPhase1,
             )
 
+
             val result = enterPhase1(
                 value1 = initialValue,
             )
@@ -117,7 +130,7 @@ abstract class Future<out V> {
                 firstValue: V,
             ): Cell<V> = selectNextValueFuture(firstValue).mapAt { nextValue ->
                 recurse(nextValue)
-            }.withPlaceholderSwitched(
+            }.placeholdStatic(
                 placeholderValue = initialValue,
             )
 
@@ -152,7 +165,7 @@ abstract class Future<out V> {
 
     abstract val state: Cell<State<V>>
 
-    abstract val currentState: State<V>
+    abstract val currentStateUnmanaged: State<V>
 
     abstract val onFulfilled: EventStream<Fulfilled<V>>
 
@@ -166,6 +179,7 @@ abstract class Future<out V> {
         TODO()
     }
 
+    // "lookMap"?
     fun <Vr> mapRe(
         transform: context(ReactionContext) (V) -> Vr,
     ): Effect<Future<Vr>> {
@@ -181,14 +195,13 @@ val <V> Future<V>.resultOrNull: Cell<V?>
         }
     }
 
-// TODO: Add tests
 fun <V, R> Future<V>.joinOf(
     transform: (V) -> Future<R>,
-): Future<R> = TODO()
+): Future<R> = Future.join(map(transform))
 
 fun <V> Future<V>.hold(
     initialValue: V,
-): Cell<V> = when (val foundState = currentState) {
+): Cell<V> = when (val foundState = currentStateUnmanaged) {
     is Future.Fulfilled<V> -> Cell.of(foundState.result)
 
     Future.Pending -> onResult.hold(initialValue)
@@ -196,7 +209,7 @@ fun <V> Future<V>.hold(
 
 fun <V> Future<Cell<V>>.switchHold(
     initialCell: Cell<V>,
-): Cell<V> = when (val state = currentState) {
+): Cell<V> = when (val state = currentStateUnmanaged) {
     is Future.Fulfilled<Cell<V>> -> state.result
 
     Future.Pending -> Cell.switch(
@@ -205,7 +218,7 @@ fun <V> Future<Cell<V>>.switchHold(
 }
 
 // TODO: Add tests
-fun <V> Future<V>.withPlaceholder(placeholderValue: V): Cell<V> {
+fun <V> Future<V>.placehold(placeholderValue: V): Cell<V> {
     TODO()
 }
 
@@ -215,15 +228,15 @@ fun <V> Future<Cell<V>>.switchHold(
     initialCell = Cell.of(initialValue),
 )
 
-fun <V> Future<Cell<V>>.withPlaceholderSwitched(
+fun <V> Future<Cell<V>>.placeholdStatic(
     placeholderValue: V,
-): Cell<V> = withPlaceholder(
+): Cell<V> = placehold(
     Cell.of(placeholderValue),
 ).switch()
 
 fun <E> Future<EventStream<E>>.divertHold(
     initialEventStream: EventStream<E>,
-): EventStream<E> = when (val foundState = currentState) {
+): EventStream<E> = when (val foundState = currentStateUnmanaged) {
     is Future.Fulfilled<EventStream<E>> -> foundState.result
 
     Future.Pending -> EventStream.divert(
