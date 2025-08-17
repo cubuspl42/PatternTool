@@ -21,9 +21,9 @@ class EventStreamMergeAllTests {
             eventStream = mergeStream,
         )
 
-        eventEmitter0.emitUnmanaged(10)
-        eventEmitter1.emitUnmanaged(20)
-        eventEmitter2.emitUnmanaged(30)
+        eventEmitter0.emitExternally(10)
+        eventEmitter1.emitExternally(20)
+        eventEmitter2.emitExternally(30)
 
         assertEquals(
             expected = listOf(

@@ -24,7 +24,7 @@ class EventStreamNextTests {
             actual = nextFuture.currentStateUnmanaged,
         )
 
-        eventEmitter.emitUnmanaged(10)
+        eventEmitter.emitExternally(10)
 
         assertEquals(
             expected = listOf(10),
@@ -38,7 +38,7 @@ class EventStreamNextTests {
             actual = nextFuture.currentStateUnmanaged,
         )
 
-        eventEmitter.emitUnmanaged(20)
+        eventEmitter.emitExternally(20)
 
         assertEquals(
             expected = emptyList(),
@@ -77,7 +77,7 @@ class EventStreamNextTests {
         val (outFutureWeakRef, onResultVerifier) = setup()
 
         // Emit the single event
-        eventEmitter.emitUnmanaged(10)
+        eventEmitter.emitExternally(10)
 
         assertEquals(
             expected = listOf(10),

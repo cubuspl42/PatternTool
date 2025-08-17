@@ -20,7 +20,7 @@ class EventStreamInvokeEachTests {
             newVariable.toString()
         }
 
-        eventEmitter.emitUnmanaged(Unit)
+        eventEmitter.emitExternally(Unit)
 
         assertEquals(
             expected = 10,
@@ -33,7 +33,7 @@ class EventStreamInvokeEachTests {
             eventStream = resultStream,
         )
 
-        eventEmitter.emitUnmanaged(Unit)
+        eventEmitter.emitExternally(Unit)
 
         assertEquals(
             expected = 11,
@@ -45,7 +45,7 @@ class EventStreamInvokeEachTests {
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(Unit)
+        eventEmitter.emitExternally(Unit)
 
         assertEquals(
             expected = 12,
@@ -59,7 +59,7 @@ class EventStreamInvokeEachTests {
 
         processHandle.stop()
 
-        eventEmitter.emitUnmanaged(Unit)
+        eventEmitter.emitExternally(Unit)
 
         assertEquals(
             expected = 12,

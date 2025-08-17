@@ -30,9 +30,9 @@ class EventStreamHoldTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(2)
+        eventEmitter.emitExternally(2)
 
-        eventEmitter.emitUnmanaged(3)
+        eventEmitter.emitExternally(3)
 
         assertEquals(
             expected = 3,
@@ -67,7 +67,7 @@ class EventStreamHoldTests {
 
         PlatformSystem.collectGarbageForced()
 
-        eventEmitter.emitUnmanaged(2)
+        eventEmitter.emitExternally(2)
 
         assertEquals(
             expected = 2,
@@ -96,7 +96,7 @@ class EventStreamHoldTests {
             eventStream = newValues,
         )
 
-        eventEmitter.emitUnmanaged(10)
+        eventEmitter.emitExternally(10)
 
         assertEquals(
             expected = listOf(10),

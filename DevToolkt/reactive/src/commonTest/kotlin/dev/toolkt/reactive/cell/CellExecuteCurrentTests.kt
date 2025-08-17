@@ -1,7 +1,7 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.event_stream.EventEmitter
+import dev.toolkt.reactive.event_stream.emitExternally
 import dev.toolkt.reactive.managed_io.executeCurrent
 import dev.toolkt.reactive.managed_io.forEachInvoke
 import kotlin.test.Test
@@ -29,7 +29,7 @@ class CellExecuteCurrentTests {
 
         val resultCell = mutableCell.executeCurrent()
 
-        eventSEmitter.emitUnmanaged(Unit)
+        eventSEmitter.emitExternally(Unit)
 
         assertEquals(
             expected = 10,
@@ -43,7 +43,7 @@ class CellExecuteCurrentTests {
 
         val (_, processHandle) = resultCell.execute()
 
-        eventSEmitter.emitUnmanaged(Unit)
+        eventSEmitter.emitExternally(Unit)
 
         assertEquals(
             expected = 11,
@@ -57,7 +57,7 @@ class CellExecuteCurrentTests {
 
         mutableCell.setExternally(program1)
 
-        eventSEmitter.emitUnmanaged(Unit)
+        eventSEmitter.emitExternally(Unit)
 
         assertEquals(
             expected = 11,
@@ -71,7 +71,7 @@ class CellExecuteCurrentTests {
 
         processHandle.stop()
 
-        eventSEmitter.emitUnmanaged(Unit)
+        eventSEmitter.emitExternally(Unit)
 
         assertEquals(
             expected = 11,

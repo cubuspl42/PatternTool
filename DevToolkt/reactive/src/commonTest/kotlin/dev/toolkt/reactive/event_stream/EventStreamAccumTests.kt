@@ -31,7 +31,7 @@ class EventStreamAccumTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged('0')
+        eventEmitter.emitExternally('0')
 
         assertEquals(
             expected = "abc0",
@@ -48,7 +48,7 @@ class EventStreamAccumTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged('1')
+        eventEmitter.emitExternally('1')
 
         assertEquals(
             expected = "abc01",
