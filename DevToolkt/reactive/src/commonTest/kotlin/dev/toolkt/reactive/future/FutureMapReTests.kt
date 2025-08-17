@@ -5,7 +5,6 @@ import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.sampleExternally
 import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.cell.setLater
-import dev.toolkt.reactive.managed_io.Proactions
 import dev.toolkt.reactive.managed_io.Reactions
 import dev.toolkt.reactive.managed_io.endExternally
 import dev.toolkt.reactive.managed_io.startExternally
@@ -56,7 +55,7 @@ class FutureMapReTests {
             actual = mappedFuture.state.sampleExternally(),
         )
 
-        Proactions.external {
+        Reactions.external {
             // Complete the future
             futureCompleter.complete(4)
 

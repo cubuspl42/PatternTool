@@ -11,12 +11,12 @@ private class ReactionContextImpl : ReactionContext {
         }
     }
 
-    private val enqueuedProactions = mutableListOf<context(ProactionContext) () -> Unit>()
+    private val enqueuedReactions = mutableListOf<context(ReactionContext) () -> Unit>()
 
     private val enqueuedMutations = mutableListOf<() -> Unit>()
 
     fun finish() {
-        enqueuedProactions.forEach { proaction ->
+        enqueuedReactions.forEach { proaction ->
             TODO()
         }
     }
@@ -30,7 +30,7 @@ object Reactions {
     }
 
     context(reactionContext: ReactionContext) fun defer(
-        proaction: context(ProactionContext) () -> Unit,
+        proaction: context(ReactionContext) () -> Unit,
     ) {
 //        reactionContext.enqueueProaction(
 //            proaction = proaction,

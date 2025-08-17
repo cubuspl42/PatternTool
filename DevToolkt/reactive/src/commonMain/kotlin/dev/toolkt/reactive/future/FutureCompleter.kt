@@ -3,7 +3,7 @@ package dev.toolkt.reactive.future
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.managed_io.ProactionContext
+import dev.toolkt.reactive.managed_io.ReactionContext
 
 class FutureCompleter<V> : ProperFuture<V>() {
     private val mutableState = MutableCell<State<V>>(Pending)
@@ -11,7 +11,7 @@ class FutureCompleter<V> : ProperFuture<V>() {
     val hasListeners: Boolean
         get() = mutableState.hasListeners
 
-    context(proactionContext: ProactionContext) fun complete(
+    context(reactionContext: ReactionContext) fun complete(
         result: V,
     ) {
         when (mutableState.sample()) {

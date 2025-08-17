@@ -1,6 +1,5 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.managed_io.Proactions
 import dev.toolkt.reactive.managed_io.Reactions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
@@ -58,7 +57,7 @@ class CellSlotTests {
 
         assertEquals(
             expected = 10,
-            actual = Proactions.external {
+            actual = Reactions.external {
                 // Set the value once
                 mutableCell.set(11)
 
@@ -79,7 +78,7 @@ class CellSlotTests {
 
         assertEquals(
             expected = 11,
-            actual = Proactions.external {
+            actual = Reactions.external {
                 // Set the value once more
                 mutableCell.set(12)
 
@@ -122,7 +121,7 @@ class CellSlotTests {
             initialValue = 20,
         )
 
-        Proactions.external {
+        Reactions.external {
             // Bind one cell
             cellSlot.bind(mutableCell1)
 
@@ -155,7 +154,7 @@ class CellSlotTests {
 
         assertEquals(
             expected = 20,
-            actual = Proactions.external {
+            actual = Reactions.external {
                 // Update the new cell
                 mutableCell2.set(21)
 

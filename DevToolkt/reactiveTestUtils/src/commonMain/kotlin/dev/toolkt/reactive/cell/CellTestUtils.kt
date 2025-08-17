@@ -1,6 +1,5 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.managed_io.Proactions
 import dev.toolkt.reactive.managed_io.Reactions
 
 fun <V> MutableCell.Companion.createExternally(
@@ -11,7 +10,7 @@ fun <V> MutableCell.Companion.createExternally(
 
 fun <V> MutableCell<V>.setExternally(
     newValue: V,
-) = Proactions.external {
+) = Reactions.external {
     set(newValue = newValue)
 }
 
