@@ -30,7 +30,7 @@ class FutureDivertHoldTests {
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        futureCompleter.complete(eventEmitter2)
+        futureCompleter.completeUnmanaged(eventEmitter2)
 
         eventEmitter1.emit(-12)
         eventEmitter2.emit(12)

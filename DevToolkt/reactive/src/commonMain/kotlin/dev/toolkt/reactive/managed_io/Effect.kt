@@ -126,6 +126,7 @@ interface Effect<out ResultT> {
             }
         }
 
+        // "stop"?
         context(reactionContext: ReactionContext) fun end()
     }
 

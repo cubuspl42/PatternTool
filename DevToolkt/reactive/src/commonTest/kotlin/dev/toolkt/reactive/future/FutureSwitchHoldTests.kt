@@ -35,7 +35,7 @@ class FutureSwitchHoldTests {
             actual = newValuesVerifier.removeReceivedEvents(),
         )
 
-        futureCompleter.complete(mutableCell2)
+        futureCompleter.completeUnmanaged(mutableCell2)
 
         assertEquals(
             expected = 11,

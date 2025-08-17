@@ -139,7 +139,6 @@ abstract class EventStream<out E> : EventSource<E> {
 
     abstract fun singleUnmanaged(): EventStream<E>
 
-
     // TODO: Add tests
     context(momentContext: MomentContext) fun single(): EventStream<E> {
         TODO()
@@ -186,6 +185,12 @@ context(reactionContext: ReactionContext) fun <E> EventStream<E>.subscribe(
     action: context(ProactionContext) (E) -> Unit,
 ): Effect.Handle {
     TODO() // The most low-level ReactionContext operation?
+}
+
+context(reactionContext: ReactionContext) fun <E> EventStream<E>.forward(
+    update: (E) -> Unit,
+): Effect.Handle {
+    TODO() // The other most low-level ReactionContext operation?
 }
 
 context(reactionContext: ReactionContext)
