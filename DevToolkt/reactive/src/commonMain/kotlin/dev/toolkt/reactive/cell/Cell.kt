@@ -128,6 +128,12 @@ sealed class Cell<out V> {
         transform: (V) -> Vr,
     ): Cell<Vr>
 
+    context(momentContext: MomentContext) fun <Vr> mapAt(
+        transform: context(MomentContext) (V) -> Vr,
+    ): Cell<Vr> {
+        TODO()
+    }
+
     abstract fun calm(): Cell<V>
 
     abstract fun <T : Any> form(
