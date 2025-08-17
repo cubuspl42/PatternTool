@@ -4,7 +4,6 @@ import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.sampleExternally
 import dev.toolkt.reactive.cell.setExternally
-import dev.toolkt.reactive.cell.setLater
 import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.managed_io.endExternally
 import dev.toolkt.reactive.managed_io.startExternally
@@ -28,7 +27,7 @@ class FutureMapReTests {
         val mappedFutureEffect = Actions.external {
             futureCompleter.mapRe {
                 val string = "$it:${sourceMutableCell.sample()}"
-                targetMutableCell.setLater(string)
+                targetMutableCell.set(string)
                 string.lowercase()
             }
         }
@@ -111,7 +110,7 @@ class FutureMapReTests {
         val mappedFutureEffect = Actions.external {
             futureCompleter.mapRe {
                 val string = "$it:${sourceMutableCell.sample()}"
-                targetMutableCell.setLater(string)
+                targetMutableCell.set(string)
                 string.lowercase()
             }
         }
@@ -194,7 +193,7 @@ class FutureMapReTests {
         val mappedFutureEffect = Actions.external {
             futureCompleter.mapRe {
                 val string = "$it:${sourceMutableCell.sample()}"
-                targetMutableCell.setLater(string)
+                targetMutableCell.set(string)
                 string.lowercase()
             }
         }
@@ -239,7 +238,7 @@ class FutureMapReTests {
         val mappedFutureEffect = Actions.external {
             futureCompleter.mapRe {
                 val string = "$it:${sourceMutableCell.sample()}"
-                targetMutableCell.setLater(string)
+                targetMutableCell.set(string)
                 string.lowercase()
             }
         }

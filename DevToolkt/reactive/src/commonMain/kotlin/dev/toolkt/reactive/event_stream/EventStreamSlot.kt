@@ -3,7 +3,6 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.MutableCell
-import dev.toolkt.reactive.cell.setLater
 import dev.toolkt.reactive.managed_io.ActionContext
 
 class EventStreamSlot<EventT>(
@@ -34,6 +33,6 @@ class EventStreamSlot<EventT>(
     context(actionContext: ActionContext) fun bind(
         eventStream: EventStream<EventT>,
     ) {
-        mutableEventStream.setLater(eventStream)
+        mutableEventStream.set(eventStream)
     }
 }
