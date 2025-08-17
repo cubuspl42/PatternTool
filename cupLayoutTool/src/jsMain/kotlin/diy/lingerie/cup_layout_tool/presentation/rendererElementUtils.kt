@@ -7,13 +7,13 @@ import dev.toolkt.dom.reactive.utils.createResponsiveElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlCanvasElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.managed_io.ReactionContext
+import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.startBound
 import diy.lingerie.cup_layout_tool.application_state.ApplicationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLElement
 
-context(reactionContext: ReactionContext)
+context(actionContext: ActionContext)
 fun createRendererElement(
     applicationState: ApplicationState,
 ): HTMLElement = createResponsiveElement(

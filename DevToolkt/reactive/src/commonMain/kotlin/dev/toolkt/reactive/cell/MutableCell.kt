@@ -2,9 +2,9 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.managed_io.ReactionContext
+import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.Reactions
+import dev.toolkt.reactive.managed_io.Actions
 
 // TODO: Make the constructor private
 class MutableCell<V>(
@@ -36,7 +36,7 @@ class MutableCell<V>(
     override val currentValue: V
         get() = mutableValue
 
-    context(reactionContext: ReactionContext) fun set(
+    context(actionContext: ActionContext) fun set(
         newValue: V,
     ) {
 
@@ -55,11 +55,11 @@ class MutableCell<V>(
     }
 }
 
-context(reactionContext: ReactionContext) fun <V> MutableCell<V>.setLater(
+context(actionContext: ActionContext) fun <V> MutableCell<V>.setLater(
     newValue: V,
 ) {
-    // Thought: Does it really make any difference? Shouldn't reaction and proaction context be merged?
-    Reactions.defer {
+    // Thought: Does it really make any difference? Shouldn't reaction and action context be merged?
+    Actions.defer {
         set(newValue)
     }
 }

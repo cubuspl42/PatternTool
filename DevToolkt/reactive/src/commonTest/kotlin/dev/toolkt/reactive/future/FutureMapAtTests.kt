@@ -4,7 +4,7 @@ import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.sampleExternally
 import dev.toolkt.reactive.cell.setExternally
-import dev.toolkt.reactive.managed_io.Reactions
+import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,7 +18,7 @@ class FutureMapAtTests {
 
         val mutableCell = MutableCell.createExternally(initialValue = 'A')
 
-        val mappedFuture = Reactions.external {
+        val mappedFuture = Actions.external {
             futureCompleter.mapAt { "$it:${mutableCell.sample()}" }
         }
 
@@ -66,7 +66,7 @@ class FutureMapAtTests {
 
         mutableCell.setExternally('B')
 
-        val mappedFuture = Reactions.external {
+        val mappedFuture = Actions.external {
             futureCompleter.mapAt { "$it:${mutableCell.sample()}" }
         }
 

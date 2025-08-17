@@ -4,7 +4,7 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.HoldCell
 import dev.toolkt.reactive.future.Future
-import dev.toolkt.reactive.managed_io.ReactionContext
+import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.Effect
 import dev.toolkt.reactive.managed_io.Trigger
 import dev.toolkt.reactive.managed_io.MomentContext
@@ -122,7 +122,7 @@ abstract class EventStream<out E> : EventSource<E> {
     // map [with MomentContext]
     // pureMap [without any context] (just to stress the pureness)
     fun <Er> mapAt(
-        transform: context(ReactionContext) (E) -> Er,
+        transform: context(ActionContext) (E) -> Er,
     ): EventStream<Er> {
         TODO()
     }
@@ -174,20 +174,20 @@ abstract class EventStream<out E> : EventSource<E> {
 }
 
 fun <E> EventStream<E>.forEach(
-    action: context(ReactionContext) (E) -> Unit,
+    action: context(ActionContext) (E) -> Unit,
 ): Trigger = object : TriggerBase() {
-    context(reactionContext: ReactionContext) override fun jumpStart(): Effect.Handle {
+    context(actionContext: ActionContext) override fun jumpStart(): Effect.Handle {
         TODO()
     }
 }
 
-context(reactionContext: ReactionContext) fun <E> EventStream<E>.forward(
+context(actionContext: ActionContext) fun <E> EventStream<E>.forward(
     update: (E) -> Unit,
 ): Effect.Handle {
     TODO() // The other most low-level ReactionContext operation?
 }
 
-context(reactionContext: ReactionContext)
+context(actionContext: ActionContext)
 
 
 fun <E : Any> EventStream<E?>.filterNotNull(): EventStream<E> = mapNotNull { it }

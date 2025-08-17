@@ -1,7 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.ReactionContext
+import dev.toolkt.reactive.managed_io.ActionContext
 
 // TODO: Make the constructor private
 class EventEmitter<EventT> : ManagedEventStream<EventT>() {
@@ -18,7 +18,7 @@ class EventEmitter<EventT> : ManagedEventStream<EventT>() {
         notify(event)
     }
 
-    context(reactionContext: ReactionContext) fun emit(event: EventT) {
+    context(actionContext: ActionContext) fun emit(event: EventT) {
         // FIXME: This should make the tests fail
         emitUnmanaged(event)
     }

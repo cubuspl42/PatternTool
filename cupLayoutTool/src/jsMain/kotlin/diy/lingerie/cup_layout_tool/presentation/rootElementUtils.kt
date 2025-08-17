@@ -10,13 +10,13 @@ import dev.toolkt.dom.pure.style.PureFlexStyle
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.managed_io.ReactionContext
+import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import diy.lingerie.cup_layout_tool.application_state.ApplicationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 
-context(reactionContext: ReactionContext)
+context(actionContext: ActionContext)
 fun createRootElement(
     applicationState: ApplicationState,
 ): HTMLDivElement = document.createReactiveHtmlDivElement(

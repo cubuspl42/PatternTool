@@ -5,7 +5,7 @@ import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.sampleExternally
 import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.cell.setLater
-import dev.toolkt.reactive.managed_io.Reactions
+import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.managed_io.endExternally
 import dev.toolkt.reactive.managed_io.startExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
@@ -25,7 +25,7 @@ class FutureMapReTests {
             eventStream = targetMutableCell.newValues,
         )
 
-        val mappedFutureEffect = Reactions.external {
+        val mappedFutureEffect = Actions.external {
             futureCompleter.mapRe {
                 val string = "$it:${sourceMutableCell.sample()}"
                 targetMutableCell.setLater(string)
@@ -55,7 +55,7 @@ class FutureMapReTests {
             actual = mappedFuture.state.sampleExternally(),
         )
 
-        Reactions.external {
+        Actions.external {
             // Complete the future
             futureCompleter.complete(4)
 
@@ -108,7 +108,7 @@ class FutureMapReTests {
             eventStream = targetMutableCell.newValues,
         )
 
-        val mappedFutureEffect = Reactions.external {
+        val mappedFutureEffect = Actions.external {
             futureCompleter.mapRe {
                 val string = "$it:${sourceMutableCell.sample()}"
                 targetMutableCell.setLater(string)
@@ -125,7 +125,7 @@ class FutureMapReTests {
         sourceMutableCell.setExternally('C')
 
         // Start the effect, but don't start listening to the future
-        val (mappedFuture, handle) = Reactions.external {
+        val (mappedFuture, handle) = Actions.external {
             // Start the effect
             val effective = mappedFutureEffect.start()
             val mappedFuture = effective.result
@@ -191,7 +191,7 @@ class FutureMapReTests {
             eventStream = targetMutableCell.newValues,
         )
 
-        val mappedFutureEffect = Reactions.external {
+        val mappedFutureEffect = Actions.external {
             futureCompleter.mapRe {
                 val string = "$it:${sourceMutableCell.sample()}"
                 targetMutableCell.setLater(string)
@@ -236,7 +236,7 @@ class FutureMapReTests {
             eventStream = targetMutableCell.newValues,
         )
 
-        val mappedFutureEffect = Reactions.external {
+        val mappedFutureEffect = Actions.external {
             futureCompleter.mapRe {
                 val string = "$it:${sourceMutableCell.sample()}"
                 targetMutableCell.setLater(string)

@@ -15,7 +15,7 @@ interface Effect<out ResultT> {
         fun <ResultT> pure(
             effective: Effective<ResultT>,
         ): Effect<ResultT> = object : Effect<ResultT> {
-            context(reactionContext: ReactionContext) override fun start(): Effective<ResultT> = effective
+            context(actionContext: ActionContext) override fun start(): Effective<ResultT> = effective
         }
 
         fun <ResultT> pure(
@@ -28,7 +28,7 @@ interface Effect<out ResultT> {
             result: ResultT,
             trigger: Trigger,
         ): Effect<ResultT> = object : Effect<ResultT> {
-            context(reactionContext: ReactionContext) override fun start(): Effective<ResultT> = Effective(
+            context(actionContext: ActionContext) override fun start(): Effective<ResultT> = Effective(
                 result = result,
                 handle = trigger.jumpStart(),
             )
@@ -38,43 +38,43 @@ interface Effect<out ResultT> {
             result: ResultT,
             triggers: Iterable<Trigger>,
         ): Effect<ResultT> = object : Effect<ResultT> {
-            context(reactionContext: ReactionContext) override fun start(): Effective<ResultT> = Effective(
+            context(actionContext: ActionContext) override fun start(): Effective<ResultT> = Effective(
                 result = result,
                 handle = Triggers.startAll(triggers = triggers),
             )
         }
 
         fun <ResultT> prepared(
-            prepare: context(ReactionContext) () -> Effect<ResultT>,
+            prepare: context(ActionContext) () -> Effect<ResultT>,
         ): Effect<ResultT> = object : Effect<ResultT> {
-            context(reactionContext: ReactionContext) override fun start(): Effective<ResultT> {
+            context(actionContext: ActionContext) override fun start(): Effective<ResultT> {
                 val effect = prepare()
                 return effect.start()
             }
         }
 
         fun <ResultT> preparedPure(
-            prepare: context(ReactionContext) () -> ResultT,
+            prepare: context(ActionContext) () -> ResultT,
         ): Effect<ResultT> = prepared {
             pure(prepare())
         }
 
         fun <ResultT> prefaced(
-            preface: context(ReactionContext) () -> Unit,
+            preface: context(ActionContext) () -> Unit,
             effect: Effect<ResultT>,
         ): Effect<ResultT> = object : Effect<ResultT> {
-            context(reactionContext: ReactionContext) override fun start(): Effective<ResultT> {
+            context(actionContext: ActionContext) override fun start(): Effective<ResultT> {
                 preface()
                 return effect.start()
             }
         }
 
         fun <ResultT> initialized(
-            init: context(ReactionContext) () -> Unit,
+            init: context(ActionContext) () -> Unit,
             effect: Effect<ResultT>,
         ): Effect<ResultT> = prefaced(
             preface = {
-                Reactions.defer(init)
+                Actions.defer(init)
             },
             effect = effect,
         )
@@ -101,7 +101,7 @@ interface Effect<out ResultT> {
 
     interface Handle {
         data object Noop : Handle {
-            context(reactionContext: ReactionContext) override fun end() {
+            context(actionContext: ActionContext) override fun end() {
             }
         }
 
@@ -109,7 +109,7 @@ interface Effect<out ResultT> {
             fun combine(
                 handles: Iterable<Handle>,
             ): Handle = object : Handle {
-                context(reactionContext: ReactionContext) override fun end() {
+                context(actionContext: ActionContext) override fun end() {
                     handles.forEach { it.end() }
                 }
             }
@@ -121,23 +121,23 @@ interface Effect<out ResultT> {
             fun current(
                 handle: Cell<Handle>,
             ): Handle = object : Handle {
-                context(reactionContext: ReactionContext) override fun end() {
+                context(actionContext: ActionContext) override fun end() {
                     handle.sample().end()
                 }
             }
         }
 
         // "stop"?
-        context(reactionContext: ReactionContext) fun end()
+        context(actionContext: ActionContext) fun end()
     }
 
-    context(reactionContext: ReactionContext) fun start(): Effective<ResultT>
+    context(actionContext: ActionContext) fun start(): Effective<ResultT>
 }
 
 fun <ResultT, TransformedResultT> Effect<ResultT>.map(
-    transform: context(ReactionContext) (ResultT) -> TransformedResultT,
+    transform: context(ActionContext) (ResultT) -> TransformedResultT,
 ): Effect<TransformedResultT> = object : Effect<TransformedResultT> {
-    context(reactionContext: ReactionContext) override fun start(): Effective<TransformedResultT> {
+    context(actionContext: ActionContext) override fun start(): Effective<TransformedResultT> {
         val (outerValue, outerHandle) = this@map.start()
 
         val transformedValue = transform(outerValue)
@@ -150,9 +150,9 @@ fun <ResultT, TransformedResultT> Effect<ResultT>.map(
 }
 
 fun <ResultT, TransformedResultT> Effect<ResultT>.joinOf(
-    transform: context(ReactionContext) (ResultT) -> Effect<TransformedResultT>,
+    transform: context(ActionContext) (ResultT) -> Effect<TransformedResultT>,
 ): Effect<TransformedResultT> = object : Effect<TransformedResultT> {
-    context(reactionContext: ReactionContext) override fun start(): Effective<TransformedResultT> {
+    context(actionContext: ActionContext) override fun start(): Effective<TransformedResultT> {
         val (outerValue, outerHandle) = this@joinOf.start()
 
         val innerEffect = transform(outerValue)
@@ -172,7 +172,7 @@ fun <ResultT, TransformedResultT> Effect<ResultT>.joinOf(
 fun <ResultT> Effect<ResultT>.interrupted(
     doInterrupt: EventStream<Unit>,
 ): Effect<ResultT> = object : Effect<ResultT> {
-    context(reactionContext: ReactionContext) override fun start(): Effective<ResultT> {
+    context(actionContext: ActionContext) override fun start(): Effective<ResultT> {
         val (outerValue, outerHandle) = this@interrupted.start()
 
         val interruptHandle = doInterrupt.forEach {
