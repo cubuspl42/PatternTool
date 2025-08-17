@@ -24,13 +24,13 @@ class EventStreamDivertTests {
             eventStream = divertedStream,
         )
 
-        eventEmitter1.emitUnmanaged(2)
+        eventEmitter1.emitExternally(2)
 
-        eventEmitter2.emitUnmanaged(-1)
+        eventEmitter2.emitExternally(-1)
 
-        eventEmitter1.emitUnmanaged(5)
+        eventEmitter1.emitExternally(5)
 
-        eventEmitter2.emitUnmanaged(-7)
+        eventEmitter2.emitExternally(-7)
 
         assertEquals(
             expected = listOf(2, 5),
@@ -39,13 +39,13 @@ class EventStreamDivertTests {
 
         mutableStreamCell.setExternally(eventEmitter2)
 
-        eventEmitter1.emitUnmanaged(3)
+        eventEmitter1.emitExternally(3)
 
-        eventEmitter2.emitUnmanaged(-2)
+        eventEmitter2.emitExternally(-2)
 
-        eventEmitter1.emitUnmanaged(8)
+        eventEmitter1.emitExternally(8)
 
-        eventEmitter2.emitUnmanaged(-9)
+        eventEmitter2.emitExternally(-9)
 
         assertEquals(
             expected = listOf(-2, -9),
@@ -54,13 +54,13 @@ class EventStreamDivertTests {
 
         mutableStreamCell.setExternally(eventEmitter1)
 
-        eventEmitter1.emitUnmanaged(4)
+        eventEmitter1.emitExternally(4)
 
-        eventEmitter2.emitUnmanaged(-12)
+        eventEmitter2.emitExternally(-12)
 
-        eventEmitter1.emitUnmanaged(11)
+        eventEmitter1.emitExternally(11)
 
-        eventEmitter2.emitUnmanaged(-77)
+        eventEmitter2.emitExternally(-77)
 
         assertEquals(
             expected = listOf(4, 11),

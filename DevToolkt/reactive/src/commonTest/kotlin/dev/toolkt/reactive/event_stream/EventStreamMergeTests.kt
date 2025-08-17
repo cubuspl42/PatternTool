@@ -40,14 +40,14 @@ class EventStreamMergeTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(1)
+        eventEmitter.emitExternally(1)
 
         assertEquals(
             expected = listOf(1),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(2)
+        eventEmitter.emitExternally(2)
 
         assertEquals(
             expected = listOf(2),
@@ -73,14 +73,14 @@ class EventStreamMergeTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(1)
+        eventEmitter.emitExternally(1)
 
         assertEquals(
             expected = listOf(1),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(2)
+        eventEmitter.emitExternally(2)
 
         assertEquals(
             expected = listOf(2),
@@ -106,14 +106,14 @@ class EventStreamMergeTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(1)
+        eventEmitter.emitExternally(1)
 
         assertEquals(
             expected = listOf(1, 1),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(2)
+        eventEmitter.emitExternally(2)
 
         assertEquals(
             expected = listOf(2, 2),
@@ -139,14 +139,14 @@ class EventStreamMergeTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(1)
+        eventEmitter.emitExternally(1)
 
         assertEquals(
             expected = listOf(10, -10),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(2)
+        eventEmitter.emitExternally(2)
 
         assertEquals(
             expected = listOf(20, -20),
@@ -173,22 +173,22 @@ class EventStreamMergeTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter1.emitUnmanaged(1)
+        eventEmitter1.emitExternally(1)
 
         assertEquals(
             expected = listOf(1),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter1.emitUnmanaged(2)
-        eventEmitter2.emitUnmanaged(-2)
+        eventEmitter1.emitExternally(2)
+        eventEmitter2.emitExternally(-2)
 
         assertEquals(
             expected = listOf(2, -2),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter2.emitUnmanaged(-3)
+        eventEmitter2.emitExternally(-3)
 
         assertEquals(
             expected = listOf(-3),

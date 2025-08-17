@@ -23,7 +23,7 @@ class EventStreamSingleUnmanagedTests {
         )
 
         // Emit the single event
-        eventEmitter.emitUnmanaged(10)
+        eventEmitter.emitExternally(10)
 
         assertEquals(
             expected = listOf(10),
@@ -31,7 +31,7 @@ class EventStreamSingleUnmanagedTests {
         )
 
         // Emit some event after the single event
-        eventEmitter.emitUnmanaged(20)
+        eventEmitter.emitExternally(20)
 
         assertEquals(
             expected = emptyList(),
@@ -39,7 +39,7 @@ class EventStreamSingleUnmanagedTests {
         )
 
         // Emit yet another event (just to be sure)
-        eventEmitter.emitUnmanaged(30)
+        eventEmitter.emitExternally(30)
 
         assertEquals(
             expected = emptyList(),
@@ -69,7 +69,7 @@ class EventStreamSingleUnmanagedTests {
         ensureNotCollected(weakRef = singleEventStreamRef)
 
         // Emit the single event
-        eventEmitter.emitUnmanaged(10)
+        eventEmitter.emitExternally(10)
 
         assertEquals(
             expected = listOf(10),
@@ -83,7 +83,7 @@ class EventStreamSingleUnmanagedTests {
 
         val singleEventStreamRef = PlatformWeakReference(eventEmitter.singleUnmanaged())
 
-        eventEmitter.emitUnmanaged(10)
+        eventEmitter.emitExternally(10)
 
         PlatformSystem.collectGarbageForced()
 
@@ -115,13 +115,13 @@ class EventStreamSingleUnmanagedTests {
 
         val singleEventStream = eventEmitter.singleUnmanaged()
 
-        eventEmitter.emitUnmanaged(10)
+        eventEmitter.emitExternally(10)
 
         val streamVerifier = DetachedEventStreamVerifier(
             eventStream = singleEventStream,
         )
 
-        eventEmitter.emitUnmanaged(20)
+        eventEmitter.emitExternally(20)
 
         assertEquals(
             expected = emptyList(),
@@ -140,7 +140,7 @@ class EventStreamSingleUnmanagedTests {
         PlatformSystem.collectGarbageForced()
 
         // Emit the single event
-        eventEmitter.emitUnmanaged(10)
+        eventEmitter.emitExternally(10)
 
         assertEquals(
             expected = listOf(10),

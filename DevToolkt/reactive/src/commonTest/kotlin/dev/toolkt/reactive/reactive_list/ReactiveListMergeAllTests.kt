@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.reactive.event_stream.EventEmitter
+import dev.toolkt.reactive.event_stream.emitExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,9 +29,9 @@ class ReactiveListMergeAllTests {
             eventStream = mergedStream,
         )
 
-        eventEmitter0.emitUnmanaged(0)
-        eventEmitter2.emitUnmanaged(20)
-        eventEmitter1.emitUnmanaged(10)
+        eventEmitter0.emitExternally(0)
+        eventEmitter2.emitExternally(20)
+        eventEmitter1.emitExternally(10)
 
         assertEquals(
             expected = listOf(
@@ -66,9 +67,9 @@ class ReactiveListMergeAllTests {
 
         mutableEventStreams.removeAt(1)
 
-        eventEmitter0.emitUnmanaged(1)
-        eventEmitter2.emitUnmanaged(21)
-        eventEmitter1.emitUnmanaged(11)
+        eventEmitter0.emitExternally(1)
+        eventEmitter2.emitExternally(21)
+        eventEmitter1.emitExternally(11)
 
         assertEquals(
             expected = listOf(
@@ -104,10 +105,10 @@ class ReactiveListMergeAllTests {
 
         mutableEventStreams.set(2, eventEmitter2b)
 
-        eventEmitter0.emitUnmanaged(1)
-        eventEmitter2a.emitUnmanaged(21)
-        eventEmitter2b.emitUnmanaged(-21)
-        eventEmitter1.emitUnmanaged(11)
+        eventEmitter0.emitExternally(1)
+        eventEmitter2a.emitExternally(21)
+        eventEmitter2b.emitExternally(-21)
+        eventEmitter1.emitExternally(11)
 
         assertEquals(
             expected = listOf(
@@ -142,9 +143,9 @@ class ReactiveListMergeAllTests {
 
         mutableEventStreams.add(1, eventEmitter1)
 
-        eventEmitter0.emitUnmanaged(1)
-        eventEmitter2.emitUnmanaged(21)
-        eventEmitter1.emitUnmanaged(11)
+        eventEmitter0.emitExternally(1)
+        eventEmitter2.emitExternally(21)
+        eventEmitter1.emitExternally(11)
 
         assertEquals(
             expected = listOf(

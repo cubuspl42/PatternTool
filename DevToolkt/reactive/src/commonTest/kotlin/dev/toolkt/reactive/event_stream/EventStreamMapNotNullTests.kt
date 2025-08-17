@@ -20,22 +20,22 @@ class EventStreamMapNotNullTests {
             eventStream = mappedStream,
         )
 
-        eventEmitter.emitUnmanaged(2)
+        eventEmitter.emitExternally(2)
 
-        eventEmitter.emitUnmanaged(3)
+        eventEmitter.emitExternally(3)
 
-        eventEmitter.emitUnmanaged(5)
+        eventEmitter.emitExternally(5)
 
-        eventEmitter.emitUnmanaged(4)
+        eventEmitter.emitExternally(4)
 
         assertEquals(
             expected = listOf("2", "4"),
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        eventEmitter.emitUnmanaged(3)
+        eventEmitter.emitExternally(3)
 
-        eventEmitter.emitUnmanaged(5)
+        eventEmitter.emitExternally(5)
 
         assertEquals(
             expected = emptyList(),

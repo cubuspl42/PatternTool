@@ -31,14 +31,14 @@ class EventStreamTests {
             actual = buffer,
         )
 
-        eventEmitter.emitUnmanaged(1)
+        eventEmitter.emitExternally(1)
 
         assertEquals(
             expected = listOf("1"),
             actual = buffer,
         )
 
-        eventEmitter.emitUnmanaged(2)
+        eventEmitter.emitExternally(2)
 
         assertEquals(
             expected = listOf("1", "2"),
@@ -47,7 +47,7 @@ class EventStreamTests {
 
         subscription.cancel()
 
-        eventEmitter.emitUnmanaged(3)
+        eventEmitter.emitExternally(3)
 
         assertEquals(
             expected = listOf("1", "2"),
@@ -108,14 +108,14 @@ class EventStreamTests {
             actual = buffer.list,
         )
 
-        eventEmitter.emitUnmanaged(1)
+        eventEmitter.emitExternally(1)
 
         assertEquals(
             expected = listOf("1"),
             actual = buffer.list,
         )
 
-        eventEmitter.emitUnmanaged(2)
+        eventEmitter.emitExternally(2)
 
         assertEquals(
             expected = listOf("1", "2"),
@@ -124,7 +124,7 @@ class EventStreamTests {
 
         subscription.cancel()
 
-        eventEmitter.emitUnmanaged(3)
+        eventEmitter.emitExternally(3)
 
         assertEquals(
             expected = listOf("1", "2"),

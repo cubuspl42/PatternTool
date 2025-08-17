@@ -3,6 +3,7 @@ package dev.toolkt.reactive.future
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.emitExternally
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -22,8 +23,8 @@ class FutureDivertHoldTests {
             eventStream = divertHoldStream,
         )
 
-        eventEmitter1.emitUnmanaged(-11)
-        eventEmitter2.emitUnmanaged(11)
+        eventEmitter1.emitExternally(-11)
+        eventEmitter2.emitExternally(11)
 
         assertEquals(
             expected = listOf(-11),
@@ -32,8 +33,8 @@ class FutureDivertHoldTests {
 
         futureCompleter.completeUnmanaged(eventEmitter2)
 
-        eventEmitter1.emitUnmanaged(-12)
-        eventEmitter2.emitUnmanaged(12)
+        eventEmitter1.emitExternally(-12)
+        eventEmitter2.emitExternally(12)
 
         assertEquals(
             expected = listOf(12),

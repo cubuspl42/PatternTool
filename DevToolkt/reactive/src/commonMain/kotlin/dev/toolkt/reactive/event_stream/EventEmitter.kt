@@ -20,7 +20,7 @@ class EventEmitter<EventT> : ManagedEventStream<EventT>() {
             event,
         )
     }
-
+    
     context(actionContext: ActionContext) fun emit(event: EventT) {
         // FIXME: This should make the tests fail
         emitUnmanaged(event)
