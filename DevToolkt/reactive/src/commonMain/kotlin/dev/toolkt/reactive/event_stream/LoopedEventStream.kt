@@ -24,7 +24,10 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
                 val bufferedListener = this.bufferedListener ?: return null
 
                 if (initialEvent != null) {
-                    bufferedListener.handle(event = initialEvent)
+                    bufferedListener.handle(
+                        transaction = TODO("Make loops transaction-aware"),
+                        event = initialEvent,
+                    )
                 }
 
                 return eventStream.listen(listener = bufferedListener)
@@ -41,64 +44,6 @@ class LoopedEventStream<E>() : ProperEventStream<E>() {
 
         private var innerSubscription: Subscription? = BufferedSubscription(
             bufferedListener = initialBufferedListener,
-        )
-
-        override fun loop(
-            eventStream: EventStream<E>,
-            initialEvent: E?,
-        ) {
-            @Suppress("UNCHECKED_CAST") val bufferedSubscription = innerSubscription as? BufferedSubscription<E>
-                ?: throw IllegalStateException("The subscription is already looped")
-
-            innerSubscription = bufferedSubscription.loop(
-                eventStream = eventStream,
-                initialEvent = initialEvent,
-            )
-        }
-
-        override fun cancel() {
-            val innerSubscription =
-                this.innerSubscription ?: throw IllegalStateException("The subscription is already cancelled")
-
-            innerSubscription.cancel()
-        }
-    }
-
-    class PlaceholderWeakSubscription<E>(
-        initialBufferedListener: TargetedListener<Any, E>,
-    ) : PlaceholderSubscription<E>() {
-        class BufferedSubscription<E>(
-            var bufferedTargetedListener: TargetedListener<Any, E>?,
-        ) : Subscription {
-            fun loop(
-                eventStream: EventStream<E>,
-                initialEvent: E?,
-            ): Subscription? {
-                val bufferedListener = this.bufferedTargetedListener ?: return null
-
-                if (initialEvent != null) {
-                    val (target, weakListener) = bufferedListener
-
-                    weakListener.handle(
-                        target = target,
-                        event = initialEvent,
-                    )
-                }
-
-                return eventStream.listenWeak(targetedListener = bufferedListener)
-            }
-
-            override fun cancel() {
-                if (bufferedTargetedListener == null) {
-                    throw IllegalStateException("The subscription is already cancelled")
-                }
-
-                bufferedTargetedListener = null
-            }
-        }
-
-        private var innerSubscription: Subscription? = BufferedSubscription(
-            bufferedTargetedListener = initialBufferedListener,
         )
 
         override fun loop(

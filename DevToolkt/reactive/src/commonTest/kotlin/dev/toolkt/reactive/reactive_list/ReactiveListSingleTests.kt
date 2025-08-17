@@ -2,6 +2,7 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -33,7 +34,7 @@ class ReactiveListSingleTests {
             eventStream = singleReactiveList.changes,
         )
 
-        mutableCell.setUnmanaged(20)
+        mutableCell.setExternally(20)
 
         assertEquals(
             expected = listOf(20),

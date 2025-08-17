@@ -1,5 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.reactive.managed_io.Transaction
+
 class TakeEventStream<EventT>(
     private val source: EventStream<EventT>,
     totalCount: Int,
@@ -11,6 +13,7 @@ class TakeEventStream<EventT>(
         // extremely easy to miss.
         listener = object : TargetingListener<TakeEventStream<EventT>, EventT> {
             override fun handle(
+                transaction: Transaction,
                 target: TakeEventStream<EventT>,
                 event: EventT,
             ) {
@@ -24,7 +27,10 @@ class TakeEventStream<EventT>(
                 val newRemainingCount = oldRemainingCount - 1
                 target.remainingCount = newRemainingCount
 
-                target.notify(event = event)
+                target.notify(
+                    transaction = transaction,
+                    event = event
+                )
 
                 if (newRemainingCount == 0) {
                     target.abort()

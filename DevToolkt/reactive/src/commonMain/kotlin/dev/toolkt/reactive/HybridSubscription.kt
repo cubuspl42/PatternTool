@@ -5,6 +5,7 @@ import dev.toolkt.core.platform.PlatformFinalizationRegistry
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.event_stream.EventSource
 import dev.toolkt.reactive.event_stream.TargetingListener
+import dev.toolkt.reactive.managed_io.Transaction
 
 interface HybridSubscription : Subscription {
     /**
@@ -27,7 +28,7 @@ interface HybridSubscription : Subscription {
     companion object {
         private val finalizationRegistry = PlatformFinalizationRegistry()
 
-        fun <TargetT : Any, EventT> EventSource<EventT>.listenHybrid(
+        internal fun <TargetT : Any, EventT> EventSource<EventT>.listenHybrid(
             target: TargetT,
             targetingListener: TargetingListener<TargetT, EventT>,
         ): HybridSubscription = object : HybridSubscription {
@@ -37,12 +38,16 @@ interface HybridSubscription : Subscription {
 
             private var innerSubscription: Subscription? = this@listenHybrid.listen(
                 listener = object : Listener<EventT> {
-                    override fun handle(event: EventT) {
+                    override fun handle(
+                        transaction: Transaction,
+                        event: EventT,
+                    ) {
                         // If the target was collected, we assume that this listener
                         // will soon be removed. For now, let's just ignore the event.
                         val target = currentMode.getReachableTarget() ?: return
 
                         targetingListener.handle(
+                            transaction = transaction,
                             target = target,
                             event = event,
                         )

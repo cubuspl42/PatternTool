@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
+import dev.toolkt.reactive.managed_io.Transaction
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
@@ -57,7 +58,10 @@ class EventStreamTests {
     @Test
     fun testListenTwice() {
         val listener = object : Listener<Any> {
-            override fun handle(event: Any) {
+            override fun handle(
+                transaction: Transaction,
+                event: Any,
+            ) {
             }
         }
 
@@ -71,7 +75,8 @@ class EventStreamTests {
         assertIs<IllegalStateException>(
             assertFails {
                 dependentStream.listen(listener)
-            })
+            },
+        )
     }
 
     private class Buffer {
@@ -129,41 +134,32 @@ class EventStreamTests {
 
     @Test
     fun testListenWeak_sameListener_sameTarget() {
-        fun test(
-            weakListener: TargetingListener<Any, String>,
-        ) {
-            val eventEmitter = EventEmitter<Int>()
-
-            val target = object {}
-
-            // Create a dependent stream to make the system non-trivial
-            val dependentStream = eventEmitter.map { it.toString() }
-
-            dependentStream.listenWeak(
-                target = target,
-                listener = weakListener,
-            )
-
-            dependentStream.listenWeak(
-                target = target,
-                listener = weakListener,
-            )
+        val weakListener = object : TargetingListener<Any, Any> {
+            override fun handle(
+                transaction: Transaction,
+                target: Any,
+                event: Any,
+            ) {
+            }
         }
 
-        // As the ::function operator doesn't return stable references on
-        // JavaScript, we ensure that the weak listener is bound to a function
-        // argument
-        test(
-            weakListener = object : TargetingListener<Any, Any> {
-                override fun handle(
-                    target: Any,
-                    event: Any,
-                ) {
-                }
-            },
+        val eventEmitter = EventEmitter<Int>()
+
+        val target = object {}
+
+        // Create a dependent stream to make the system non-trivial
+        val dependentStream = eventEmitter.map { it.toString() }
+
+        dependentStream.listenWeak(
+            target = target,
+            listener = weakListener,
+        )
+
+        dependentStream.listenWeak(
+            target = target,
+            listener = weakListener,
         )
     }
-
 
     @Test
     fun testListenWeak_differentListeners_sameTarget() {

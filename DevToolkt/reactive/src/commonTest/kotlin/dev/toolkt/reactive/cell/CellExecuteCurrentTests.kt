@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.cell
 
+import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.managed_io.executeCurrent
 import dev.toolkt.reactive.managed_io.forEachInvoke
@@ -54,7 +55,7 @@ class CellExecuteCurrentTests {
             actual = variable1,
         )
 
-        mutableCell.setUnmanaged(program1)
+        mutableCell.setExternally(program1)
 
         eventSEmitter.emitUnmanaged(Unit)
 

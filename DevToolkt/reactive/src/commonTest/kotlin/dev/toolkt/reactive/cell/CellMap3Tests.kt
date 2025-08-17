@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.cell
 
+import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,7 +33,7 @@ class CellMap3Tests {
             actual = mappedCell.currentValueUnmanaged,
         )
 
-        mutableCell0.setUnmanaged(1)
+        mutableCell0.setExternally(1)
     }
 
     @Test
@@ -61,7 +62,7 @@ class CellMap3Tests {
             eventStream = mappedCell.newValues,
         )
 
-        mutableCell0.setUnmanaged(1)
+        mutableCell0.setExternally(1)
 
         assertEquals(
             expected = "1:10:20",
@@ -73,7 +74,7 @@ class CellMap3Tests {
             actual = newValuesVerifier.removeReceivedEvents(),
         )
 
-        mutableCell1.setUnmanaged(11)
+        mutableCell1.setExternally(11)
 
         assertEquals(
             expected = "1:11:20",
@@ -85,7 +86,7 @@ class CellMap3Tests {
             actual = newValuesVerifier.removeReceivedEvents(),
         )
 
-        mutableCell2.setUnmanaged(21)
+        mutableCell2.setExternally(21)
 
         assertEquals(
             expected = "1:11:21",

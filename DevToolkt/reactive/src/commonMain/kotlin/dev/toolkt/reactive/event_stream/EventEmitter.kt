@@ -15,7 +15,10 @@ class EventEmitter<EventT> : ManagedEventStream<EventT>() {
     }
 
     fun emitUnmanaged(event: EventT) {
-        notify(event)
+        notify(
+            transaction = TODO("Nuke unmanaged code"),
+            event,
+        )
     }
 
     context(actionContext: ActionContext) fun emit(event: EventT) {

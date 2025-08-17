@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
+import dev.toolkt.reactive.managed_io.Transaction
 
 /**
  * A helper object that's binding a target with an event lister that's
@@ -18,8 +19,15 @@ data class TargetedListener<TargetT : Any, EventT>(
     )
 
     fun captureTarget(): Listener<EventT> = object : Listener<EventT> {
-        override fun handle(event: EventT) {
-            listener.handle(target, event)
+        override fun handle(
+            transaction: Transaction,
+            event: EventT,
+        ) {
+            listener.handle(
+                transaction = transaction,
+                target = target,
+                event = event
+            )
         }
     }
 }

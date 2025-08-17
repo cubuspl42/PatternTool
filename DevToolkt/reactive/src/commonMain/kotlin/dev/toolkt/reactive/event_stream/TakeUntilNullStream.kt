@@ -1,5 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.reactive.managed_io.Transaction
+
 internal class TakeUntilNullStream<EventT : Any>(
     private val source: EventStream<EventT?>,
 ) : StatefulEventStream<TakeUntilNullStream<EventT>, EventT>() {
@@ -8,6 +10,7 @@ internal class TakeUntilNullStream<EventT : Any>(
         // extremely easy to miss.
         listener = object : TargetingListener<TakeUntilNullStream<EventT>, EventT?> {
             override fun handle(
+                transaction: Transaction,
                 target: TakeUntilNullStream<EventT>,
                 event: EventT?,
             ) {
@@ -17,7 +20,10 @@ internal class TakeUntilNullStream<EventT : Any>(
                     }
 
                     else -> {
-                        target.notify(event = event)
+                        target.notify(
+                            transaction = transaction,
+                            event = event
+                        )
                     }
                 }
             }

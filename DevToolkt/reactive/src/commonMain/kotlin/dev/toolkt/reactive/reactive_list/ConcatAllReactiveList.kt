@@ -8,9 +8,11 @@ import dev.toolkt.core.delegates.weakLazy
 import dev.toolkt.core.iterable.removeRange
 import dev.toolkt.core.range.shift
 import dev.toolkt.core.range.width
+import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.managed_io.Transaction
 
 class ConcatAllReactiveList<ElementT>(
     private val lists: ReactiveList<ReactiveList<ElementT>>,
@@ -30,53 +32,69 @@ class ConcatAllReactiveList<ElementT>(
         private val lists: ReactiveList<ReactiveList<ElementT>>,
     ) : DependentEventStream<Change<ElementT>>() {
         override fun observe(): Subscription = object : Subscription {
-            private val outerSubscription = lists.changes.listen { outerChange ->
-                val update = outerChange.update
-                val indexRange = update.indexRange
-                val updatedLists = update.updatedElements
-                val firstIndex = indexRange.first
+            private val outerSubscription = lists.changes.listen(
+                listener = object : Listener<ReactiveList.Change<ReactiveList<ElementT>>> {
+                    override fun handle(
+                        transaction: Transaction,
+                        event: Change<ReactiveList<ElementT>>,
+                    ) {
+                        val outerChange = event
 
-                // Number of elements before the first updated index
-                val prefixElementCount = innerSubscriptionEntries.calculatePrefixSum(
-                    count = firstIndex,
-                )
+                        val update = outerChange.update
+                        val indexRange = update.indexRange
+                        val updatedLists = update.updatedElements
+                        val firstIndex = indexRange.first
 
-                // Total number of elements in the updated index range
-                val updatedElementCount = indexRange.sumOf { index ->
-                    lists.getNow(index = index).sizeNow
+                        // Number of elements before the first updated index
+                        val prefixElementCount = innerSubscriptionEntries.calculatePrefixSum(
+                            count = firstIndex,
+                        )
+
+                        // Total number of elements in the updated index range
+                        val updatedElementCount = indexRange.sumOf { index ->
+                            lists.getNow(index = index).sizeNow
+                        }
+
+                        // The index range in the concatenated list
+                        val updatedRange = prefixElementCount until (prefixElementCount + updatedElementCount)
+
+                        this@ChangesEventStream.notify(
+                            transaction = transaction,
+                            event = Change.single(
+                                update = Change.Update.change(
+                                    indexRange = updatedRange,
+                                    changedElements = updatedLists.flatMap { it.currentElements },
+                                ),
+                            ),
+                        )
+
+                        indexRange.forEach { index ->
+                            val innerSubscriptionEntry = innerSubscriptionEntries.getOrNull(index)
+                                ?: throw IllegalStateException("No subscription found for index $index.")
+
+                            val innerSubscription = innerSubscriptionEntry.subscription
+
+                            innerSubscription.cancel()
+                        }
+
+                        innerSubscriptionEntries.removeRange(
+                            indexRange = indexRange,
+                        )
+
+                        updatedLists.reversed().forEach { updatedCell ->
+                            subscribeToInner(
+                                index = firstIndex,
+                                innerList = updatedCell,
+                            )
+                        }
+                    }
+
                 }
+            )
 
-                // The index range in the concatenated list
-                val updatedRange = prefixElementCount until (prefixElementCount + updatedElementCount)
 
-                this@ChangesEventStream.notify(
-                    Change.single(
-                        update = Change.Update.change(
-                            indexRange = updatedRange,
-                            changedElements = updatedLists.flatMap { it.currentElements },
-                        ),
-                    ),
-                )
+            private val outerSubscription2 = lists.changes.listen { outerChange ->
 
-                indexRange.forEach { index ->
-                    val innerSubscriptionEntry = innerSubscriptionEntries.getOrNull(index)
-                        ?: throw IllegalStateException("No subscription found for index $index.")
-
-                    val innerSubscription = innerSubscriptionEntry.subscription
-
-                    innerSubscription.cancel()
-                }
-
-                innerSubscriptionEntries.removeRange(
-                    indexRange = indexRange,
-                )
-
-                updatedLists.reversed().forEach { updatedCell ->
-                    subscribeToInner(
-                        index = firstIndex,
-                        innerList = updatedCell,
-                    )
-                }
             }
 
             private val innerSubscriptionEntries: MutablePrefixSumIndexedList<SubscriptionEntry> =
@@ -105,38 +123,49 @@ class ConcatAllReactiveList<ElementT>(
                     ),
                 )
 
-                val newInnerSubscription = innerList.changes.listen { innerChange ->
-                    val update = innerChange.update
+                val newInnerSubscription = innerList.changes.listen(
+                    object : Listener<ReactiveList.Change<ElementT>> {
+                        override fun handle(
+                            transaction: Transaction,
+                            event: Change<ElementT>,
+                        ) {
+                            val innerChange = event
 
-                    val currentIndex = innerSubscriptionEntries.indexOfVia(handle = innerHandle)
-                        ?: throw AssertionError("No index found for handle $innerHandle")
+                            val update = innerChange.update
 
-                    // Current number of elements in all lists before this list
-                    val prefixElementCount = innerSubscriptionEntries.calculatePrefixSum(
-                        count = currentIndex,
-                    )
+                            val currentIndex = innerSubscriptionEntries.indexOfVia(handle = innerHandle)
+                                ?: throw AssertionError("No index found for handle $innerHandle")
 
-                    val shiftedIndexRange = update.indexRange.shift(
-                        delta = prefixElementCount,
-                    )
+                            // Current number of elements in all lists before this list
+                            val prefixElementCount = innerSubscriptionEntries.calculatePrefixSum(
+                                count = currentIndex,
+                            )
 
-                    val listSizeDelta = update.updatedElements.size - update.indexRange.width
+                            val shiftedIndexRange = update.indexRange.shift(
+                                delta = prefixElementCount,
+                            )
 
-                    this@ChangesEventStream.notify(
-                        Change.single(
-                            update = Change.Update.change(
-                                indexRange = shiftedIndexRange,
-                                changedElements = update.updatedElements,
-                            ),
-                        ),
-                    )
+                            val listSizeDelta = update.updatedElements.size - update.indexRange.width
 
-                    innerSubscriptionEntries.updateListSizeVia(
-                        handle = innerHandle,
-                    ) { oldListSize ->
-                        oldListSize + listSizeDelta
+                            this@ChangesEventStream.notify(
+                                transaction = transaction,
+                                event = Change.single(
+                                    update = Change.Update.change(
+                                        indexRange = shiftedIndexRange,
+                                        changedElements = update.updatedElements,
+                                    ),
+                                ),
+                            )
+
+                            innerSubscriptionEntries.updateListSizeVia(
+                                handle = innerHandle,
+                            ) { oldListSize ->
+                                oldListSize + listSizeDelta
+                            }
+                        }
+
                     }
-                }
+                )
 
                 innerSubscriptionEntries.setSubscriptionVia(
                     handle = innerHandle,

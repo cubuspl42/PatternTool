@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.cell
 
+import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.createExternally
 import dev.toolkt.reactive.event_stream.emitExternally

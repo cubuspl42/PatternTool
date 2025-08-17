@@ -5,48 +5,35 @@ import dev.toolkt.core.iterable.subList
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.ProperEventStream
 import dev.toolkt.reactive.event_stream.listenInDependent
 
 class DynamicMergeAllEventStream<EventT>(
     private val eventStreams: ReactiveList<EventStream<EventT>>,
 ) : DependentEventStream<EventT>() {
-    override fun observe(): Subscription = eventStreams.maintain(
-        dependent = this@DynamicMergeAllEventStream,
-        subscribe = {
-            it.listen { event ->
-                notify(event)
+    override fun observe(): Subscription {
+        val mutableSubscriptions = eventStreams.currentElements.mapTo(mutableListOf(), ::forwardFrom)
+
+        val changeSubscription = eventStreams.changes.listenInDependent(
+            dependent = this@DynamicMergeAllEventStream,
+        ) { change: ReactiveList.Change<EventStream<EventT>> ->
+            val update = change.update
+            val indexRange = update.indexRange
+
+            val newSubscriptions = update.updatedElements.map(::forwardFrom)
+
+            mutableSubscriptions.updateRange(
+                indexRange = indexRange,
+                dispose = Subscription::cancel,
+                newElements = newSubscriptions,
+            )
+        }
+
+        return object : Subscription {
+            override fun cancel() {
+                changeSubscription.cancel()
+
+                mutableSubscriptions.forEach(Subscription::cancel)
             }
-        },
-    )
-}
-
-private fun <ElementT> ReactiveList<ElementT>.maintain(
-    dependent: ProperEventStream<*>,
-    subscribe: (ElementT) -> Subscription,
-): Subscription {
-    val mutableSubscriptions = currentElements.mapTo(mutableListOf(), subscribe)
-
-    val changeSubscription = changes.listenInDependent(
-        dependent = dependent,
-    ) { change: ReactiveList.Change<ElementT> ->
-        val update = change.update
-        val indexRange = update.indexRange
-
-        val newSubscriptions = update.updatedElements.map(subscribe)
-
-        mutableSubscriptions.updateRange(
-            indexRange = indexRange,
-            dispose = Subscription::cancel,
-            newElements = newSubscriptions,
-        )
-    }
-
-    return object : Subscription {
-        override fun cancel() {
-            changeSubscription.cancel()
-
-            mutableSubscriptions.forEach(Subscription::cancel)
         }
     }
 }

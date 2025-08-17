@@ -4,10 +4,12 @@ import dev.toolkt.core.collections.mutableIndexedListOf
 import dev.toolkt.core.delegates.weakLazy
 import dev.toolkt.core.iterable.removeRange
 import dev.toolkt.core.range.single
+import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.managed_io.Transaction
 
 class FuseReactiveList<ElementT>(
     private val source: ReactiveList<Cell<ElementT>>,
@@ -20,38 +22,49 @@ class FuseReactiveList<ElementT>(
         // each observer. This could be potentially improved by some sharing
         // mechanism depending on weak caching. Switch to StatefulEventStream?
         override fun observe(): Subscription = object : Subscription {
-            private val outerSubscription = source.changes.listen { outerChange ->
-                val update = outerChange.update
-                val indexRange = update.indexRange
-                val updatedCells = update.updatedElements
 
-                indexRange.forEach { index ->
-                    val innerSubscription = innerSubscriptions.getOrNull(index)
-                        ?: throw IllegalStateException("No subscription found for index $index.")
+            private val outerSubscription = source.changes.listen(
+                listener = object : Listener<ReactiveList.Change<Cell<E>>> {
+                    override fun handle(
+                        transaction: Transaction,
+                        event: ReactiveList.Change<Cell<E>>,
+                    ) {
+                        val outerChange = event
 
-                    innerSubscription.cancel()
-                }
+                        val update = outerChange.update
+                        val indexRange = update.indexRange
+                        val updatedCells = update.updatedElements
 
-                innerSubscriptions.removeRange(
-                    indexRange = indexRange,
-                )
+                        indexRange.forEach { index ->
+                            val innerSubscription = innerSubscriptions.getOrNull(index)
+                                ?: throw IllegalStateException("No subscription found for index $index.")
 
-                updatedCells.reversed().forEach { updatedCell ->
-                    subscribeToInner(
-                        index = indexRange.first,
-                        innerCell = updatedCell,
-                    )
-                }
+                            innerSubscription.cancel()
+                        }
 
-                this@ChangesEventStream.notify(
-                    ReactiveList.Change.single(
-                        update = ReactiveList.Change.Update.change(
+                        innerSubscriptions.removeRange(
                             indexRange = indexRange,
-                            changedElements = updatedCells.map { it.currentValueUnmanaged },
-                        ),
-                    ),
-                )
-            }
+                        )
+
+                        updatedCells.reversed().forEach { updatedCell ->
+                            subscribeToInner(
+                                index = indexRange.first,
+                                innerCell = updatedCell,
+                            )
+                        }
+
+                        this@ChangesEventStream.notify(
+                            transaction = transaction,
+                            event = ReactiveList.Change.single(
+                                update = ReactiveList.Change.Update.change(
+                                    indexRange = indexRange,
+                                    changedElements = updatedCells.map { it.currentValueUnmanaged },
+                                ),
+                            ),
+                        )
+                    }
+                },
+            )
 
             private val innerSubscriptions = mutableIndexedListOf<Subscription>()
 
@@ -73,19 +86,29 @@ class FuseReactiveList<ElementT>(
                     element = Subscription.Noop, // A temporary value
                 )
 
-                val newInnerSubscription = innerCell.newValues.listen { newInnerValue ->
-                    val currentIndex = innerSubscriptions.indexOfVia(handle = newInnerHandle)
-                        ?: throw AssertionError("No index found for handle $newInnerHandle.")
+                val newInnerSubscription = innerCell.newValues.listen(
+                    listener = object : Listener<E> {
+                        override fun handle(
+                            transaction: Transaction,
+                            event: E,
+                        ) {
+                            val newInnerValue = event
 
-                    this@ChangesEventStream.notify(
-                        ReactiveList.Change.single(
-                            update = ReactiveList.Change.Update.change(
-                                indexRange = IntRange.single(currentIndex),
-                                changedElements = listOf(newInnerValue),
-                            ),
-                        ),
-                    )
-                }
+                            val currentIndex = innerSubscriptions.indexOfVia(handle = newInnerHandle)
+                                ?: throw AssertionError("No index found for handle $newInnerHandle.")
+
+                            this@ChangesEventStream.notify(
+                                transaction = transaction,
+                                event = ReactiveList.Change.single(
+                                    update = ReactiveList.Change.Update.change(
+                                        indexRange = IntRange.single(currentIndex),
+                                        changedElements = listOf(newInnerValue),
+                                    ),
+                                ),
+                            )
+                        }
+                    }
+                )
 
                 innerSubscriptions.setVia(
                     handle = newInnerHandle,

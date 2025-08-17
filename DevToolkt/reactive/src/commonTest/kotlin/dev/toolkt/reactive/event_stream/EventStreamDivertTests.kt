@@ -2,6 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.setExternally
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -36,7 +37,7 @@ class EventStreamDivertTests {
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        mutableStreamCell.setUnmanaged(eventEmitter2)
+        mutableStreamCell.setExternally(eventEmitter2)
 
         eventEmitter1.emitUnmanaged(3)
 
@@ -51,7 +52,7 @@ class EventStreamDivertTests {
             actual = streamVerifier.removeReceivedEvents(),
         )
 
-        mutableStreamCell.setUnmanaged(eventEmitter1)
+        mutableStreamCell.setExternally(eventEmitter1)
 
         eventEmitter1.emitUnmanaged(4)
 
