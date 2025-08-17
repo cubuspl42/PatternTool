@@ -2,9 +2,8 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.managed_io.ProactionContext
-import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.ReactionContext
+import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Reactions
 
 // TODO: Make the constructor private
@@ -37,7 +36,7 @@ class MutableCell<V>(
     override val currentValue: V
         get() = mutableValue
 
-    context(proactionContext: ProactionContext) fun set(
+    context(reactionContext: ReactionContext) fun set(
         newValue: V,
     ) {
 
@@ -56,7 +55,7 @@ class MutableCell<V>(
     }
 }
 
-context(proactionContext: ReactionContext) fun <V> MutableCell<V>.setLater(
+context(reactionContext: ReactionContext) fun <V> MutableCell<V>.setLater(
     newValue: V,
 ) {
     // Thought: Does it really make any difference? Shouldn't reaction and proaction context be merged?

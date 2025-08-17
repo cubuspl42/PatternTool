@@ -2,7 +2,6 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.managed_io.ReactionContext
-import dev.toolkt.reactive.managed_io.Reactions
 
 class CellSlot<ValueT> private constructor(
     private val mutableCell: MutableCell<Cell<ValueT>>,

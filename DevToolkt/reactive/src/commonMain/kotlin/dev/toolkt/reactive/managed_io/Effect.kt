@@ -70,7 +70,7 @@ interface Effect<out ResultT> {
         }
 
         fun <ResultT> initialized(
-            init: context(ProactionContext) () -> Unit,
+            init: context(ReactionContext) () -> Unit,
             effect: Effect<ResultT>,
         ): Effect<ResultT> = prefaced(
             preface = {

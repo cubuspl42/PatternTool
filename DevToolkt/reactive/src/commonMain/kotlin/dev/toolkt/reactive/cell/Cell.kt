@@ -5,7 +5,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.forEach
 import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.event_stream.takeUntilNull
-import dev.toolkt.reactive.managed_io.ProactionContext
+import dev.toolkt.reactive.managed_io.ReactionContext
 import dev.toolkt.reactive.managed_io.Trigger
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.interrupted
@@ -184,7 +184,7 @@ sealed class Cell<out V> {
 }
 
 fun <V> Cell<V>.forEach(
-    action: context(ProactionContext) (V) -> Unit,
+    action: context(ReactionContext) (V) -> Unit,
 ): Trigger = Trigger.initialized(
     init = {
         action(sample())

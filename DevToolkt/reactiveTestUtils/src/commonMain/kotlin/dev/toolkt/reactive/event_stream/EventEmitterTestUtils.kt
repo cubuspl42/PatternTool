@@ -1,7 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.managed_io.Moments
-import dev.toolkt.reactive.managed_io.Proactions
 import dev.toolkt.reactive.managed_io.Reactions
 
 fun <EventT> EventEmitter.Companion.createExternally(): EventEmitter<EventT> = Moments.external {
@@ -10,6 +9,6 @@ fun <EventT> EventEmitter.Companion.createExternally(): EventEmitter<EventT> = M
 
 fun <EventT> EventEmitter<EventT>.emitExternally(
     event: EventT,
-) = Proactions.external {
+) = Reactions.external {
     emit(event = event)
 }
