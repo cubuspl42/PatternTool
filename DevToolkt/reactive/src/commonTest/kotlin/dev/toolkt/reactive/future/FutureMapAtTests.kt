@@ -1,7 +1,6 @@
 package dev.toolkt.reactive.future
 
 import dev.toolkt.reactive.cell.MutableCell
-import dev.toolkt.reactive.cell.completeExternally
 import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.sampleExternally
 import dev.toolkt.reactive.cell.setExternally

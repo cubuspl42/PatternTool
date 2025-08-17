@@ -1,6 +1,5 @@
-package dev.toolkt.reactive.cell
+package dev.toolkt.reactive.future
 
-import dev.toolkt.reactive.future.FutureCompleter
 import dev.toolkt.reactive.managed_io.Proactions
 
 fun <ValueT> FutureCompleter<ValueT>.completeExternally(

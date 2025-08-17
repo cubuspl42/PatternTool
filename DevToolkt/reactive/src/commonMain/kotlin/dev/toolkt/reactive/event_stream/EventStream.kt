@@ -10,6 +10,7 @@ import dev.toolkt.reactive.managed_io.Trigger
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.ReactionContext
 import dev.toolkt.reactive.managed_io.TriggerBase
+import dev.toolkt.reactive.managed_io.jumpStart
 
 typealias TargetingListenerFn<TargetT, EventT> = (TargetT, EventT) -> Unit
 
@@ -177,16 +178,9 @@ abstract class EventStream<out E> : EventSource<E> {
 fun <E> EventStream<E>.forEach(
     action: context(ProactionContext) (E) -> Unit,
 ): Trigger = object : TriggerBase() {
-    context(reactionContext: ReactionContext) override fun startInternally(): Effect.Handle = subscribe(
-        action = action,
-    )
-}
-
-// TODO: Add tests
-context(reactionContext: ReactionContext) fun <E> EventStream<E>.subscribe(
-    action: context(ProactionContext) (E) -> Unit,
-): Effect.Handle {
-    TODO() // The most low-level ReactionContext operation?
+    context(reactionContext: ReactionContext) override fun jumpStart(): Effect.Handle {
+        TODO()
+    }
 }
 
 context(reactionContext: ReactionContext) fun <E> EventStream<E>.forward(

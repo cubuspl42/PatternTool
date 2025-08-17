@@ -3,8 +3,6 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.core.platform.test_utils.runTestDefault
-import dev.toolkt.reactive.cell.createExternally
-import dev.toolkt.reactive.cell.emitExternally
 import dev.toolkt.reactive.managed_io.Reactions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
@@ -24,7 +22,7 @@ class EventStreamSingleTests {
         }.let { singleEventStream ->
             Pair(
                 // Store only a weak reference, to make sure that we don't "help" tbe
-                // single stream object in the aspect of being non-collectible.
+                // single stream object in the aspect of being non-collectable.
                 // We'll still have an indirect reference via the subscription, which
                 // should keep the single stream alive if it's implemented correctly.
                 PlatformWeakReference(singleEventStream),
@@ -99,7 +97,7 @@ class EventStreamSingleTests {
 
             Pair(
                 // Store only a weak reference, to make sure that we don't "help" tbe
-                // single stream object in the aspect of being non-collectible.
+                // single stream object in the aspect of being non-collectable.
                 // We'll still have an indirect reference via the subscription, which
                 // should keep the single stream alive if it's implemented correctly.
                 PlatformWeakReference(singleEventStream),

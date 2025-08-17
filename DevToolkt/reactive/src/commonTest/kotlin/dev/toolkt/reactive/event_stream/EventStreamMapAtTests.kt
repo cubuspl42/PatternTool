@@ -1,17 +1,12 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.cell.MutableCell
-import dev.toolkt.reactive.cell.completeExternally
 import dev.toolkt.reactive.cell.createExternally
-import dev.toolkt.reactive.cell.emitExternally
-import dev.toolkt.reactive.cell.sampleExternally
 import dev.toolkt.reactive.cell.setExternally
-import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.managed_io.Reactions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 class EventStreamMapAtTests {
     @Test

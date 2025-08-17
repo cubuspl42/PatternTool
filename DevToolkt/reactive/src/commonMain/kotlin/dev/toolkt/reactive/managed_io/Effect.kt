@@ -2,11 +2,12 @@ package dev.toolkt.reactive.managed_io
 
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.subscribe
+import dev.toolkt.reactive.event_stream.forEach
 import dev.toolkt.reactive.future.Future
-import dev.toolkt.reactive.future.resultOrNull
 import dev.toolkt.reactive.future.placeholdStatic
+import dev.toolkt.reactive.future.resultOrNull
 
+// TODO: Extract `effects` package
 interface Effect<out ResultT> {
     companion object {
         val Null: Effect<Nothing?> = pure(null)
@@ -29,7 +30,7 @@ interface Effect<out ResultT> {
         ): Effect<ResultT> = object : Effect<ResultT> {
             context(reactionContext: ReactionContext) override fun start(): Effective<ResultT> = Effective(
                 result = result,
-                handle = trigger.startExternally(),
+                handle = trigger.jumpStart(),
             )
         }
 
@@ -174,9 +175,9 @@ fun <ResultT> Effect<ResultT>.interrupted(
     context(reactionContext: ReactionContext) override fun start(): Effective<ResultT> {
         val (outerValue, outerHandle) = this@interrupted.start()
 
-        val interruptHandle = doInterrupt.subscribe {
+        val interruptHandle = doInterrupt.forEach {
             outerHandle.end()
-        }
+        }.jumpStart()
 
         return Effective(
             result = outerValue,
@@ -188,12 +189,10 @@ fun <ResultT> Effect<ResultT>.interrupted(
     }
 }
 
-// TODO: Add tests
 fun <V> Cell<Effect<V>>.actuate(): Effect<Cell<V>> {
     TODO()
 }
 
-// TODO: Add tests
 fun Cell<Trigger>.activate(): Trigger {
     TODO()
 }
@@ -206,7 +205,6 @@ fun <V> Cell<V>.activateOf(
     transform: (V) -> Trigger,
 ): Trigger = map(transform).activate()
 
-// TODO: Add tests
 fun <ResultT> Effect<ResultT>.startBound(
     target: Any,
 ): ResultT {

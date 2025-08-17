@@ -217,9 +217,8 @@ fun <V> Future<Cell<V>>.switchHold(
     )
 }
 
-// TODO: Add tests
-fun <V> Future<V>.placehold(placeholderValue: V): Cell<V> {
-    TODO()
+fun <V> Future<V>.placehold(placeholderValue: V): Cell<V> = resultOrNull.map {
+    it ?: placeholderValue
 }
 
 fun <V> Future<Cell<V>>.switchHold(

@@ -1,15 +1,14 @@
 package dev.toolkt.reactive.future
 
 import dev.toolkt.reactive.cell.MutableCell
-import dev.toolkt.reactive.cell.completeExternally
 import dev.toolkt.reactive.cell.createExternally
-import dev.toolkt.reactive.cell.endExternally
 import dev.toolkt.reactive.cell.sampleExternally
 import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.cell.setLater
-import dev.toolkt.reactive.cell.startExternally
 import dev.toolkt.reactive.managed_io.Proactions
 import dev.toolkt.reactive.managed_io.Reactions
+import dev.toolkt.reactive.managed_io.endExternally
+import dev.toolkt.reactive.managed_io.startExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
