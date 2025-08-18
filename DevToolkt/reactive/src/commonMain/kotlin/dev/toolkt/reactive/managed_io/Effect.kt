@@ -189,13 +189,9 @@ fun <ResultT> Effect<ResultT>.interrupted(
     }
 }
 
-fun <V> Cell<Effect<V>>.actuate(): Effect<Cell<V>> {
-    TODO()
-}
+fun <V> Cell<Effect<V>>.actuate(): Effect<Cell<V>> = Cell.actuate(this)
 
-fun Cell<Trigger>.activate(): Trigger {
-    TODO()
-}
+fun Cell<Trigger>.activate(): Trigger = Cell.activate(this)
 
 fun <V, R> Cell<V>.actuateOf(
     transform: (V) -> Effect<R>,
@@ -211,7 +207,7 @@ fun <ResultT> Effect<ResultT>.startBound(
     TODO()
 }
 
-fun <V> Future<Effect<V>>.waitEffectively(): Effect<Future<V>> = mapRe { valueEffect: Effect<V> ->
+fun <V> Future<Effect<V>>.waitEffectively(): Effect<Future<V>> = mapExecuting { valueEffect: Effect<V> ->
     valueEffect.start()
 }.joinOf { effectiveFuture: Future<Effective<V>> ->
     Effect.pure(

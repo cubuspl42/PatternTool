@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.managed_io.Transaction
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -57,8 +58,8 @@ class EventStreamTests {
 
     @Test
     fun testListenTwice() {
-        val listener = object : Listener<Any> {
-            override fun handle(
+        val listener = object : UnconditionalListener<Any>() {
+            override fun handleUnconditionally(
                 transaction: Transaction,
                 event: Any,
             ) {
@@ -139,8 +140,7 @@ class EventStreamTests {
                 transaction: Transaction,
                 target: Any,
                 event: Any,
-            ) {
-            }
+            ): Listener.Conclusion = Listener.Conclusion.KeepListening
         }
 
         val eventEmitter = EventEmitter<Int>()

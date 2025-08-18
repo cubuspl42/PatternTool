@@ -6,9 +6,12 @@ import dev.toolkt.reactive.event_stream.forEach
 import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.event_stream.takeUntilNull
 import dev.toolkt.reactive.managed_io.ActionContext
+import dev.toolkt.reactive.managed_io.Effect
+import dev.toolkt.reactive.managed_io.Effective
 import dev.toolkt.reactive.managed_io.Trigger
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.interrupted
+import dev.toolkt.reactive.managed_io.map
 import dev.toolkt.reactive.reactive_list.LoopedCell
 
 // "ValueT"?
@@ -112,6 +115,50 @@ sealed class Cell<out V> {
         fun <V> of(
             value: V,
         ): Cell<V> = ConstCell(constValue = value)
+
+        fun <ValueT> actuate(
+            effectCell: Cell<Effect<ValueT>>,
+        ): Effect<Cell<ValueT>> = object : Effect<Cell<ValueT>> {
+            context(actionContext: ActionContext) override fun start(): Effective<Cell<ValueT>> {
+                val (initialValue, initialEffectHandle) = effectCell.sample().start()
+
+                return EventStream.looped { loopedNewEffectHandles: EventStream<Effect.Handle> ->
+                    val handleCell = loopedNewEffectHandles.hold(initialEffectHandle)
+
+                    val (newValueEffectives, newValuesHandle) = effectCell.newValues.mapExecuting { newEffect ->
+                        val previousEffectHandle = handleCell.sample()
+
+                        previousEffectHandle.end()
+                        newEffect.start()
+                    }.start()
+
+                    val newValues = newValueEffectives.map { it.result }
+
+                    val valueCell: Cell<ValueT> = newValues.hold(initialValue)
+
+                    val combinedHandle = Effect.Handle.combine(
+                        newValuesHandle,
+                        Effect.Handle.current(handleCell),
+                    )
+
+                    val newEffectHandles = newValueEffectives.map { it.handle }
+
+                    Pair(
+                        Effective(
+                            result = valueCell,
+                            handle = combinedHandle,
+                        ),
+                        newEffectHandles,
+                    )
+                }
+            }
+        }
+
+        fun activate(
+            triggerCell: Cell<Trigger>,
+        ): Trigger = actuate(
+            effectCell = triggerCell,
+        ).map { }
     }
 
     abstract val newValues: EventStream<V>
@@ -128,8 +175,21 @@ sealed class Cell<out V> {
 
     context(momentContext: MomentContext) fun <Vr> mapAt(
         transform: context(MomentContext) (V) -> Vr,
-    ): Cell<Vr> {
-        TODO()
+    ): Cell<Vr> = MapAtCell.construct(
+        source = this,
+        transform = transform,
+    )
+
+    fun <Vr> mapExecuting(
+        transform: context(ActionContext) (V) -> Vr,
+    ): Effect<Cell<Vr>> = Effect.prepared {
+        val initialTransformedValue = transform(sample())
+
+        newValues.mapExecuting(transform).map { newTransformedValues ->
+            newTransformedValues.hold(
+                initialValue = initialTransformedValue,
+            )
+        }
     }
 
     abstract fun calm(): Cell<V>

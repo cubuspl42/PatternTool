@@ -61,7 +61,12 @@ fun Window.setTimeouts(
 }
 
 private class AnimationFrameEventStream() : DependentEventStream<Unit>() {
-    override fun observe(): Subscription = window.requestAnimationFrames { notify(Unit) }
+    override fun observe(): Subscription = window.requestAnimationFrames {
+        notify(
+            transaction = TODO(),
+            event = Unit,
+        )
+    }
 }
 
 fun createAnimationFrameStream(): EventStream<Unit> = AnimationFrameEventStream()
@@ -72,6 +77,9 @@ fun createTimeoutStream(
     override fun observe(): Subscription = window.setTimeouts(
         delay = delay,
     ) {
-        notify(Unit)
+        notify(
+            transaction = TODO(),
+            event = Unit
+        )
     }
 }

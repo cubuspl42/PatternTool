@@ -1,11 +1,13 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.HoldCell
 import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.Effect
+import dev.toolkt.reactive.managed_io.Effective
 import dev.toolkt.reactive.managed_io.Trigger
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Transaction
@@ -19,8 +21,7 @@ interface TargetingListener<in TargetT : Any, in EventT> {
             transaction: Transaction,
             target: Any,
             event: Any?,
-        ) {
-        }
+        ): Listener.Conclusion = Listener.Conclusion.KeepListening
     }
 
     companion object {
@@ -31,8 +32,10 @@ interface TargetingListener<in TargetT : Any, in EventT> {
                 transaction: Transaction,
                 target: TargetT,
                 event: EventT,
-            ) {
+            ): Listener.Conclusion {
                 fn(target, event)
+
+                return Listener.Conclusion.KeepListening
             }
         }
     }
@@ -44,7 +47,7 @@ interface TargetingListener<in TargetT : Any, in EventT> {
         transaction: Transaction,
         target: TargetT,
         event: EventT,
-    )
+    ): Listener.Conclusion
 }
 
 internal fun <TargetT : Any, EventT> EventSource<EventT>.bind(
@@ -73,6 +76,12 @@ internal fun <TargetT : Any, EventT> EventSource<EventT>.bind(
 abstract class EventStream<out E> : EventSource<E> {
     companion object {
         val Never: EventStream<Nothing> = NeverEventStream
+
+        context(momentContext: MomentContext) fun <EventT> spark(
+            event: EventT,
+        ): EventStream<EventT> {
+            TODO()
+        }
 
         fun <E, R> looped(
             block: (EventStream<E>) -> Pair<R, EventStream<E>>,
@@ -123,10 +132,20 @@ abstract class EventStream<out E> : EventSource<E> {
 
     fun <Er> mapAt(
         transform: context(MomentContext) (E) -> Er,
-    ): EventStream<Er> = MapAtEventStream(
+    ): EventStream<Er> = MapAtEventStream.construct(
         source = this,
         transform = transform,
     )
+
+    fun <Er> mapExecuting(
+        transform: context(ActionContext) (E) -> Er,
+    ): Effect<EventStream<Er>> = object : Effect<EventStream<Er>> {
+        context(actionContext: ActionContext) override fun start(): Effective<EventStream<Er>> =
+            MapExecutingEventStream.construct(
+                source = this@EventStream,
+                transform = transform,
+            )
+    }
 
     abstract fun <Er : Any> mapNotNull(
         transform: (E) -> Er?,
@@ -137,10 +156,11 @@ abstract class EventStream<out E> : EventSource<E> {
     ): EventStream<E>
 
     fun filterAt(
-        predicate: context(ActionContext) (E) -> Boolean,
-    ): EventStream<E> {
-        TODO()
-    }
+        predicate: context(MomentContext) (E) -> Boolean,
+    ): EventStream<E> = FilterAtEventStream.construct(
+        source = this,
+        predicate = predicate,
+    )
 
     abstract fun take(
         count: Int,
@@ -148,9 +168,9 @@ abstract class EventStream<out E> : EventSource<E> {
 
     abstract fun singleUnmanaged(): EventStream<E>
 
-    context(momentContext: MomentContext) fun single(): EventStream<E> {
-        TODO()
-    }
+    context(momentContext: MomentContext) fun single(): EventStream<E> = SingleEventStreamNg.construct(
+        source = this,
+    )
 
     abstract fun next(): Future<E>
 
@@ -183,10 +203,12 @@ abstract class EventStream<out E> : EventSource<E> {
 fun <E> EventStream<E>.forEach(
     action: context(ActionContext) (E) -> Unit,
 ): Trigger = object : TriggerBase() {
-    context(actionContext: ActionContext) override fun jumpStart(): Effect.Handle {
-        TODO()
-    }
+    context(actionContext: ActionContext) override fun jumpStart(): Effect.Handle = ForEachEffectHandle.construct(
+        source = this@forEach,
+        action = action,
+    )
 }
+
 
 context(actionContext: ActionContext) fun <E> EventStream<E>.forward(
     update: (E) -> Unit,

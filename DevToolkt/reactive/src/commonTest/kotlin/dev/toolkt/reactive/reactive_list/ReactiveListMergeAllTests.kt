@@ -65,7 +65,7 @@ class ReactiveListMergeAllTests {
             eventStream = mergedStream,
         )
 
-        mutableEventStreams.removeAt(1)
+        mutableEventStreams.removeAtExternally(1)
 
         eventEmitter0.emitExternally(1)
         eventEmitter2.emitExternally(21)
@@ -103,7 +103,7 @@ class ReactiveListMergeAllTests {
             eventStream = mergedStream,
         )
 
-        mutableEventStreams.set(2, eventEmitter2b)
+        mutableEventStreams.setExternally(2, eventEmitter2b)
 
         eventEmitter0.emitExternally(1)
         eventEmitter2a.emitExternally(21)
@@ -141,7 +141,7 @@ class ReactiveListMergeAllTests {
             eventStream = mergedStream,
         )
 
-        mutableEventStreams.add(1, eventEmitter1)
+        mutableEventStreams.addExternally(1, eventEmitter1)
 
         eventEmitter0.emitExternally(1)
         eventEmitter2.emitExternally(21)

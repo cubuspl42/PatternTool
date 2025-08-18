@@ -3,8 +3,10 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.core.platform.PlatformFinalizationRegistry
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.Listener
+import dev.toolkt.reactive.Listener.Conclusion
 import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.managed_io.Transaction
 
 internal fun <TargetT : Any, EventT> EventSource<EventT>.pinWeak(
@@ -35,15 +37,10 @@ internal fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
             override fun handle(
                 transaction: Transaction,
                 event: EventT,
-            ) {
-                // If the target was collected, we assume that this listener
-                // will soon be removed. For now, let's just ignore the event.
-                val target = targetWeakRef.get() ?: run {
-                    println("targetWeakRef == null (!)")
-                    return
-                }
+            ): Conclusion {
+                val target = targetWeakRef.get() ?: return Conclusion.StopListening
 
-                listener.handle(
+                return listener.handle(
                     transaction = transaction,
                     target = target,
                     event = event,
@@ -80,14 +77,16 @@ fun <EventT> StrongEventSource<EventT>.listenInDependent(
     listener = listener,
 )
 
+
+// TODO: Nuke?
 fun <EventT> StrongEventSource<EventT>.listenInDependent(
     dependentId: Int,
     listener: ListenerFn<EventT>,
 ): Subscription = listen(
-    object : Listener<EventT> {
+    object : UnconditionalListener<EventT>() {
         override val dependentId: Int = dependentId
 
-        override fun handle(
+        override fun handleUnconditionally(
             transaction: Transaction,
             event: EventT,
         ) {
@@ -96,11 +95,13 @@ fun <EventT> StrongEventSource<EventT>.listenInDependent(
     },
 )
 
+
+// TODO: Nuke, or at least move to tests?
 fun <EventT> StrongEventSource<EventT>.listenExternally(
     listener: ListenerFn<EventT>,
 ): Subscription = listen(
-    object : Listener<EventT> {
-        override fun handle(
+    object : UnconditionalListener<EventT>() {
+        override fun handleUnconditionally(
             transaction: Transaction,
             event: EventT,
         ) {

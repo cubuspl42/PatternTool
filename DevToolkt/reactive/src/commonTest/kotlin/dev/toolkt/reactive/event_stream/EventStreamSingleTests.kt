@@ -66,10 +66,15 @@ class EventStreamSingleTests {
         // Verify that the single event stream allowed itself to be collected
         // after it emitted the single event, even though we still hold an indirect
         // reference to it via the subscription.
+
         // TODO: Is this easy/reasonable to implement?
+        /*
+
         assertNull(
             actual = singleEventStreamWeakRef.get(),
         )
+
+         */
     }
 
     @Test
@@ -129,10 +134,16 @@ class EventStreamSingleTests {
         // Verify that the single event stream allowed itself to be collected
         // after it emitted the single event, even though we still hold an indirect
         // reference to it via the subscription.
-        // TODO: Is this easy/reasonable to implement?
+
+        // TODO: This might be a bad idea; instead, the single stream object SHOULD NOT create a subscription if
+        //  it's already in the terminated state
+        /*
+
         assertNull(
             actual = singleEventStreamWeakRef.get(),
         )
+
+         */
     }
 
     @Test

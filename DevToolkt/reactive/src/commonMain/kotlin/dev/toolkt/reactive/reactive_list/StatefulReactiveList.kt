@@ -2,6 +2,7 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.pinWeak
@@ -21,10 +22,10 @@ abstract class StatefulReactiveList<E>(
         private val self = this // Kotlin doesn't ofer a label for `this@DependentEventStream` (why?)
 
         override fun observe(): Subscription = givenChanges.listen(
-            listener = object : dev.toolkt.reactive.Listener<Change<E>> {
+            listener = object : UnconditionalListener<Change<E>>() {
                 override val dependentId = id
 
-                override fun handle(
+                override fun handleUnconditionally(
                     transaction: dev.toolkt.reactive.managed_io.Transaction,
                     event: Change<E>,
                 ) {

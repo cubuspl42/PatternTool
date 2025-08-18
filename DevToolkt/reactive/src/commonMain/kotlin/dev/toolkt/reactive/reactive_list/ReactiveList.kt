@@ -5,6 +5,8 @@ import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.hold
+import dev.toolkt.reactive.managed_io.MomentContext
 
 abstract class ReactiveList<out E> {
     data class Change<out E>(
@@ -105,6 +107,10 @@ abstract class ReactiveList<out E> {
     }
 
     companion object {
+        val Empty = of(
+            children = emptyList<Nothing>(),
+        )
+
         fun <E> of(
             children: List<E>,
         ): ReactiveList<E> = ConstReactiveList(
@@ -144,7 +150,7 @@ abstract class ReactiveList<out E> {
         fun <E> fuse(
             cells: List<Cell<E>>,
         ): ReactiveList<E> = fuse(
-            ReactiveList.of(*cells.toTypedArray()),
+            of(*cells.toTypedArray()),
         )
 
         fun <E> fuse(
@@ -162,7 +168,7 @@ abstract class ReactiveList<out E> {
         fun <ElementT> concatAll(
             lists: List<ReactiveList<ElementT>>,
         ): ReactiveList<ElementT> = concatAll(
-            lists = ReactiveList.of(*lists.toTypedArray()),
+            lists = of(*lists.toTypedArray()),
         )
 
         fun <ElementT> concatAll(
@@ -177,7 +183,32 @@ abstract class ReactiveList<out E> {
             eventStreams = eventStreams,
         )
 
-        fun <E, R> looped(
+        fun <ElementT> diffDynamic(
+            reactiveListCell: Cell<ReactiveList<ElementT>>,
+        ): ReactiveList<ElementT> {
+            TODO()
+        }
+
+
+        context(momentContext: MomentContext) fun <ElementT, ResultT> looped(
+            placeholderReactiveList: ReactiveList<ElementT>,
+            block: (ReactiveList<ElementT>) -> Pair<ResultT, ReactiveList<ElementT>>,
+        ): ResultT = EventStream.looped { loopedReactiveListSpark: EventStream<ReactiveList<ElementT>> ->
+            val diffedReactiveList = ReactiveList.diffDynamic(
+                reactiveListCell = loopedReactiveListSpark.hold(placeholderReactiveList),
+            )
+
+            val (result, finalReactiveList) = block(diffedReactiveList)
+
+            val reactiveListSpark = EventStream.spark(finalReactiveList)
+
+            Pair(
+                result,
+                reactiveListSpark,
+            )
+        }
+
+        fun <E, R> loopedUnmanaged(
             block: (ReactiveList<E>) -> Pair<R, ReactiveList<E>>,
         ): R {
             val loopedReactiveList = LoopedReactiveList<E>()

@@ -20,10 +20,12 @@ class EventEmitter<EventT> : ManagedEventStream<EventT>() {
             event,
         )
     }
-    
+
     context(actionContext: ActionContext) fun emit(event: EventT) {
-        // FIXME: This should make the tests fail
-        emitUnmanaged(event)
+        notify(
+            transaction = actionContext.transaction,
+            event = event,
+        )
     }
 
     val hasListeners: Boolean

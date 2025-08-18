@@ -3,6 +3,7 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Transaction
@@ -23,7 +24,7 @@ abstract class ProperEventStream<E> : EventStream<E>() {
 
     final override fun filter(
         predicate: (E) -> Boolean,
-    ): EventStream<E> = FilterEventStream(
+    ): EventStream<E> = FilterEventStream.construct(
         source = this,
         predicate = predicate,
     )
@@ -66,8 +67,8 @@ abstract class ProperEventStream<E> : EventStream<E>() {
         effect: (E) -> Unit,
     ) {
         listen(
-            listener = object : Listener<E> {
-                override fun handle(
+            listener = object : UnconditionalListener<E>() {
+                override fun handleUnconditionally(
                     transaction: Transaction,
                     event: E,
                 ) {

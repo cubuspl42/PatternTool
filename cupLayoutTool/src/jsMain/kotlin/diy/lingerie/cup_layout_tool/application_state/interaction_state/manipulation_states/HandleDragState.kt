@@ -39,7 +39,7 @@ class HandleDragState private constructor(
                     ),
                     trigger = Triggers.combine(
                         doAbortSlot.forEach {
-                            draggedHandle.position.setUnmanaged(originalPosition)
+                            draggedHandle.position.set(originalPosition)
                         },
                         effectiveTargetPosition.forwardToUntil(
                             targetCell = draggedHandle.position,

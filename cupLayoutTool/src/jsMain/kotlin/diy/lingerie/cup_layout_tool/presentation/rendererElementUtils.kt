@@ -23,8 +23,8 @@ fun createRendererElement(
                 displayStyle = Cell.Companion.of(
                     PureBlockStyle(),
                 ),
-                width = Cell.Companion.of(100.percent),
-                height = Cell.Companion.of(100.percent),
+                width = Cell.of(100.percent),
+                height = Cell.of(100.percent),
             ),
             children = wrappedChildren,
         )
@@ -35,7 +35,7 @@ fun createRendererElement(
 
         document.createReactiveHtmlCanvasElement(
             style = ReactiveStyle(
-                displayStyle = Cell.Companion.of(
+                displayStyle = Cell.of(
                     PureBlockStyle(),
                 ),
                 width = Cell.of(100.percent),

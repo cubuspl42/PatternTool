@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.managed_io.Transaction
 
 internal class TakeUntilNullStream<EventT : Any>(
@@ -13,10 +14,12 @@ internal class TakeUntilNullStream<EventT : Any>(
                 transaction: Transaction,
                 target: TakeUntilNullStream<EventT>,
                 event: EventT?,
-            ) {
+            ): Listener.Conclusion {
                 when (event) {
                     null -> {
                         target.abort()
+
+                        return Listener.Conclusion.StopListening
                     }
 
                     else -> {
@@ -24,6 +27,8 @@ internal class TakeUntilNullStream<EventT : Any>(
                             transaction = transaction,
                             event = event
                         )
+
+                        return Listener.Conclusion.KeepListening
                     }
                 }
             }

@@ -2,6 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.managed_io.Transaction
 
@@ -9,10 +10,10 @@ import dev.toolkt.reactive.managed_io.Transaction
 abstract class MultiplexingEventStream<N, E> : DependentEventStream<E>() {
     override fun observe(): Subscription = object : Subscription {
         private val outerSubscription = nestedObject.newValues.listen(
-            listener = object : Listener<N> {
+            listener = object : UnconditionalListener<N>() {
                 override val dependentId = id
 
-                override fun handle(
+                override fun handleUnconditionally(
                     transaction: Transaction,
                     event: N,
                 ) {
@@ -36,10 +37,10 @@ abstract class MultiplexingEventStream<N, E> : DependentEventStream<E>() {
         private fun subscribeToInner(
             innerStream: EventStream<E>,
         ): Subscription = innerStream.listen(
-            listener = object : Listener<E> {
+            listener = object : UnconditionalListener<E>() {
                 override val dependentId = id
 
-                override fun handle(
+                override fun handleUnconditionally(
                     transaction: Transaction,
                     event: E,
                 ) {

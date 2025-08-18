@@ -2,8 +2,10 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.Listener
+import dev.toolkt.reactive.Listener.Conclusion
 import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.pinWeak
@@ -27,8 +29,8 @@ abstract class StatefulCell<V>(
         private val self = this // Kotlin doesn't ofer a label for `this@DependentEventStream` (why?)
 
         override fun observe() = givenValues.listen(
-            listener = object : Listener<V> {
-                override fun handle(
+            listener = object : UnconditionalListener<V>() {
+                override fun handleUnconditionally(
                     transaction: Transaction,
                     event: V,
                 ) {
@@ -46,6 +48,8 @@ abstract class StatefulCell<V>(
                     transaction.enqueueMutation {
                         cell.storedValue = newValue
                     }
+
+                    return
                 }
             }
         )

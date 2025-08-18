@@ -2,6 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.managed_io.Transaction
 
 class MergeEventStream<E>(
@@ -10,8 +11,8 @@ class MergeEventStream<E>(
 ) : DependentEventStream<E>() {
     override fun observe(): Subscription = object : Subscription {
         private val subscription1 = source1.listen(
-            listener = object : Listener<E> {
-                override fun handle(
+            listener = object : UnconditionalListener<E>() {
+                override fun handleUnconditionally(
                     transaction: Transaction,
                     event: E,
                 ) {
@@ -20,13 +21,12 @@ class MergeEventStream<E>(
                         event = event,
                     )
                 }
-
             },
         )
 
         private val subscription2 = source2.listen(
-            listener = object : Listener<E> {
-                override fun handle(
+            listener = object : UnconditionalListener<E>() {
+                override fun handleUnconditionally(
                     transaction: Transaction,
                     event: E,
                 ) {
@@ -35,7 +35,6 @@ class MergeEventStream<E>(
                         event = event,
                     )
                 }
-
             },
         )
 

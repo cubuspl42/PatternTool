@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.managed_io.Transaction
 
 class TakeEventStream<EventT>(
@@ -16,7 +17,7 @@ class TakeEventStream<EventT>(
                 transaction: Transaction,
                 target: TakeEventStream<EventT>,
                 event: EventT,
-            ) {
+            ): Listener.Conclusion {
                 val oldRemainingCount = target.remainingCount
 
                 if (oldRemainingCount <= 0) {
@@ -25,6 +26,7 @@ class TakeEventStream<EventT>(
                 }
 
                 val newRemainingCount = oldRemainingCount - 1
+                
                 target.remainingCount = newRemainingCount
 
                 target.notify(
@@ -34,6 +36,10 @@ class TakeEventStream<EventT>(
 
                 if (newRemainingCount == 0) {
                     target.abort()
+
+                    return Listener.Conclusion.StopListening
+                } else {
+                    return Listener.Conclusion.KeepListening
                 }
             }
         },

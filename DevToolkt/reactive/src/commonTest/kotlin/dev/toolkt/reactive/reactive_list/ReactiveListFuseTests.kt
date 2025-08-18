@@ -8,6 +8,7 @@ import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.cell.setExternally
+import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -136,7 +137,7 @@ class ReactiveListFuseTests {
             cells = mutableCells,
         )
 
-        mutableCells.replaceAll(
+        mutableCells.replaceAllExternally(
             indexRange = 2..3,
             changedElements = listOf(
                 mutableCell3a,
@@ -192,7 +193,7 @@ class ReactiveListFuseTests {
 
         // Mutate the original list again, removing some of the new cells
         // and some of the original cells
-        mutableCells.removeRange(1..3)
+        mutableCells.removeRangeExternally(1..3)
 
         changesVerifier.removeReceivedEvents()
 
@@ -272,7 +273,7 @@ class ReactiveListFuseTests {
             eventStream = fuseReactiveList.changes,
         )
 
-        mutableCells.addAll(
+        mutableCells.addAllExternally(
             index = 3,
             elements = listOf(
                 mutableCell2a,
@@ -403,7 +404,7 @@ class ReactiveListFuseTests {
             eventStream = fuseReactiveList.changes,
         )
 
-        mutableCells.removeRange(
+        mutableCells.removeRangeExternally(
             indexRange = 1..2,
         )
 
@@ -488,7 +489,7 @@ class ReactiveListFuseTests {
             eventStream = fuseReactiveList.changes,
         )
 
-        mutableCells.replaceAll(
+        mutableCells.replaceAllExternally(
             indexRange = 2..3,
             changedElements = listOf(
                 mutableCell2a,
@@ -574,7 +575,7 @@ class ReactiveListFuseTests {
             eventStream = fuseReactiveList.changes,
         )
 
-        mutableCells.replaceAll(
+        mutableCells.replaceAllExternally(
             indexRange = 1..2,
             changedElements = listOf(
                 mutableCell2, // Instant re-add
@@ -663,13 +664,13 @@ class ReactiveListFuseTests {
             eventStream = fuseReactiveList.changes,
         )
 
-        mutableCells.removeAt(2)
+        mutableCells.removeAtExternally(2)
         mutableCell1.setExternally(101)
 
         changesVerifier1.cancel()
         changesVerifier1.removeReceivedEvents()
 
-        mutableCells.append(mutableCell3b)
+        mutableCells.appendExternally(mutableCell3b)
 
         val changesVerifier2 = EventStreamVerifier(
             eventStream = fuseReactiveList.changes,

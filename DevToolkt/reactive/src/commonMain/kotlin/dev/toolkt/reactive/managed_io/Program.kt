@@ -5,6 +5,7 @@ package dev.toolkt.reactive.managed_io
 
 import dev.toolkt.core.platform.PlatformFinalizationRegistry
 import dev.toolkt.reactive.Listener
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
@@ -113,8 +114,8 @@ fun <E> EventStream<E>.forEachInvoke(
 ): Schedule = object : AbstractSchedule() {
     override fun start(): ProcessHandle {
         val subscription = listen(
-            object : Listener<E> {
-                override fun handle(
+            object : UnconditionalListener<E>() {
+                override fun handleUnconditionally(
                     transaction: Transaction,
                     event: E,
                 ) {
@@ -144,8 +145,8 @@ fun <E, R> EventStream<E>.invokeEach(
             val eventEmitter = EventEmitter<R>()
 
             val subscription = this@invokeEach.listen(
-                object : Listener<E> {
-                    override fun handle(
+                object : UnconditionalListener<E>() {
+                    override fun handleUnconditionally(
                         transaction: Transaction,
                         event: E,
                     ) {
