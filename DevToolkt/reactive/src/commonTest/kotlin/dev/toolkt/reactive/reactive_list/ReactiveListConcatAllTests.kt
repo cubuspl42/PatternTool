@@ -2,6 +2,7 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
+import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -99,7 +100,7 @@ class ReactiveListConcatAllTests {
             eventStream = concatenatedReactiveList.changes,
         )
 
-        mutableReactiveList1.set(1, 121)
+        mutableReactiveList1.setExternally(1, 121)
 
         assertEquals(
             expected = listOf(
@@ -169,7 +170,7 @@ class ReactiveListConcatAllTests {
             eventStream = concatenatedReactiveList.changes,
         )
 
-        mutableReactiveList1.addAll(2, listOf(121, 122))
+        mutableReactiveList1.addAllExternally(2, listOf(121, 122))
 
         assertEquals(
             expected = listOf(
@@ -201,7 +202,7 @@ class ReactiveListConcatAllTests {
         )
 
         // Update the list after the expanded one
-        mutableReactiveList2.set(0, 211)
+        mutableReactiveList2.setExternally(0, 211)
 
         assertEquals(
             expected = listOf(
@@ -274,7 +275,7 @@ class ReactiveListConcatAllTests {
             eventStream = concatenatedReactiveList.changes,
         )
 
-        mutableReactiveList1.removeRange(indexRange = 1..2)
+        mutableReactiveList1.removeRangeExternally(indexRange = 1..2)
 
         assertEquals(
             expected = listOf(
@@ -302,7 +303,7 @@ class ReactiveListConcatAllTests {
         )
 
         // Update the list after the shrank one
-        mutableReactiveList2.set(1, 221)
+        mutableReactiveList2.setExternally(1, 221)
 
         assertEquals(
             expected = listOf(
@@ -380,7 +381,7 @@ class ReactiveListConcatAllTests {
             eventStream = concatenatedReactiveList.changes,
         )
 
-        mutableReactiveLists.set(1, mutableReactiveList1b)
+        mutableReactiveLists.setExternally(1, mutableReactiveList1b)
 
         assertEquals(
             expected = listOf(
@@ -463,7 +464,7 @@ class ReactiveListConcatAllTests {
             eventStream = concatenatedReactiveList.changes,
         )
 
-        mutableReactiveLists.addAll(1, listOf(mutableReactiveList0b, mutableReactiveList0c))
+        mutableReactiveLists.addAllExternally(1, listOf(mutableReactiveList0b, mutableReactiveList0c))
 
         assertEquals(
             expected = listOf(
@@ -536,7 +537,7 @@ class ReactiveListConcatAllTests {
             eventStream = concatenatedReactiveList.changes,
         )
 
-        mutableReactiveLists.removeAt(1)
+        mutableReactiveLists.removeAtExternally(1)
 
         assertEquals(
             expected = listOf(

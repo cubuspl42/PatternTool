@@ -3,7 +3,6 @@ package dev.toolkt.reactive.cell
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.managed_io.MomentContext
 
 // TODO: Make the constructor private
@@ -46,12 +45,5 @@ class MutableCell<V>(
         }
 
         newValueEmitter.emit(newValue)
-    }
-
-    fun setUnmanaged(
-        newValue: V,
-    ) {
-        newValueEmitter.emitUnmanaged(newValue)
-        mutableValue = newValue
     }
 }

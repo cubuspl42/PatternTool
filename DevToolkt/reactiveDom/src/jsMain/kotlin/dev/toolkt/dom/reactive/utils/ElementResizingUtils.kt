@@ -26,7 +26,10 @@ private class ResizeObserverContentRectEventStream(
         // resize observer for each stream (it would be good to verify it)
         val resizeObserver = ResizeObserver { entries, _ ->
             entries.forEach { entry ->
-                notify(event = entry)
+                notify(
+                    transaction = TODO(),
+                    event = entry,
+                )
             }
         }.apply {
             observe(element)
@@ -39,4 +42,3 @@ private class ResizeObserverContentRectEventStream(
         }
     }
 }
-

@@ -29,6 +29,9 @@ class Transaction private constructor() : ActionContext {
         }
     }
 
+    override val transaction: Transaction
+        get() = this
+
     override fun enqueueMutation(mutate: () -> Unit) {
         enqueuedMutations.add(mutate)
     }

@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
+import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.managed_io.Transaction
 
 class SingleEventStream<EventT>(
@@ -15,7 +16,7 @@ class SingleEventStream<EventT>(
                 transaction: Transaction,
                 target: SingleEventStream<EventT>,
                 event: EventT,
-            ) {
+            ): Listener.Conclusion {
                 if (target.wasEmitted) {
                     // Abortion failed (?)
                     throw AssertionError("The single event was already emitted")
@@ -29,6 +30,9 @@ class SingleEventStream<EventT>(
                 target.wasEmitted = true
 
                 target.abort()
+
+                // FIXME
+                return Listener.Conclusion.KeepListening
             }
         },
     )

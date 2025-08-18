@@ -25,17 +25,6 @@ class FutureCompleter<V> : ProperFuture<V>() {
         }
     }
 
-    fun completeUnmanaged(
-        result: V,
-    ) {
-        when (mutableState.currentValueUnmanaged) {
-            is Fulfilled<V> -> throw IllegalStateException("The future is already fulfilled")
-            Pending -> {
-                mutableState.setUnmanaged(Fulfilled(result = result))
-            }
-        }
-    }
-
     override val onResult: EventStream<V>
         get() = mutableState.newValues.mapNotNull {
             (it as? Fulfilled<V>)?.result

@@ -3,6 +3,7 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.core.platform.platformNativeSetOf
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.managed_io.Transaction
 
 abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
@@ -19,6 +20,20 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
             return Subscription.Noop
         }
 
+        addListener(
+            listener = listener,
+        )
+
+        return object : Subscription {
+            override fun cancel() {
+                removeListener(listener = listener)
+            }
+        }
+    }
+
+    private fun addListener(
+        listener: Listener<EventT>,
+    ) {
         val wasAdded = listeners.add(listener)
 
         if (!wasAdded) {
@@ -26,18 +41,18 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
         }
 
         potentiallyResume()
+    }
 
-        return object : Subscription {
-            override fun cancel() {
-                // Don't check whether the removal was successful, as in a
-                // corner case this stream might've already aborted. Currently,
-                // the dependents aren't notified about its dependency stream
-                // aborting, so they'll keep subscribing/unsubscribing as normal.
-                listeners.remove(listener)
+    private fun removeListener(
+        listener: Listener<EventT>,
+    ) {
+        // Don't check whether the removal was successful, as in a
+        // corner case this stream might've already aborted. Currently,
+        // the dependents aren't notified about its dependency stream
+        // aborting, so they'll keep subscribing/unsubscribing as normal.
+        listeners.remove(listener)
 
-                potentiallyPause()
-            }
-        }
+        potentiallyPause()
     }
 
     protected val listenerCount: Int
@@ -71,14 +86,28 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
         // at the time of the event being emitted will receive it.
 
         // TODO: Make this logic transaction-aware (new listeners shouldn't literally be added during the transaction?)
+        // Try designing a test for this ^
 
         val listeners = listeners.copy()
 
         listeners.forEach { listener ->
-            listener.handle(
+            val conclusion = listener.handle(
                 transaction = transaction,
                 event = event,
             )
+
+            when (conclusion) {
+                Listener.Conclusion.KeepListening -> {
+                    // Keep listening, do nothing for now
+                }
+
+                Listener.Conclusion.StopListening -> {
+                    // Remove the listener later
+                    transaction.enqueueMutation {
+                        removeListener(listener = listener)
+                    }
+                }
+            }
         }
     }
 
@@ -97,8 +126,8 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
     protected fun forwardFrom(
         source: EventStream<EventT>,
     ): Subscription = source.listen(
-        listener = object : Listener<EventT> {
-            override fun handle(
+        listener = object : UnconditionalListener<EventT>() {
+            override fun handleUnconditionally(
                 transaction: Transaction,
                 event: EventT,
             ) {

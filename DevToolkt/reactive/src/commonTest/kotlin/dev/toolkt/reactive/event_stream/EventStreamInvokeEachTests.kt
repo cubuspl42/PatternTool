@@ -2,9 +2,11 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.managed_io.invokeEach
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@Ignore // TODO: Nuke in favor of effects
 class EventStreamInvokeEachTests {
     @Test
     fun testInvokeEach() {

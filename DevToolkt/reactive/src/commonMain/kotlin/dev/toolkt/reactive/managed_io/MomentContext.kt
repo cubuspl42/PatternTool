@@ -1,13 +1,13 @@
 package dev.toolkt.reactive.managed_io
 
-interface MomentContext
-
-private class MomentContextImpl : MomentContext
+interface MomentContext {
+    val transaction: Transaction
+}
 
 object Moments {
     fun <ResultT> external(
         block: context(MomentContext) () -> ResultT,
-    ): ResultT = with(MomentContextImpl()) {
-        block()
-    }
+    ): ResultT = Actions.external(
+        block = block,
+    )
 }

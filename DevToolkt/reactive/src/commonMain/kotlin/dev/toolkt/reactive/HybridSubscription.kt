@@ -3,6 +3,7 @@ package dev.toolkt.reactive
 import dev.toolkt.core.platform.PlatformCleanable
 import dev.toolkt.core.platform.PlatformFinalizationRegistry
 import dev.toolkt.core.platform.PlatformWeakReference
+import dev.toolkt.reactive.Listener.Conclusion
 import dev.toolkt.reactive.event_stream.EventSource
 import dev.toolkt.reactive.event_stream.TargetingListener
 import dev.toolkt.reactive.managed_io.Transaction
@@ -41,16 +42,16 @@ interface HybridSubscription : Subscription {
                     override fun handle(
                         transaction: Transaction,
                         event: EventT,
-                    ) {
-                        // If the target was collected, we assume that this listener
-                        // will soon be removed. For now, let's just ignore the event.
-                        val target = currentMode.getReachableTarget() ?: return
+                    ): Conclusion {
+                        val target = currentMode.getReachableTarget() ?: return Conclusion.StopListening
 
                         targetingListener.handle(
                             transaction = transaction,
                             target = target,
                             event = event,
                         )
+
+                        return Conclusion.KeepListening
                     }
                 },
             )

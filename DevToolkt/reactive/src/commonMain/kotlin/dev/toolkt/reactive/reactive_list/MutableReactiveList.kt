@@ -4,23 +4,24 @@ import dev.toolkt.core.iterable.append
 import dev.toolkt.core.iterable.removeRange
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.managed_io.ActionContext
 
-class MutableReactiveList<E>(
-    initialContent: List<E>,
-) : ActiveReactiveList<E>() {
-    private val changeEmitter = EventEmitter<Change<E>>()
+class MutableReactiveList<ElementT>(
+    initialContent: List<ElementT>,
+) : ActiveReactiveList<ElementT>() {
+    private val changeEmitter = EventEmitter<Change<ElementT>>()
 
     private val mutableContent = initialContent.toMutableList()
 
-    override val changes: EventStream<Change<E>>
+    override val changes: EventStream<Change<ElementT>>
         get() = changeEmitter
 
-    override val currentElements: List<E>
+    override val currentElements: List<ElementT>
         get() = mutableContent.toList()
 
-    fun set(
+    context(actionContext: ActionContext) fun set(
         index: Int,
-        newValue: E,
+        newValue: ElementT,
     ) {
         if (index !in mutableContent.indices) {
             throw IndexOutOfBoundsException("Index $index is out of bounds for list of size ${mutableContent.size}.")
@@ -31,18 +32,20 @@ class MutableReactiveList<E>(
             newValue = newValue,
         )
 
-        changeEmitter.emitUnmanaged(
+        changeEmitter.emit(
             Change.single(
                 update = update,
-            ) ?: throw AssertionError("The change is not effective"),
+            ),
         )
 
-        mutableContent[index] = newValue
+        actionContext.enqueueMutation {
+            mutableContent[index] = newValue
+        }
     }
 
-    fun add(
+    context(actionContext: ActionContext) fun add(
         index: Int,
-        element: E,
+        element: ElementT,
     ) {
         addAll(
             index = index,
@@ -50,9 +53,9 @@ class MutableReactiveList<E>(
         )
     }
 
-    fun addAll(
+    context(actionContext: ActionContext) fun addAll(
         index: Int,
-        elements: List<E>,
+        elements: List<ElementT>,
     ) {
         if (index !in 0..mutableContent.size) {
             throw IndexOutOfBoundsException("Index $index is out of bounds for list of size ${mutableContent.size}.")
@@ -67,17 +70,19 @@ class MutableReactiveList<E>(
             update = update,
         )
 
-        changeEmitter.emitUnmanaged(change)
+        changeEmitter.emit(change)
 
-        mutableContent.addAll(
-            index = index,
-            elements = elements,
-        )
+        actionContext.enqueueMutation {
+            mutableContent.addAll(
+                index = index,
+                elements = elements,
+            )
+        }
     }
 
-    fun replaceAll(
+    context(actionContext: ActionContext) fun replaceAll(
         indexRange: IntRange,
-        changedElements: List<E>,
+        changedElements: List<ElementT>,
     ) {
         if (indexRange.first !in 0..mutableContent.size || indexRange.last !in 0 until mutableContent.size) {
             throw IndexOutOfBoundsException("Index range $indexRange is out of bounds for list of size ${mutableContent.size}.")
@@ -92,18 +97,21 @@ class MutableReactiveList<E>(
             update = update,
         )
 
-        changeEmitter.emitUnmanaged(change)
+        changeEmitter.emit(change)
 
-        mutableContent.removeRange(indexRange)
+        actionContext.enqueueMutation {
+            mutableContent.removeRange(indexRange)
 
-        mutableContent.addAll(
-            index = indexRange.first,
-            elements = changedElements,
-        )
+            mutableContent.addAll(
+                index = indexRange.first,
+                elements = changedElements,
+            )
+        }
     }
 
+    context(actionContext: ActionContext)
     fun append(
-        element: E,
+        element: ElementT,
     ) {
         val update = Change.Update.insert(
             index = currentElements.size,
@@ -114,12 +122,14 @@ class MutableReactiveList<E>(
             update = update,
         )
 
-        changeEmitter.emitUnmanaged(change)
+        changeEmitter.emit(change)
 
-        mutableContent.append(element)
+        actionContext.enqueueMutation {
+            mutableContent.append(element)
+        }
     }
 
-    fun removeRange(indexRange: IntRange) {
+    context(actionContext: ActionContext) fun removeRange(indexRange: IntRange) {
         if (indexRange.first !in 0..mutableContent.size || indexRange.last !in 0 until mutableContent.size) {
             throw IndexOutOfBoundsException("Index range $indexRange is out of bounds for list of size ${mutableContent.size}.")
         }
@@ -128,15 +138,18 @@ class MutableReactiveList<E>(
             indexRange = indexRange,
         )
 
-        changeEmitter.emitUnmanaged(
+        changeEmitter.emit(
             Change.single(
                 update = update,
             ),
         )
 
-        mutableContent.removeRange(indexRange)
+        actionContext.enqueueMutation {
+            mutableContent.removeRange(indexRange)
+        }
     }
 
+    context(actionContext: ActionContext)
     fun removeAt(index: Int) {
         if (index !in mutableContent.indices) {
             throw IndexOutOfBoundsException("Index $index is out of bounds for list of size ${mutableContent.size}.")
@@ -146,12 +159,14 @@ class MutableReactiveList<E>(
             index = index,
         )
 
-        changeEmitter.emitUnmanaged(
+        changeEmitter.emit(
             Change.single(
                 update = update,
             ),
         )
 
-        mutableContent.removeAt(index = index)
+        actionContext.enqueueMutation {
+            mutableContent.removeAt(index = index)
+        }
     }
 }

@@ -18,19 +18,23 @@ import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
+import dev.toolkt.reactive.managed_io.Actions
+import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
 
 fun main() {
-    val rootElement = createRootElement()
+    val rootElement = Actions.external {
+        createRootElement()
+    }
 
     document.body!!.apply {
         appendChild(rootElement)
     }
 }
 
-private fun createRootElement(): HTMLDivElement {
+context(momentContext: MomentContext) private fun createRootElement(): HTMLDivElement {
     val lineSegment = LineSegment(
         start = Point(401.14355433959827, 374.2024184921395),
         end = Point(601.1435543395982, 374.2024184921395),

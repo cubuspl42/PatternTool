@@ -6,6 +6,7 @@ import dev.toolkt.core.iterable.removeRange
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
@@ -22,10 +23,9 @@ class FuseReactiveList<ElementT>(
         // each observer. This could be potentially improved by some sharing
         // mechanism depending on weak caching. Switch to StatefulEventStream?
         override fun observe(): Subscription = object : Subscription {
-
             private val outerSubscription = source.changes.listen(
-                listener = object : Listener<ReactiveList.Change<Cell<E>>> {
-                    override fun handle(
+                listener = object : UnconditionalListener<Change<Cell<E>>>() {
+                    override fun handleUnconditionally(
                         transaction: Transaction,
                         event: ReactiveList.Change<Cell<E>>,
                     ) {
@@ -87,8 +87,8 @@ class FuseReactiveList<ElementT>(
                 )
 
                 val newInnerSubscription = innerCell.newValues.listen(
-                    listener = object : Listener<E> {
-                        override fun handle(
+                    listener = object : UnconditionalListener<E>() {
+                        override fun handleUnconditionally(
                             transaction: Transaction,
                             event: E,
                         ) {

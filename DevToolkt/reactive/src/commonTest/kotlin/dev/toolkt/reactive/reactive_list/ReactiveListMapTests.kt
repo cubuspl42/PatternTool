@@ -49,7 +49,7 @@ class ReactiveListMapTests {
             eventStream = mappedList.changes,
         )
 
-        mutableReactiveList.set(
+        mutableReactiveList.setExternally(
             index = 2,
             newValue = 21,
         )
@@ -94,7 +94,7 @@ class ReactiveListMapTests {
             eventStream = mappedList.changes,
         )
 
-        mutableReactiveList.addAll(
+        mutableReactiveList.addAllExternally(
             index = 2,
             elements = listOf(15, 16),
         )
@@ -141,7 +141,7 @@ class ReactiveListMapTests {
             eventStream = mappedList.changes,
         )
 
-        mutableReactiveList.removeAt(
+        mutableReactiveList.removeAtExternally(
             index = 1,
         )
 
@@ -185,7 +185,7 @@ class ReactiveListMapTests {
             observedCurrentElements = mappedList.currentElements
         }
 
-        mutableReactiveList.set(
+        mutableReactiveList.setExternally(
             index = 1,
             newValue = 11,
         )

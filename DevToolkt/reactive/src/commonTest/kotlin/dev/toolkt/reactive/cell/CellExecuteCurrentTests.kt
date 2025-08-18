@@ -4,9 +4,11 @@ import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.emitExternally
 import dev.toolkt.reactive.managed_io.executeCurrent
 import dev.toolkt.reactive.managed_io.forEachInvoke
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@Ignore // TODO: Nuke in favor of effects
 class CellExecuteCurrentTests {
     @Test
     fun testExecuteCurrent() {

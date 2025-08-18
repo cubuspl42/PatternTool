@@ -2,6 +2,7 @@ package dev.toolkt.reactive.cell
 
 /**
  * A mapped cell with a possibly-impure transformation function.
+ * TODO: Make this pure
  */
 class MapCell<V, Vr>(
     source: Cell<V>,

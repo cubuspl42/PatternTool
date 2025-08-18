@@ -1,9 +1,11 @@
 package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.Listener
+import dev.toolkt.reactive.Listener.Conclusion
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.future.Future
+import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Transaction
 
@@ -19,8 +21,8 @@ class PropertyCell<ValueT>(
             override val exposedValue: Cell<ValueT>
                 get() = mutableValue
 
-            fun set(newValue: ValueT) {
-                mutableValue.setUnmanaged(newValue = newValue)
+            context(actionContext: ActionContext) fun set(newValue: ValueT) {
+                mutableValue.set(newValue = newValue)
             }
         }
 
@@ -43,7 +45,7 @@ class PropertyCell<ValueT>(
 
     val exposedValue = state.switchOf { it.exposedValue }
 
-    fun bindUntil(
+    context(actionContext: ActionContext) fun bindUntil(
         boundValue: Cell<ValueT>,
         until: Future<Unit>,
     ) {
@@ -56,8 +58,8 @@ class PropertyCell<ValueT>(
         )
 
         until.onFulfilled.listen(
-            listener = object : Listener<Any?> {
-                override fun handle(
+            listener = object : UnconditionalListener<Any?>() {
+                override fun handleUnconditionally(
                     transaction: Transaction,
                     event: Any?,
                 ) {
@@ -65,22 +67,15 @@ class PropertyCell<ValueT>(
                         initialValue = newBoundState.exposedValue.currentValueUnmanaged,
                     )
 
-                    mutableState.setUnmanaged(finalUnboundState)
+                    // FIXME: Can't we use some other primitives here?
+                    with(transaction) {
+                        mutableState.set(finalUnboundState)
+                    }
                 }
             },
         )
 
-        mutableState.setUnmanaged(newBoundState)
-    }
-
-    fun bindUntil(
-        newValues: EventStream<ValueT>,
-        until: Future<Unit>,
-    ) {
-        bindUntil(
-            boundValue = newValues.hold(currentValueUnmanaged),
-            until = until,
-        )
+        mutableState.set(newBoundState)
     }
 
     override val newValues: EventStream<ValueT>

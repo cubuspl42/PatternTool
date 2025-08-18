@@ -13,7 +13,10 @@ class EventTargetEventStream(
         fun callback(
             event: Event,
         ) {
-            notify(event = event)
+            notify(
+                transaction = TODO(),
+                event = event,
+            )
         }
 
         eventTarget.addEventListener(

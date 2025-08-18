@@ -11,6 +11,7 @@ import dev.toolkt.reactive.managed_io.Program
 import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.Schedule
 import dev.toolkt.reactive.managed_io.executeCurrent
+import dev.toolkt.reactive.managed_io.map
 
 abstract class Future<out V> {
     sealed class State<out V>
@@ -59,7 +60,7 @@ abstract class Future<out V> {
 
         fun <V> join(
             future: Future<Future<V>>,
-        ): Future<V> = TODO()
+        ): Future<V> = JoinFuture(future)
 
         context(momentContext: MomentContext) fun <V, V1 : V, V2 : V> oscillate2(
             initialValue: V1,
@@ -175,15 +176,31 @@ abstract class Future<out V> {
 
     context(momentContext: MomentContext) fun <Vr> mapAt(
         transform: context(MomentContext) (V) -> Vr,
-    ): Future<Vr> {
-        TODO()
-    }
+    ): Future<Vr> = PlainFuture(
+        state = state.mapAt {
+            when (it) {
+                is Fulfilled<V> -> Fulfilled(
+                    result = transform(it.result),
+                )
 
-    // "lookMap"?
-    fun <Vr> mapRe(
+                Pending -> Pending
+            }
+        },
+    )
+
+    fun <Vr> mapExecuting(
         transform: context(ActionContext) (V) -> Vr,
-    ): Effect<Future<Vr>> {
-        TODO()
+    ): Effect<Future<Vr>> = state.mapExecuting { stateNow ->
+
+        when (stateNow) {
+            is Fulfilled<V> -> Fulfilled(
+                result = transform(stateNow.result),
+            )
+
+            Pending -> Pending
+        }
+    }.map { stateCell ->
+        PlainFuture(state = stateCell)
     }
 }
 

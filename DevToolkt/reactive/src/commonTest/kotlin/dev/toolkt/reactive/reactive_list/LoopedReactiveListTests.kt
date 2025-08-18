@@ -2,6 +2,7 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
+import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,7 +44,7 @@ class LoopedReactiveListTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableReactiveList.addAll(
+        mutableReactiveList.addAllExternally(
             index = 0,
             elements = listOf(10, 20),
         )
@@ -116,7 +117,7 @@ class LoopedReactiveListTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableReactiveList.set(
+        mutableReactiveList.setExternally(
             index = 1,
             newValue = 11,
         )
@@ -142,7 +143,7 @@ class LoopedReactiveListTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableReactiveList.addAll(
+        mutableReactiveList.addAllExternally(
             index = 3,
             elements = listOf(30, 40),
         )

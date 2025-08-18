@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.managed_io.Transaction
 
 /**
@@ -18,8 +19,8 @@ data class TargetedListener<TargetT : Any, EventT>(
         targetedListener = this,
     )
 
-    fun captureTarget(): Listener<EventT> = object : Listener<EventT> {
-        override fun handle(
+    fun captureTarget(): Listener<EventT> = object : UnconditionalListener<EventT>() {
+        override fun handleUnconditionally(
             transaction: Transaction,
             event: EventT,
         ) {

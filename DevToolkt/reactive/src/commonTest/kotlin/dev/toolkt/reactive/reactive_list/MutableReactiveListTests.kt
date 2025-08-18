@@ -33,7 +33,7 @@ class MutableReactiveListTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableReactiveList.set(
+        mutableReactiveList.setExternally(
             index = 1,
             newValue = 11,
         )
@@ -60,7 +60,7 @@ class MutableReactiveListTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableReactiveList.set(
+        mutableReactiveList.setExternally(
             index = 3,
             newValue = 31,
         )
@@ -116,7 +116,7 @@ class MutableReactiveListTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableReactiveList.removeAt(
+        mutableReactiveList.removeAtExternally(
             index = 3,
         )
 
@@ -136,12 +136,12 @@ class MutableReactiveListTests {
                     update = ReactiveList.Change.Update.remove(
                         index = 3,
                     ),
-                )!!,
+                ),
             ),
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableReactiveList.removeAt(
+        mutableReactiveList.removeAtExternally(
             index = 2,
         )
 
@@ -160,7 +160,7 @@ class MutableReactiveListTests {
                     update = ReactiveList.Change.Update.remove(
                         index = 2,
                     ),
-                )!!,
+                ),
             ),
             actual = changesVerifier.removeReceivedEvents(),
         )
@@ -194,7 +194,7 @@ class MutableReactiveListTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableReactiveList.addAll(
+        mutableReactiveList.addAllExternally(
             index = 2,
             elements = listOf(11, 12, 13),
         )
@@ -224,7 +224,7 @@ class MutableReactiveListTests {
             actual = changesVerifier.removeReceivedEvents(),
         )
 
-        mutableReactiveList.addAll(
+        mutableReactiveList.addAllExternally(
             index = 4,
             elements = listOf(-12, -13),
         )

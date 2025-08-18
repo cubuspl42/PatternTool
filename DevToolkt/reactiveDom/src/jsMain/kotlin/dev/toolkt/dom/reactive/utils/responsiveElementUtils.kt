@@ -39,7 +39,7 @@ context(actionContext: ActionContext) fun createResponsiveFlexElement(
 context(actionContext: ActionContext) fun <ElementT : Element> createResponsiveElement(
     createGrowingWrapper: (wrappedChildren: ReactiveList<Node>) -> ElementT,
     buildChild: context(ActionContext) (size: Cell<PureSize>) -> Element,
-): ElementT = ReactiveList.looped { childrenLooped ->
+): ElementT = ReactiveList.loopedUnmanaged { childrenLooped ->
     val divElement = createGrowingWrapper(childrenLooped)
 
     val children = ReactiveList.singleNotNull(
@@ -50,7 +50,7 @@ context(actionContext: ActionContext) fun <ElementT : Element> createResponsiveE
         },
     )
 
-    return@looped Pair(
+    return@loopedUnmanaged Pair(
         divElement,
         children,
     )

@@ -18,18 +18,22 @@ import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgGroupElement
 import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgSvgElement
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.svg.SVGElement
 
 data class PrimaryViewport(
     val element: HTMLDivElement,
     val trackedMouseOverGesture: Cell<GenericMouseGesture?>,
 )
 
-internal fun createPrimaryViewport(
+context(momentContext: MomentContext) internal fun createPrimaryViewport(
     userCurveSystem: UserCurveSystem,
-): PrimaryViewport = ReactiveList.looped { childrenLooped ->
+): PrimaryViewport = ReactiveList.looped<SVGElement, PrimaryViewport>(
+    placeholderReactiveList = ReactiveList.Empty,
+) { childrenLooped ->
     val svgElement = document.createReactiveSvgSvgElement(
         style = ReactiveStyle(
             flexItemStyle = PureFlexItemStyle(

@@ -42,7 +42,7 @@ class EventStreamForEachTests {
         )
 
         // Emit another event after the effect is started
-        eventEmitter.emitExternally(10)
+        eventEmitter.emitExternally(20)
 
         // Verify that the mutable has changed again
         assertEquals(

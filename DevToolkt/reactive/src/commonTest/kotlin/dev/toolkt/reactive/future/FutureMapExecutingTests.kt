@@ -11,9 +11,9 @@ import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class FutureMapReTests {
+class FutureMapExecutingTests {
     @Test
-    fun testMapRe_completedLater_unlistened_endedLater() {
+    fun testMapExecuting_completedLater_unlistened_endedLater() {
         val futureCompleter = FutureCompleter<Int>()
 
         val sourceMutableCell = MutableCell.createExternally(initialValue = 'A')
@@ -25,7 +25,7 @@ class FutureMapReTests {
         )
 
         val mappedFutureEffect = Actions.external {
-            futureCompleter.mapRe {
+            futureCompleter.mapExecuting {
                 val string = "$it:${sourceMutableCell.sample()}"
                 targetMutableCell.set(string)
                 string.lowercase()
@@ -62,11 +62,6 @@ class FutureMapReTests {
                 expected = "x",
                 actual = targetMutableCell.sampleExternally(),
             )
-
-            assertEquals(
-                expected = emptyList(),
-                actual = targetNewValuesVerifier.removeReceivedEvents(),
-            )
         }
 
         assertEquals(
@@ -96,7 +91,7 @@ class FutureMapReTests {
     }
 
     @Test
-    fun testMapRe_completedBefore_unlistened_endedLater() {
+    fun testMapExecuting_completedBefore_unlistened_endedLater() {
         val futureCompleter = FutureCompleter<Int>()
 
         val sourceMutableCell = MutableCell.createExternally(initialValue = 'A')
@@ -108,7 +103,7 @@ class FutureMapReTests {
         )
 
         val mappedFutureEffect = Actions.external {
-            futureCompleter.mapRe {
+            futureCompleter.mapExecuting {
                 val string = "$it:${sourceMutableCell.sample()}"
                 targetMutableCell.set(string)
                 string.lowercase()
@@ -121,55 +116,38 @@ class FutureMapReTests {
         // Complete the future
         futureCompleter.completeExternally(6)
 
+        // Start the effect, but don't start listening to the future
+        val (mappedFuture, handle) = mappedFutureEffect.startExternally()
+
         sourceMutableCell.setExternally('C')
 
-        // Start the effect, but don't start listening to the future
-        val (mappedFuture, handle) = Actions.external {
-            // Start the effect
-            val effective = mappedFutureEffect.start()
-            val mappedFuture = effective.result
-
+        Actions.external {
             // Verify that the mapped future immediately has the expected value
             assertEquals(
                 expected = Future.Fulfilled(
-                    result = "6:B",
+                    result = "6:b",
                 ),
                 actual = mappedFuture.state.sample(),
             )
-
-            // Verify that the target cell new value isn't exposed within the reaction
-            assertEquals(
-                expected = "x",
-                actual = targetMutableCell.sampleExternally(),
-            )
-
-            // Verify the target cell new values within the reaction
-            // Thought: This should fail! How should we verify received events in general? On what level?
-            assertEquals(
-                expected = emptyList(),
-                actual = targetNewValuesVerifier.removeReceivedEvents(),
-            )
-
-            effective
         }
 
         // Verify that the target cell now has its new value
         assertEquals(
-            expected = "6:b",
+            expected = "6:B",
             actual = targetMutableCell.sampleExternally(),
         )
 
         // Verify that the target cell new values eventually received the event
         // (?)
         assertEquals(
-            expected = listOf("6:b"),
+            expected = listOf("6:B"),
             actual = targetNewValuesVerifier.removeReceivedEvents(),
         )
 
         // Verify that the future is (still) fulfilled with the expected value
         assertEquals(
             expected = Future.Fulfilled(
-                result = "6:B",
+                result = "6:b",
             ),
             actual = mappedFuture.state.sampleExternally(),
         )
@@ -179,7 +157,7 @@ class FutureMapReTests {
     }
 
     @Test
-    fun testMapRe_unlistened_endedBefore() {
+    fun testMapExecuting_unlistened_endedBefore() {
         val futureCompleter = FutureCompleter<Int>()
 
         val sourceMutableCell = MutableCell.createExternally(initialValue = 'A')
@@ -191,7 +169,7 @@ class FutureMapReTests {
         )
 
         val mappedFutureEffect = Actions.external {
-            futureCompleter.mapRe {
+            futureCompleter.mapExecuting {
                 val string = "$it:${sourceMutableCell.sample()}"
                 targetMutableCell.set(string)
                 string.lowercase()
@@ -224,7 +202,7 @@ class FutureMapReTests {
     }
 
     @Test
-    fun testMapRe_listened_endedLater() {
+    fun testMapExecuting_listened_endedLater() {
         val futureCompleter = FutureCompleter<Int>()
 
         val sourceMutableCell = MutableCell.createExternally(initialValue = 'A')
@@ -236,7 +214,7 @@ class FutureMapReTests {
         )
 
         val mappedFutureEffect = Actions.external {
-            futureCompleter.mapRe {
+            futureCompleter.mapExecuting {
                 val string = "$it:${sourceMutableCell.sample()}"
                 targetMutableCell.set(string)
                 string.lowercase()
@@ -301,8 +279,8 @@ class FutureMapReTests {
 
         // Verify that the target cell wasn't updated
         assertEquals(
-            expected = listOf("7:F"),
-            actual = targetNewValuesVerifier.removeReceivedEvents(),
+            expected = "7:F",
+            actual = targetMutableCell.sampleExternally(),
         )
 
         // Ensure that the target cell didn't receive any new values
