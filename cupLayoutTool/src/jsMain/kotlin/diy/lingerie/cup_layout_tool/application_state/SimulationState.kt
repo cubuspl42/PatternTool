@@ -12,6 +12,7 @@ class SimulationState {
         val stepDuration = (1.0 / 60.0).seconds
     }
 
+    /*
     val fabricNet = ReactiveFabricNet.diff(
         fabricNet = createTimeoutStream(
             delay = stepDuration,
@@ -34,4 +35,6 @@ class SimulationState {
             )
         },
     )
+
+     */
 }

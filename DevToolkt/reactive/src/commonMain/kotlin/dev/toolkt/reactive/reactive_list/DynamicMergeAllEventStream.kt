@@ -7,7 +7,7 @@ import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.listenInDependent
 
-class DynamicMergeAllEventStream<EventT>(
+internal class DynamicMergeAllEventStream<EventT>(
     private val eventStreams: ReactiveList<EventStream<EventT>>,
 ) : DependentEventStream<EventT>() {
     override fun observe(): Subscription {

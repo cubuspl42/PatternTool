@@ -4,7 +4,7 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.managed_io.Transaction
 
-class StaticMergeAllEventStream<EventT>(
+internal class StaticMergeAllEventStream<EventT>(
     private val sources: List<EventStream<EventT>>,
 ) : DependentEventStream<EventT>() {
     override fun observe(): Subscription = object : UnconditionalListener<EventT>(), Subscription {

@@ -3,7 +3,7 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Transaction
 
-class FilterAtEventStream<EventT> private constructor(
+internal class FilterAtEventStream<EventT> private constructor(
     source: EventStream<EventT>,
     private val predicate: context(MomentContext) (EventT) -> Boolean,
 ) : TransformingEventStream<EventT, EventT>(

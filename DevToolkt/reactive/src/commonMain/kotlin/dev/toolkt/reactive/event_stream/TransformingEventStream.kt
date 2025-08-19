@@ -4,7 +4,7 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.managed_io.Transaction
 
-abstract class TransformingEventStream<E, Er>(
+internal abstract class TransformingEventStream<E, Er>(
     private val source: EventStream<E>,
 ) : DependentEventStream<Er>() {
     final override fun observe(): Subscription = source.listen(

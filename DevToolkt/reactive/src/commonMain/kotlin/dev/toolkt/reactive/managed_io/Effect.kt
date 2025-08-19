@@ -1,12 +1,14 @@
 package dev.toolkt.reactive.managed_io
 
 import dev.toolkt.reactive.ReactiveFinalizationRegistry
+import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.forEach
 import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.future.placeholdStatic
 import dev.toolkt.reactive.future.resultOrNull
+import dev.toolkt.reactive.managed_io.ActionContext
 
 // TODO: Extract `effects` package
 interface Effect<out ResultT> {
@@ -108,6 +110,38 @@ interface Effect<out ResultT> {
                     result = result,
                     handle = handle,
                 )
+            }
+        }
+
+        /**
+         * Subscribe to an external effect system. Both the subscription
+         * and eventual cancelling are performed in the transaction's mutation
+         * phase.
+         *
+         * @return An [Effect.Handle] that can be used to end the external effect.
+         */
+        context(actionContext: ActionContext) fun subscribeExternal(
+            /**
+             * Subscribe to an external effect system.
+             */
+            subscribe: () -> Subscription,
+        ): Effect.Handle = object : Effect.Handle {
+            private lateinit var subscription: Subscription
+
+            init {
+                actionContext.enqueueMutation {
+                    subscription = subscribe()
+                }
+            }
+
+            context(actionContext: ActionContext) override fun end() {
+                if (!this::subscription.isInitialized) {
+                    throw IllegalStateException("Cannot end an effect that hasn't fully started")
+                }
+
+                actionContext.enqueueMutation {
+                    subscription.cancel()
+                }
             }
         }
     }

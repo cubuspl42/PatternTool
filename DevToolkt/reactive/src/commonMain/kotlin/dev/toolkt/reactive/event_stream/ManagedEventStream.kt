@@ -139,6 +139,18 @@ abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
         },
     )
 
+    protected val controller: Controller<EventT>
+        get() = object : Controller<EventT> {
+            override fun accept(event: EventT) {
+                Transaction.executeAll { transaction ->
+                    notify(
+                        transaction = transaction,
+                        event = event,
+                    )
+                }
+            }
+        }
+
     protected abstract fun onResumed()
 
     protected abstract fun onPaused()

@@ -2,7 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.managed_io.Transaction
 
-class MapNotNullEventStream<EventT, TransformedEventT : Any>(
+internal class MapNotNullEventStream<EventT, TransformedEventT : Any>(
     source: EventStream<EventT>,
     private val transform: (EventT) -> TransformedEventT?,
 ) : TransformingEventStream<EventT, TransformedEventT>(

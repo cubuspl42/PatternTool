@@ -28,7 +28,7 @@ class ConcatAllReactiveList<ElementT>(
         val listSize: Int,
     )
 
-    class ChangesEventStream<ElementT>(
+    internal class ChangesEventStream<ElementT>(
         private val lists: ReactiveList<ReactiveList<ElementT>>,
     ) : DependentEventStream<Change<ElementT>>() {
         override fun observe(): Subscription = object : Subscription {
