@@ -91,20 +91,17 @@ object Actions {
         },
     )
 
+    context(momentContext: MomentContext) fun <ResultT> local(
+        block: context(ActionContext) () -> ResultT,
+    ): ResultT = with(momentContext.transaction) {
+        block()
+    }
+
     context(actionContext: ActionContext) fun mutate(
         mutate: () -> Unit,
     ) {
         actionContext.enqueueMutation(
             mutate = mutate,
         )
-    }
-
-    context(actionContext: ActionContext) fun defer(
-        action: context(ActionContext) () -> Unit,
-    ) {
-        TODO()
-//        reactionContext.enqueueAction(
-//            action = action,
-//        )
     }
 }

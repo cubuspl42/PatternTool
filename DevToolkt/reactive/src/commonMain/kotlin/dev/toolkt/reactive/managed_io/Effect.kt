@@ -70,16 +70,6 @@ interface Effect<out ResultT> {
             }
         }
 
-        fun <ResultT> initialized(
-            init: context(ActionContext) () -> Unit,
-            effect: Effect<ResultT>,
-        ): Effect<ResultT> = prefaced(
-            preface = {
-                Actions.defer(init)
-            },
-            effect = effect,
-        )
-
         fun <V> deflectEffectively(
             initialValueEffect: Effect<V>,
             selectNextValueEffectFuture: context(MomentContext) (value: V) -> Future<Effect<V>>,

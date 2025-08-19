@@ -222,7 +222,7 @@ abstract class ReactiveList<out E> {
             placeholderReactiveList: ReactiveList<ElementT>,
             block: (ReactiveList<ElementT>) -> Effect<Pair<ResultT, ReactiveList<ElementT>>>,
         ): Effect<ResultT> =
-            EventStream.loopedEffectful { loopedReactiveListSpark: EventStream<ReactiveList<ElementT>> ->
+            EventStream.loopedInEffect { loopedReactiveListSpark: EventStream<ReactiveList<ElementT>> ->
                 val diffedReactiveList = ReactiveList.diffDynamic(
                     reactiveListCell = loopedReactiveListSpark.holdUnmanaged(placeholderReactiveList),
                 )

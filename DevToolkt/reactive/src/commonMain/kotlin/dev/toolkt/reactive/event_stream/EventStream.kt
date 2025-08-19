@@ -102,7 +102,7 @@ abstract class EventStream<out E> : EventSource<E> {
             TODO()
         }
 
-        fun <EventT, ResultT> loopedEffectful(
+        fun <EventT, ResultT> loopedInEffect(
             block: (EventStream<EventT>) -> Effect<Pair<ResultT, EventStream<EventT>>>,
         ): Effect<ResultT> = Effect.looped<ResultT, EventStream<EventT>> { lazyEventStream: Lazy<EventStream<EventT>> ->
             block(
