@@ -139,6 +139,41 @@ abstract class EventStream<out E> : EventSource<E> {
         ): EventStream<E> = StaticMergeAllEventStream(
             sources = sources,
         )
+
+        /**
+         * Creates an [EventStream] that is driven by an external source, assuming
+         * that the external events happen independently.
+         *
+         * @return An [EventStream] that emits events from the external source.
+         */
+        fun <EventT> subscribeExternal(
+            subscribe: (Controller<EventT>) -> Subscription,
+        ): EventStream<EventT> = PassiveExternalEventStream.construct(
+            subscribe = subscribe,
+        )
+
+        /**
+         * Creates an [EventStream] that is driven by an external source activated
+         * by this call.
+         *
+         * @return An [Effect] that, once started, gives an [EventStream] driven
+         * by an external source. Once the effect is cancelled, the external
+         * source is deactivated.
+         */
+        context(actionContext: ActionContext) fun <EventT> activateExternal(
+            activate: (Controller<EventT>) -> Subscription,
+        ): Effect<EventStream<EventT>> = object : Effect<EventStream<EventT>> {
+            context(actionContext: ActionContext) override fun start(): Effective<EventStream<EventT>> =
+                ActiveExternalEventStream.construct(
+                    activate = activate,
+                )
+        }
+    }
+
+    interface Controller<EventT> {
+        fun accept(
+            event: EventT,
+        )
     }
 
     abstract fun <Er> map(

@@ -2,7 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.managed_io.Transaction
 
-class FilterEventStream<EventT> private constructor(
+internal class FilterEventStream<EventT> private constructor(
     source: EventStream<EventT>,
     private val predicate: (EventT) -> Boolean,
 ) : TransformingEventStream<EventT, EventT>(

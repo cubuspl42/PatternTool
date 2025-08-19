@@ -11,7 +11,7 @@ import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.managed_io.Transaction
 
-class FuseReactiveList<ElementT>(
+internal class FuseReactiveList<ElementT>(
     private val source: ReactiveList<Cell<ElementT>>,
 ) : ActiveReactiveList<ElementT>() {
     class ChangesEventStream<E>(

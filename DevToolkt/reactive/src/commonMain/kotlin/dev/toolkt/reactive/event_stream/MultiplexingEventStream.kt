@@ -1,13 +1,12 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.managed_io.Transaction
 
 // Thought: Merge with DivertEventStream?!
-abstract class MultiplexingEventStream<N, E> : DependentEventStream<E>() {
+internal abstract class MultiplexingEventStream<N, E> : DependentEventStream<E>() {
     override fun observe(): Subscription = object : Subscription {
         private val outerSubscription = nestedObject.newValues.listen(
             listener = object : UnconditionalListener<N>() {

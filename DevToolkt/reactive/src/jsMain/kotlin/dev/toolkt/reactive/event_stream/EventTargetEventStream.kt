@@ -5,7 +5,7 @@ import org.w3c.dom.AddEventListenerOptions
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 
-class EventTargetEventStream(
+internal class EventTargetEventStream(
     private val eventTarget: EventTarget,
     private val type: String,
 ) : DependentEventStream<Event>() {

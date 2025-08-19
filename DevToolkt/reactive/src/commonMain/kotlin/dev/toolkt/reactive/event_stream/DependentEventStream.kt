@@ -2,7 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Subscription
 
-abstract class DependentEventStream<EventT> : ManagedEventStream<EventT>() {
+internal abstract class DependentEventStream<EventT> : ManagedEventStream<EventT>() {
     private var subscription: Subscription? = null
 
     final override fun onResumed() {

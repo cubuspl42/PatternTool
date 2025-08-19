@@ -3,11 +3,11 @@ package dev.toolkt.dom.reactive.utils
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.fetch
 import dev.toolkt.reactive.event_stream.getEventStream
-import kotlinx.browser.window
+import dev.toolkt.reactive.managed_io.ActionContext
+import dev.toolkt.reactive.managed_io.Effect
 import org.w3c.dom.Window
 import org.w3c.dom.events.Event
 import kotlin.time.Duration
@@ -40,46 +40,40 @@ fun Window.requestAnimationFrames(
     }
 }
 
-fun Window.setTimeouts(
-    delay: Duration,
-    callback: () -> Unit,
-): Subscription = object : Subscription {
-    var handle: Int = setNextTimeout()
+context(actionContext: ActionContext) fun Window.createIntervalAnimationFrameStream(): Effect<EventStream<Double>> =
+    EventStream.activateExternal { controller ->
+        object : Subscription {
+            var requestId: Int = requestNextFrame()
 
-    private fun setNextTimeout(): Int = setTimeout(
-        handler = {
-            handle = setNextTimeout()
+            private fun requestNextFrame(): Int = requestAnimationFrame { timestamp ->
+                requestId = requestNextFrame()
 
-            callback()
-        },
-        timeout = delay.inWholeMilliseconds.toInt(),
-    )
+                controller.accept(timestamp)
+            }
 
-    override fun cancel() {
-        clearTimeout(handle)
+            override fun cancel() {
+                cancelAnimationFrame(requestId)
+            }
+        }
     }
-}
 
-private class AnimationFrameEventStream() : DependentEventStream<Unit>() {
-    override fun observe(): Subscription = window.requestAnimationFrames {
-        notify(
-            transaction = TODO(),
-            event = Unit,
-        )
-    }
-}
-
-fun createAnimationFrameStream(): EventStream<Unit> = AnimationFrameEventStream()
-
-fun createTimeoutStream(
+context(actionContext: ActionContext) fun Window.createIntervalTimeoutStream(
     delay: Duration,
-) = object : DependentEventStream<Unit>() {
-    override fun observe(): Subscription = window.setTimeouts(
-        delay = delay,
-    ) {
-        notify(
-            transaction = TODO(),
-            event = Unit
+): Effect<EventStream<Unit>> = EventStream.activateExternal { controller ->
+    object : Subscription {
+        var handle: Int = setNextTimeout()
+
+        private fun setNextTimeout(): Int = setTimeout(
+            handler = {
+                handle = setNextTimeout()
+
+                controller.accept(Unit)
+            },
+            timeout = delay.inWholeMilliseconds.toInt(),
         )
+
+        override fun cancel() {
+            clearTimeout(handle)
+        }
     }
 }

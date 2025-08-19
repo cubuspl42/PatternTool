@@ -12,9 +12,9 @@ internal class MapExecutingEventStream<TransformedEventT> private constructor() 
         context(actionContext: ActionContext) fun <EventT, TransformedEventT> construct(
             source: EventStream<EventT>,
             transform: context(ActionContext) (EventT) -> TransformedEventT,
-        ): Effective<MapExecutingEventStream<TransformedEventT>> = MapExecutingEventStream<TransformedEventT>().let {
+        ): Effective<MapExecutingEventStream<TransformedEventT>> = MapExecutingEventStream<TransformedEventT>().let { self ->
             Effective(
-                result = it,
+                result = self,
                 handle = source.watch(
                     listener = object : UnconditionalListener<EventT>() {
                         override fun handleUnconditionally(
@@ -25,7 +25,7 @@ internal class MapExecutingEventStream<TransformedEventT> private constructor() 
                                 transform(event)
                             }
 
-                            it.notify(
+                            self.notify(
                                 transaction = transaction,
                                 event = transformedEvent,
                             )
