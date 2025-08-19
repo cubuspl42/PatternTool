@@ -243,14 +243,13 @@ sealed class Cell<out V> {
 
 fun <V> Cell<V>.forEach(
     action: context(ActionContext) (V) -> Unit,
-): Trigger = Trigger.initialized(
-    init = {
-        action(sample())
-    },
-    effect = newValues.forEach { newValue ->
+): Trigger = Trigger.prepared {
+    action(sample())
+
+    newValues.forEach { newValue ->
         action(newValue)
-    },
-)
+    }
+}
 
 /**
  * @return An effect:

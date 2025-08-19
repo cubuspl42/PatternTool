@@ -3,6 +3,7 @@ package dev.toolkt.dom.reactive.utils
 import dev.toolkt.dom.pure.collections.childNodesList
 import dev.toolkt.dom.reactive.components.Component
 import dev.toolkt.dom.reactive.style.ReactiveStyle
+import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.managed_io.Effect
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Trigger
@@ -29,13 +30,15 @@ context(momentContext: MomentContext) fun <ElementT : Element> Document.createRe
 ): ElementT = createElement().apply {
     @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE") (this as ElementCSSInlineStyle)
 
-    style?.bind(
-        styleDeclaration = this.style,
-    )?.startBound(target = this)
+    Actions.local {
+        style?.bind(
+            styleDeclaration = this.style,
+        )?.startBound(target = this)
 
-    children?.bind(
-        mutableList = this.childNodesList,
-    )?.startBound(target = this)
+        children?.bind(
+            mutableList = this.childNodesList,
+        )?.startBound(target = this)
+    }
 }
 
 fun <ElementT : Element> Document.createReactiveComponent(

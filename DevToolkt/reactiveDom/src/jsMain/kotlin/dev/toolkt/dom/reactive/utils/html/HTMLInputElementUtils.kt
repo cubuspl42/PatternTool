@@ -7,6 +7,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.cast
 import dev.toolkt.reactive.event_stream.getEventStream
 import dev.toolkt.reactive.event_stream.holdUnmanaged
+import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import org.w3c.dom.Document
 import org.w3c.dom.HTMLInputElement
@@ -19,6 +20,7 @@ abstract external class HTMLTypedInputElement<T : PureInputType> : HTMLInputElem
 
 typealias HTMLCheckboxElement = HTMLTypedInputElement<PureInputType.Checkbox>
 
+context(momentContext: MomentContext)
 fun <T : PureInputType> Document.createReactiveHtmlInputElement(
     type: T,
     style: ReactiveStyle? = null,

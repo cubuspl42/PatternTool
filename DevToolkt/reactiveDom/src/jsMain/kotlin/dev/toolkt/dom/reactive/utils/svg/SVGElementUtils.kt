@@ -1,11 +1,15 @@
 package dev.toolkt.dom.reactive.utils.svg
 
+import dev.toolkt.dom.pure.collections.pointList
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveElement
 import dev.toolkt.dom.reactive.utils.svg.transforms.bind
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.managed_io.Actions
+import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.managed_io.startBound
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import dev.toolkt.reactive.reactive_list.bind
 import org.w3c.dom.Document
@@ -28,7 +32,7 @@ import org.w3c.dom.svg.SVGPathElement
 import org.w3c.dom.svg.SVGSVGElement
 import svg.SVGPoint
 
-fun Document.createReactiveSvgSvgElement(
+context(momentContext: MomentContext) fun Document.createReactiveSvgSvgElement(
     style: ReactiveStyle? = null,
     children: ReactiveList<SVGElement>? = null,
 ): SVGSVGElement = createReactiveElement(
@@ -37,7 +41,7 @@ fun Document.createReactiveSvgSvgElement(
     children = children,
 )
 
-fun Document.createReactiveSvgCircleElement(
+context(momentContext: MomentContext) fun Document.createReactiveSvgCircleElement(
     style: ReactiveStyle? = null,
     position: Cell<Point>,
     radius: Double,
@@ -56,7 +60,7 @@ fun Document.createReactiveSvgCircleElement(
     this.r.baseValue = radius
 }
 
-fun Document.createReactiveSvgPathElement(
+context(momentContext: MomentContext) fun Document.createReactiveSvgPathElement(
     style: ReactiveStyle? = null,
     pathSegments: ReactiveList<SVGPathSegment>,
 ): SVGPathElement = createReactiveElement(
@@ -74,19 +78,21 @@ fun Document.createReactiveSvgPathElement(
     }
 }
 
-fun Document.createReactiveSvgPolylineElement(
+context(momentContext: MomentContext) fun Document.createReactiveSvgPolylineElement(
     style: ReactiveStyle? = null,
     points: ReactiveList<SVGPoint>,
 ): SVGElement = createReactiveElement(
     createElement = Document::createSvgPolylineElement,
     style = style,
 ).apply {
-    points.bind(
-        target = this,
-    )
+    Actions.local {
+        points.bind(
+            mutableList = pointList,
+        ).startBound(target = this)
+    }
 }
 
-fun Document.createReactiveSvgLineElement(
+context(momentContext: MomentContext) fun Document.createReactiveSvgLineElement(
     style: ReactiveStyle? = null,
     start: Cell<Point>,
     end: Cell<Point>,
@@ -107,7 +113,7 @@ fun Document.createReactiveSvgLineElement(
     )
 }
 
-fun Document.createReactiveSvgGroupElement(
+context(momentContext: MomentContext) fun Document.createReactiveSvgGroupElement(
     svgElement: SVGSVGElement,
     style: ReactiveStyle? = null,
     transformation: Cell<Transformation>?,
@@ -120,7 +126,7 @@ fun Document.createReactiveSvgGroupElement(
     children = children,
 )
 
-private fun <SvgGraphicsElementT : SVGGraphicsElement> Document.createReactiveSvgGraphicsElement(
+context(momentContext: MomentContext) private fun <SvgGraphicsElementT : SVGGraphicsElement> Document.createReactiveSvgGraphicsElement(
     svgElement: SVGSVGElement,
     createSvgGraphicsElement: Document.() -> SvgGraphicsElementT,
     style: ReactiveStyle? = null,
