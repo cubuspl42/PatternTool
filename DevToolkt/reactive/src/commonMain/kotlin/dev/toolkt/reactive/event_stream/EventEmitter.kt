@@ -22,6 +22,7 @@ class EventEmitter<EventT> : ManagedEventStream<EventT>() {
     }
 
     context(actionContext: ActionContext) fun emit(event: EventT) {
+        // FIXME: Enqueue this! Test should catch this
         notify(
             transaction = actionContext.transaction,
             event = event,

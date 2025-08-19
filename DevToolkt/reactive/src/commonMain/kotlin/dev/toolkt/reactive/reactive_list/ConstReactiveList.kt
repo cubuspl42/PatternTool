@@ -6,7 +6,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 data class ConstReactiveList<out E>(
     private val constElements: List<E>,
 ) : ReactiveList<E>() {
-    override val currentElements: List<E>
+    override val currentElementsUnmanaged: List<E>
         get() = constElements
 
     override val elements: Cell<List<E>> = Cell.of(constElements)

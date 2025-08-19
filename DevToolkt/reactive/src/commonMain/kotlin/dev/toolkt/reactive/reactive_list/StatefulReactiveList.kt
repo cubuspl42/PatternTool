@@ -13,7 +13,7 @@ abstract class StatefulReactiveList<E>(
 ) : ActiveReactiveList<E>() {
     private val storedElements: MutableList<E> = initialElements.toMutableList()
 
-    override val currentElements: List<E>
+    override val currentElementsUnmanaged: List<E>
         get() = storedElements.toList()
 
     override val changes: EventStream<Change<E>> = object : DependentEventStream<Change<E>>() {

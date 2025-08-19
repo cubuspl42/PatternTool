@@ -38,7 +38,7 @@ class CellMapAtTests {
             )
 
             // Start listening to the cell's new values
-            val newValuesVerifier = EventStreamVerifier(
+            val newValuesVerifier = EventStreamVerifier.setup(
                 eventStream = mappedCell.newValues,
             )
 

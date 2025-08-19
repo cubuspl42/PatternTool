@@ -15,7 +15,7 @@ class CanvasPolylineElement(
     private val points: ReactiveList<Point>,
 ) : CanvasPathElement() {
     override fun describePath(context: CanvasRenderingContext2D) {
-        val (firstPoint, trailingPoints) = points.currentElements.uncons() ?: return
+        val (firstPoint, trailingPoints) = points.currentElementsUnmanaged.uncons() ?: return
 
         context.moveTo(firstPoint)
 

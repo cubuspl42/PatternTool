@@ -25,7 +25,7 @@ class ReactiveListMergeAllTests {
             eventStreams = mutableEventStreams,
         )
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = mergedStream,
         )
 
@@ -61,7 +61,7 @@ class ReactiveListMergeAllTests {
             eventStreams = mutableEventStreams,
         )
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = mergedStream,
         )
 
@@ -99,7 +99,7 @@ class ReactiveListMergeAllTests {
             eventStreams = mutableEventStreams,
         )
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = mergedStream,
         )
 
@@ -137,7 +137,7 @@ class ReactiveListMergeAllTests {
             eventStreams = mutableEventStreams,
         )
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = mergedStream,
         )
 

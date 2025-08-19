@@ -11,7 +11,7 @@ class EventStreamMapTests {
 
         val mappedStream = eventEmitter.map { "$it" }
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = mappedStream,
         )
 

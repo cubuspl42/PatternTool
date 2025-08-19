@@ -2,7 +2,6 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
-import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -56,7 +55,7 @@ class ReactiveListConcatAllTests {
                 220,
                 230,
             ),
-            actual = concatenatedReactiveList.currentElements,
+            actual = concatenatedReactiveList.currentElementsUnmanaged,
         )
     }
 
@@ -96,7 +95,7 @@ class ReactiveListConcatAllTests {
 
         val concatenatedReactiveList = ReactiveList.concatAll(mutableReactiveLists)
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = concatenatedReactiveList.changes,
         )
 
@@ -114,7 +113,7 @@ class ReactiveListConcatAllTests {
                 220,
                 230,
             ),
-            actual = concatenatedReactiveList.currentElements,
+            actual = concatenatedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -166,7 +165,7 @@ class ReactiveListConcatAllTests {
 
         val concatenatedReactiveList = ReactiveList.concatAll(mutableReactiveLists)
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = concatenatedReactiveList.changes,
         )
 
@@ -186,7 +185,7 @@ class ReactiveListConcatAllTests {
                 220,
                 230,
             ),
-            actual = concatenatedReactiveList.currentElements,
+            actual = concatenatedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -218,7 +217,7 @@ class ReactiveListConcatAllTests {
                 220,
                 230,
             ),
-            actual = concatenatedReactiveList.currentElements,
+            actual = concatenatedReactiveList.currentElementsUnmanaged,
         )
 
         // Ensure that the indices are shifted
@@ -271,7 +270,7 @@ class ReactiveListConcatAllTests {
 
         val concatenatedReactiveList = ReactiveList.concatAll(mutableReactiveLists)
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = concatenatedReactiveList.changes,
         )
 
@@ -287,7 +286,7 @@ class ReactiveListConcatAllTests {
                 220,
                 230,
             ),
-            actual = concatenatedReactiveList.currentElements,
+            actual = concatenatedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -315,7 +314,7 @@ class ReactiveListConcatAllTests {
                 221,
                 230,
             ),
-            actual = concatenatedReactiveList.currentElements,
+            actual = concatenatedReactiveList.currentElementsUnmanaged,
         )
 
         // Ensure that the indices are shifted
@@ -377,7 +376,7 @@ class ReactiveListConcatAllTests {
 
         val concatenatedReactiveList = ReactiveList.concatAll(mutableReactiveLists)
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = concatenatedReactiveList.changes,
         )
 
@@ -395,7 +394,7 @@ class ReactiveListConcatAllTests {
                 220,
                 230,
             ),
-            actual = concatenatedReactiveList.currentElements,
+            actual = concatenatedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -460,7 +459,7 @@ class ReactiveListConcatAllTests {
 
         val concatenatedReactiveList = ReactiveList.concatAll(mutableReactiveLists)
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = concatenatedReactiveList.changes,
         )
 
@@ -481,7 +480,7 @@ class ReactiveListConcatAllTests {
                 220,
                 230,
             ),
-            actual = concatenatedReactiveList.currentElements,
+            actual = concatenatedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -533,7 +532,7 @@ class ReactiveListConcatAllTests {
 
         val concatenatedReactiveList = ReactiveList.concatAll(mutableReactiveLists)
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = concatenatedReactiveList.changes,
         )
 
@@ -548,7 +547,7 @@ class ReactiveListConcatAllTests {
                 220,
                 230,
             ),
-            actual = concatenatedReactiveList.currentElements,
+            actual = concatenatedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(

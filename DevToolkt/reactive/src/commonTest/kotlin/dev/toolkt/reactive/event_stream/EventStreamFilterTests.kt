@@ -11,7 +11,7 @@ class EventStreamFilterTests {
 
         val mappedStream = eventEmitter.filter { it % 2 == 0 }
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = mappedStream,
         )
 

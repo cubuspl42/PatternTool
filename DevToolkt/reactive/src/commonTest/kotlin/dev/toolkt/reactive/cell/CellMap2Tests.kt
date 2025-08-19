@@ -48,7 +48,7 @@ class CellMap2Tests {
             "$value1:$value2"
         }
 
-        val newValuesVerifier = EventStreamVerifier(
+        val newValuesVerifier = EventStreamVerifier.setup(
             eventStream = mappedCell.newValues,
         )
 

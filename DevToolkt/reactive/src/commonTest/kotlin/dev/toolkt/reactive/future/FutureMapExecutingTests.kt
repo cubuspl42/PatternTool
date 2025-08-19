@@ -20,7 +20,7 @@ class FutureMapExecutingTests {
 
         val targetMutableCell = MutableCell.createExternally(initialValue = "x")
 
-        val targetNewValuesVerifier = EventStreamVerifier(
+        val targetNewValuesVerifier = EventStreamVerifier.setup(
             eventStream = targetMutableCell.newValues,
         )
 
@@ -37,7 +37,7 @@ class FutureMapExecutingTests {
         // Start the effect, but don't start listening to the future
         val (mappedFuture, handle) = mappedFutureEffect.startExternally()
 
-        val mappedFutureOnResultVerifier = EventStreamVerifier(
+        val mappedFutureOnResultVerifier = EventStreamVerifier.setup(
             eventStream = mappedFuture.onResult,
         )
 
@@ -98,7 +98,7 @@ class FutureMapExecutingTests {
 
         val targetMutableCell = MutableCell.createExternally(initialValue = "x")
 
-        val targetNewValuesVerifier = EventStreamVerifier(
+        val targetNewValuesVerifier = EventStreamVerifier.setup(
             eventStream = targetMutableCell.newValues,
         )
 
@@ -164,7 +164,7 @@ class FutureMapExecutingTests {
 
         val targetMutableCell = MutableCell.createExternally(initialValue = "x")
 
-        val targetNewValuesVerifier = EventStreamVerifier(
+        val targetNewValuesVerifier = EventStreamVerifier.setup(
             eventStream = targetMutableCell.newValues,
         )
 
@@ -209,7 +209,7 @@ class FutureMapExecutingTests {
 
         val targetMutableCell = MutableCell.createExternally(initialValue = "x")
 
-        val targetNewValuesVerifier = EventStreamVerifier(
+        val targetNewValuesVerifier = EventStreamVerifier.setup(
             eventStream = targetMutableCell.newValues,
         )
 
@@ -225,7 +225,7 @@ class FutureMapExecutingTests {
         val (mappedFuture, handle) = mappedFutureEffect.startExternally()
 
         // Start listening to the future
-        val onResultVerifier = EventStreamVerifier(
+        val onResultVerifier = EventStreamVerifier.setup(
             eventStream = mappedFuture.onResult,
         )
 

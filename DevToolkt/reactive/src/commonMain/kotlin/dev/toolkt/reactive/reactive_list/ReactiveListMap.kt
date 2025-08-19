@@ -4,7 +4,7 @@ class ReactiveListMap<ElementT, TransformedElementT>(
     source: ReactiveList<ElementT>,
     transform: (ElementT) -> TransformedElementT,
 ) : StatefulReactiveList<TransformedElementT>(
-    initialElements = source.currentElements.map(transform),
+    initialElements = source.currentElementsUnmanaged.map(transform),
     givenChanges = source.changes.map { change ->
         change.map(transform)
     },

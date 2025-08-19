@@ -10,7 +10,7 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
-import dev.toolkt.reactive.event_stream.hold
+import dev.toolkt.reactive.event_stream.holdUnmanaged
 import diy.lingerie.cup_layout_tool.UserBezierMesh
 import diy.lingerie.cup_layout_tool.application_state.interaction_state.InteractionState
 import diy.lingerie.cup_layout_tool.application_state.PresentationState
@@ -160,7 +160,7 @@ fun handleFocusedHandleStateEvents(
     canvas: HTMLCanvasElement,
     myRenderer: MyRenderer,
     focusedHandleState: FocusedHandleState,
-): Trigger = Effect.preparedPure {
+): Trigger = Effect.plain {
     focusedHandleState.doDragSlot.bind(
         canvas.onMouseDragGestureStarted(
             button = ButtonId.LEFT,
@@ -176,7 +176,7 @@ fun handleFocusedHandleStateEvents(
 fun handleHandleDragStateKeyboardEvents(
     canvas: HTMLCanvasElement,
     handleDragState: HandleDragState,
-): Trigger = Effect.preparedPure {
+): Trigger = Effect.plain {
     handleDragState.doAbortSlot.bind(
         canvas.getKeyDownEventStream().filter { it.key == "Escape" }.units(),
     )
@@ -229,7 +229,7 @@ private fun Cell<Point>.trackTranslation(): Cell<PrimitiveTransformation.Transla
 
     return newValues.map {
         initialPoint.translationTo(it)
-    }.hold(
+    }.holdUnmanaged(
         initialValue = PrimitiveTransformation.Translation.None,
     )
 }

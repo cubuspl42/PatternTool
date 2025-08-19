@@ -9,7 +9,7 @@ class EventEmitterTests {
     fun testEventEmitter() {
         val eventEmitter = EventEmitter.createExternally<String>()
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = eventEmitter,
         )
 

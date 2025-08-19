@@ -14,7 +14,7 @@ class MutableCellTests {
             initialValue = 0,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mutableCell.changes,
         )
 

@@ -31,7 +31,7 @@ class EventStreamInvokeEachTests {
 
         val (resultStream, processHandle) = program.execute()
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = resultStream,
         )
 

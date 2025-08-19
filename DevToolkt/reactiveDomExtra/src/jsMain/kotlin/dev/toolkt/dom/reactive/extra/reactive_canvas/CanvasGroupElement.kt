@@ -12,7 +12,7 @@ class CanvasGroupElement(
     private val children: ReactiveList<CanvasRenderableElement>,
 ) : CanvasTransformableElement() {
     override fun renderTransformable(context: CanvasRenderingContext2D) {
-        children.currentElements.forEach {
+        children.currentElementsUnmanaged.forEach {
             context.save()
 
             it.render(context = context)

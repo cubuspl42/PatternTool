@@ -4,12 +4,11 @@
 package dev.toolkt.reactive.managed_io
 
 import dev.toolkt.core.platform.PlatformFinalizationRegistry
-import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.hold
+import dev.toolkt.reactive.event_stream.holdUnmanaged
 
 interface ProcessHandle {
     fun stop()
@@ -190,7 +189,7 @@ fun <V> Cell<Program<V>>.executeCurrent(): Program<Cell<V>> {
             }.execute()
 
             return Pair(
-                newValues.hold(initialValue),
+                newValues.holdUnmanaged(initialValue),
                 object : ProcessHandle {
                     override fun stop() {
                         updatingProcessHandle.stop()

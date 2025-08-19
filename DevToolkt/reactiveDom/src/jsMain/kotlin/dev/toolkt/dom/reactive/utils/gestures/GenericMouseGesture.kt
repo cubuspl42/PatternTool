@@ -12,7 +12,7 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.switch
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.hold
+import dev.toolkt.reactive.event_stream.holdUnmanaged
 import dev.toolkt.reactive.event_stream.mergeWith
 import dev.toolkt.reactive.future.Future
 import org.w3c.dom.Element
@@ -42,7 +42,7 @@ class MouseDragGesture(
     private val targetElement: Element,
     val initialMouseEvent: MouseEvent,
 ) {
-    fun trackMouseMovement(): Cell<MouseEvent> = targetElement.getMouseMoveEventStream().hold(
+    fun trackMouseMovement(): Cell<MouseEvent> = targetElement.getMouseMoveEventStream().holdUnmanaged(
         initialValue = initialMouseEvent,
     )
 
@@ -58,7 +58,7 @@ class SvgMouseGesture(
 fun Element.onMouseOverGestureStarted(): EventStream<GenericMouseGesture> =
     this.getMouseEnterEventStream().map { mouseEnterEvent ->
         GenericMouseGesture(
-            newestMouseEvent = getMouseMoveEventStream().hold(mouseEnterEvent),
+            newestMouseEvent = getMouseMoveEventStream().holdUnmanaged(mouseEnterEvent),
             onFinished = getMouseLeaveEventStream().next().unit(),
         )
     }
@@ -75,7 +75,7 @@ private fun <FeatureT : Any> Element.trackMouseFeature(
     initialValue = Cell.of(null),
     switchPhase1 = {
         getMouseEnterEventStream().next().map { mouseEnterEvent ->
-            getMouseMoveEventStream().map(extractFeature).hold(extractFeature(mouseEnterEvent))
+            getMouseMoveEventStream().map(extractFeature).holdUnmanaged(extractFeature(mouseEnterEvent))
         }
     },
     switchPhase2 = {
@@ -114,7 +114,7 @@ fun SVGElement.onSvgDragGestureStarted(
     SvgMouseGesture(
         point = container.getMouseMoveEventStream().map {
             it.offsetPoint
-        }.hold(initialTargetOffsetPoint),
+        }.holdUnmanaged(initialTargetOffsetPoint),
         onFinished = terminatingEventStream.next().unit(),
     )
 }

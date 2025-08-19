@@ -11,7 +11,7 @@ class FutureHoldTests {
 
         val holdCell = futureCompleter.hold(-1)
 
-        val newValuesVerifier = EventStreamVerifier(
+        val newValuesVerifier = EventStreamVerifier.setup(
             eventStream = holdCell.newValues,
         )
 

@@ -28,7 +28,7 @@ class ReactiveListMapTests {
                 -20,
                 -30,
             ),
-            actual = mappedList.currentElements,
+            actual = mappedList.currentElementsUnmanaged,
         )
     }
 
@@ -45,7 +45,7 @@ class ReactiveListMapTests {
 
         val mappedList = mutableReactiveList.map { it.toString() }
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mappedList.changes,
         )
 
@@ -73,7 +73,7 @@ class ReactiveListMapTests {
                 "21",
                 "30",
             ),
-            actual = mappedList.currentElements,
+            actual = mappedList.currentElementsUnmanaged,
         )
     }
 
@@ -90,7 +90,7 @@ class ReactiveListMapTests {
 
         val mappedList = mutableReactiveList.map { it.toString() }
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mappedList.changes,
         )
 
@@ -120,7 +120,7 @@ class ReactiveListMapTests {
                 "20",
                 "30",
             ),
-            actual = mappedList.currentElements,
+            actual = mappedList.currentElementsUnmanaged,
         )
     }
 
@@ -137,7 +137,7 @@ class ReactiveListMapTests {
 
         val mappedList = mutableReactiveList.map { it.toString() }
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mappedList.changes,
         )
 
@@ -163,7 +163,7 @@ class ReactiveListMapTests {
                 "20",
                 "30",
             ),
-            actual = mappedList.currentElements,
+            actual = mappedList.currentElementsUnmanaged,
         )
     }
 
@@ -182,7 +182,7 @@ class ReactiveListMapTests {
         var observedCurrentElements: List<String> = listOf()
 
         mappedList.changes.listenExternally {
-            observedCurrentElements = mappedList.currentElements
+            observedCurrentElements = mappedList.currentElementsUnmanaged
         }
 
         mutableReactiveList.setExternally(
@@ -197,7 +197,7 @@ class ReactiveListMapTests {
 
         assertEquals(
             expected = listOf("0", "11", "20"),
-            actual = mappedList.currentElements,
+            actual = mappedList.currentElementsUnmanaged,
         )
     }
 }

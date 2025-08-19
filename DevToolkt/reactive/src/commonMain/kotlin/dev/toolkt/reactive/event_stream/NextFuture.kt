@@ -7,5 +7,5 @@ class NextFuture<E>(
 ) : ProperFuture<E>() {
     override val onResult: EventStream<E> = source.singleUnmanaged()
 
-    override val state = onFulfilled.hold(Pending)
+    override val state = onFulfilled.holdUnmanaged(Pending)
 }

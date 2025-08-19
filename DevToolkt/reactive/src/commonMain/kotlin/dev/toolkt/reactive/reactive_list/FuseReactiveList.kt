@@ -4,7 +4,6 @@ import dev.toolkt.core.collections.mutableIndexedListOf
 import dev.toolkt.core.delegates.weakLazy
 import dev.toolkt.core.iterable.removeRange
 import dev.toolkt.core.range.single
-import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.cell.Cell
@@ -69,7 +68,7 @@ class FuseReactiveList<ElementT>(
             private val innerSubscriptions = mutableIndexedListOf<Subscription>()
 
             init {
-                source.currentElements.forEachIndexed { index, cell ->
+                source.currentElementsUnmanaged.forEachIndexed { index, cell ->
                     subscribeToInner(
                         index = index,
                         innerCell = cell,
@@ -130,8 +129,8 @@ class FuseReactiveList<ElementT>(
         ChangesEventStream(source = source)
     }
 
-    override val currentElements: List<ElementT>
-        get() = source.currentElements.map {
+    override val currentElementsUnmanaged: List<ElementT>
+        get() = source.currentElementsUnmanaged.map {
             it.currentValueUnmanaged
         }
 }

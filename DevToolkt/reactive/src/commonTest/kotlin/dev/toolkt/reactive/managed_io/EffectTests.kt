@@ -26,9 +26,11 @@ class EffectTests {
             memoryMutableCell.set(it)
         }
 
-        @Suppress("VariableNeverRead") var mutableTarget: Any? = List(100_000) { 1 }.also {
-            // Start the effect bound to the target object
-            sourceEffect.startBound(target = it)
+        @Suppress("VariableNeverRead") var mutableTarget: Any? = Actions.external {
+            List(100_000) { 1 }.also {
+                // Start the effect bound to the target object
+                sourceEffect.startBound(target = it)
+            }
         }
 
         // Verify that the effect subscribed to the source stream

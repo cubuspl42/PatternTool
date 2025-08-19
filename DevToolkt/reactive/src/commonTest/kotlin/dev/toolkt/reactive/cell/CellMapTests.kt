@@ -29,7 +29,7 @@ class CellMapTests {
             actual = mappedCell.sampleExternally(),
         )
 
-        val newValuesVerifier = EventStreamVerifier(
+        val newValuesVerifier = EventStreamVerifier.setup(
             eventStream = mappedCell.newValues,
         )
 
@@ -84,7 +84,7 @@ class CellMapTests {
             actual = mappedCell.sampleExternally(),
         )
 
-        val newValuesVerifier = EventStreamVerifier(
+        val newValuesVerifier = EventStreamVerifier.setup(
             eventStream = mappedCell.newValues,
         )
 

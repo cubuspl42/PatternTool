@@ -14,9 +14,9 @@ class EventStreamHoldTests {
     fun testHold() {
         val eventEmitter = EventEmitter<Int>()
 
-        val heldCell = eventEmitter.hold(0)
+        val heldCell = eventEmitter.holdUnmanaged(0)
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = heldCell.changes,
         )
 
@@ -58,7 +58,7 @@ class EventStreamHoldTests {
     fun testHold_sampleOnly() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
-        val heldCell = eventEmitter.hold(0)
+        val heldCell = eventEmitter.holdUnmanaged(0)
 
         assertEquals(
             expected = 0,
@@ -80,7 +80,7 @@ class EventStreamHoldTests {
         val eventEmitter = EventEmitter<Int>()
 
         fun setup(): Pair<PlatformWeakReference<Cell<Int>>, EventStream<Int>> {
-            val holdCell = eventEmitter.hold(0)
+            val holdCell = eventEmitter.holdUnmanaged(0)
 
             return Pair(
                 PlatformWeakReference(holdCell),
@@ -92,7 +92,7 @@ class EventStreamHoldTests {
 
         ensureCollected(weakRef = cellWeakRef)
 
-        val newValuesVerifier = EventStreamVerifier(
+        val newValuesVerifier = EventStreamVerifier.setup(
             eventStream = newValues,
         )
 

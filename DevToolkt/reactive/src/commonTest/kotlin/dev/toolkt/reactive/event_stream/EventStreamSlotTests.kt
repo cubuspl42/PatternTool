@@ -10,7 +10,7 @@ class EventStreamSlotTests {
     fun testCreate() {
         val eventStreamSlot = EventStreamSlot.createExternally<Int>()
 
-        val eventStreamVerifier = EventStreamVerifier(
+        val eventStreamVerifier = EventStreamVerifier.setup(
             eventStream = eventStreamSlot,
         )
 
@@ -24,7 +24,7 @@ class EventStreamSlotTests {
     fun testBind_once() {
         val eventStreamSlot = EventStreamSlot.createExternally<Int>()
 
-        val eventStreamVerifier = EventStreamVerifier(
+        val eventStreamVerifier = EventStreamVerifier.setup(
             eventStream = eventStreamSlot,
         )
 
@@ -58,7 +58,7 @@ class EventStreamSlotTests {
 
         val eventStreamSlot: EventStreamSlot<Int> = EventStreamSlot.createExternally()
 
-        val eventStreamVerifier = EventStreamVerifier(
+        val eventStreamVerifier = EventStreamVerifier.setup(
             eventStream = eventStreamSlot,
         )
 

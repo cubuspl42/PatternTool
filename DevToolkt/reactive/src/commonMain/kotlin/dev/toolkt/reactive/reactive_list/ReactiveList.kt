@@ -5,8 +5,13 @@ import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.hold
+import dev.toolkt.reactive.event_stream.forEach
+import dev.toolkt.reactive.event_stream.holdUnmanaged
+import dev.toolkt.reactive.managed_io.Actions
+import dev.toolkt.reactive.managed_io.Effect
 import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.managed_io.Trigger
+import dev.toolkt.reactive.managed_io.map
 
 abstract class ReactiveList<out E> {
     data class Change<out E>(
@@ -141,6 +146,12 @@ abstract class ReactiveList<out E> {
             source = listCell,
         )
 
+        fun <ElementT> diffDynamic(
+            reactiveListCell: Cell<ReactiveList<ElementT>>,
+        ): ReactiveList<ElementT> = DynamicDiffReactiveList(
+            source = reactiveListCell,
+        )
+
         fun <E> fuse(
             vararg cells: Cell<E>,
         ): ReactiveList<E> = fuse(
@@ -183,19 +194,18 @@ abstract class ReactiveList<out E> {
             eventStreams = eventStreams,
         )
 
-        fun <ElementT> diffDynamic(
-            reactiveListCell: Cell<ReactiveList<ElementT>>,
-        ): ReactiveList<ElementT> {
+        fun <ElementT> actuate(
+            effectReactiveList: ReactiveList<Effect<ElementT>>,
+        ): Effect<ReactiveList<ElementT>> {
             TODO()
         }
-
 
         context(momentContext: MomentContext) fun <ElementT, ResultT> looped(
             placeholderReactiveList: ReactiveList<ElementT>,
             block: (ReactiveList<ElementT>) -> Pair<ResultT, ReactiveList<ElementT>>,
         ): ResultT = EventStream.looped { loopedReactiveListSpark: EventStream<ReactiveList<ElementT>> ->
             val diffedReactiveList = ReactiveList.diffDynamic(
-                reactiveListCell = loopedReactiveListSpark.hold(placeholderReactiveList),
+                reactiveListCell = loopedReactiveListSpark.holdUnmanaged(placeholderReactiveList),
             )
 
             val (result, finalReactiveList) = block(diffedReactiveList)
@@ -207,6 +217,25 @@ abstract class ReactiveList<out E> {
                 reactiveListSpark,
             )
         }
+
+        fun <ElementT, ResultT> loopedInEffect(
+            placeholderReactiveList: ReactiveList<ElementT>,
+            block: (ReactiveList<ElementT>) -> Effect<Pair<ResultT, ReactiveList<ElementT>>>,
+        ): Effect<ResultT> =
+            EventStream.loopedEffectful { loopedReactiveListSpark: EventStream<ReactiveList<ElementT>> ->
+                val diffedReactiveList = ReactiveList.diffDynamic(
+                    reactiveListCell = loopedReactiveListSpark.holdUnmanaged(placeholderReactiveList),
+                )
+
+                block(diffedReactiveList).map { (result, finalReactiveList) ->
+                    val reactiveListSpark = EventStream.spark(finalReactiveList)
+
+                    Pair(
+                        result,
+                        reactiveListSpark,
+                    )
+                }
+            }
 
         fun <E, R> loopedUnmanaged(
             block: (ReactiveList<E>) -> Pair<R, ReactiveList<E>>,
@@ -221,7 +250,7 @@ abstract class ReactiveList<out E> {
         }
     }
 
-    abstract val currentElements: List<E>
+    abstract val currentElementsUnmanaged: List<E>
 
     abstract val elements: Cell<List<E>>
 
@@ -233,14 +262,20 @@ abstract class ReactiveList<out E> {
         behavior: Behavior = Behavior.Forward,
         transform: (E) -> Er,
     ): ReactiveList<Er>
+
+    context(momentContext: MomentContext)
+    fun sampleContent(): List<E> {
+        // FIXME: Figure this out
+        return currentElementsUnmanaged
+    }
 }
 
 val <E> ReactiveList<E>.sizeNow: Int
-    get() = currentElements.size
+    get() = currentElementsUnmanaged.size
 
 fun <E> ReactiveList<E>.getNow(
     index: Int,
-): E = currentElements[index]
+): E = currentElementsUnmanaged[index]
 
 fun <E, Er> ReactiveList<E>.fuseOf(
     transform: (E) -> Cell<Er>,
@@ -258,19 +293,20 @@ internal fun <E> ReactiveList<E>.copyNow(
     mutableList: MutableList<E>,
 ) {
     mutableList.clear()
-    mutableList.addAll(currentElements)
+    mutableList.addAll(currentElementsUnmanaged)
 }
 
-fun <E, T : Any> ReactiveList<E>.bind(
-    target: T,
-    extract: (T) -> MutableList<in E>,
-) {
-    copyNow(mutableList = extract(target))
+fun <ElementT> ReactiveList<ElementT>.bind(
+    mutableList: MutableList<ElementT>,
+): Trigger = Trigger.prepared {
+    Actions.mutate {
+        copyNow(mutableList = mutableList)
+    }
 
-    changes.pipe(
-        target = target,
-    ) { target, change ->
-        change.applyTo(mutableList = extract(target))
+    changes.forEach { change ->
+        Actions.mutate {
+            change.applyTo(mutableList = mutableList)
+        }
     }
 }
 
@@ -290,3 +326,10 @@ fun <E> ReactiveList.Change<E>.applyTo(
         update.applyTo(mutableList = mutableList)
     }
 }
+
+fun <ElementT, ResultT> ReactiveList<ElementT>.actuateOf(
+    transform: (ElementT) -> Effect<ResultT>,
+): Effect<ReactiveList<ResultT>> = ReactiveList.actuate(
+    this.map {
+        transform(it)
+    })

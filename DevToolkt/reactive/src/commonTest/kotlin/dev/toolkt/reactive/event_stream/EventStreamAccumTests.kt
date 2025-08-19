@@ -17,7 +17,7 @@ class EventStreamAccumTests {
             },
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = accumCell.changes,
         )
 

@@ -8,6 +8,8 @@ import dev.toolkt.reactive.event_stream.EventStream
 class DiffReactiveList<ElementT>(
     private val source: Cell<List<ElementT>>,
 ) : ActiveReactiveList<ElementT>() {
+    companion object {}
+
     override val changes: EventStream<Change<ElementT>> = source.newValues.map { newElements ->
         Change.single(
             update = Change.Update.change(
@@ -17,6 +19,6 @@ class DiffReactiveList<ElementT>(
         )
     }
 
-    override val currentElements: List<ElementT>
+    override val currentElementsUnmanaged: List<ElementT>
         get() = source.currentValueUnmanaged
 }

@@ -15,7 +15,7 @@ class CellSlotTests {
             initialValue = 0,
         )
 
-        val eventStreamVerifier = EventStreamVerifier(
+        val eventStreamVerifier = EventStreamVerifier.setup(
             eventStream = cellSlot.newValues,
         )
 
@@ -36,7 +36,7 @@ class CellSlotTests {
             initialValue = 0,
         )
 
-        val eventStreamVerifier = EventStreamVerifier(
+        val eventStreamVerifier = EventStreamVerifier.setup(
             eventStream = cellSlot.newValues,
         )
 
@@ -110,7 +110,7 @@ class CellSlotTests {
             initialValue = 0,
         )
 
-        val eventStreamVerifier = EventStreamVerifier(
+        val eventStreamVerifier = EventStreamVerifier.setup(
             eventStream = cellSlot.newValues,
         )
 

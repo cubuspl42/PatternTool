@@ -1,6 +1,24 @@
 package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.reactive.managed_io.Actions
+import dev.toolkt.reactive.managed_io.Moments
+
+fun <ElementT> ReactiveList<ElementT>.sampleContentExternally(
+): List<ElementT> = Moments.external {
+    sampleContent()
+}
+
+fun <ElementT> MutableReactiveList.Companion.createExternally(
+    initialContent: List<ElementT>,
+): MutableReactiveList<ElementT> = Moments.external {
+    MutableReactiveList.create(initialContent = initialContent)
+}
+
+fun <ElementT> MutableReactiveList.Companion.createExternally(
+    vararg initialContent: ElementT,
+): MutableReactiveList<ElementT> = Moments.external {
+    MutableReactiveList.create(initialContent = initialContent.toList())
+}
 
 fun <ElementT> MutableReactiveList<ElementT>.setExternally(
     index: Int,

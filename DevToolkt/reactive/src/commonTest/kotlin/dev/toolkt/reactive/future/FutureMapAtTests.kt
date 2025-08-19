@@ -22,7 +22,7 @@ class FutureMapAtTests {
             futureCompleter.mapAt { "$it:${mutableCell.sample()}" }
         }
 
-        val onResultVerifier = EventStreamVerifier(
+        val onResultVerifier = EventStreamVerifier.setup(
             eventStream = mappedFuture.onResult,
         )
 
@@ -72,7 +72,7 @@ class FutureMapAtTests {
             futureCompleter.mapAt { "$it:${mutableCell.sample()}" }
         }
 
-        val onResultVerifier = EventStreamVerifier(
+        val onResultVerifier = EventStreamVerifier.setup(
             eventStream = mappedFuture.onResult,
         )
 

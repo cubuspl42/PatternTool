@@ -16,7 +16,7 @@ class EventStreamMapNotNullTests {
             }
         }
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = mappedStream,
         )
 

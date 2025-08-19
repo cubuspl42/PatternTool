@@ -5,10 +5,19 @@ import dev.toolkt.core.iterable.removeRange
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.managed_io.ActionContext
+import dev.toolkt.reactive.managed_io.MomentContext
 
 class MutableReactiveList<ElementT>(
     initialContent: List<ElementT>,
 ) : ActiveReactiveList<ElementT>() {
+    companion object {
+        context(momentContext: MomentContext) fun <ElementT> create(
+            initialContent: List<ElementT>,
+        ): MutableReactiveList<ElementT> = MutableReactiveList(
+            initialContent = initialContent,
+        )
+    }
+
     private val changeEmitter = EventEmitter<Change<ElementT>>()
 
     private val mutableContent = initialContent.toMutableList()
@@ -16,7 +25,7 @@ class MutableReactiveList<ElementT>(
     override val changes: EventStream<Change<ElementT>>
         get() = changeEmitter
 
-    override val currentElements: List<ElementT>
+    override val currentElementsUnmanaged: List<ElementT>
         get() = mutableContent.toList()
 
     context(actionContext: ActionContext) fun set(
@@ -109,12 +118,11 @@ class MutableReactiveList<ElementT>(
         }
     }
 
-    context(actionContext: ActionContext)
-    fun append(
+    context(actionContext: ActionContext) fun append(
         element: ElementT,
     ) {
         val update = Change.Update.insert(
-            index = currentElements.size,
+            index = currentElementsUnmanaged.size,
             newElements = listOf(element),
         )
 
@@ -149,8 +157,7 @@ class MutableReactiveList<ElementT>(
         }
     }
 
-    context(actionContext: ActionContext)
-    fun removeAt(index: Int) {
+    context(actionContext: ActionContext) fun removeAt(index: Int) {
         if (index !in mutableContent.indices) {
             throw IndexOutOfBoundsException("Index $index is out of bounds for list of size ${mutableContent.size}.")
         }
