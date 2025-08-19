@@ -15,7 +15,7 @@ class EventStreamNextTests {
 
         val nextFuture = eventEmitter.next()
 
-        val onResultVerifier = EventStreamVerifier(
+        val onResultVerifier = EventStreamVerifier.setup(
             eventStream = nextFuture.onResult,
         )
 
@@ -64,7 +64,7 @@ class EventStreamNextTests {
         fun setup(): Pair<PlatformWeakReference<Future<Int>>, EventStreamVerifier<Int>> {
             val nextFuture = eventEmitter.next()
 
-            val streamVerifier = EventStreamVerifier(
+            val streamVerifier = EventStreamVerifier.setup(
                 eventStream = nextFuture.onResult,
             )
 

@@ -19,13 +19,13 @@ class MutableReactiveListTests {
             initialContent = originalContent,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mutableReactiveList.changes,
         )
 
         assertEquals(
             expected = originalContent,
-            actual = mutableReactiveList.currentElements,
+            actual = mutableReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -45,7 +45,7 @@ class MutableReactiveListTests {
                 20,
                 30,
             ),
-            actual = mutableReactiveList.currentElements,
+            actual = mutableReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -72,7 +72,7 @@ class MutableReactiveListTests {
                 20,
                 31,
             ),
-            actual = mutableReactiveList.currentElements,
+            actual = mutableReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -102,13 +102,13 @@ class MutableReactiveListTests {
             initialContent = originalContent,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mutableReactiveList.changes,
         )
 
         assertEquals(
             expected = originalContent,
-            actual = mutableReactiveList.currentElements,
+            actual = mutableReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -127,7 +127,7 @@ class MutableReactiveListTests {
                 20,
                 40,
             ),
-            actual = mutableReactiveList.currentElements,
+            actual = mutableReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -151,7 +151,7 @@ class MutableReactiveListTests {
                 10,
                 40,
             ),
-            actual = mutableReactiveList.currentElements,
+            actual = mutableReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -180,13 +180,13 @@ class MutableReactiveListTests {
             initialContent = originalContent,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mutableReactiveList.changes,
         )
 
         assertEquals(
             expected = originalContent,
-            actual = mutableReactiveList.currentElements,
+            actual = mutableReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -209,7 +209,7 @@ class MutableReactiveListTests {
                 20,
                 30,
             ),
-            actual = mutableReactiveList.currentElements,
+            actual = mutableReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -241,7 +241,7 @@ class MutableReactiveListTests {
                 20,
                 30,
             ),
-            actual = mutableReactiveList.currentElements,
+            actual = mutableReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(

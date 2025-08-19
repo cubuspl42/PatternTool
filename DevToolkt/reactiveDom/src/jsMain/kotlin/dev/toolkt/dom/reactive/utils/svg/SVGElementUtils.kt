@@ -1,6 +1,5 @@
 package dev.toolkt.dom.reactive.utils.svg
 
-import dev.toolkt.dom.pure.collections.pointList
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveElement
 import dev.toolkt.dom.reactive.utils.svg.transforms.bind
@@ -26,7 +25,6 @@ import org.w3c.dom.svg.SVGGElement
 import org.w3c.dom.svg.SVGGraphicsElement
 import org.w3c.dom.svg.SVGLineElement
 import org.w3c.dom.svg.SVGPathElement
-import org.w3c.dom.svg.SVGPolylineElement
 import org.w3c.dom.svg.SVGSVGElement
 import svg.SVGPoint
 
@@ -85,7 +83,6 @@ fun Document.createReactiveSvgPolylineElement(
 ).apply {
     points.bind(
         target = this,
-        extract = SVGPolylineElement::pointList,
     )
 }
 

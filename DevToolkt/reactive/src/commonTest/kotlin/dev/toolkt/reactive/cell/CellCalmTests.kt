@@ -28,7 +28,7 @@ class CellCalmTests {
 
         val calmedCall = mutableCell.calm()
 
-        val newValuesVerifier = EventStreamVerifier(
+        val newValuesVerifier = EventStreamVerifier.setup(
             eventStream = calmedCall.newValues,
         )
 
@@ -48,7 +48,7 @@ class CellCalmTests {
 
         val calmedCall = mutableCell.calm()
 
-        val newValuesVerifier = EventStreamVerifier(
+        val newValuesVerifier = EventStreamVerifier.setup(
             eventStream = calmedCall.newValues,
         )
 

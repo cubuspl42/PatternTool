@@ -14,6 +14,9 @@ import dev.toolkt.dom.pure.style.PureStrokeStyle
 import dev.toolkt.dom.pure.style.PureTextAlign
 import dev.toolkt.dom.pure.style.PureVerticalAlign
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.managed_io.Actions
+import dev.toolkt.reactive.managed_io.Trigger
+import dev.toolkt.reactive.managed_io.Triggers
 import org.w3c.dom.css.CSSStyleDeclaration
 
 data class ReactiveStyle(
@@ -42,95 +45,92 @@ data class ReactiveStyle(
 
     fun bind(
         styleDeclaration: CSSStyleDeclaration,
-    ) {
-        flexItemStyle?.applyTo(
-            styleDeclaration = styleDeclaration,
-        )
-
-        displayStyle?.bind(
-            styleDeclaration = styleDeclaration,
-        )
-
-        width?.bind(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.Width,
-        )
-
-        height?.bind(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.Height,
-        )
-
-        minWidth?.bind(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.MinWidth,
-        )
-
-        minHeight?.bind(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.MinHeight,
-        )
-
-        backgroundColor?.bind(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.BackgroundColor,
-        )
-
-        textAlign?.bind(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.TextAlign,
-        )
-
-        verticalAlign?.bind(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.VerticalAlign,
-        )
-
-        borderStyle?.applyTo(
-            styleDeclaration = styleDeclaration,
-        )
-
-        boxSizing?.applyTo(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.BoxSizing,
-        )
-
-        fill?.bind(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.Fill,
-        )
-
-        strokeStyle?.applyTo(
-            styleDeclaration = styleDeclaration,
-        )
-
-        pointerEvents?.bind(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.PointerEvents,
-        )
-
-        margin?.applyProperties(
-            insetKind = PureEdgeInsets.InsetKind.Margin,
-            applier = StyleDeclarationApplier(
+    ): Trigger = Trigger.prepared {
+        Actions.mutate {
+            flexItemStyle?.applyTo(
                 styleDeclaration = styleDeclaration,
-            ),
-        )
+            )
 
-        padding?.applyProperties(
-            insetKind = PureEdgeInsets.InsetKind.Padding,
-            applier = StyleDeclarationApplier(
+            borderStyle?.applyTo(
                 styleDeclaration = styleDeclaration,
-            ),
-        )
+            )
 
-        position?.applyTo(
-            styleDeclaration = styleDeclaration,
-            kind = PurePropertyKind.Position,
-        )
-
-        inset?.applyProperties(
-            applier = StyleDeclarationApplier(
+            boxSizing?.applyTo(
                 styleDeclaration = styleDeclaration,
+                kind = PurePropertyKind.BoxSizing,
+            )
+
+            strokeStyle?.applyTo(
+                styleDeclaration = styleDeclaration,
+            )
+
+            margin?.applyProperties(
+                insetKind = PureEdgeInsets.InsetKind.Margin,
+                applier = StyleDeclarationApplier(
+                    styleDeclaration = styleDeclaration,
+                ),
+            )
+
+            padding?.applyProperties(
+                insetKind = PureEdgeInsets.InsetKind.Padding,
+                applier = StyleDeclarationApplier(
+                    styleDeclaration = styleDeclaration,
+                ),
+            )
+
+            position?.applyTo(
+                styleDeclaration = styleDeclaration,
+                kind = PurePropertyKind.Position,
+            )
+
+            inset?.applyProperties(
+                applier = StyleDeclarationApplier(
+                    styleDeclaration = styleDeclaration,
+                ),
+            )
+        }
+
+        Triggers.combine(
+            triggers = listOfNotNull(
+                displayStyle?.bind(
+                    styleDeclaration = styleDeclaration,
+                ),
+                width?.bind(
+                    styleDeclaration = styleDeclaration,
+                    kind = PurePropertyKind.Width,
+                ),
+                height?.bind(
+                    styleDeclaration = styleDeclaration,
+                    kind = PurePropertyKind.Height,
+                ),
+                minWidth?.bind(
+                    styleDeclaration = styleDeclaration,
+                    kind = PurePropertyKind.MinWidth,
+                ),
+                minHeight?.bind(
+                    styleDeclaration = styleDeclaration,
+                    kind = PurePropertyKind.MinHeight,
+                ),
+                backgroundColor?.bind(
+                    styleDeclaration = styleDeclaration,
+                    kind = PurePropertyKind.BackgroundColor,
+                ),
+                textAlign?.bind(
+                    styleDeclaration = styleDeclaration,
+                    kind = PurePropertyKind.TextAlign,
+                ),
+                verticalAlign?.bind(
+                    styleDeclaration = styleDeclaration,
+                    kind = PurePropertyKind.VerticalAlign,
+                ),
+                fill?.bind(
+                    styleDeclaration = styleDeclaration,
+                    kind = PurePropertyKind.Fill,
+                ),
+                pointerEvents?.bind(
+                    styleDeclaration = styleDeclaration,
+                    kind = PurePropertyKind.PointerEvents,
+                ),
             ),
         )
     }

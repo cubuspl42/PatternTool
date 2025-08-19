@@ -17,7 +17,7 @@ class EventStreamMergeAllTests {
             eventEmitter2,
         )
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = mergeStream,
         )
 

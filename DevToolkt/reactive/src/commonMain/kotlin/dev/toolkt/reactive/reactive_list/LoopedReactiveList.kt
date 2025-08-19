@@ -3,6 +3,7 @@ package dev.toolkt.reactive.reactive_list
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.LoopedEventStream
 
+// TODO: Nuke in favor of ReactiveList.looped
 class LoopedReactiveList<E>() : ActiveReactiveList<E>() {
     private var loopedReactiveList: ReactiveList<E>? = null
 
@@ -11,8 +12,8 @@ class LoopedReactiveList<E>() : ActiveReactiveList<E>() {
     override val changes: EventStream<Change<E>>
         get() = changesLooped
 
-    override val currentElements: List<E>
-        get() = this.loopedReactiveList?.currentElements ?: emptyList()
+    override val currentElementsUnmanaged: List<E>
+        get() = this.loopedReactiveList?.currentElementsUnmanaged ?: emptyList()
 
     fun loop(
         reactiveList: ReactiveList<E>,
@@ -23,7 +24,7 @@ class LoopedReactiveList<E>() : ActiveReactiveList<E>() {
 
         loopedReactiveList = reactiveList
 
-        val currentElements = reactiveList.currentElements
+        val currentElements = reactiveList.currentElementsUnmanaged
 
         changesLooped.loop(
             eventStream = reactiveList.changes,

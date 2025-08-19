@@ -26,7 +26,7 @@ class CellSwitchTests {
             nestedCell = mutableNestedCell,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = switchedCell.changes,
         )
 

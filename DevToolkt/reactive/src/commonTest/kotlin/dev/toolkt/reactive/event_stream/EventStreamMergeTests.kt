@@ -12,7 +12,7 @@ class EventStreamMergeTests {
             source2 = NeverEventStream,
         )
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = mergeStream,
         )
 
@@ -31,7 +31,7 @@ class EventStreamMergeTests {
             source2 = NeverEventStream,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mergeStream,
         )
 
@@ -64,7 +64,7 @@ class EventStreamMergeTests {
             source2 = eventEmitter,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mergeStream,
         )
 
@@ -97,7 +97,7 @@ class EventStreamMergeTests {
             source2 = eventEmitter,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mergeStream,
         )
 
@@ -130,7 +130,7 @@ class EventStreamMergeTests {
             source2 = eventEmitter.map { it * -10 },
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mergeStream,
         )
 
@@ -164,7 +164,7 @@ class EventStreamMergeTests {
             source2 = eventEmitter2,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = mergeStream,
         )
 

@@ -8,7 +8,6 @@ import dev.toolkt.core.delegates.weakLazy
 import dev.toolkt.core.iterable.removeRange
 import dev.toolkt.core.range.shift
 import dev.toolkt.core.range.width
-import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.event_stream.DependentEventStream
@@ -64,7 +63,7 @@ class ConcatAllReactiveList<ElementT>(
                             event = Change.single(
                                 update = Change.Update.change(
                                     indexRange = updatedRange,
-                                    changedElements = updatedLists.flatMap { it.currentElements },
+                                    changedElements = updatedLists.flatMap { it.currentElementsUnmanaged },
                                 ),
                             ),
                         )
@@ -104,7 +103,7 @@ class ConcatAllReactiveList<ElementT>(
                 )
 
             init {
-                lists.currentElements.forEachIndexed { index, reactiveList ->
+                lists.currentElementsUnmanaged.forEachIndexed { index, reactiveList ->
                     subscribeToInner(
                         index = index,
                         innerList = reactiveList,
@@ -186,8 +185,8 @@ class ConcatAllReactiveList<ElementT>(
         ChangesEventStream(lists = lists)
     }
 
-    override val currentElements: List<ElementT>
-        get() = lists.currentElements.flatMap { it.currentElements }
+    override val currentElementsUnmanaged: List<ElementT>
+        get() = lists.currentElementsUnmanaged.flatMap { it.currentElementsUnmanaged }
 }
 
 private fun MutablePrefixSumIndexedList<ConcatAllReactiveList.SubscriptionEntry>.setSubscriptionVia(

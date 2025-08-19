@@ -27,7 +27,7 @@ class EventStreamSingleTests {
                 // should keep the single stream alive if it's implemented correctly.
                 PlatformWeakReference(singleEventStream),
                 // Start listening before the single event is emitted
-                EventStreamVerifier(eventStream = singleEventStream),
+                EventStreamVerifier.setup(eventStream = singleEventStream),
             )
         }
 
@@ -107,7 +107,7 @@ class EventStreamSingleTests {
                 // should keep the single stream alive if it's implemented correctly.
                 PlatformWeakReference(singleEventStream),
                 // Start listening before the single event is emitted
-                EventStreamVerifier(eventStream = singleEventStream),
+                EventStreamVerifier.setup(eventStream = singleEventStream),
             )
         }
 

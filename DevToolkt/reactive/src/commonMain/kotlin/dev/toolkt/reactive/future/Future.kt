@@ -4,7 +4,7 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.switch
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.NeverEventStream
-import dev.toolkt.reactive.event_stream.hold
+import dev.toolkt.reactive.event_stream.holdUnmanaged
 import dev.toolkt.reactive.managed_io.Effect
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Program
@@ -160,7 +160,7 @@ abstract class Future<out V> {
         action: (V) -> Schedule,
     ): Schedule = onResult.singleUnmanaged().map {
         action(it)
-    }.hold(Program.Noop).executeCurrent()
+    }.holdUnmanaged(Program.Noop).executeCurrent()
 
     abstract val onResult: EventStream<V>
 
@@ -191,7 +191,6 @@ abstract class Future<out V> {
     fun <Vr> mapExecuting(
         transform: context(ActionContext) (V) -> Vr,
     ): Effect<Future<Vr>> = state.mapExecuting { stateNow ->
-
         when (stateNow) {
             is Fulfilled<V> -> Fulfilled(
                 result = transform(stateNow.result),
@@ -221,7 +220,7 @@ fun <V> Future<V>.hold(
 ): Cell<V> = when (val foundState = currentStateUnmanaged) {
     is Future.Fulfilled<V> -> Cell.of(foundState.result)
 
-    Future.Pending -> onResult.hold(initialValue)
+    Future.Pending -> onResult.holdUnmanaged(initialValue)
 }
 
 fun <V> Future<Cell<V>>.switchHold(
@@ -230,7 +229,7 @@ fun <V> Future<Cell<V>>.switchHold(
     is Future.Fulfilled<Cell<V>> -> state.result
 
     Future.Pending -> Cell.switch(
-        onResult.hold(initialCell),
+        onResult.holdUnmanaged(initialCell),
     )
 }
 
@@ -256,6 +255,12 @@ fun <E> Future<EventStream<E>>.divertHold(
     is Future.Fulfilled<EventStream<E>> -> foundState.result
 
     Future.Pending -> EventStream.divert(
-        onResult.hold(initialEventStream),
+        onResult.holdUnmanaged(initialEventStream),
     )
+}
+
+fun <ValueT, TransformedValueT> Future<ValueT>.actuateOf(
+    transform: (ValueT) -> Effect<TransformedValueT>,
+): Effect<Future<TransformedValueT>> {
+    TODO()
 }

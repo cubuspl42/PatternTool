@@ -8,7 +8,6 @@ import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.cell.setExternally
-import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,13 +42,13 @@ class ReactiveListFuseTests {
             cells = mutableCells,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = fuseReactiveList.changes,
         )
 
         assertEquals(
             expected = listOf(0, 100, 200, 300, 400, 200),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -63,7 +62,7 @@ class ReactiveListFuseTests {
 
         assertEquals(
             expected = listOf(0, 101, 201, 300, 400, 201),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         val nonDeterministicChanges = changesVerifier.removeReceivedEvents()
@@ -146,7 +145,7 @@ class ReactiveListFuseTests {
             ),
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = fuseReactiveList.changes,
         )
 
@@ -156,7 +155,7 @@ class ReactiveListFuseTests {
         // This seems to fail non-deterministically...
         assertEquals(
             expected = listOf(0, 101, 310, 320, 330, 400),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -176,7 +175,7 @@ class ReactiveListFuseTests {
 
         assertEquals(
             expected = listOf(0, 101, 310, 320, 330, 401),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -197,8 +196,8 @@ class ReactiveListFuseTests {
 
         changesVerifier.removeReceivedEvents()
 
-        if (fuseReactiveList.currentElements != listOf(0, 330, 401)) {
-            throw AssertionError("Unexpected current elements: ${fuseReactiveList.currentElements}")
+        if (fuseReactiveList.currentElementsUnmanaged != listOf(0, 330, 401)) {
+            throw AssertionError("Unexpected current elements: ${fuseReactiveList.currentElementsUnmanaged}")
         }
 
         // Mutate all remaining cells
@@ -208,7 +207,7 @@ class ReactiveListFuseTests {
 
         assertEquals(
             expected = listOf(1, 331, 402),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -269,7 +268,7 @@ class ReactiveListFuseTests {
             cells = mutableCells,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = fuseReactiveList.changes,
         )
 
@@ -287,7 +286,7 @@ class ReactiveListFuseTests {
             expected = listOf(
                 0, 100, 200, 210, 300, 220, 210, 300, 400,
             ),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -311,7 +310,7 @@ class ReactiveListFuseTests {
             expected = listOf(
                 0, 100, 200, 211, 301, 221, 211, 301, 400,
             ),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         val outerNonDeterministicChanges = changesVerifier.removeReceivedEvents()
@@ -400,7 +399,7 @@ class ReactiveListFuseTests {
             cells = mutableCells,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = fuseReactiveList.changes,
         )
 
@@ -412,7 +411,7 @@ class ReactiveListFuseTests {
             expected = listOf(
                 0, 300, 100,
             ),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -434,7 +433,7 @@ class ReactiveListFuseTests {
             expected = listOf(
                 0, 300, 101,
             ),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -485,7 +484,7 @@ class ReactiveListFuseTests {
             cells = mutableCells,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = fuseReactiveList.changes,
         )
 
@@ -502,7 +501,7 @@ class ReactiveListFuseTests {
             expected = listOf(
                 0, 100, 210, 220, 230, 400,
             ),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -525,7 +524,7 @@ class ReactiveListFuseTests {
             expected = listOf(
                 0, 100, 210, 221, 230, 400,
             ),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -571,7 +570,7 @@ class ReactiveListFuseTests {
             cells = mutableCells,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = fuseReactiveList.changes,
         )
 
@@ -587,7 +586,7 @@ class ReactiveListFuseTests {
             expected = listOf(
                 0, 200, 210, 300,
             ),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -610,7 +609,7 @@ class ReactiveListFuseTests {
             expected = listOf(
                 0, 201, 210, 300,
             ),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -660,7 +659,7 @@ class ReactiveListFuseTests {
             cells = mutableCells,
         )
 
-        val changesVerifier1 = EventStreamVerifier(
+        val changesVerifier1 = EventStreamVerifier.setup(
             eventStream = fuseReactiveList.changes,
         )
 
@@ -672,7 +671,7 @@ class ReactiveListFuseTests {
 
         mutableCells.appendExternally(mutableCell3b)
 
-        val changesVerifier2 = EventStreamVerifier(
+        val changesVerifier2 = EventStreamVerifier.setup(
             eventStream = fuseReactiveList.changes,
         )
 
@@ -680,7 +679,7 @@ class ReactiveListFuseTests {
             expected = listOf(
                 0, 101, 300, 310,
             ),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         mutableCell3.setExternally(301)
@@ -689,7 +688,7 @@ class ReactiveListFuseTests {
             expected = listOf(
                 0, 101, 301, 310,
             ),
-            actual = fuseReactiveList.currentElements,
+            actual = fuseReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -723,7 +722,7 @@ class ReactiveListFuseTests {
                 ),
             )
 
-            val changesVerifier = EventStreamVerifier(
+            val changesVerifier = EventStreamVerifier.setup(
                 eventStream = fuseReactiveList.changes,
             )
 

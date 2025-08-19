@@ -34,6 +34,6 @@ class SingleNotNullReactiveList<ElementT : Any>(
         Change.single(update = update)
     }
 
-    override val currentElements: List<ElementT>
+    override val currentElementsUnmanaged: List<ElementT>
         get() = listOfNotNull(elementCell.currentValueUnmanaged)
 }

@@ -19,7 +19,7 @@ class FutureDivertHoldTests {
             initialEventStream = eventEmitter1,
         )
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = divertHoldStream,
         )
 

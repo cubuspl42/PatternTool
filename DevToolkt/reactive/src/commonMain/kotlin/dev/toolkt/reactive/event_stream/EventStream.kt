@@ -73,15 +73,16 @@ internal fun <TargetT : Any, EventT> EventSource<EventT>.bind(
     listener = listener,
 )
 
+
 abstract class EventStream<out E> : EventSource<E> {
     companion object {
         val Never: EventStream<Nothing> = NeverEventStream
 
         context(momentContext: MomentContext) fun <EventT> spark(
             event: EventT,
-        ): EventStream<EventT> {
-            TODO()
-        }
+        ): EventStream<EventT> = SparkEventStream.construct(
+            event = event,
+        )
 
         fun <E, R> looped(
             block: (EventStream<E>) -> Pair<R, EventStream<E>>,
@@ -93,6 +94,20 @@ abstract class EventStream<out E> : EventSource<E> {
             loopedEventStream.loop(eventStream)
 
             return result
+        }
+
+        fun <EventT> lazy(
+            lazyEventStream: Lazy<EventStream<EventT>>,
+        ): EventStream<EventT> {
+            TODO()
+        }
+
+        fun <EventT, ResultT> loopedEffectful(
+            block: (EventStream<EventT>) -> Effect<Pair<ResultT, EventStream<EventT>>>,
+        ): Effect<ResultT> = Effect.looped<ResultT, EventStream<EventT>> { lazyEventStream: Lazy<EventStream<EventT>> ->
+            block(
+                lazy(lazyEventStream = lazyEventStream),
+            )
         }
 
         fun <V> divert(
@@ -236,12 +251,20 @@ fun <E> EventStream<*>.cast(): EventStream<E> {
     @Suppress("UNCHECKED_CAST") return this as EventStream<E>
 }
 
-fun <E> EventStream<E>.hold(
+fun <E> EventStream<E>.holdUnmanaged(
     initialValue: E,
 ): Cell<E> = HoldCell(
     initialValue = initialValue,
     newValues = this,
 )
+
+context(momentContext: MomentContext) fun <E> EventStream<E>.hold(
+    initialValue: E,
+): Cell<E> = HoldCell(
+    initialValue = initialValue,
+    newValues = this,
+)
+
 
 fun <V, R> EventStream<V>.accum(
     initialValue: R,
@@ -254,7 +277,7 @@ fun <V, R> EventStream<V>.accum(
             loopedCell.currentValueUnmanaged,
             newEvent,
         )
-    }.hold(initialValue = initialValue)
+    }.holdUnmanaged(initialValue = initialValue)
 }
 
 fun <E> EventStream<Any?>.fetch(
@@ -265,5 +288,5 @@ fun <E> EventStream<Any?>.fetch(
 )
 
 fun <ValueT> EventStream<ValueT>.newest(): Future<Cell<ValueT>> = next().map { firstValue ->
-    hold(initialValue = firstValue)
+    holdUnmanaged(initialValue = firstValue)
 }

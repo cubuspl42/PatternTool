@@ -18,7 +18,7 @@ class ReactiveListSingleTests {
 
         assertEquals(
             expected = listOf(10),
-            actual = singleReactiveList.currentElements,
+            actual = singleReactiveList.currentElementsUnmanaged,
         )
     }
 
@@ -30,7 +30,7 @@ class ReactiveListSingleTests {
             element = mutableCell,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = singleReactiveList.changes,
         )
 
@@ -38,7 +38,7 @@ class ReactiveListSingleTests {
 
         assertEquals(
             expected = listOf(20),
-            actual = singleReactiveList.currentElements,
+            actual = singleReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(

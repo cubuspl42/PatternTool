@@ -18,7 +18,7 @@ class EventStreamSingleUnmanagedTests {
 
         val nextStream = eventEmitter.singleUnmanaged()
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = nextStream,
         )
 
@@ -54,7 +54,7 @@ class EventStreamSingleUnmanagedTests {
         fun setup(): Pair<PlatformWeakReference<EventStream<Int>>, EventStreamVerifier<Int>> {
             val singleEventStream = eventEmitter.singleUnmanaged()
 
-            val streamVerifier = EventStreamVerifier(
+            val streamVerifier = EventStreamVerifier.setup(
                 eventStream = singleEventStream,
             )
 

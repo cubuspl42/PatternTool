@@ -11,7 +11,7 @@ class DynamicMergeAllEventStream<EventT>(
     private val eventStreams: ReactiveList<EventStream<EventT>>,
 ) : DependentEventStream<EventT>() {
     override fun observe(): Subscription {
-        val mutableSubscriptions = eventStreams.currentElements.mapTo(mutableListOf(), ::forwardFrom)
+        val mutableSubscriptions = eventStreams.currentElementsUnmanaged.mapTo(mutableListOf(), ::forwardFrom)
 
         val changeSubscription = eventStreams.changes.listenInDependent(
             dependent = this@DynamicMergeAllEventStream,

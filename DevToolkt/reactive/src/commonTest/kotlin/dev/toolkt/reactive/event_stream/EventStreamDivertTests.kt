@@ -20,7 +20,7 @@ class EventStreamDivertTests {
             nestedEventStream = mutableStreamCell,
         )
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = divertedStream,
         )
 

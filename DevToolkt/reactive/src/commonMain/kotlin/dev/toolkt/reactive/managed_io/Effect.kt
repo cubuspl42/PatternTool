@@ -1,5 +1,6 @@
 package dev.toolkt.reactive.managed_io
 
+import dev.toolkt.reactive.ReactiveFinalizationRegistry
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.forEach
@@ -53,7 +54,7 @@ interface Effect<out ResultT> {
             }
         }
 
-        fun <ResultT> preparedPure(
+        fun <ResultT> plain(
             prepare: context(ActionContext) () -> ResultT,
         ): Effect<ResultT> = prepared {
             pure(prepare())
@@ -96,6 +97,28 @@ interface Effect<out ResultT> {
             return recurse(
                 firstValueEffect = initialValueEffect,
             )
+        }
+
+        fun <ResultT, LoopedValueT> looped(
+            block: (Lazy<LoopedValueT>) -> Effect<Pair<ResultT, LoopedValueT>>,
+        ): Effect<ResultT> = object : Effect<ResultT> {
+            context(actionContext: ActionContext) override fun start(): Effective<ResultT> {
+                var loopedValue: LoopedValueT? = null
+
+                val effect = block(
+                    lazy { loopedValue!! },
+                )
+
+                val (pair, handle) = effect.start()
+                val (result, finalLoopedValue) = pair
+
+                loopedValue = finalLoopedValue
+
+                return Effective(
+                    result = result,
+                    handle = handle,
+                )
+            }
         }
     }
 
@@ -201,10 +224,16 @@ fun <V> Cell<V>.activateOf(
     transform: (V) -> Trigger,
 ): Trigger = map(transform).activate()
 
-fun <ResultT> Effect<ResultT>.startBound(
+context(actionContext: ActionContext) fun <ResultT> Effect<ResultT>.startBound(
     target: Any,
 ): ResultT {
-    TODO()
+    val (result, handle) = start()
+
+    ReactiveFinalizationRegistry.register(target = target) {
+        handle.end()
+    }
+
+    return result
 }
 
 fun <V> Future<Effect<V>>.waitEffectively(): Effect<Future<V>> = mapExecuting { valueEffect: Effect<V> ->

@@ -11,7 +11,7 @@ class FutureMapTests {
 
         val mapFuture = futureCompleter.map { "$it" }
 
-        val onResultVerifier = EventStreamVerifier(
+        val onResultVerifier = EventStreamVerifier.setup(
             eventStream = mapFuture.onResult,
         )
 

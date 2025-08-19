@@ -3,7 +3,7 @@ package dev.toolkt.reactive.cell
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.forEach
-import dev.toolkt.reactive.event_stream.hold
+import dev.toolkt.reactive.event_stream.holdUnmanaged
 import dev.toolkt.reactive.event_stream.takeUntilNull
 import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.Effect
@@ -123,7 +123,7 @@ sealed class Cell<out V> {
                 val (initialValue, initialEffectHandle) = effectCell.sample().start()
 
                 return EventStream.looped { loopedNewEffectHandles: EventStream<Effect.Handle> ->
-                    val handleCell = loopedNewEffectHandles.hold(initialEffectHandle)
+                    val handleCell = loopedNewEffectHandles.holdUnmanaged(initialEffectHandle)
 
                     val (newValueEffectives, newValuesHandle) = effectCell.newValues.mapExecuting { newEffect ->
                         val previousEffectHandle = handleCell.sample()
@@ -134,7 +134,7 @@ sealed class Cell<out V> {
 
                     val newValues = newValueEffectives.map { it.result }
 
-                    val valueCell: Cell<ValueT> = newValues.hold(initialValue)
+                    val valueCell: Cell<ValueT> = newValues.holdUnmanaged(initialValue)
 
                     val combinedHandle = Effect.Handle.combine(
                         newValuesHandle,
@@ -186,7 +186,7 @@ sealed class Cell<out V> {
         val initialTransformedValue = transform(sample())
 
         newValues.mapExecuting(transform).map { newTransformedValues ->
-            newTransformedValues.hold(
+            newTransformedValues.holdUnmanaged(
                 initialValue = initialTransformedValue,
             )
         }
@@ -291,7 +291,7 @@ fun <V : Any, Vr : Any> Cell<V?>.mapNotNull(
 fun <V : Any> Cell<V?>.separateNonNull(): Cell<Cell<V>?> = this.map { value ->
     when (value) {
         null -> null
-        else -> newValues.takeUntilNull().hold(value)
+        else -> newValues.takeUntilNull().holdUnmanaged(value)
     }
 }
 

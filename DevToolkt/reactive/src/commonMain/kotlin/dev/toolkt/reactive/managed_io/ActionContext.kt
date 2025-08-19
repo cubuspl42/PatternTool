@@ -6,20 +6,55 @@ interface ActionContext : MomentContext {
     )
 }
 
-class Transaction private constructor() : ActionContext {
-    companion object {
-        fun <ResultT> execute(
-            block: context(ActionContext) () -> ResultT,
-        ): ResultT = with(Transaction()) {
-            val result = block()
+class Transaction private constructor(
+    private val followupQueue: FollowupQueue,
+) : ActionContext {
+    private class FollowupQueue {
+        private val queue = ArrayDeque<(Transaction) -> Unit>()
 
-            finish()
-
-            return@with result
+        fun enqueueFollowup(
+            followupBlock: (Transaction) -> Unit,
+        ) {
+            queue.addLast(followupBlock)
         }
+
+        fun dequeueFollowup(): ((Transaction) -> Unit)? = queue.removeFirstOrNull()
     }
 
-    private val enqueuedReactions = mutableListOf<context(ActionContext) () -> Unit>()
+    companion object {
+        internal fun <ResultT> executeAll(
+            firstBlock: (Transaction) -> ResultT,
+        ): ResultT {
+            val followupQueue = FollowupQueue()
+
+            return Transaction.executeSingle(
+                followupQueue = followupQueue,
+                block = firstBlock,
+            ).also { result ->
+                while (true) {
+                    val followupBlock = followupQueue.dequeueFollowup() ?: break
+
+                    Transaction.executeSingle(
+                        followupQueue = followupQueue,
+                        block = followupBlock,
+                    )
+                }
+            }
+        }
+
+        private fun <ResultT> executeSingle(
+            followupQueue: FollowupQueue,
+            block: (Transaction) -> ResultT,
+        ): ResultT = Transaction(
+            followupQueue = followupQueue,
+        ).let {
+            val result = block(it)
+
+            it.finish()
+
+            result
+        }
+    }
 
     private val enqueuedMutations = mutableListOf<() -> Unit>()
 
@@ -35,16 +70,39 @@ class Transaction private constructor() : ActionContext {
     override fun enqueueMutation(mutate: () -> Unit) {
         enqueuedMutations.add(mutate)
     }
+
+    fun enqueueFollowup(
+        followup: (Transaction) -> Unit,
+    ) {
+        followupQueue.enqueueFollowup(
+            followupBlock = followup,
+        )
+    }
 }
 
 object Actions {
     fun <ResultT> external(
         block: context(ActionContext) () -> ResultT,
-    ): ResultT = Transaction.execute(block = block)
+    ): ResultT = Transaction.executeAll(
+        firstBlock = { transaction ->
+            return@executeAll with(transaction) {
+                block()
+            }
+        },
+    )
+
+    context(actionContext: ActionContext) fun mutate(
+        mutate: () -> Unit,
+    ) {
+        actionContext.enqueueMutation(
+            mutate = mutate,
+        )
+    }
 
     context(actionContext: ActionContext) fun defer(
         action: context(ActionContext) () -> Unit,
     ) {
+        TODO()
 //        reactionContext.enqueueAction(
 //            action = action,
 //        )

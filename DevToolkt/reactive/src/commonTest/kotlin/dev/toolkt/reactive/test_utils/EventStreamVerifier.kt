@@ -11,21 +11,39 @@ import dev.toolkt.reactive.event_stream.listenWeak
  * @param eventStream the [EventStream] to verify. No strong reference to this stream is kept directly. The subscription
  * is kept.
  */
-class EventStreamVerifier<E>(
+class EventStreamVerifier<E> private constructor(
     eventStream: EventStream<E>,
 ) {
     companion object {
+        // TODO: Migrate all usages to `listen`
+        fun <E> setup(
+            eventStream: EventStream<E>,
+        ): EventStreamVerifier<E> = EventStreamVerifier(
+            eventStream,
+        )
+
         fun <E> listen(
             eventStream: EventStream<E>,
         ): Pair<EventStreamVerifier<E>, Subscription> {
-            TODO()
+            val eventStreamVerifier = EventStreamVerifier(
+                eventStream,
+            )
+
+            return Pair(
+                eventStreamVerifier,
+                object : Subscription {
+                    override fun cancel() {
+                        eventStreamVerifier.cancel()
+                    }
+                },
+            )
         }
 
         fun <E> listenForever(
             eventStream: EventStream<E>,
-        ): EventStreamVerifier<E> {
-            TODO()
-        }
+        ): EventStreamVerifier<E> = listen(
+            eventStream = eventStream,
+        ).first
     }
 
     private val mutableReceivedEvents = mutableListOf<E>()

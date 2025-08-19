@@ -19,7 +19,7 @@ class EventStreamMapAtTests {
             eventEmitter.mapAt { "$it:${mutableCell.sample()}" }
         }
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = mappedStream,
         )
 

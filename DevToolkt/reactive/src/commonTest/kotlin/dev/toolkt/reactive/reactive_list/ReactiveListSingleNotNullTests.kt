@@ -23,13 +23,13 @@ class ReactiveListSingleNotNullTests {
             element = mutableCell,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = singleReactiveList.changes,
         )
 
         assertEquals(
             expected = emptyList(),
-            actual = singleReactiveList.currentElements,
+            actual = singleReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -46,13 +46,13 @@ class ReactiveListSingleNotNullTests {
             element = mutableCell,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = singleReactiveList.changes,
         )
 
         assertEquals(
             expected = listOf(10),
-            actual = singleReactiveList.currentElements,
+            actual = singleReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -69,7 +69,7 @@ class ReactiveListSingleNotNullTests {
             element = mutableCell,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = singleReactiveList.changes,
         )
 
@@ -77,7 +77,7 @@ class ReactiveListSingleNotNullTests {
 
         assertEquals(
             expected = emptyList(),
-            actual = singleReactiveList.currentElements,
+            actual = singleReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -100,7 +100,7 @@ class ReactiveListSingleNotNullTests {
             element = mutableCell,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = singleReactiveList.changes,
         )
 
@@ -109,7 +109,7 @@ class ReactiveListSingleNotNullTests {
 
         assertEquals(
             expected = listOf(10),
-            actual = singleReactiveList.currentElements,
+            actual = singleReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -133,7 +133,7 @@ class ReactiveListSingleNotNullTests {
             element = mutableCell,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = singleReactiveList.changes,
         )
 
@@ -142,7 +142,7 @@ class ReactiveListSingleNotNullTests {
 
         assertEquals(
             expected = listOf(20),
-            actual = singleReactiveList.currentElements,
+            actual = singleReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -166,11 +166,11 @@ class ReactiveListSingleNotNullTests {
             element = mutableCell,
         )
 
-        val mutableCellChangesVerifier = EventStreamVerifier(
+        val mutableCellChangesVerifier = EventStreamVerifier.setup(
             eventStream = mutableCell.newValues,
         )
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = singleReactiveList.changes,
         )
 
@@ -182,7 +182,7 @@ class ReactiveListSingleNotNullTests {
 
         assertEquals(
             expected = listOf(),
-            actual = singleReactiveList.currentElements,
+            actual = singleReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -219,7 +219,7 @@ class ReactiveListSingleNotNullTests {
 
             assertEquals(
                 expected = listOf(10),
-                actual = reactiveList.currentElements,
+                actual = reactiveList.currentElementsUnmanaged,
             )
 
             return PlatformWeakReference(reactiveList)
@@ -248,7 +248,7 @@ class ReactiveListSingleNotNullTests {
 
         mutableCell.setExternally(10)
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = changes,
         )
 
@@ -334,7 +334,7 @@ class ReactiveListSingleNotNullTests {
                 element = mutableCell,
             )
 
-            val changesVerifier = EventStreamVerifier(
+            val changesVerifier = EventStreamVerifier.setup(
                 eventStream = singleNotNullReactiveList.changes,
             )
 

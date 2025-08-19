@@ -19,7 +19,7 @@ class FutureSwitchHoldTests {
             initialCell = mutableCell1,
         )
 
-        val newValuesVerifier = EventStreamVerifier(
+        val newValuesVerifier = EventStreamVerifier.setup(
             eventStream = switchHoldCell.newValues,
         )
 

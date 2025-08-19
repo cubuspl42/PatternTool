@@ -2,11 +2,12 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
-import dev.toolkt.reactive.managed_io.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@Ignore // TODO: Nuke in favor of ReactiveListLoopedTests
 class LoopedReactiveListTests {
     @Test
     fun testLoop_empty() {
@@ -18,13 +19,13 @@ class LoopedReactiveListTests {
 
         val loopedReactiveList = LoopedReactiveList<Int>()
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = loopedReactiveList.changes,
         )
 
         assertEquals(
             expected = emptyList(),
-            actual = loopedReactiveList.currentElements,
+            actual = loopedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -36,7 +37,7 @@ class LoopedReactiveListTests {
 
         assertEquals(
             expected = emptyList(),
-            actual = loopedReactiveList.currentElements,
+            actual = loopedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -54,7 +55,7 @@ class LoopedReactiveListTests {
                 10,
                 20,
             ),
-            actual = loopedReactiveList.currentElements,
+            actual = loopedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -84,13 +85,13 @@ class LoopedReactiveListTests {
 
         val loopedReactiveList = LoopedReactiveList<Int>()
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = loopedReactiveList.changes,
         )
 
         assertEquals(
             expected = emptyList(),
-            actual = loopedReactiveList.currentElements,
+            actual = loopedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -102,7 +103,7 @@ class LoopedReactiveListTests {
 
         assertEquals(
             expected = originalContent,
-            actual = loopedReactiveList.currentElements,
+            actual = loopedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -128,7 +129,7 @@ class LoopedReactiveListTests {
                 11,
                 20,
             ),
-            actual = loopedReactiveList.currentElements,
+            actual = loopedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -156,7 +157,7 @@ class LoopedReactiveListTests {
                 30,
                 40,
             ),
-            actual = loopedReactiveList.currentElements,
+            actual = loopedReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(

@@ -33,7 +33,7 @@ class EventStreamTakeTests {
 
         val takeStream = eventEmitter.take(0)
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = takeStream,
         )
 
@@ -58,7 +58,7 @@ class EventStreamTakeTests {
 
         val takeStream = eventEmitter.take(1)
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = takeStream,
         )
 
@@ -90,7 +90,7 @@ class EventStreamTakeTests {
 
         val takeStream = eventEmitter.take(2)
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = takeStream,
         )
 
@@ -136,7 +136,7 @@ class EventStreamTakeTests {
         eventEmitter.emitExternally(10)
         eventEmitter.emitExternally(20)
 
-        val streamVerifier = EventStreamVerifier(
+        val streamVerifier = EventStreamVerifier.setup(
             eventStream = takeStream,
         )
 

@@ -24,7 +24,7 @@ class FutureJoinTests {
 
         val joinedFuture = Future.join(outerFutureCompleter)
 
-        val onResultVerifier = EventStreamVerifier(
+        val onResultVerifier = EventStreamVerifier.setup(
             eventStream = joinedFuture.onResult,
         )
 
@@ -55,7 +55,7 @@ class FutureJoinTests {
 
         val joinedFuture = Future.join(outerFutureCompleter)
 
-        val onResultVerifier = EventStreamVerifier(
+        val onResultVerifier = EventStreamVerifier.setup(
             eventStream = joinedFuture.onResult,
         )
 
@@ -101,7 +101,7 @@ class FutureJoinTests {
 
         val joinedFuture = Future.join(outerFutureCompleter)
 
-        val onResultVerifier = EventStreamVerifier(
+        val onResultVerifier = EventStreamVerifier.setup(
             eventStream = joinedFuture.onResult,
         )
 
@@ -143,7 +143,7 @@ class FutureJoinTests {
 
         val joinedFuture = Future.join(outerFutureCompleter)
 
-        val onResultVerifier = EventStreamVerifier(
+        val onResultVerifier = EventStreamVerifier.setup(
             eventStream = joinedFuture.onResult,
         )
 

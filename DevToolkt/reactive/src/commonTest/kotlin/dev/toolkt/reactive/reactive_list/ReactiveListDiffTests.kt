@@ -17,7 +17,7 @@ class ReactiveListDiffTests {
 
         assertEquals(
             expected = listOf(10, 20, 30),
-            actual = diffReactiveList.currentElements,
+            actual = diffReactiveList.currentElementsUnmanaged,
         )
     }
 
@@ -30,7 +30,7 @@ class ReactiveListDiffTests {
         val diffReactiveList = ReactiveList.diff(mutableListCell)
 
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = diffReactiveList.changes,
         )
 
@@ -40,7 +40,7 @@ class ReactiveListDiffTests {
 
         assertEquals(
             expected = listOf(11, 21, 31, 41),
-            actual = diffReactiveList.currentElements,
+            actual = diffReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
@@ -65,7 +65,7 @@ class ReactiveListDiffTests {
         val diffReactiveList = ReactiveList.diff(mutableListCell)
 
 
-        val changesVerifier = EventStreamVerifier(
+        val changesVerifier = EventStreamVerifier.setup(
             eventStream = diffReactiveList.changes,
         )
 
@@ -73,7 +73,7 @@ class ReactiveListDiffTests {
 
         assertEquals(
             expected = emptyList(),
-            actual = diffReactiveList.currentElements,
+            actual = diffReactiveList.currentElementsUnmanaged,
         )
 
         assertEquals(
