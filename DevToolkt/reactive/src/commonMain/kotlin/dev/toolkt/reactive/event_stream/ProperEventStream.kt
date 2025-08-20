@@ -37,7 +37,7 @@ abstract class ProperEventStream<E> : EventStream<E>() {
         transform = transform,
     )
 
-    final override fun take(
+    context(momentContext: MomentContext) final override fun take(
         count: Int,
     ): EventStream<E> {
         require(count >= 0)
@@ -45,9 +45,9 @@ abstract class ProperEventStream<E> : EventStream<E>() {
         return when (count) {
             0 -> NeverEventStream
 
-            else -> TakeEventStream(
+            else -> TakeEventStream.construct(
                 source = this,
-                totalCount = count,
+                count = count,
             )
         }
     }

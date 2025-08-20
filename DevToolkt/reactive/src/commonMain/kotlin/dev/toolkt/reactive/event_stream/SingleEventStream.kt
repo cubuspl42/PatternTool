@@ -4,7 +4,7 @@ import dev.toolkt.reactive.Listener.Conclusion
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Transaction
 
-class SingleEventStream<EventT> private constructor() : ManagedEventStream<EventT>() {
+internal class SingleEventStream<EventT> private constructor() : StatefulEventStream<EventT>() {
     companion object {
         context(momentContext: MomentContext) fun <EventT> construct(
             source: EventStream<EventT>,
@@ -44,13 +44,5 @@ class SingleEventStream<EventT> private constructor() : ManagedEventStream<Event
     }
 
     private var wasEmitted = false
-
-    override fun onResumed() {
-    }
-
-    override fun onPaused() {
-    }
-
-    override fun onAborted() {
-    }
 }
+

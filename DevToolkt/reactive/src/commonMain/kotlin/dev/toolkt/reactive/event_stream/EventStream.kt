@@ -206,7 +206,7 @@ abstract class EventStream<out E> {
         predicate = predicate,
     )
 
-    abstract fun take(
+    context(momentContext: MomentContext) abstract fun take(
         count: Int,
     ): EventStream<E>
 

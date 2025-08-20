@@ -18,7 +18,7 @@ object NeverEventStream : EventStream<Nothing>() {
         predicate: (Nothing) -> Boolean,
     ): EventStream<Nothing> = NeverEventStream
 
-    override fun take(count: Int): EventStream<Nothing> {
+    context(momentContext: MomentContext) override fun take(count: Int): EventStream<Nothing> {
         require(count >= 0)
         return NeverEventStream
     }
