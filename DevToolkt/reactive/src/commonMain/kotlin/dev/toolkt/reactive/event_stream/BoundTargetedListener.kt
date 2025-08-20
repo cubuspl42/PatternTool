@@ -4,6 +4,9 @@ import dev.toolkt.reactive.HybridSubscription
 import dev.toolkt.reactive.HybridSubscription.Companion.listenHybrid
 import dev.toolkt.reactive.Subscription
 
+/**
+ * TODO: Nuke (but nuke [SourcedListener] first)
+ */
 data class BoundTargetedListener<TargetT : Any, EventT>(
     val source: EventSource<EventT>,
     val targetedListener: TargetedListener<TargetT, EventT>,

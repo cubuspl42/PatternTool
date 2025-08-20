@@ -18,6 +18,8 @@ import dev.toolkt.reactive.HybridSubscription
  * event occurrences, it must be kept up-to-date. At the same time, that subscription _cannot_ be strong, as it would keep
  * this stream alive indefinitely, even when the upstream never emits any event and no other objects have a proper
  * reference to this stream (and, in consequence, can't start listening).
+ *
+ * TODO: Nuke (but modernize [take] / [takeUntilNull] first)
  */
 abstract class StatefulEventStream<TargetT : Any, EventT>() : ManagedEventStream<EventT>() {
     private lateinit var hybridSubscription: HybridSubscription

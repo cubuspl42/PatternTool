@@ -12,13 +12,6 @@ data class TargetedListener<TargetT : Any, EventT>(
     val target: TargetT,
     val listener: TargetingListener<TargetT, EventT>,
 ) {
-    fun bindSource(
-        source: EventSource<EventT>,
-    ): BoundTargetedListener<TargetT, EventT> = BoundTargetedListener(
-        source = source,
-        targetedListener = this,
-    )
-
     fun captureTarget(): Listener<EventT> = object : UnconditionalListener<EventT>() {
         override fun handleUnconditionally(
             transaction: Transaction,
@@ -33,12 +26,19 @@ data class TargetedListener<TargetT : Any, EventT>(
     }
 }
 
+/**
+ * TODO: Nuke, but first nuke:
+ *  - [SourcedListener]
+ */
 interface ISourcedListener<TargetT : Any> {
     fun bindTarget(
         target: TargetT,
     ): BoundListener
 }
 
+/**
+ * TODO: Nuke (but modernize [take] / [takeUntilNull] first)
+ */
 data class SourcedListener<TargetT : Any, EventT>(
     val source: EventSource<EventT>,
     val listener: TargetingListener<TargetT, EventT>,

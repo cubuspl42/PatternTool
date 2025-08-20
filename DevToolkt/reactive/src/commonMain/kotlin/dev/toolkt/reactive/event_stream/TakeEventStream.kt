@@ -3,13 +3,16 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.managed_io.Transaction
 
+/**
+ * TODO: Modernize
+ */
 class TakeEventStream<EventT>(
     private val source: EventStream<EventT>,
     totalCount: Int,
 ) : StatefulEventStream<TakeEventStream<EventT>, EventT>() {
     private var remainingCount: Int = totalCount
 
-    override fun bind(): SourcedListener<TakeEventStream<EventT>, EventT> = source.bind(
+    override fun bind(): SourcedListener<TakeEventStream<EventT>, EventT> = source.bindSourced(
         // The targeting listener cannot capture a strong reference to the outer stream. It's very important and
         // extremely easy to miss.
         listener = object : TargetingListener<TakeEventStream<EventT>, EventT> {
