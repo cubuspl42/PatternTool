@@ -79,7 +79,7 @@ class EventStreamSingleTests {
 
     @Test
     fun testSingle_missed() = runTestDefault {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
 
         val (singleEventStreamWeakRef, streamVerifier) = Actions.external {
@@ -149,7 +149,7 @@ class EventStreamSingleTests {
     @Test
     fun testSingle_silent() = runTestDefault {
         // Create an event emitter that will not emit any events
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val singleEventStreamWeakRef = Actions.external {
             // Create a single event stream which we'll never listen to.

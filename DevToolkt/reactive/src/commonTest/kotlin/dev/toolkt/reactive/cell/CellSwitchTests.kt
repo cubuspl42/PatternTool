@@ -1,8 +1,5 @@
-package dev.toolkt.reactive
+package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.cell.MutableCell
-import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -10,15 +7,15 @@ import kotlin.test.assertEquals
 class CellSwitchTests {
     @Test
     fun testMap() {
-        val mutableCell1 = MutableCell(
+        val mutableCell1 = MutableCell.createExternally(
             initialValue = 10,
         )
 
-        val mutableCell2 = MutableCell(
+        val mutableCell2 = MutableCell.createExternally(
             initialValue = -2,
         )
 
-        val mutableNestedCell = MutableCell(
+        val mutableNestedCell = MutableCell.createExternally(
             initialValue = mutableCell1,
         )
 

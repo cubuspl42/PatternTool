@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class EventStreamMapTests {
     @Test
     fun testMap() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val mappedStream = eventEmitter.map { "$it" }
 

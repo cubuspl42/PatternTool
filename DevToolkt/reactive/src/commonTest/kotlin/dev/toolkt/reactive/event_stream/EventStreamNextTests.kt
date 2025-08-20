@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.seconds
 class EventStreamNextTests {
     @Test
     fun testNext() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val nextFuture = eventEmitter.nextExternally()
 
@@ -59,7 +59,7 @@ class EventStreamNextTests {
     ) {
         // This test might not make much sense
 
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         fun setup(): Pair<PlatformWeakReference<Future<Int>>, EventStreamVerifier<Int>> {
             val nextFuture = eventEmitter.nextExternally()

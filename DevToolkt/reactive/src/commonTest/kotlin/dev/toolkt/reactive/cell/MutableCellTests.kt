@@ -1,8 +1,5 @@
-package dev.toolkt.reactive
+package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.cell.MutableCell
-import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -10,7 +7,7 @@ import kotlin.test.assertEquals
 class MutableCellTests {
     @Test
     fun testMutableCell() {
-        val mutableCell = MutableCell(
+        val mutableCell = MutableCell.createExternally(
             initialValue = 0,
         )
 

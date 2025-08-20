@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
@@ -9,7 +10,7 @@ import kotlin.test.assertEquals
 class ReactiveListDiffTests {
     @Test
     fun testDiff_initial() {
-        val mutableListCell = MutableCell(
+        val mutableListCell = MutableCell.createExternally(
             initialValue = listOf(10, 20, 30),
         )
 
@@ -23,7 +24,7 @@ class ReactiveListDiffTests {
 
     @Test
     fun testDiff_newValue() {
-        val mutableListCell = MutableCell(
+        val mutableListCell = MutableCell.createExternally(
             initialValue = listOf(10, 20, 30),
         )
 
@@ -58,7 +59,7 @@ class ReactiveListDiffTests {
 
     @Test
     fun testDiff_newEmpty() {
-        val mutableListCell = MutableCell(
+        val mutableListCell = MutableCell.createExternally(
             initialValue = listOf(10, 20, 30),
         )
 

@@ -1,6 +1,5 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -8,19 +7,19 @@ import kotlin.test.assertEquals
 class CellMap4Tests {
     @Test
     fun testMap4_initial() {
-        val mutableCell0 = MutableCell(
+        val mutableCell0 = MutableCell.createExternally(
             initialValue = 0,
         )
 
-        val mutableCell1 = MutableCell(
+        val mutableCell1 = MutableCell.createExternally(
             initialValue = 10,
         )
 
-        val mutableCell2 = MutableCell(
+        val mutableCell2 = MutableCell.createExternally(
             initialValue = 20,
         )
 
-        val mutableCell3 = MutableCell(
+        val mutableCell3 = MutableCell.createExternally(
             initialValue = 30,
         )
 
@@ -43,19 +42,19 @@ class CellMap4Tests {
 
     @Test
     fun testMap4_newValue() {
-        val mutableCell0 = MutableCell(
+        val mutableCell0 = MutableCell.createExternally(
             initialValue = 0,
         )
 
-        val mutableCell1 = MutableCell(
+        val mutableCell1 = MutableCell.createExternally(
             initialValue = 10,
         )
 
-        val mutableCell2 = MutableCell(
+        val mutableCell2 = MutableCell.createExternally(
             initialValue = 20,
         )
 
-        val mutableCell3 = MutableCell(
+        val mutableCell3 = MutableCell.createExternally(
             initialValue = 30,
         )
 

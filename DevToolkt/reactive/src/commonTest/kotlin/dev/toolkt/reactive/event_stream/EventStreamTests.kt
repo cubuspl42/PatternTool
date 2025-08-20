@@ -14,7 +14,7 @@ import kotlin.test.assertIs
 class EventStreamTests {
     @Test
     fun testListen() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         // Create a dependent stream to make the system non-trivial
         val dependentStream = eventEmitter.map { it.toString() }
@@ -66,7 +66,7 @@ class EventStreamTests {
             }
         }
 
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         // Create a dependent stream to make the system non-trivial
         val dependentStream = eventEmitter.map { it.toString() }
@@ -86,7 +86,7 @@ class EventStreamTests {
 
     @Test
     fun testListenWeak() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         // Create a dependent stream to make the system non-trivial
         val dependentStream = eventEmitter.map { it.toString() }
@@ -143,7 +143,7 @@ class EventStreamTests {
             ): Listener.Conclusion = Listener.Conclusion.KeepListening
         }
 
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val target = object {}
 
@@ -163,7 +163,7 @@ class EventStreamTests {
 
     @Test
     fun testListenWeak_differentListeners_sameTarget() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val target = object {}
 
@@ -191,7 +191,7 @@ class EventStreamTests {
 
     @Test
     fun testListenWeak_sameListener_differentTargets() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val target1 = object {}
 

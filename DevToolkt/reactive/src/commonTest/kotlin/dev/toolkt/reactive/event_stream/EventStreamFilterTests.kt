@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class EventStreamFilterTests {
     @Test
     fun testFilter() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val mappedStream = eventEmitter.filter { it % 2 == 0 }
 

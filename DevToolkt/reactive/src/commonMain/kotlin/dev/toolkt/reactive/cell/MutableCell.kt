@@ -1,15 +1,23 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.event_stream.EventEmitter
-import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.effect.ActionContext
 import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.event_stream.EventEmitter
+import dev.toolkt.reactive.event_stream.EventStream
 
-// TODO: Make the constructor private
-class MutableCell<V>(
+class MutableCell<V> private constructor(
+    private val newValueEmitter: EventEmitter<V>,
     initialValue: V,
 ) : ProperCell<V>() {
     companion object {
+        @Deprecated("Use `create` instead")
+        fun <ValueT> createUnmanaged(
+            initialValue: ValueT,
+        ): MutableCell<ValueT> = MutableCell(
+            newValueEmitter = EventEmitter.createUnmanaged(),
+            initialValue = initialValue,
+        )
+
         /**
          * Creates a new [MutableCell] with the given [initialValue].
          *
@@ -17,12 +25,14 @@ class MutableCell<V>(
          */
         context(momentContext: MomentContext) fun <V> create(
             initialValue: V,
-        ): MutableCell<V> = MutableCell(
-            initialValue = initialValue,
-        )
+        ): MutableCell<V> {
+            return MutableCell(
+                newValueEmitter = EventEmitter.createUnmanaged(),
+                initialValue = initialValue,
+            )
+        }
     }
 
-    private val newValueEmitter = EventEmitter<V>()
 
     private var mutableValue: V = initialValue
 

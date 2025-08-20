@@ -1,11 +1,13 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.MomentContext
 
-// TODO: Make the constructor private
-class EventEmitter<EventT> : ManagedEventStream<EventT>() {
+class EventEmitter<EventT> private constructor() : ManagedEventStream<EventT>() {
     companion object {
+        @Deprecated("Use `create` instead")
+        fun <EventT> createUnmanaged(): EventEmitter<EventT> = EventEmitter()
+
         /**
          * Creates a new [EventEmitter].
          *

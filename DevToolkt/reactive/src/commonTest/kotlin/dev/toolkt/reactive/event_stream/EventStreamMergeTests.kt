@@ -24,7 +24,7 @@ class EventStreamMergeTests {
 
     @Test
     fun testMerge_singleNever1() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val mergeStream = EventStream.merge(
             source1 = eventEmitter,
@@ -57,7 +57,7 @@ class EventStreamMergeTests {
 
     @Test
     fun testMerge_singleNever2() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val mergeStream = EventStream.merge(
             source1 = NeverEventStream,
@@ -90,7 +90,7 @@ class EventStreamMergeTests {
 
     @Test
     fun testMerge_same() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val mergeStream = EventStream.merge(
             source1 = eventEmitter,
@@ -123,7 +123,7 @@ class EventStreamMergeTests {
 
     @Test
     fun testMerge_sameMapped() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val mergeStream = EventStream.merge(
             source1 = eventEmitter.map { it * 10 },
@@ -156,8 +156,8 @@ class EventStreamMergeTests {
 
     @Test
     fun testMerge_different() {
-        val eventEmitter1 = EventEmitter<Int>()
-        val eventEmitter2 = EventEmitter<Int>()
+        val eventEmitter1 = EventEmitter.createExternally<Int>()
+        val eventEmitter2 = EventEmitter.createExternally<Int>()
 
         val mergeStream = EventStream.merge(
             source1 = eventEmitter1,

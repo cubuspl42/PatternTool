@@ -1,6 +1,7 @@
 package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.reactive.event_stream.EventEmitter
+import dev.toolkt.reactive.event_stream.createExternally
 import dev.toolkt.reactive.event_stream.emitExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
@@ -9,9 +10,9 @@ import kotlin.test.assertEquals
 class ReactiveListMergeAllTests {
     @Test
     fun testMergeAll_initial() {
-        val eventEmitter0 = EventEmitter<Int>()
-        val eventEmitter1 = EventEmitter<Int>()
-        val eventEmitter2 = EventEmitter<Int>()
+        val eventEmitter0 = EventEmitter.createExternally<Int>()
+        val eventEmitter1 = EventEmitter.createExternally<Int>()
+        val eventEmitter2 = EventEmitter.createExternally<Int>()
 
         val mutableEventStreams = MutableReactiveList(
             initialContent = listOf(
@@ -45,9 +46,9 @@ class ReactiveListMergeAllTests {
 
     @Test
     fun testMergeAll_removed() {
-        val eventEmitter0 = EventEmitter<Int>()
-        val eventEmitter1 = EventEmitter<Int>()
-        val eventEmitter2 = EventEmitter<Int>()
+        val eventEmitter0 = EventEmitter.createExternally<Int>()
+        val eventEmitter1 = EventEmitter.createExternally<Int>()
+        val eventEmitter2 = EventEmitter.createExternally<Int>()
 
         val mutableEventStreams = MutableReactiveList(
             initialContent = listOf(
@@ -82,10 +83,10 @@ class ReactiveListMergeAllTests {
 
     @Test
     fun testMergeAll_updated() {
-        val eventEmitter0 = EventEmitter<Int>()
-        val eventEmitter1 = EventEmitter<Int>()
-        val eventEmitter2a = EventEmitter<Int>()
-        val eventEmitter2b = EventEmitter<Int>()
+        val eventEmitter0 = EventEmitter.createExternally<Int>()
+        val eventEmitter1 = EventEmitter.createExternally<Int>()
+        val eventEmitter2a = EventEmitter.createExternally<Int>()
+        val eventEmitter2b = EventEmitter.createExternally<Int>()
 
         val mutableEventStreams = MutableReactiveList(
             initialContent = listOf(
@@ -122,9 +123,9 @@ class ReactiveListMergeAllTests {
 
     @Test
     fun testMergeAll_added() {
-        val eventEmitter0 = EventEmitter<Int>()
-        val eventEmitter1 = EventEmitter<Int>()
-        val eventEmitter2 = EventEmitter<Int>()
+        val eventEmitter0 = EventEmitter.createExternally<Int>()
+        val eventEmitter1 = EventEmitter.createExternally<Int>()
+        val eventEmitter2 = EventEmitter.createExternally<Int>()
 
         val mutableEventStreams = MutableReactiveList(
             initialContent = listOf(

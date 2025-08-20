@@ -7,6 +7,7 @@ import dev.toolkt.core.platform.test_utils.ensureNotCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
@@ -17,7 +18,7 @@ import kotlin.time.Duration.Companion.seconds
 class ReactiveListSingleNotNullTests {
     @Test
     fun testSingleNotNull_initialNull() {
-        val mutableCell = MutableCell<Int?>(initialValue = null)
+        val mutableCell = MutableCell.createExternally<Int?>(initialValue = null)
 
         val singleReactiveList = ReactiveList.singleNotNull(
             element = mutableCell,
@@ -40,7 +41,7 @@ class ReactiveListSingleNotNullTests {
 
     @Test
     fun testSingleNotNull_initialNonNull() {
-        val mutableCell = MutableCell<Int?>(initialValue = 10)
+        val mutableCell = MutableCell.createExternally<Int?>(initialValue = 10)
 
         val singleReactiveList = ReactiveList.singleNotNull(
             element = mutableCell,
@@ -63,7 +64,7 @@ class ReactiveListSingleNotNullTests {
 
     @Test
     fun testSingleNotNull_changedFromNonNullToNull() {
-        val mutableCell = MutableCell<Int?>(initialValue = 10)
+        val mutableCell = MutableCell.createExternally<Int?>(initialValue = 10)
 
         val singleReactiveList = ReactiveList.singleNotNull(
             element = mutableCell,
@@ -94,7 +95,7 @@ class ReactiveListSingleNotNullTests {
 
     @Test
     fun testSingleNotNull_changedFromNullToNonNull() {
-        val mutableCell = MutableCell<Int?>(initialValue = null)
+        val mutableCell = MutableCell.createExternally<Int?>(initialValue = null)
 
         val singleReactiveList = ReactiveList.singleNotNull(
             element = mutableCell,
@@ -127,7 +128,7 @@ class ReactiveListSingleNotNullTests {
 
     @Test
     fun testSingleNotNull_changedFromNonNullToNonNull() {
-        val mutableCell = MutableCell<Int?>(initialValue = 10)
+        val mutableCell = MutableCell.createExternally<Int?>(initialValue = 10)
 
         val singleReactiveList = ReactiveList.singleNotNull(
             element = mutableCell,
@@ -160,7 +161,7 @@ class ReactiveListSingleNotNullTests {
 
     @Test
     fun testSingleNotNull_changedFromNullToNull() {
-        val mutableCell = MutableCell<Int?>(initialValue = null)
+        val mutableCell = MutableCell.createExternally<Int?>(initialValue = null)
 
         val singleReactiveList = ReactiveList.singleNotNull(
             element = mutableCell,
@@ -193,7 +194,7 @@ class ReactiveListSingleNotNullTests {
 
     @Test
     fun testSingleNotNull_unused() = runTestDefault {
-        val mutableCell = MutableCell<Int?>(initialValue = 10)
+        val mutableCell = MutableCell.createExternally<Int?>(initialValue = 10)
 
         ReactiveList.singleNotNull(
             element = mutableCell,
@@ -206,7 +207,7 @@ class ReactiveListSingleNotNullTests {
 
     @Test
     fun testSingleNotNull_sampleOnly() = runTestDefault {
-        val mutableCell = MutableCell<Int?>(initialValue = null)
+        val mutableCell = MutableCell.createExternally<Int?>(initialValue = null)
 
         suspend fun testKeepAlive(): PlatformWeakReference<ReactiveList<Int>> {
             val reactiveList = ReactiveList.singleNotNull(
@@ -236,7 +237,7 @@ class ReactiveListSingleNotNullTests {
 
     @Test
     fun testSingleNotNull_changesOnly() = runTestDefault {
-        val mutableCell = MutableCell<Int?>(initialValue = null)
+        val mutableCell = MutableCell.createExternally<Int?>(initialValue = null)
 
         val reactiveList = ReactiveList.singleNotNull(
             element = mutableCell,
@@ -327,7 +328,7 @@ class ReactiveListSingleNotNullTests {
         // Entity is referred -> keep alive
         // Otherwise -> let it go
 
-        val mutableCell = MutableCell<Int?>(initialValue = 10)
+        val mutableCell = MutableCell.createExternally<Int?>(initialValue = 10)
 
         fun setup(): Pair<PlatformWeakReference<ReactiveList<Int>>, EventStreamVerifier<ReactiveList.Change<Int>>> {
             val singleNotNullReactiveList = ReactiveList.singleNotNull(

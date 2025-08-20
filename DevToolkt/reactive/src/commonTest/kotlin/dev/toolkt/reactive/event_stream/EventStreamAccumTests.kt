@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 class EventStreamAccumTests {
     @Test
     fun testAccum() {
-        val eventEmitter = EventEmitter<Char>()
+        val eventEmitter = EventEmitter.createExternally<Char>()
 
         val accumCell = eventEmitter.accumUnmanaged(
             initialValue = "abc",

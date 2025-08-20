@@ -1,18 +1,19 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.setExternally
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class EventStreamDivertTests {
     @Test
     fun testDivert() {
-        val eventEmitter1 = EventEmitter<Int>()
-        val eventEmitter2 = EventEmitter<Int>()
+        val eventEmitter1 = EventEmitter.createExternally<Int>()
+        val eventEmitter2 = EventEmitter.createExternally<Int>()
 
-        val mutableStreamCell = MutableCell<EventStream<Int>>(
+        val mutableStreamCell = MutableCell.createExternally<EventStream<Int>>(
             initialValue = eventEmitter1,
         )
 

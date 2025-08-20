@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 class EventStreamTakeUntilNullTests {
     @Test
     fun testTakeUntilNull() {
-        val eventEmitter = EventEmitter<Int?>()
+        val eventEmitter = EventEmitter.createExternally<Int?>()
 
         val takeStream = Moments.external {
             eventEmitter.takeUntilNull()

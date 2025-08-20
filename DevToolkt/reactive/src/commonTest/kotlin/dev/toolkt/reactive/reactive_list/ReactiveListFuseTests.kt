@@ -7,6 +7,7 @@ import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
@@ -21,11 +22,11 @@ class ReactiveListFuseTests {
      */
     @Test
     fun testFuse_initial() {
-        val mutableCell0 = MutableCell(initialValue = 0)
-        val mutableCell1 = MutableCell(initialValue = 100)
-        val mutableCell2 = MutableCell(initialValue = 200)
-        val mutableCell3 = MutableCell(initialValue = 300)
-        val mutableCell4 = MutableCell(initialValue = 400)
+        val mutableCell0 = MutableCell.createExternally(initialValue = 0)
+        val mutableCell1 = MutableCell.createExternally(initialValue = 100)
+        val mutableCell2 = MutableCell.createExternally(initialValue = 200)
+        val mutableCell3 = MutableCell.createExternally(initialValue = 300)
+        val mutableCell4 = MutableCell.createExternally(initialValue = 400)
 
         val mutableCells = MutableReactiveList(
             initialContent = listOf(
@@ -111,16 +112,16 @@ class ReactiveListFuseTests {
      */
     @Test
     fun testFuse_indexShift() {
-        val mutableCell0 = MutableCell(initialValue = 0)
-        val mutableCell1 = MutableCell(initialValue = 100)
-        val mutableCell2 = MutableCell(initialValue = 200)
-        val mutableCell3 = MutableCell(initialValue = 300)
+        val mutableCell0 = MutableCell.createExternally(initialValue = 0)
+        val mutableCell1 = MutableCell.createExternally(initialValue = 100)
+        val mutableCell2 = MutableCell.createExternally(initialValue = 200)
+        val mutableCell3 = MutableCell.createExternally(initialValue = 300)
 
-        val mutableCell3a = MutableCell(initialValue = 310)
-        val mutableCell3b = MutableCell(initialValue = 320)
-        val mutableCell3c = MutableCell(initialValue = 330)
+        val mutableCell3a = MutableCell.createExternally(initialValue = 310)
+        val mutableCell3b = MutableCell.createExternally(initialValue = 320)
+        val mutableCell3c = MutableCell.createExternally(initialValue = 330)
 
-        val mutableCell4 = MutableCell(initialValue = 400)
+        val mutableCell4 = MutableCell.createExternally(initialValue = 400)
 
         val mutableCells = MutableReactiveList(
             initialContent = listOf(
@@ -244,15 +245,15 @@ class ReactiveListFuseTests {
      */
     @Test
     fun testFuse_outerChange_insertedCells() {
-        val mutableCell0 = MutableCell(initialValue = 0)
-        val mutableCell1 = MutableCell(initialValue = 100)
-        val mutableCell2 = MutableCell(initialValue = 200)
+        val mutableCell0 = MutableCell.createExternally(initialValue = 0)
+        val mutableCell1 = MutableCell.createExternally(initialValue = 100)
+        val mutableCell2 = MutableCell.createExternally(initialValue = 200)
 
-        val mutableCell2a = MutableCell(initialValue = 210)
-        val mutableCell2b = MutableCell(initialValue = 220)
+        val mutableCell2a = MutableCell.createExternally(initialValue = 210)
+        val mutableCell2b = MutableCell.createExternally(initialValue = 220)
 
-        val mutableCell3 = MutableCell(initialValue = 300)
-        val mutableCell4 = MutableCell(initialValue = 400)
+        val mutableCell3 = MutableCell.createExternally(initialValue = 300)
+        val mutableCell4 = MutableCell.createExternally(initialValue = 400)
 
         val mutableCells = MutableReactiveList(
             initialContent = listOf(
@@ -380,10 +381,10 @@ class ReactiveListFuseTests {
     // the list (at some other, unaffected index)
     @Test
     fun testFuse_outerChange_removedCells() {
-        val mutableCell0 = MutableCell(initialValue = 0)
-        val mutableCell1 = MutableCell(initialValue = 100)
-        val mutableCell2 = MutableCell(initialValue = 200)
-        val mutableCell3 = MutableCell(initialValue = 300)
+        val mutableCell0 = MutableCell.createExternally(initialValue = 0)
+        val mutableCell1 = MutableCell.createExternally(initialValue = 100)
+        val mutableCell2 = MutableCell.createExternally(initialValue = 200)
+        val mutableCell3 = MutableCell.createExternally(initialValue = 300)
 
         val mutableCells = MutableReactiveList(
             initialContent = listOf(
@@ -459,16 +460,16 @@ class ReactiveListFuseTests {
      */
     @Test
     fun testFuse_outerChange_updatedCells() {
-        val mutableCell0 = MutableCell(initialValue = 0)
-        val mutableCell1 = MutableCell(initialValue = 100)
-        val mutableCell2 = MutableCell(initialValue = 200)
+        val mutableCell0 = MutableCell.createExternally(initialValue = 0)
+        val mutableCell1 = MutableCell.createExternally(initialValue = 100)
+        val mutableCell2 = MutableCell.createExternally(initialValue = 200)
 
-        val mutableCell2a = MutableCell(initialValue = 210)
-        val mutableCell2b = MutableCell(initialValue = 220)
-        val mutableCell2c = MutableCell(initialValue = 230)
+        val mutableCell2a = MutableCell.createExternally(initialValue = 210)
+        val mutableCell2b = MutableCell.createExternally(initialValue = 220)
+        val mutableCell2c = MutableCell.createExternally(initialValue = 230)
 
-        val mutableCell3 = MutableCell(initialValue = 300)
-        val mutableCell4 = MutableCell(initialValue = 400)
+        val mutableCell3 = MutableCell.createExternally(initialValue = 300)
+        val mutableCell4 = MutableCell.createExternally(initialValue = 400)
 
         val mutableCells = MutableReactiveList(
             initialContent = listOf(
@@ -549,13 +550,13 @@ class ReactiveListFuseTests {
      */
     @Test
     fun testFuse_outerChange_updatedCells_instantReAdd() {
-        val mutableCell0 = MutableCell(initialValue = 0)
-        val mutableCell1 = MutableCell(initialValue = 100)
-        val mutableCell2 = MutableCell(initialValue = 200)
+        val mutableCell0 = MutableCell.createExternally(initialValue = 0)
+        val mutableCell1 = MutableCell.createExternally(initialValue = 100)
+        val mutableCell2 = MutableCell.createExternally(initialValue = 200)
 
-        val mutableCell2a = MutableCell(initialValue = 210)
+        val mutableCell2a = MutableCell.createExternally(initialValue = 210)
 
-        val mutableCell3 = MutableCell(initialValue = 300)
+        val mutableCell3 = MutableCell.createExternally(initialValue = 300)
 
         val mutableCells = MutableReactiveList(
             initialContent = listOf(
@@ -639,12 +640,12 @@ class ReactiveListFuseTests {
      */
     @Test
     fun testFuse_resubscribe() {
-        val mutableCell0 = MutableCell(initialValue = 0)
-        val mutableCell1 = MutableCell(initialValue = 100)
-        val mutableCell2 = MutableCell(initialValue = 200)
-        val mutableCell3 = MutableCell(initialValue = 300)
+        val mutableCell0 = MutableCell.createExternally(initialValue = 0)
+        val mutableCell1 = MutableCell.createExternally(initialValue = 100)
+        val mutableCell2 = MutableCell.createExternally(initialValue = 200)
+        val mutableCell3 = MutableCell.createExternally(initialValue = 300)
 
-        val mutableCell3b = MutableCell(initialValue = 310)
+        val mutableCell3b = MutableCell.createExternally(initialValue = 310)
 
         val mutableCells = MutableReactiveList(
             initialContent = listOf(
@@ -711,8 +712,8 @@ class ReactiveListFuseTests {
 
     @Test
     fun testFuse_garbageCollection() = runTestDefault {
-        val mutableCell0 = MutableCell(initialValue = 0)
-        val mutableCell1 = MutableCell(initialValue = 10)
+        val mutableCell0 = MutableCell.createExternally(initialValue = 0)
+        val mutableCell1 = MutableCell.createExternally(initialValue = 10)
 
         fun setup(): Pair<PlatformWeakReference<ReactiveList<Int>>, EventStreamVerifier<ReactiveList.Change<Int>>> {
             val fuseReactiveList = ReactiveList.fuse(

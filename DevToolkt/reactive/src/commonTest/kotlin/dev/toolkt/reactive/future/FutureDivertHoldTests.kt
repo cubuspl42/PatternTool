@@ -1,17 +1,18 @@
 package dev.toolkt.reactive.future
 
-import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.createExternally
 import dev.toolkt.reactive.event_stream.emitExternally
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class FutureDivertHoldTests {
     @Test
     fun testDivertHold() {
-        val eventEmitter1 = EventEmitter<Int>()
-        val eventEmitter2 = EventEmitter<Int>()
+        val eventEmitter1 = EventEmitter.createExternally<Int>()
+        val eventEmitter2 = EventEmitter.createExternally<Int>()
 
         val futureCompleter = FutureCompleter<EventStream<Int>>()
 
