@@ -9,8 +9,7 @@ import dev.toolkt.reactive.event_stream.TargetingListener
 import dev.toolkt.reactive.managed_io.Transaction
 
 /**
- * TODO: Nuke, but first nuke:
- *  - [dev.toolkt.reactive.event_stream.BoundListener]
+ * TODO: Nuke
  */
 interface HybridSubscription : Subscription {
     /**
