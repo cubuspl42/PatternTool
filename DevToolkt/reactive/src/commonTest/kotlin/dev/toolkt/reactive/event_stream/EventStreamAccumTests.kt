@@ -10,7 +10,7 @@ class EventStreamAccumTests {
     fun testAccum() {
         val eventEmitter = EventEmitter<Char>()
 
-        val accumCell = eventEmitter.accum(
+        val accumCell = eventEmitter.accumUnmanaged(
             initialValue = "abc",
             transform = { string, char ->
                 string + char

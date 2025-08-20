@@ -142,10 +142,12 @@ abstract class EventStream<out E> : EventSource<E> {
 
         /**
          * Creates an [EventStream] that is driven by an external source, assuming
-         * that the external events happen independently.
+         * that the external events happen independently (the fact that we subscribe
+         * to the external source does not affect the events that it emits).
          *
          * @return An [EventStream] that emits events from the external source.
          */
+        // TODO: Add tests
         fun <EventT> subscribeExternal(
             subscribe: (Controller<EventT>) -> Subscription,
         ): EventStream<EventT> = PassiveExternalEventStream.construct(
@@ -160,6 +162,7 @@ abstract class EventStream<out E> : EventSource<E> {
          * by an external source. Once the effect is cancelled, the external
          * source is deactivated.
          */
+        // TODO: Add tests
         context(actionContext: ActionContext) fun <EventT> activateExternal(
             activate: (Controller<EventT>) -> Subscription,
         ): Effect<EventStream<EventT>> = object : Effect<EventStream<EventT>> {
@@ -300,8 +303,22 @@ context(momentContext: MomentContext) fun <E> EventStream<E>.hold(
     newValues = this,
 )
 
-
+context(momentContext: MomentContext)
 fun <V, R> EventStream<V>.accum(
+    initialValue: R,
+    transform: (previousValue: R, newEvent: V) -> R,
+): Cell<R> = Cell.selfLooped(
+    placeholderValue = initialValue,
+) { loopedCell ->
+    map { newEvent ->
+        transform(
+            loopedCell.currentValueUnmanaged,
+            newEvent,
+        )
+    }.hold(initialValue = initialValue)
+}
+
+fun <V, R> EventStream<V>.accumUnmanaged(
     initialValue: R,
     transform: (previousValue: R, newEvent: V) -> R,
 ): Cell<R> = Cell.selfLooped(
