@@ -50,7 +50,10 @@ interface TargetingListener<in TargetT : Any, in EventT> {
     ): Listener.Conclusion
 }
 
-internal fun <TargetT : Any, EventT> EventSource<EventT>.bind(
+/**
+ * TODO: Nuke (but modernize [take] / [takeUntilNull] first)
+ */
+internal fun <TargetT : Any, EventT> EventSource<EventT>.bindSourced(
     listener: TargetingListener<TargetT, EventT>,
 ): SourcedListener<TargetT, EventT> = SourcedListener(
     source = this,
