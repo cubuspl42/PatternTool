@@ -17,6 +17,7 @@ import dev.toolkt.js.threejs.THREE
 import dev.toolkt.js.threejs.THREE.Object3D
 import dev.toolkt.js.threejs.WebGLRendererParams
 import dev.toolkt.reactive.effect.Actions
+import dev.toolkt.reactive.effect.Moments
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -142,7 +143,9 @@ fun createReactiveRenderer(
         renderer.setSize(sizeNow.width, sizeNow.height)
     }
 
-    val mutableTime = MutableCell(initialValue = Duration.ZERO)
+    val mutableTime = Moments.external {
+        MutableCell.create(initialValue = Duration.ZERO)
+    }
 
     val scene = buildScene(mutableTime)
 

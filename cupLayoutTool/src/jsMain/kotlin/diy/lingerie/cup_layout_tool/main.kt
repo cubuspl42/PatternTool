@@ -21,13 +21,6 @@ private val bezierCurve = BezierCurve(
     Point(x = 100.0, y = 0.0),
 )
 
-private val documentState = DocumentState(
-    userBezierMesh = UserBezierMesh.create(
-        initialApexVertex = apexVertex,
-        initialBezierCurve = bezierCurve,
-    ),
-)
-
 fun main() {
     val windowDynamic: dynamic = window
     windowDynamic.PlatformSystem = PlatformSystem
@@ -37,6 +30,13 @@ fun main() {
         callback = {
             document.body!!.appendChild(
                 Actions.external {
+                    val documentState = DocumentState(
+                        userBezierMesh = UserBezierMesh.create(
+                            initialApexVertex = apexVertex,
+                            initialBezierCurve = bezierCurve,
+                        ),
+                    )
+
                     ApplicationState.enter(
                         documentState = documentState,
                     ).joinOf { applicationState ->

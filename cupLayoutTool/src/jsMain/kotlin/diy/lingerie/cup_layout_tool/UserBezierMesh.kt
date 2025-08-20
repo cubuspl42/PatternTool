@@ -7,50 +7,55 @@ import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.cell.PropertyCell
+import dev.toolkt.reactive.effect.MomentContext
 
 class UserBezierMesh private constructor(
-    initialApexVertex: Point3D,
-    initialBezierCurve: BezierCurve,
-) {
-    class Handle(
-        initialPosition: Point,
+    val apexPosition: PropertyCell<Point3D>,
+    val handle0: UserBezierMesh.Handle,
+    val handle1: UserBezierMesh.Handle,
+    val handle2: UserBezierMesh.Handle,
+    val handle3: UserBezierMesh.Handle,
+
+    ) {
+    class Handle private constructor(
+        val position: MutableCell<Point>,
     ) {
         companion object {
             val plane = Plane.Xy
-        }
 
-        val position = MutableCell(initialValue = initialPosition)
+            context(momentContext: MomentContext) fun create(
+
+                initialPosition: Point,
+            ): Handle = Handle(
+                position = MutableCell.create(initialValue = initialPosition),
+            )
+        }
 
         val worldPosition: Cell<Point3D> = position.map { it.toPoint3D() }
     }
 
     companion object {
-        fun create(
+        context(momentContext: MomentContext) fun create(
             initialApexVertex: Point3D,
             initialBezierCurve: BezierCurve,
         ): UserBezierMesh = UserBezierMesh(
-            initialApexVertex = initialApexVertex,
-            initialBezierCurve = initialBezierCurve,
+            apexPosition = PropertyCell.create(
+                initialValue = initialApexVertex,
+            ),
+            handle0 = Handle.create(
+                initialPosition = initialBezierCurve.start,
+            ),
+            handle1 = Handle.create(
+                initialPosition = initialBezierCurve.firstControl,
+            ),
+            handle2 = Handle.create(
+                initialPosition = initialBezierCurve.secondControl,
+            ),
+            handle3 = Handle.create(
+                initialPosition = initialBezierCurve.end,
+            ),
         )
     }
-
-    val apexPosition = PropertyCell(initialValue = initialApexVertex)
-
-    val handle0 = Handle(
-        initialPosition = initialBezierCurve.start,
-    )
-
-    val handle1 = Handle(
-        initialPosition = initialBezierCurve.firstControl,
-    )
-
-    val handle2 = Handle(
-        initialPosition = initialBezierCurve.secondControl,
-    )
-
-    val handle3 = Handle(
-        initialPosition = initialBezierCurve.end,
-    )
 
     val bezierCurve: Cell<BezierCurve> = Cell.map4(
         handle0.position,
