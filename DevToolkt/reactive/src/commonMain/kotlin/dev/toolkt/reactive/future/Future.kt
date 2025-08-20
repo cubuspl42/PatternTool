@@ -5,9 +5,9 @@ import dev.toolkt.reactive.cell.switch
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.NeverEventStream
 import dev.toolkt.reactive.event_stream.holdUnmanaged
+import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.Effect
 import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.map
 
 abstract class Future<out ResultT> {
@@ -40,8 +40,6 @@ abstract class Future<out ResultT> {
 
         override val onFulfilled: EventStream<Fulfilled<Nothing>> = EventStream.Never
 
-        override val onResult: EventStream<Nothing> = NeverEventStream
-
         override fun <Vr> map(transform: (Nothing) -> Vr): Future<Vr> = Hang
     }
 
@@ -56,8 +54,6 @@ abstract class Future<out ResultT> {
         override val currentStateUnmanaged: State<ResultT> = fulfilledState
 
         override val onFulfilled: EventStream<Fulfilled<ResultT>> = NeverEventStream
-
-        override val onResult: EventStream<ResultT> = NeverEventStream
 
         override fun <Vr> map(transform: (ResultT) -> Vr): Future<Vr> = Prefilled(
             constResult = transform(constResult),
@@ -179,7 +175,8 @@ abstract class Future<out ResultT> {
     @Suppress("FunctionName")
     fun null_(): Future<Nothing?> = map { null }
 
-    abstract val onResult: EventStream<ResultT>
+    val onResult: EventStream<ResultT>
+        get() = state.newValues.mapNotNull { (it as? Future.Fulfilled<ResultT>)?.result }
 
     abstract val state: Cell<State<ResultT>>
 

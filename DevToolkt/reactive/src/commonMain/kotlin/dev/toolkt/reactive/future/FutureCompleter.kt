@@ -25,11 +25,6 @@ class FutureCompleter<V> : ProperFuture<V>() {
         }
     }
 
-    override val onResult: EventStream<V>
-        get() = mutableState.newValues.mapNotNull {
-            (it as? Fulfilled<V>)?.result
-        }
-
     override val state: Cell<State<V>>
         get() = mutableState
 }
