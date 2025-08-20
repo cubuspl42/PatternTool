@@ -26,7 +26,7 @@ class EventStreamTakeTests {
         assertIs<IllegalArgumentException>(
             assertFails {
                 Moments.external {
-                    EventEmitter<Int>().take(-2)
+                    EventEmitter.createExternally<Int>().take(-2)
                 }
             },
         )
@@ -34,7 +34,7 @@ class EventStreamTakeTests {
 
     @Test
     fun testTake_zero() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val takeStream = Moments.external {
             eventEmitter.take(0)
@@ -61,7 +61,7 @@ class EventStreamTakeTests {
 
     @Test
     fun testTake_one() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val takeStream = Moments.external {
             eventEmitter.take(1)
@@ -95,7 +95,7 @@ class EventStreamTakeTests {
 
     @Test
     fun testTake_two() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val takeStream = Moments.external {
             eventEmitter.take(2)
@@ -129,7 +129,7 @@ class EventStreamTakeTests {
 
     @Test
     fun testTake_collectable() = runTestDefault {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val takeStreamRef = PlatformWeakReference(
             Moments.external {
@@ -143,7 +143,7 @@ class EventStreamTakeTests {
 
     @Test
     fun testTake_missed() = runTestDefault {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val takeStream = Moments.external {
             eventEmitter.take(2)
@@ -168,7 +168,7 @@ class EventStreamTakeTests {
 
     @Test
     fun testTake_detached() = runTestDefault {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val streamVerifier = DetachedEventStreamVerifier(
             eventStream = Moments.external {

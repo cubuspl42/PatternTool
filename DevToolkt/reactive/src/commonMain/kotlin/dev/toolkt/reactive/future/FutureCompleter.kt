@@ -5,7 +5,7 @@ import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.effect.ActionContext
 
 class FutureCompleter<V> : ProperFuture<V>() {
-    private val mutableState = MutableCell<State<V>>(Pending)
+    private val mutableState = MutableCell.createUnmanaged<State<V>>(Pending)
 
     val hasListeners: Boolean
         get() = mutableState.hasListeners

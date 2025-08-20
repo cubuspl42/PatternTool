@@ -1,17 +1,18 @@
 package dev.toolkt.reactive.future
 
-import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.setExternally
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class FutureSwitchHoldTests {
     @Test
     fun testSwitchHold() {
-        val mutableCell1 = MutableCell(initialValue = -10)
-        val mutableCell2 = MutableCell(initialValue = 10)
+        val mutableCell1 = MutableCell.createExternally(initialValue = -10)
+        val mutableCell2 = MutableCell.createExternally(initialValue = 10)
 
         val futureCompleter = FutureCompleter<Cell<Int>>()
 

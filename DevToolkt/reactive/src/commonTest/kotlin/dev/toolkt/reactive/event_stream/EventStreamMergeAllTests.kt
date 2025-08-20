@@ -7,9 +7,9 @@ import kotlin.test.assertEquals
 class EventStreamMergeAllTests {
     @Test
     fun testMergeAll() {
-        val eventEmitter0 = EventEmitter<Int>()
-        val eventEmitter1 = EventEmitter<Int>()
-        val eventEmitter2 = EventEmitter<Int>()
+        val eventEmitter0 = EventEmitter.createExternally<Int>()
+        val eventEmitter1 = EventEmitter.createExternally<Int>()
+        val eventEmitter2 = EventEmitter.createExternally<Int>()
 
         val mergeStream = EventStream.mergeAll(
             eventEmitter0,

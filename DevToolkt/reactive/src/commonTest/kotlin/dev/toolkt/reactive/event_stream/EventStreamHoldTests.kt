@@ -12,7 +12,7 @@ import kotlin.test.assertEquals
 class EventStreamHoldTests {
     @Test
     fun testHold() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val heldCell = eventEmitter.holdUnmanaged(0)
 
@@ -56,7 +56,7 @@ class EventStreamHoldTests {
 
     @Test
     fun testHold_sampleOnly() = runTestDefault {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val heldCell = eventEmitter.holdUnmanaged(0)
 
@@ -77,7 +77,7 @@ class EventStreamHoldTests {
 
     @Test
     fun testHold_newValuesOnly() = runTestDefault {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         fun setup(): Pair<PlatformWeakReference<Cell<Int>>, EventStream<Int>> {
             val holdCell = eventEmitter.holdUnmanaged(0)

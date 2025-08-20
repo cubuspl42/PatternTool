@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class EventStreamMapNotNullTests {
     @Test
     fun testMapNotNull() {
-        val eventEmitter = EventEmitter<Int>()
+        val eventEmitter = EventEmitter.createExternally<Int>()
 
         val mappedStream = eventEmitter.mapNotNull {
             when {
@@ -16,7 +16,7 @@ class EventStreamMapNotNullTests {
             }
         }
 
-        val streamVerifier = EventStreamVerifier.setup(
+        val streamVerifier = EventStreamVerifier.listenForever(
             eventStream = mappedStream,
         )
 

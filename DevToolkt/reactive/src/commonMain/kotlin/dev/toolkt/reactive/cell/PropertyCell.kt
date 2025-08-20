@@ -1,11 +1,11 @@
 package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.UnconditionalListener
-import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.effect.ActionContext
 import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.future.Future
 
 class PropertyCell<ValueT>(
     initialValue: ValueT,
@@ -14,7 +14,7 @@ class PropertyCell<ValueT>(
         class Unbound<ValueT>(
             initialValue: ValueT,
         ) : State<ValueT>() {
-            private val mutableValue = MutableCell(initialValue = initialValue)
+            private val mutableValue = MutableCell.createUnmanaged(initialValue = initialValue)
 
             override val exposedValue: Cell<ValueT>
                 get() = mutableValue
@@ -34,7 +34,7 @@ class PropertyCell<ValueT>(
         abstract val exposedValue: Cell<ValueT>
     }
 
-    private val mutableState = MutableCell<State<ValueT>>(
+    private val mutableState = MutableCell.createUnmanaged<State<ValueT>>(
         State.Unbound(initialValue = initialValue),
     )
 

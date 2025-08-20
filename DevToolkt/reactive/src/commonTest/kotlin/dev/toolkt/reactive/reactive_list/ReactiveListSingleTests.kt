@@ -2,6 +2,7 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.MutableCell
+import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
@@ -10,7 +11,7 @@ import kotlin.test.assertEquals
 class ReactiveListSingleTests {
     @Test
     fun testSingle_initial() {
-        val mutableCell = MutableCell(initialValue = 10)
+        val mutableCell = MutableCell.createExternally(initialValue = 10)
 
         val singleReactiveList = ReactiveList.single(
             element = mutableCell,
@@ -24,7 +25,7 @@ class ReactiveListSingleTests {
 
     @Test
     fun testSingle_newValue() {
-        val mutableCell = MutableCell(initialValue = 10)
+        val mutableCell = MutableCell.createExternally(initialValue = 10)
 
         val singleReactiveList = ReactiveList.single(
             element = mutableCell,
