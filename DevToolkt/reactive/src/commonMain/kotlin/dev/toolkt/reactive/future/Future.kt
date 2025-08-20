@@ -3,7 +3,6 @@ package dev.toolkt.reactive.future
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.switch
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.NeverEventStream
 import dev.toolkt.reactive.event_stream.holdUnmanaged
 import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.Effect
@@ -225,14 +224,6 @@ val <V> Future<V>.resultOrNull: Cell<V?>
 fun <V, R> Future<V>.joinOf(
     transform: (V) -> Future<R>,
 ): Future<R> = Future.join(map(transform))
-
-fun <V> Future<V>.hold(
-    initialValue: V,
-): Cell<V> = when (val foundState = currentStateUnmanaged) {
-    is Future.Fulfilled<V> -> Cell.of(foundState.result)
-
-    Future.Pending -> onResult.holdUnmanaged(initialValue)
-}
 
 fun <V> Future<Cell<V>>.switchHold(
     initialCell: Cell<V>,
