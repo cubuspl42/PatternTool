@@ -7,10 +7,7 @@ import dev.toolkt.reactive.event_stream.NeverEventStream
 import dev.toolkt.reactive.event_stream.holdUnmanaged
 import dev.toolkt.reactive.managed_io.Effect
 import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.Program
 import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.Schedule
-import dev.toolkt.reactive.managed_io.executeCurrent
 import dev.toolkt.reactive.managed_io.map
 
 abstract class Future<out ResultT> {
@@ -173,12 +170,6 @@ abstract class Future<out ResultT> {
 
     @Suppress("FunctionName")
     fun null_(): Future<Nothing?> = map { null }
-
-    fun thenExecute(
-        action: (ResultT) -> Schedule,
-    ): Schedule = onResult.singleUnmanaged().map {
-        action(it)
-    }.holdUnmanaged(Program.Noop).executeCurrent()
 
     abstract val onResult: EventStream<ResultT>
 

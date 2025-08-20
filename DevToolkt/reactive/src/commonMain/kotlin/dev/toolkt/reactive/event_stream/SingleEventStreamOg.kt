@@ -3,6 +3,9 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.managed_io.Transaction
 
+/**
+ * TODO: Nuke (but remove [dev.toolkt.reactive.event_stream.ProperEventStream.singleUnmanaged] usages first)
+ */
 class SingleEventStreamOg<EventT>(
     private val source: EventStream<EventT>,
 ) : StatefulEventStream<SingleEventStreamOg<EventT>, EventT>() {
@@ -24,7 +27,7 @@ class SingleEventStreamOg<EventT>(
 
                 target.notify(
                     transaction = transaction,
-                    event = event
+                    event = event,
                 )
 
                 target.wasEmitted = true
