@@ -9,14 +9,14 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.managed_io.Transaction
 
-internal fun <TargetT : Any, EventT> EventSource<EventT>.pinWeak(
+internal fun <TargetT : Any, EventT> EventStream<EventT>.pinWeak(
     target: TargetT,
 ): Subscription = listenWeak(
     target = target,
     listener = TargetingListener.Noop,
 )
 
-internal fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
+internal fun <TargetT : Any, EventT> EventStream<EventT>.listenWeak(
     target: TargetT,
     listener: TargetingListenerFn<TargetT, EventT>,
 ): Subscription = listenWeak(
@@ -26,7 +26,7 @@ internal fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
 
 private val finalizationRegistry = PlatformFinalizationRegistry()
 
-internal fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
+internal fun <TargetT : Any, EventT> EventStream<EventT>.listenWeak(
     target: TargetT,
     listener: TargetingListener<TargetT, EventT>,
 ): Subscription {
@@ -63,7 +63,7 @@ internal fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
     }
 }
 
-fun <EventT> EventSource<EventT>.listenInDependent(
+fun <EventT> EventStream<EventT>.listenInDependent(
     dependent: ProperEventStream<*>,
     listener: ListenerFn<EventT>,
 ): Subscription = listenInDependent(
@@ -73,7 +73,7 @@ fun <EventT> EventSource<EventT>.listenInDependent(
 
 
 // TODO: Nuke?
-fun <EventT> EventSource<EventT>.listenInDependent(
+fun <EventT> EventStream<EventT>.listenInDependent(
     dependentId: Int,
     listener: ListenerFn<EventT>,
 ): Subscription = listen(
@@ -91,7 +91,7 @@ fun <EventT> EventSource<EventT>.listenInDependent(
 
 
 // TODO: Nuke, or at least move to tests?
-fun <EventT> EventSource<EventT>.listenExternally(
+fun <EventT> EventStream<EventT>.listenExternally(
     listener: ListenerFn<EventT>,
 ): Subscription = listen(
     object : UnconditionalListener<EventT>() {
@@ -104,13 +104,7 @@ fun <EventT> EventSource<EventT>.listenExternally(
     },
 )
 
-interface EventSource<out EventT> {
-    fun listen(
-        listener: Listener<EventT>,
-    ): Subscription
-}
-
-internal fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
+internal fun <TargetT : Any, EventT> EventStream<EventT>.listenWeak(
     targetedListener: TargetedListener<TargetT, EventT>,
 ): Subscription = this@listenWeak.listenWeak(
     target = targetedListener.target,

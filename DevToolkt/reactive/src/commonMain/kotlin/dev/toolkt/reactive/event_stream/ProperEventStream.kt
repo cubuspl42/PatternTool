@@ -81,7 +81,7 @@ abstract class ProperEventStream<E> : EventStream<E>() {
         )
     }
 
-    protected fun <EventT2> EventSource<EventT2>.listen(
+    protected fun <EventT2> EventStream<EventT2>.listen(
         listener: ListenerFn<EventT2>,
     ): Subscription = listenInDependent(
         dependentId = id,

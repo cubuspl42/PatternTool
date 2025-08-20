@@ -40,7 +40,7 @@ interface ISourcedListener<TargetT : Any> {
  * TODO: Nuke (but modernize [take] / [takeUntilNull] first)
  */
 data class SourcedListener<TargetT : Any, EventT>(
-    val source: EventSource<EventT>,
+    val source: EventStream<EventT>,
     val listener: TargetingListener<TargetT, EventT>,
 ) : ISourcedListener<TargetT> {
     override fun bindTarget(

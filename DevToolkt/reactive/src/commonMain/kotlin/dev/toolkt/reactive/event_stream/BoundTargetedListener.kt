@@ -8,7 +8,7 @@ import dev.toolkt.reactive.Subscription
  * TODO: Nuke (but nuke [SourcedListener] first)
  */
 data class BoundTargetedListener<TargetT : Any, EventT>(
-    val source: EventSource<EventT>,
+    val source: EventStream<EventT>,
     val targetedListener: TargetedListener<TargetT, EventT>,
 ) : BoundListener {
     override fun listen(): Subscription = source.listen(
