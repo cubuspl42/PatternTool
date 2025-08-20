@@ -14,13 +14,14 @@ import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgLineElement
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
+import dev.toolkt.reactive.effect.MomentContext
 import kotlinx.browser.document
 import org.w3c.dom.svg.SVGCircleElement
 import org.w3c.dom.svg.SVGElement
 import org.w3c.dom.svg.SVGLineElement
 import org.w3c.dom.svg.SVGSVGElement
 
-fun createControlledSvgCurve(
+context(momentContext: MomentContext) fun createControlledSvgCurve(
     svgElement: SVGSVGElement,
     userCurve: UserCurve<*>,
     color: PureColor,
@@ -38,7 +39,7 @@ fun createControlledSvgCurve(
     )
 }
 
-internal fun createControlLineElement(
+context(momentContext: MomentContext) internal fun createControlLineElement(
     start: Cell<Point>,
     end: Cell<Point>,
 ): SVGLineElement = document.createReactiveSvgLineElement(
@@ -52,7 +53,7 @@ internal fun createControlLineElement(
     end = end,
 )
 
-internal fun createCircleHandleElement(
+context(momentContext: MomentContext) internal fun createCircleHandleElement(
     container: SVGElement,
     position: PropertyCell<Point>,
 ): SVGCircleElement = createDraggableSvgElement(

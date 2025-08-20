@@ -5,6 +5,7 @@ import dev.toolkt.dom.reactive.utils.svg.createReactiveSvgLineElement
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.effect.MomentContext
 import kotlinx.browser.document
 import org.w3c.dom.svg.SVGLineElement
 
@@ -34,7 +35,7 @@ data class ReactiveLineSegment(
     override val primitiveCurve: Cell<LineSegment>
         get() = lineSegment
 
-    fun createReactiveSvgLineElement(
+    context(momentContext: MomentContext) fun createReactiveSvgLineElement(
         style: ReactiveStyle,
     ): SVGLineElement = document.createReactiveSvgLineElement(
         style = style,

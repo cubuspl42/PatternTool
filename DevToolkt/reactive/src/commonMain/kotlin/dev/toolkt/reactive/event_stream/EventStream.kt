@@ -244,9 +244,6 @@ context(actionContext: ActionContext) fun <E> EventStream<E>.forward(
     TODO() // The other most low-level ReactionContext operation?
 }
 
-context(actionContext: ActionContext)
-
-
 fun <E : Any> EventStream<E?>.filterNotNull(): EventStream<E> = mapNotNull { it }
 
 context(momentContext: MomentContext) fun <E : Any> EventStream<E?>.takeUntilNull(): EventStream<E> =
