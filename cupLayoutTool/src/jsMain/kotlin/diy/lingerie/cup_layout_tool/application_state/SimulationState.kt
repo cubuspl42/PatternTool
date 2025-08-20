@@ -17,33 +17,35 @@ class SimulationState private constructor(
     companion object {
         val stepDuration = (1.0 / 60.0).seconds
 
-        context(actionContext: ActionContext) fun enter(): Effect<SimulationState> = window.createIntervalTimeoutStream(
-            delay = stepDuration,
-        ).map { tickerStream ->
-            val reactiveFabricNet = ReactiveFabricNet.diff(
-                fabricNet = tickerStream.accum(
-                    initialValue = FabricNet.rectangular(
-                        width = 16,
-                        height = 16,
-                        springRestLength = Span.of(4.0),
-                    )
-                ) { fabricPiece, _ ->
-                    fabricPiece.simulate(
-                        externalForce = Force(
-                            forceVector = Vector3(
-                                x = 0.0,
-                                y = 0.0,
-                                z = -10.0,
+        fun enter(): Effect<SimulationState> = Effect.prepared {
+            window.createIntervalTimeoutStream(
+                delay = stepDuration,
+            ).map { tickerStream ->
+                val reactiveFabricNet = ReactiveFabricNet.diff(
+                    fabricNet = tickerStream.accum(
+                        initialValue = FabricNet.rectangular(
+                            width = 16,
+                            height = 16,
+                            springRestLength = Span.of(4.0),
+                        )
+                    ) { fabricPiece, _ ->
+                        fabricPiece.simulate(
+                            externalForce = Force(
+                                forceVector = Vector3(
+                                    x = 0.0,
+                                    y = 0.0,
+                                    z = -10.0,
+                                ),
                             ),
-                        ),
-                        stepDuration = stepDuration,
-                    )
-                },
-            )
+                            stepDuration = stepDuration,
+                        )
+                    },
+                )
 
-            SimulationState(
-                reactiveFabricNet = reactiveFabricNet,
-            )
+                SimulationState(
+                    reactiveFabricNet = reactiveFabricNet,
+                )
+            }
         }
     }
 }
