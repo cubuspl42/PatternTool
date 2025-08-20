@@ -14,7 +14,7 @@ class FutureDivertHoldTests {
         val eventEmitter1 = EventEmitter.createExternally<Int>()
         val eventEmitter2 = EventEmitter.createExternally<Int>()
 
-        val futureCompleter = FutureCompleter<EventStream<Int>>()
+        val futureCompleter = FutureCompleter.createExternally<EventStream<Int>>()
 
         val divertHoldStream = futureCompleter.divertHold(
             initialEventStream = eventEmitter1,

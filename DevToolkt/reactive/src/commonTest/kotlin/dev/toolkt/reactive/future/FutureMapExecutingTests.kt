@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 class FutureMapExecutingTests {
     @Test
     fun testMapExecuting_completedLater_unlistened_endedLater() {
-        val futureCompleter = FutureCompleter<Int>()
+        val futureCompleter = FutureCompleter.createExternally<Int>()
 
         val sourceMutableCell = MutableCell.createExternally(initialValue = 'A')
 
@@ -92,7 +92,7 @@ class FutureMapExecutingTests {
 
     @Test
     fun testMapExecuting_completedBefore_unlistened_endedLater() {
-        val futureCompleter = FutureCompleter<Int>()
+        val futureCompleter = FutureCompleter.createExternally<Int>()
 
         val sourceMutableCell = MutableCell.createExternally(initialValue = 'A')
 
@@ -158,7 +158,7 @@ class FutureMapExecutingTests {
 
     @Test
     fun testMapExecuting_unlistened_endedBefore() {
-        val futureCompleter = FutureCompleter<Int>()
+        val futureCompleter = FutureCompleter.createExternally<Int>()
 
         val sourceMutableCell = MutableCell.createExternally(initialValue = 'A')
 
@@ -203,7 +203,7 @@ class FutureMapExecutingTests {
 
     @Test
     fun testMapExecuting_listened_endedLater() {
-        val futureCompleter = FutureCompleter<Int>()
+        val futureCompleter = FutureCompleter.createExternally<Int>()
 
         val sourceMutableCell = MutableCell.createExternally(initialValue = 'A')
 

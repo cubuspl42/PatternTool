@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 class FutureMapTests {
     @Test
     fun testMap() {
-        val futureCompleter = FutureCompleter<Int>()
+        val futureCompleter = FutureCompleter.createExternally<Int>()
 
         val mapFuture = futureCompleter.map { "$it" }
 
