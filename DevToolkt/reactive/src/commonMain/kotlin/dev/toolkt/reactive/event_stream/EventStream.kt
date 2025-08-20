@@ -260,9 +260,10 @@ context(actionContext: ActionContext)
 
 fun <E : Any> EventStream<E?>.filterNotNull(): EventStream<E> = mapNotNull { it }
 
-fun <E : Any> EventStream<E?>.takeUntilNull(): EventStream<E> = TakeUntilNullStream(
-    source = this,
-)
+context(momentContext: MomentContext) fun <E : Any> EventStream<E?>.takeUntilNull(): EventStream<E> =
+    TakeUntilNullStream.construct(
+        source = this,
+    )
 
 fun <E> EventStream<E>.mergeWith(
     other: EventStream<E>,
