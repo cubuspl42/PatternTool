@@ -53,7 +53,7 @@ abstract class ProperEventStream<E> : EventStream<E>() {
 
     final override fun singleUnmanaged(): EventStream<E> = SingleEventStream(source = this)
 
-    final override fun next(): Future<E> = NextFuture(source = this)
+    context(momentContext: MomentContext) final override fun next(): Future<E> = NextFuture(source = this)
 
     final override fun <T : Any> pipe(
         target: T,

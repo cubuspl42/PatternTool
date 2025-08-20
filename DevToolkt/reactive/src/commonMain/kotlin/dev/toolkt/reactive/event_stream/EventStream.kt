@@ -8,9 +8,9 @@ import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.managed_io.ActionContext
 import dev.toolkt.reactive.managed_io.Effect
 import dev.toolkt.reactive.managed_io.Effective
-import dev.toolkt.reactive.managed_io.Trigger
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.managed_io.Trigger
 import dev.toolkt.reactive.managed_io.TriggerBase
 
 typealias TargetingListenerFn<TargetT, EventT> = (TargetT, EventT) -> Unit
@@ -209,9 +209,7 @@ abstract class EventStream<out E> : EventSource<E> {
         source = this,
     )
 
-    abstract fun next(): Future<E>
-
-    fun onNext(): Future<Unit> = next().unit()
+    context(momentContext: MomentContext) abstract fun next(): Future<E>
 
     // This stinks
     abstract fun forEachUnmanaged(
@@ -287,8 +285,7 @@ context(momentContext: MomentContext) fun <E> EventStream<E>.hold(
     newValues = this,
 )
 
-context(momentContext: MomentContext)
-fun <V, R> EventStream<V>.accum(
+context(momentContext: MomentContext) fun <V, R> EventStream<V>.accum(
     initialValue: R,
     transform: (previousValue: R, newEvent: V) -> R,
 ): Cell<R> = Cell.selfLooped(
@@ -323,6 +320,7 @@ fun <E> EventStream<Any?>.fetch(
     newValues = map { getValue() },
 )
 
-fun <ValueT> EventStream<ValueT>.newest(): Future<Cell<ValueT>> = next().map { firstValue ->
-    holdUnmanaged(initialValue = firstValue)
-}
+context(momentContext: MomentContext) fun <ValueT> EventStream<ValueT>.newest(): Future<Cell<ValueT>> =
+    next().mapAt { firstValue ->
+        hold(initialValue = firstValue)
+    }

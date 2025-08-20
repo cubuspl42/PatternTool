@@ -3,6 +3,7 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.future.Future
+import dev.toolkt.reactive.managed_io.MomentContext
 
 object NeverEventStream : EventStream<Nothing>() {
     override fun <Er> map(
@@ -24,7 +25,7 @@ object NeverEventStream : EventStream<Nothing>() {
 
     override fun singleUnmanaged(): EventStream<Nothing> = NeverEventStream
 
-    override fun next(): Future<Nothing> = Future.Hang
+    context(momentContext: MomentContext) override fun next(): Future<Nothing> = Future.Hang
 
     override fun forEachUnmanaged(
         effect: (Nothing) -> Unit,
