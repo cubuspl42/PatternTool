@@ -50,17 +50,6 @@ interface TargetingListener<in TargetT : Any, in EventT> {
     ): Listener.Conclusion
 }
 
-/**
- * TODO: Nuke (but modernize [take] / [takeUntilNull] first)
- */
-internal fun <TargetT : Any, EventT> EventStream<EventT>.bindSourced(
-    listener: TargetingListener<TargetT, EventT>,
-): SourcedListener<TargetT, EventT> = SourcedListener(
-    source = this,
-    listener = listener,
-)
-
-
 abstract class EventStream<out E> {
     companion object {
         val Never: EventStream<Nothing> = NeverEventStream

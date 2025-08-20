@@ -6,7 +6,6 @@ import dev.toolkt.reactive.Subscription
 /**
  * TODO: Nuke, but first nuke:
  *  - [BoundTargetedListener]
- *  - [ISourcedListener] / [SourcedListener]
  */
 interface BoundListener {
     fun listen(): Subscription
