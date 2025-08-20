@@ -4,14 +4,14 @@ import dev.toolkt.core.iterable.updateRange
 import dev.toolkt.core.range.empty
 import dev.toolkt.core.range.single
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.event_stream.forEach
-import dev.toolkt.reactive.event_stream.holdUnmanaged
 import dev.toolkt.reactive.effect.Actions
 import dev.toolkt.reactive.effect.Effect
 import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.effect.Trigger
 import dev.toolkt.reactive.effect.map
+import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.forEach
+import dev.toolkt.reactive.event_stream.holdUnmanaged
 
 abstract class ReactiveList<out E> {
     data class Change<out E>(
@@ -198,7 +198,7 @@ abstract class ReactiveList<out E> {
         fun <ElementT> actuate(
             effectReactiveList: ReactiveList<Effect<ElementT>>,
         ): Effect<ReactiveList<ElementT>> {
-            TODO()
+            TODO("ReactiveList.actuate")
         }
 
         context(momentContext: MomentContext) fun <ElementT, ResultT> looped(
