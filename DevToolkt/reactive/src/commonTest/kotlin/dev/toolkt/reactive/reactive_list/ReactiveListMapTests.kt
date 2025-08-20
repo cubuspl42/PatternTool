@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 class ReactiveListMapTests {
     @Test
     fun testMap_initial() {
-        val mutableReactiveList = MutableReactiveList(
+        val mutableReactiveList = MutableReactiveList.createExternally(
             initialContent = listOf(
                 0,
                 10,
@@ -34,7 +34,7 @@ class ReactiveListMapTests {
 
     @Test
     fun testMap_update() {
-        val mutableReactiveList = MutableReactiveList(
+        val mutableReactiveList = MutableReactiveList.createExternally(
             initialContent = listOf(
                 0,
                 10,
@@ -79,7 +79,7 @@ class ReactiveListMapTests {
 
     @Test
     fun testMap_insert() {
-        val mutableReactiveList = MutableReactiveList(
+        val mutableReactiveList = MutableReactiveList.createExternally(
             initialContent = listOf(
                 0,
                 10,
@@ -126,7 +126,7 @@ class ReactiveListMapTests {
 
     @Test
     fun testMap_remove() {
-        val mutableReactiveList = MutableReactiveList(
+        val mutableReactiveList = MutableReactiveList.createExternally(
             initialContent = listOf(
                 0,
                 10,
@@ -169,7 +169,7 @@ class ReactiveListMapTests {
 
     @Test
     fun testMap_changeApplication() {
-        val mutableReactiveList = MutableReactiveList(
+        val mutableReactiveList = MutableReactiveList.createExternally(
             initialContent = listOf(
                 0,
                 10,

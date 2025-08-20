@@ -13,7 +13,7 @@ class LoopedReactiveListTests {
     fun testLoop_empty() {
         val originalContent = emptyList<Int>()
 
-        val mutableReactiveList = MutableReactiveList(
+        val mutableReactiveList = MutableReactiveList.createExternally(
             initialContent = originalContent,
         )
 
@@ -79,7 +79,7 @@ class LoopedReactiveListTests {
             20,
         )
 
-        val mutableReactiveList = MutableReactiveList(
+        val mutableReactiveList = MutableReactiveList.createExternally(
             initialContent = originalContent,
         )
 

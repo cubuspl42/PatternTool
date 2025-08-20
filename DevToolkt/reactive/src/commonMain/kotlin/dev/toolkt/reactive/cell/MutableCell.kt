@@ -27,7 +27,7 @@ class MutableCell<V> private constructor(
             initialValue: V,
         ): MutableCell<V> {
             return MutableCell(
-                newValueEmitter = EventEmitter.createUnmanaged(),
+                newValueEmitter = EventEmitter.create(),
                 initialValue = initialValue,
             )
         }

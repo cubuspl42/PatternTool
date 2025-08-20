@@ -14,7 +14,7 @@ class ReactiveListMergeAllTests {
         val eventEmitter1 = EventEmitter.createExternally<Int>()
         val eventEmitter2 = EventEmitter.createExternally<Int>()
 
-        val mutableEventStreams = MutableReactiveList(
+        val mutableEventStreams = MutableReactiveList.createExternally(
             initialContent = listOf(
                 eventEmitter0,
                 eventEmitter1,
@@ -50,7 +50,7 @@ class ReactiveListMergeAllTests {
         val eventEmitter1 = EventEmitter.createExternally<Int>()
         val eventEmitter2 = EventEmitter.createExternally<Int>()
 
-        val mutableEventStreams = MutableReactiveList(
+        val mutableEventStreams = MutableReactiveList.createExternally(
             initialContent = listOf(
                 eventEmitter0,
                 eventEmitter1,
@@ -88,7 +88,7 @@ class ReactiveListMergeAllTests {
         val eventEmitter2a = EventEmitter.createExternally<Int>()
         val eventEmitter2b = EventEmitter.createExternally<Int>()
 
-        val mutableEventStreams = MutableReactiveList(
+        val mutableEventStreams = MutableReactiveList.createExternally(
             initialContent = listOf(
                 eventEmitter0,
                 eventEmitter1,
@@ -127,7 +127,7 @@ class ReactiveListMergeAllTests {
         val eventEmitter1 = EventEmitter.createExternally<Int>()
         val eventEmitter2 = EventEmitter.createExternally<Int>()
 
-        val mutableEventStreams = MutableReactiveList(
+        val mutableEventStreams = MutableReactiveList.createExternally(
             initialContent = listOf(
                 eventEmitter0,
                 eventEmitter2,

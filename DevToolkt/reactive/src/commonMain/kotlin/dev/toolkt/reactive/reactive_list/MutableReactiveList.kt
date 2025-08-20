@@ -7,18 +7,18 @@ import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
 
-class MutableReactiveList<ElementT>(
+class MutableReactiveList<ElementT> private constructor(
+    private val changeEmitter: EventEmitter<ReactiveList.Change<ElementT>>,
     initialContent: List<ElementT>,
 ) : ActiveReactiveList<ElementT>() {
     companion object {
         context(momentContext: MomentContext) fun <ElementT> create(
             initialContent: List<ElementT>,
         ): MutableReactiveList<ElementT> = MutableReactiveList(
+            changeEmitter = EventEmitter.create(),
             initialContent = initialContent,
         )
     }
-
-    private val changeEmitter = EventEmitter.createUnmanaged<Change<ElementT>>()
 
     private val mutableContent = initialContent.toMutableList()
 

@@ -15,7 +15,7 @@ class MutableReactiveListTests {
             30,
         )
 
-        val mutableReactiveList = MutableReactiveList(
+        val mutableReactiveList = MutableReactiveList.createExternally(
             initialContent = originalContent,
         )
 
@@ -98,7 +98,7 @@ class MutableReactiveListTests {
             40,
         )
 
-        val mutableReactiveList = MutableReactiveList(
+        val mutableReactiveList = MutableReactiveList.createExternally(
             initialContent = originalContent,
         )
 
@@ -176,7 +176,7 @@ class MutableReactiveListTests {
             30,
         )
 
-        val mutableReactiveList = MutableReactiveList(
+        val mutableReactiveList = MutableReactiveList.createExternally(
             initialContent = originalContent,
         )
 

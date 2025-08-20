@@ -28,7 +28,7 @@ class ReactiveListFuseTests {
         val mutableCell3 = MutableCell.createExternally(initialValue = 300)
         val mutableCell4 = MutableCell.createExternally(initialValue = 400)
 
-        val mutableCells = MutableReactiveList(
+        val mutableCells = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableCell0,
                 mutableCell1,
@@ -123,7 +123,7 @@ class ReactiveListFuseTests {
 
         val mutableCell4 = MutableCell.createExternally(initialValue = 400)
 
-        val mutableCells = MutableReactiveList(
+        val mutableCells = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableCell0,
                 mutableCell1,
@@ -255,7 +255,7 @@ class ReactiveListFuseTests {
         val mutableCell3 = MutableCell.createExternally(initialValue = 300)
         val mutableCell4 = MutableCell.createExternally(initialValue = 400)
 
-        val mutableCells = MutableReactiveList(
+        val mutableCells = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableCell0,
                 mutableCell1,
@@ -386,7 +386,7 @@ class ReactiveListFuseTests {
         val mutableCell2 = MutableCell.createExternally(initialValue = 200)
         val mutableCell3 = MutableCell.createExternally(initialValue = 300)
 
-        val mutableCells = MutableReactiveList(
+        val mutableCells = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableCell0,
                 mutableCell1, // A duplicate cell to be removed
@@ -471,7 +471,7 @@ class ReactiveListFuseTests {
         val mutableCell3 = MutableCell.createExternally(initialValue = 300)
         val mutableCell4 = MutableCell.createExternally(initialValue = 400)
 
-        val mutableCells = MutableReactiveList(
+        val mutableCells = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableCell0,
                 mutableCell1,
@@ -558,7 +558,7 @@ class ReactiveListFuseTests {
 
         val mutableCell3 = MutableCell.createExternally(initialValue = 300)
 
-        val mutableCells = MutableReactiveList(
+        val mutableCells = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableCell0,
                 mutableCell1,
@@ -647,7 +647,7 @@ class ReactiveListFuseTests {
 
         val mutableCell3b = MutableCell.createExternally(initialValue = 310)
 
-        val mutableCells = MutableReactiveList(
+        val mutableCells = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableCell0,
                 mutableCell1,

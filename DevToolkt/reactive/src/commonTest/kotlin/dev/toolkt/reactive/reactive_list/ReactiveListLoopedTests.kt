@@ -21,7 +21,7 @@ class ReactiveListLoopedTests {
 
     @Test
     fun testLooped() {
-        val childIds = MutableReactiveList(
+        val childIds = MutableReactiveList.createExternally(
             initialContent = listOf(0, 1, 2),
         )
 

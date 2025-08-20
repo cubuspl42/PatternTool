@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 class ReactiveListConcatAllTests {
     @Test
     fun testConcatAll_initial() {
-        val mutableReactiveList0 = MutableReactiveList(
+        val mutableReactiveList0 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 10,
                 20,
@@ -17,7 +17,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList1 = MutableReactiveList(
+        val mutableReactiveList1 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 110,
                 120,
@@ -25,7 +25,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList2 = MutableReactiveList(
+        val mutableReactiveList2 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 210,
                 220,
@@ -33,7 +33,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveLists = MutableReactiveList(
+        val mutableReactiveLists = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableReactiveList0,
                 mutableReactiveList1,
@@ -61,7 +61,7 @@ class ReactiveListConcatAllTests {
 
     @Test
     fun testConcatAll_innerListUpdated() {
-        val mutableReactiveList0 = MutableReactiveList(
+        val mutableReactiveList0 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 10,
                 20,
@@ -69,7 +69,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList1 = MutableReactiveList(
+        val mutableReactiveList1 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 110,
                 120,
@@ -77,7 +77,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList2 = MutableReactiveList(
+        val mutableReactiveList2 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 210,
                 220,
@@ -85,7 +85,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveLists = MutableReactiveList(
+        val mutableReactiveLists = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableReactiveList0,
                 mutableReactiveList1,
@@ -131,7 +131,7 @@ class ReactiveListConcatAllTests {
 
     @Test
     fun testConcatAll_innerListExpanded() {
-        val mutableReactiveList0 = MutableReactiveList(
+        val mutableReactiveList0 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 10,
                 20,
@@ -139,7 +139,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList1 = MutableReactiveList(
+        val mutableReactiveList1 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 110,
                 120,
@@ -147,7 +147,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList2 = MutableReactiveList(
+        val mutableReactiveList2 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 210,
                 220,
@@ -155,7 +155,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveLists = MutableReactiveList(
+        val mutableReactiveLists = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableReactiveList0,
                 mutableReactiveList1,
@@ -236,7 +236,7 @@ class ReactiveListConcatAllTests {
 
     @Test
     fun testConcatAll_innerListShrank() {
-        val mutableReactiveList0 = MutableReactiveList(
+        val mutableReactiveList0 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 10,
                 20,
@@ -244,7 +244,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList1 = MutableReactiveList(
+        val mutableReactiveList1 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 110,
                 120,
@@ -252,7 +252,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList2 = MutableReactiveList(
+        val mutableReactiveList2 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 210,
                 220,
@@ -260,7 +260,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveLists = MutableReactiveList(
+        val mutableReactiveLists = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableReactiveList0,
                 mutableReactiveList1,
@@ -333,7 +333,7 @@ class ReactiveListConcatAllTests {
 
     @Test
     fun testConcatAll_outerListUpdated() {
-        val mutableReactiveList0 = MutableReactiveList(
+        val mutableReactiveList0 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 10,
                 20,
@@ -341,7 +341,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList1a = MutableReactiveList(
+        val mutableReactiveList1a = MutableReactiveList.createExternally(
             initialContent = listOf(
                 110,
                 120,
@@ -349,7 +349,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList1b = MutableReactiveList(
+        val mutableReactiveList1b = MutableReactiveList.createExternally(
             initialContent = listOf(
                 -110,
                 -120,
@@ -358,7 +358,7 @@ class ReactiveListConcatAllTests {
         )
 
 
-        val mutableReactiveList2 = MutableReactiveList(
+        val mutableReactiveList2 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 210,
                 220,
@@ -366,7 +366,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveLists = MutableReactiveList(
+        val mutableReactiveLists = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableReactiveList0,
                 mutableReactiveList1a,
@@ -412,7 +412,7 @@ class ReactiveListConcatAllTests {
 
     @Test
     fun testConcatAll_outerListExpanded() {
-        val mutableReactiveList0a = MutableReactiveList(
+        val mutableReactiveList0a = MutableReactiveList.createExternally(
             initialContent = listOf(
                 10,
                 20,
@@ -420,20 +420,20 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList0b = MutableReactiveList(
+        val mutableReactiveList0b = MutableReactiveList.createExternally(
             initialContent = listOf(
                 40,
                 50,
             ),
         )
 
-        val mutableReactiveList0c = MutableReactiveList(
+        val mutableReactiveList0c = MutableReactiveList.createExternally(
             initialContent = listOf(
                 60,
             ),
         )
 
-        val mutableReactiveList1 = MutableReactiveList(
+        val mutableReactiveList1 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 110,
                 120,
@@ -441,7 +441,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList2 = MutableReactiveList(
+        val mutableReactiveList2 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 210,
                 220,
@@ -449,7 +449,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveLists = MutableReactiveList(
+        val mutableReactiveLists = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableReactiveList0a,
                 mutableReactiveList1,
@@ -498,7 +498,7 @@ class ReactiveListConcatAllTests {
 
     @Test
     fun testConcatAll_outerListShrank() {
-        val mutableReactiveList0 = MutableReactiveList(
+        val mutableReactiveList0 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 10,
                 20,
@@ -506,7 +506,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList1 = MutableReactiveList(
+        val mutableReactiveList1 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 110,
                 120,
@@ -514,7 +514,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveList2 = MutableReactiveList(
+        val mutableReactiveList2 = MutableReactiveList.createExternally(
             initialContent = listOf(
                 210,
                 220,
@@ -522,7 +522,7 @@ class ReactiveListConcatAllTests {
             ),
         )
 
-        val mutableReactiveLists = MutableReactiveList(
+        val mutableReactiveLists = MutableReactiveList.createExternally(
             initialContent = listOf(
                 mutableReactiveList0,
                 mutableReactiveList1,
