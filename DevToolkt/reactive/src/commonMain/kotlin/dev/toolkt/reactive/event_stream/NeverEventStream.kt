@@ -3,7 +3,7 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.future.Future
-import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.effect.MomentContext
 
 object NeverEventStream : EventStream<Nothing>() {
     override fun <Er> map(

@@ -1,7 +1,7 @@
 package dev.toolkt.dom.reactive.components
 
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.Trigger
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.Trigger
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node

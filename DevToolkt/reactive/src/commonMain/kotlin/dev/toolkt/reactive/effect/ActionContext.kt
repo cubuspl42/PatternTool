@@ -1,6 +1,10 @@
-package dev.toolkt.reactive.managed_io
+package dev.toolkt.reactive.effect
 
 interface ActionContext : MomentContext {
+    /**
+     * Currently this includes both proper state mutation (e.g. MutableCell internal state) and signaling network
+     * mutations (e.g. adding / removing stream listeners)
+     */
     fun enqueueMutation(
         mutate: () -> Unit,
     )

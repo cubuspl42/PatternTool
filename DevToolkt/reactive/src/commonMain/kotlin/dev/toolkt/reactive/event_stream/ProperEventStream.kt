@@ -6,8 +6,8 @@ import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.future.Future.Pending
 import dev.toolkt.reactive.future.PlainFuture
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.Transaction
 
 abstract class ProperEventStream<E> : EventStream<E>() {
     companion object {

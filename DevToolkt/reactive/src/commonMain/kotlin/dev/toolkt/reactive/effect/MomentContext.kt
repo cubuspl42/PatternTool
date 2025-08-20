@@ -1,4 +1,4 @@
-package dev.toolkt.reactive.managed_io
+package dev.toolkt.reactive.effect
 
 interface MomentContext {
     val transaction: Transaction

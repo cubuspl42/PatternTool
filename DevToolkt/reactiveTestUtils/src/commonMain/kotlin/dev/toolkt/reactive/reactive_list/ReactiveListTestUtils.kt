@@ -1,7 +1,7 @@
 package dev.toolkt.reactive.reactive_list
 
-import dev.toolkt.reactive.managed_io.Actions
-import dev.toolkt.reactive.managed_io.Moments
+import dev.toolkt.reactive.effect.Actions
+import dev.toolkt.reactive.effect.Moments
 
 fun <ElementT> ReactiveList<ElementT>.sampleContentExternally(
 ): List<ElementT> = Moments.external {

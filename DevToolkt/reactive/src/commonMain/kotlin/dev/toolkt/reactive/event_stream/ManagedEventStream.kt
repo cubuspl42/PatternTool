@@ -4,7 +4,7 @@ import dev.toolkt.core.platform.platformNativeSetOf
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.Transaction
 
 abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
     enum class State {

@@ -10,8 +10,8 @@ import dev.toolkt.dom.reactive.utils.createResponsiveComponent
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlCanvasComponent
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivComponent
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.joinOf
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.joinOf
 import diy.lingerie.cup_layout_tool.application_state.ApplicationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLCanvasElement

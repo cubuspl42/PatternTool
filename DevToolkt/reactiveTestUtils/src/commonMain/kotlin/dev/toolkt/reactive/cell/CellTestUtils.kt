@@ -2,8 +2,8 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.hold
-import dev.toolkt.reactive.managed_io.Actions
-import dev.toolkt.reactive.managed_io.Moments
+import dev.toolkt.reactive.effect.Actions
+import dev.toolkt.reactive.effect.Moments
 
 fun <ValueT> MutableCell.Companion.createExternally(
     initialValue: ValueT,

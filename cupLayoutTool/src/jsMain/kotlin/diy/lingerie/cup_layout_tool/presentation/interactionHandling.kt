@@ -18,10 +18,10 @@ import kotlinx.browser.document
 import org.w3c.dom.HTMLCanvasElement
 import dev.toolkt.js.threejs.THREE
 import dev.toolkt.reactive.event_stream.forEach
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.Trigger
-import dev.toolkt.reactive.managed_io.Triggers
-import dev.toolkt.reactive.managed_io.activateOf
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.Trigger
+import dev.toolkt.reactive.effect.Triggers
+import dev.toolkt.reactive.effect.activateOf
 import diy.lingerie.cup_layout_tool.application_state.interaction_state.manipulation_states.idle_state.ilde_focus_states.FocusedHandleState
 import diy.lingerie.cup_layout_tool.application_state.interaction_state.manipulation_states.HandleDragState
 import diy.lingerie.cup_layout_tool.application_state.interaction_state.manipulation_states.idle_state.IdleState

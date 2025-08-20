@@ -1,6 +1,6 @@
 package dev.toolkt.reactive.reactive_list
 
-import dev.toolkt.reactive.managed_io.Moments
+import dev.toolkt.reactive.effect.Moments
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

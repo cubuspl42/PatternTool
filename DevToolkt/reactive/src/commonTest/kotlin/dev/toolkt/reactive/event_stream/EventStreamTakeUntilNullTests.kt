@@ -1,6 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.managed_io.Moments
+import dev.toolkt.reactive.effect.Moments
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals

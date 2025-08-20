@@ -4,8 +4,8 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.EventStreamSlot
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.Triggers
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.Triggers
 import diy.lingerie.cup_layout_tool.UserBezierMesh
 import diy.lingerie.cup_layout_tool.application_state.interaction_state.ManipulationState
 import diy.lingerie.cup_layout_tool.application_state.interaction_state.manipulation_states.HandleDragState

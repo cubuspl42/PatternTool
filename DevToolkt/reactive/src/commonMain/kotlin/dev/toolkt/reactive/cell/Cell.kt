@@ -6,13 +6,13 @@ import dev.toolkt.reactive.event_stream.forEach
 import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.event_stream.holdUnmanaged
 import dev.toolkt.reactive.event_stream.takeUntilNull
-import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.Effective
-import dev.toolkt.reactive.managed_io.Trigger
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.interrupted
-import dev.toolkt.reactive.managed_io.map
+import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.Effective
+import dev.toolkt.reactive.effect.Trigger
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.interrupted
+import dev.toolkt.reactive.effect.map
 import dev.toolkt.reactive.reactive_list.LoopedCell
 
 // "ValueT"?

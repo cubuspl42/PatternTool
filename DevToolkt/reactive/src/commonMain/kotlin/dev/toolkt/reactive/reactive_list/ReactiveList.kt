@@ -7,11 +7,11 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.forEach
 import dev.toolkt.reactive.event_stream.holdUnmanaged
-import dev.toolkt.reactive.managed_io.Actions
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.Trigger
-import dev.toolkt.reactive.managed_io.map
+import dev.toolkt.reactive.effect.Actions
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.Trigger
+import dev.toolkt.reactive.effect.map
 
 abstract class ReactiveList<out E> {
     data class Change<out E>(

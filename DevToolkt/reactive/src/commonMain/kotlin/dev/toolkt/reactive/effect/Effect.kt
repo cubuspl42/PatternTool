@@ -1,4 +1,4 @@
-package dev.toolkt.reactive.managed_io
+package dev.toolkt.reactive.effect
 
 import dev.toolkt.reactive.ReactiveFinalizationRegistry
 import dev.toolkt.reactive.Subscription
@@ -8,7 +8,6 @@ import dev.toolkt.reactive.event_stream.forEach
 import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.future.placeholdStatic
 import dev.toolkt.reactive.future.resultOrNull
-import dev.toolkt.reactive.managed_io.ActionContext
 
 // TODO: Extract `effects` package
 interface Effect<out ResultT> {

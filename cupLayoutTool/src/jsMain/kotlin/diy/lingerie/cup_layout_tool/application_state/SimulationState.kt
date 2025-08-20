@@ -4,9 +4,8 @@ import dev.toolkt.dom.reactive.utils.createIntervalTimeoutStream
 import dev.toolkt.geometry.Span
 import dev.toolkt.geometry.Vector3
 import dev.toolkt.reactive.event_stream.accum
-import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.map
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.map
 import diy.lingerie.cup_layout_tool.application_state.physics.Force
 import kotlinx.browser.window
 import kotlin.time.Duration.Companion.seconds

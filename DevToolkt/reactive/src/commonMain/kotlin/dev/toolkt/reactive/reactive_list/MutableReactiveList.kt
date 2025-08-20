@@ -4,8 +4,8 @@ import dev.toolkt.core.iterable.append
 import dev.toolkt.core.iterable.removeRange
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.MomentContext
 
 class MutableReactiveList<ElementT>(
     initialContent: List<ElementT>,

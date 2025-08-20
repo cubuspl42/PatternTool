@@ -1,6 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.Transaction
 
 internal class MapNotNullEventStream<EventT, TransformedEventT : Any>(
     source: EventStream<EventT>,

@@ -1,6 +1,6 @@
 package dev.toolkt.reactive
 
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.Transaction
 
 abstract class UnconditionalListener<in EventT> : Listener<EventT> {
     final override fun handle(

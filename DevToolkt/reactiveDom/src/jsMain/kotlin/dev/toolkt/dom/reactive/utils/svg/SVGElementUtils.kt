@@ -7,9 +7,9 @@ import dev.toolkt.dom.reactive.utils.svg.transforms.bind
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.managed_io.Actions
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.startBound
+import dev.toolkt.reactive.effect.Actions
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.startBound
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import dev.toolkt.reactive.reactive_list.bind
 import org.w3c.dom.Document

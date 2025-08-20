@@ -1,14 +1,13 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.cell.setExternally
 import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.createExternally
 import dev.toolkt.reactive.event_stream.emitExternally
 import dev.toolkt.reactive.event_stream.forEach
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.actuate
-import dev.toolkt.reactive.managed_io.endExternally
-import dev.toolkt.reactive.managed_io.startExternally
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.actuate
+import dev.toolkt.reactive.effect.endExternally
+import dev.toolkt.reactive.effect.startExternally
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

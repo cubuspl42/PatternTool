@@ -4,10 +4,10 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.switch
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.holdUnmanaged
-import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.map
+import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.map
 
 abstract class Future<out ResultT> {
     sealed class State<out ResultT> {
