@@ -14,7 +14,7 @@ import kotlin.test.assertFalse
 class FutureMapAtTests {
     @Test
     fun testMapAt_completedLater() {
-        val futureCompleter = FutureCompleter<Int>()
+        val futureCompleter = FutureCompleter.createExternally<Int>()
 
         val mutableCell = MutableCell.createExternally(initialValue = 'A')
 
@@ -60,7 +60,7 @@ class FutureMapAtTests {
 
     @Test
     fun testMapAt_completedBefore() {
-        val futureCompleter = FutureCompleter<Int>()
+        val futureCompleter = FutureCompleter.createExternally<Int>()
 
         futureCompleter.completeExternally(2)
 

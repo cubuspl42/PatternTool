@@ -10,14 +10,6 @@ class MutableCell<V> private constructor(
     initialValue: V,
 ) : ProperCell<V>() {
     companion object {
-        @Deprecated("Use `create` instead")
-        fun <ValueT> createUnmanaged(
-            initialValue: ValueT,
-        ): MutableCell<ValueT> = MutableCell(
-            newValueEmitter = EventEmitter.createUnmanaged(),
-            initialValue = initialValue,
-        )
-
         /**
          * Creates a new [MutableCell] with the given [initialValue].
          *
@@ -32,7 +24,6 @@ class MutableCell<V> private constructor(
             )
         }
     }
-
 
     private var mutableValue: V = initialValue
 

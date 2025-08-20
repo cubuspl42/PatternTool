@@ -3,9 +3,18 @@ package dev.toolkt.reactive.future
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.MomentContext
 
-class FutureCompleter<V> : ProperFuture<V>() {
-    private val mutableState = MutableCell.createUnmanaged<State<V>>(Pending)
+class FutureCompleter<V> private constructor(
+    private val mutableState: MutableCell<Future.State<V>>,
+) : ProperFuture<V>() {
+    companion object {
+        context(momentContext: MomentContext) fun <ResultT> create(): FutureCompleter<ResultT> = FutureCompleter(
+            mutableState = MutableCell.create<State<ResultT>>(
+                initialValue = Pending,
+            ),
+        )
+    }
 
     val hasListeners: Boolean
         get() = mutableState.hasListeners

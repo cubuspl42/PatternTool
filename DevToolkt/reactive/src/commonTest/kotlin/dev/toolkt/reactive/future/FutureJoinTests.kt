@@ -16,8 +16,8 @@ class FutureJoinTests {
      */
     @Test
     fun testJoin_outer_preFulfilled_inner_preFulfilled() {
-        val outerFutureCompleter = FutureCompleter<Future<Int>>()
-        val innerFutureCompleter = FutureCompleter<Int>()
+        val outerFutureCompleter = FutureCompleter.createExternally<Future<Int>>()
+        val innerFutureCompleter = FutureCompleter.createExternally<Int>()
 
         innerFutureCompleter.completeExternally(10)
         outerFutureCompleter.completeExternally(innerFutureCompleter)
@@ -48,8 +48,8 @@ class FutureJoinTests {
      */
     @Test
     fun testJoin_outer_preFulfilled_inner_postFulfilled() {
-        val outerFutureCompleter = FutureCompleter<Future<Int>>()
-        val innerFutureCompleter = FutureCompleter<Int>()
+        val outerFutureCompleter = FutureCompleter.createExternally<Future<Int>>()
+        val innerFutureCompleter = FutureCompleter.createExternally<Int>()
 
         outerFutureCompleter.completeExternally(innerFutureCompleter)
 
@@ -94,8 +94,8 @@ class FutureJoinTests {
     @Test
     @Ignore // TODO: Simplify the Future class, make onResult a util, or something
     fun testJoin_outer_postFulfilled_inner_preFulfilled() {
-        val outerFutureCompleter = FutureCompleter<Future<Int>>()
-        val innerFutureCompleter = FutureCompleter<Int>()
+        val outerFutureCompleter = FutureCompleter.createExternally<Future<Int>>()
+        val innerFutureCompleter = FutureCompleter.createExternally<Int>()
 
         innerFutureCompleter.completeExternally(10)
 
@@ -138,8 +138,8 @@ class FutureJoinTests {
      */
     @Test
     fun testJoin_last() {
-        val outerFutureCompleter = FutureCompleter<Future<Int>>()
-        val innerFutureCompleter = FutureCompleter<Int>()
+        val outerFutureCompleter = FutureCompleter.createExternally<Future<Int>>()
+        val innerFutureCompleter = FutureCompleter.createExternally<Int>()
 
         val joinedFuture = Future.join(outerFutureCompleter)
 

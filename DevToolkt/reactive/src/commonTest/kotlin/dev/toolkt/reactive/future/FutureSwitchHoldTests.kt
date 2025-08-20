@@ -14,7 +14,7 @@ class FutureSwitchHoldTests {
         val mutableCell1 = MutableCell.createExternally(initialValue = -10)
         val mutableCell2 = MutableCell.createExternally(initialValue = 10)
 
-        val futureCompleter = FutureCompleter<Cell<Int>>()
+        val futureCompleter = FutureCompleter.createExternally<Cell<Int>>()
 
         val switchHoldCell = futureCompleter.switchHold(
             initialCell = mutableCell1,

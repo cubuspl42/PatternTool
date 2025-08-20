@@ -5,9 +5,6 @@ import dev.toolkt.reactive.effect.MomentContext
 
 class EventEmitter<EventT> private constructor() : ManagedEventStream<EventT>() {
     companion object {
-        @Deprecated("Use `create` instead")
-        fun <EventT> createUnmanaged(): EventEmitter<EventT> = EventEmitter()
-
         /**
          * Creates a new [EventEmitter].
          *
