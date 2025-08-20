@@ -9,20 +9,22 @@ class ApplicationState(
     val documentState: DocumentState,
     val interactionState: InteractionState,
     val simulationState: SimulationState,
+    val presentationState: PresentationState,
 ) {
     companion object {
         fun enter(
             documentState: DocumentState,
         ): Effect<ApplicationState> = InteractionState.enter().joinOf { interactionState ->
             SimulationState.enter().map { simulationState ->
+                val presentationState = PresentationState.enter()
+
                 ApplicationState(
                     documentState = documentState,
                     interactionState = interactionState,
                     simulationState = simulationState,
+                    presentationState = presentationState,
                 )
             }
         }
     }
-
-    val presentationState: PresentationState = PresentationState()
 }

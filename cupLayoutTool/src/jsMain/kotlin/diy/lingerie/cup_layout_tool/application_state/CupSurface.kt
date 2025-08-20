@@ -9,20 +9,61 @@ import dev.toolkt.geometry.Ray3
 import dev.toolkt.geometry.Span
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
+import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import dev.toolkt.reactive.reactive_list.fuseOf
+import kotlin.collections.listOf
 
-class CupSurface {
+class CupSurface private constructor(
+    /**
+     * The position of the apex (in the cup 3D space)
+     */
+    val apexPosition: PropertyCell<Point3D>,
+    /**
+     * The underwire link closest to the body center
+     */
+    val startUnderwireLink: UnderwireLink,
+    /**
+     * The underwire link closest to the lower body
+     */
+    val intermediateUnderwireLink: UnderwireLink,
+    /**
+     * The underwire link closest to the upper/outer body
+     */
+    val endUnderwireLink: UnderwireLink,
+    /**
+     * Overwire links in the CCW order
+     */
+    val overwireLinks: List<CupSurface.OverwireLink>,
+) {
     companion object {
         val underwirePlane = Plane.Xy
+
+        context(momentContext: MomentContext) fun create(): CupSurface = CupSurface(
+            apexPosition = PropertyCell.create(initialValue = Point3D.origin),
+            startUnderwireLink = UnderwireLink.create(),
+            intermediateUnderwireLink = UnderwireLink.create(),
+            endUnderwireLink = UnderwireLink.create(),
+            overwireLinks = listOf(
+                OverwireLink.create(),
+                OverwireLink.create(),
+                OverwireLink.create(),
+            ),
+        )
     }
 
-    class ControlBar2D {
-        val previousControlPointPosition = PropertyCell<Point>(initialValue = Point.origin)
-
-        val innerControlPointPosition = PropertyCell<Point>(initialValue = Point.origin)
-
-        val nextControlChordLength = PropertyCell(initialValue = 1.0)
+    class ControlBar2D private constructor(
+        val previousControlPointPosition: PropertyCell<Point>,
+        val innerControlPointPosition: PropertyCell<Point>,
+        val nextControlChordLength: PropertyCell<Double>,
+    ) {
+        companion object {
+            context(momentContext: MomentContext) fun create(): ControlBar2D = ControlBar2D(
+                previousControlPointPosition = PropertyCell.create(initialValue = Point.origin),
+                innerControlPointPosition = PropertyCell.create(initialValue = Point.origin),
+                nextControlChordLength = PropertyCell.create(initialValue = 1.0),
+            )
+        }
 
         val nextControlPointPosition: Cell<Point> = Cell.map3(
             previousControlPointPosition, innerControlPointPosition,
@@ -44,12 +85,18 @@ class CupSurface {
         }
     }
 
-    class ControlBar3D {
-        val previousControlPointPosition = PropertyCell<Point3D>(initialValue = Point3D.origin)
-
-        val innerControlPointPosition = PropertyCell<Point3D>(initialValue = Point3D.origin)
-
-        val nextControlChordLength = PropertyCell(initialValue = 1.0)
+    class ControlBar3D private constructor(
+        val previousControlPointPosition: PropertyCell<Point3D>,
+        val innerControlPointPosition: PropertyCell<Point3D>,
+        val nextControlChordLength: PropertyCell<Double>,
+    ) {
+        companion object {
+            context(momentContext: MomentContext) fun create(): ControlBar3D = ControlBar3D(
+                previousControlPointPosition = PropertyCell.create(initialValue = Point3D.origin),
+                innerControlPointPosition = PropertyCell.create(initialValue = Point3D.origin),
+                nextControlChordLength = PropertyCell.create(initialValue = 1.0),
+            )
+        }
 
         val nextControlPointPosition: Cell<Point3D> = Cell.map3(
             previousControlPointPosition, innerControlPointPosition,
@@ -64,7 +111,17 @@ class CupSurface {
         }
 
         fun toEffectiveControlBar(): Cell<EffectiveControlBar> {
-            TODO()
+            return Cell.map3(
+                previousControlPointPosition,
+                innerControlPointPosition,
+                nextControlPointPosition,
+            ) { previous, inner, next ->
+                EffectiveControlBar(
+                    previousControlPointPosition = previous,
+                    innerControlPointPosition = inner,
+                    nextControlPointPosition = next,
+                )
+            }
         }
     }
 
@@ -107,15 +164,23 @@ class CupSurface {
 
     }
 
-    class UnderwireLink : Link() {
+    class UnderwireLink private constructor(
         // The control bar on the underwire (in the underwire 2D space)
-        val wireControlBar = ControlBar2D()
+        val wireControlBar: ControlBar2D,
 
         // The control bar floating over the underwire (in the cup 3D space)
-        val supportControlBar = ControlBar3D()
+        val supportControlBar: ControlBar3D,
 
         // The control bar on the apex side (in the apex 2D space)
-        val apexControlBar = ControlBar2D()
+        val apexControlBar: ControlBar2D,
+    ) : Link() {
+        companion object {
+            context(momentContext: MomentContext) fun create(): UnderwireLink = UnderwireLink(
+                wireControlBar = ControlBar2D.create(),
+                supportControlBar = ControlBar3D.create(),
+                apexControlBar = ControlBar2D.create(),
+            )
+        }
 
         override fun toEffectiveLink(
             apexPosition: Cell<Point3D>,
@@ -127,11 +192,7 @@ class CupSurface {
             apexControlBar.toEffectiveControlBar(
                 plane = apexPosition.map { it.xyPlane },
             ),
-        ) {
-                effectiveWireControlBarNow,
-                effectiveSupportControlBarNow,
-                effectiveApexControlBarNow,
-            ->
+        ) { effectiveWireControlBarNow, effectiveSupportControlBarNow, effectiveApexControlBarNow ->
             EffectiveLink(
                 wireControlBar = effectiveWireControlBarNow,
                 supportControlBar = effectiveSupportControlBarNow,
@@ -140,15 +201,23 @@ class CupSurface {
         }
     }
 
-    class OverwireLink : Link() {
+    class OverwireLink private constructor(
         // The control bar on the overwire (in the cup 3D space)
-        val wireControlBar = ControlBar3D()
+        val wireControlBar: ControlBar3D,
 
         // The control bar floating over the overwire (in the cup 3D space)
-        val supportControlBar = ControlBar3D()
+        val supportControlBar: ControlBar3D,
 
         // The control bar near the apex (in the apex 2D space)
-        val apexControlBar = ControlBar2D()
+        val apexControlBar: ControlBar2D,
+    ) : Link() {
+        companion object {
+            context(momentContext: MomentContext) fun create(): OverwireLink = OverwireLink(
+                wireControlBar = ControlBar3D.create(),
+                supportControlBar = ControlBar3D.create(),
+                apexControlBar = ControlBar2D.create(),
+            )
+        }
 
         override fun toEffectiveLink(
             apexPosition: Cell<Point3D>,
@@ -158,11 +227,7 @@ class CupSurface {
             apexControlBar.toEffectiveControlBar(
                 plane = apexPosition.map { it.xyPlane },
             ),
-        ) {
-                effectiveWireControlBarNow,
-                effectiveSupportControlBarNow,
-                effectiveApexControlBarNow,
-            ->
+        ) { effectiveWireControlBarNow, effectiveSupportControlBarNow, effectiveApexControlBarNow ->
             EffectiveLink(
                 wireControlBar = effectiveWireControlBarNow,
                 supportControlBar = effectiveSupportControlBarNow,
@@ -171,24 +236,6 @@ class CupSurface {
         }
     }
 
-    // The position of the apex (in the cup 3D space)
-    val apexPosition = PropertyCell(initialValue = Point3D.origin)
-
-    // The underwire link closest to the body center
-    val startUnderwireLink = UnderwireLink()
-
-    // The underwire link closest to the lower body
-    val intermediateUnderwireLink = UnderwireLink()
-
-    // The underwire link closest to the upper/outer body
-    val endUnderwireLink = UnderwireLink()
-
-    // Overwire links in the CCW order
-    val overwireLinks = listOf(
-        OverwireLink(),
-        OverwireLink(),
-        OverwireLink(),
-    )
 
     val links: List<Link>
         get() = listOf(
