@@ -4,7 +4,7 @@ import dev.toolkt.reactive.cell.ProperCell
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.LoopedEventStream
-import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.effect.MomentContext
 
 class LoopedCell<V>(
     private val placeholderValue: V,

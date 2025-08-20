@@ -14,9 +14,9 @@ import dev.toolkt.dom.pure.style.PureStrokeStyle
 import dev.toolkt.dom.pure.style.PureTextAlign
 import dev.toolkt.dom.pure.style.PureVerticalAlign
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.managed_io.Actions
-import dev.toolkt.reactive.managed_io.Trigger
-import dev.toolkt.reactive.managed_io.Triggers
+import dev.toolkt.reactive.effect.Actions
+import dev.toolkt.reactive.effect.Trigger
+import dev.toolkt.reactive.effect.Triggers
 import org.w3c.dom.css.CSSStyleDeclaration
 
 data class ReactiveStyle(

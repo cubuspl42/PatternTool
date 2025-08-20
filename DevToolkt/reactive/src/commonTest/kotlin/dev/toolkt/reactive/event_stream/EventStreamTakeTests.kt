@@ -4,7 +4,7 @@ import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
-import dev.toolkt.reactive.managed_io.Moments
+import dev.toolkt.reactive.effect.Moments
 import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test

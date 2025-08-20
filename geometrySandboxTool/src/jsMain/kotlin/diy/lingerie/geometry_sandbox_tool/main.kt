@@ -18,8 +18,8 @@ import dev.toolkt.geometry.curves.BezierCurve
 import dev.toolkt.geometry.math.parametric_curve_functions.bezier_binomials.CubicBezierBinomial
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.PropertyCell
-import dev.toolkt.reactive.managed_io.Actions
-import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.effect.Actions
+import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement

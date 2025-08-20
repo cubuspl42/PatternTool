@@ -1,13 +1,11 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.Listener
-import dev.toolkt.reactive.Listener.Conclusion
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.future.Future
-import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.Transaction
 
 class PropertyCell<ValueT>(
     initialValue: ValueT,

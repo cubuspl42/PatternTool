@@ -12,7 +12,7 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.Transaction
 
 class ConcatAllReactiveList<ElementT>(
     private val lists: ReactiveList<ReactiveList<ElementT>>,

@@ -5,13 +5,13 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.HoldCell
 import dev.toolkt.reactive.future.Future
-import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.Effective
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.Transaction
-import dev.toolkt.reactive.managed_io.Trigger
-import dev.toolkt.reactive.managed_io.TriggerBase
+import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.Effective
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.effect.Trigger
+import dev.toolkt.reactive.effect.TriggerBase
 
 typealias TargetingListenerFn<TargetT, EventT> = (TargetT, EventT) -> Unit
 

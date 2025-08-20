@@ -9,7 +9,7 @@ import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.Transaction
 
 internal class FuseReactiveList<ElementT>(
     private val source: ReactiveList<Cell<ElementT>>,

@@ -1,4 +1,4 @@
-package dev.toolkt.reactive.managed_io
+package dev.toolkt.reactive.effect
 
 fun <ResultT> Effect<ResultT>.startExternally(): Effective<ResultT> = Actions.external {
     start()

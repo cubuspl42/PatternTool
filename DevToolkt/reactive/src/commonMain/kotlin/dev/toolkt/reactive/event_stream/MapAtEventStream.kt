@@ -1,7 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.Transaction
 
 internal class MapAtEventStream<EventT, TransformedEventT> private constructor(
     source: EventStream<EventT>,

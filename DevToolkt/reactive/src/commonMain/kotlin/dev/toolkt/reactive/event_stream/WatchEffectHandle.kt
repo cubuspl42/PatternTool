@@ -2,8 +2,8 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
-import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.Effect
+import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.Effect
 
 context(actionContext: ActionContext) fun <EventT> EventStream<EventT>.watch(
     listener: Listener<EventT>,

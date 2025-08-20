@@ -1,8 +1,8 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Listener.Conclusion
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.Transaction
 
 internal class SingleEventStream<EventT> private constructor() : StatefulEventStream<EventT>() {
     companion object {

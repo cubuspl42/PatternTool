@@ -1,7 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.ActionContext
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.ActionContext
 
 // TODO: Make the constructor private
 class EventEmitter<EventT> : ManagedEventStream<EventT>() {

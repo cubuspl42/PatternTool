@@ -13,10 +13,10 @@ import dev.toolkt.reactive.cell.mapNotNull
 import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.future.actuateOf
 import dev.toolkt.reactive.future.resultOrNull
-import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.joinOf
-import dev.toolkt.reactive.managed_io.map
+import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.Effect
+import dev.toolkt.reactive.effect.joinOf
+import dev.toolkt.reactive.effect.map
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.DOMRectReadOnly

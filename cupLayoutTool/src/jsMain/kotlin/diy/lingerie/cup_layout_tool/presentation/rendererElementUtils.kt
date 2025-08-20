@@ -7,8 +7,8 @@ import dev.toolkt.dom.reactive.utils.createResponsiveElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlCanvasElement
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.startBound
+import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.startBound
 import diy.lingerie.cup_layout_tool.application_state.ApplicationState
 import kotlinx.browser.document
 import org.w3c.dom.HTMLElement

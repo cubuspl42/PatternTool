@@ -1,8 +1,8 @@
 package dev.toolkt.reactive
 
 import dev.toolkt.core.platform.PlatformFinalizationRegistry
-import dev.toolkt.reactive.managed_io.ActionContext
-import dev.toolkt.reactive.managed_io.Actions
+import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.Actions
 
 object ReactiveFinalizationRegistry {
     private val finalizationRegistry = PlatformFinalizationRegistry()

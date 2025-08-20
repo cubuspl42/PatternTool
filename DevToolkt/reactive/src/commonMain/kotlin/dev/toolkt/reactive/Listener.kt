@@ -1,6 +1,6 @@
 package dev.toolkt.reactive
 
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.Transaction
 
 typealias ListenerFn<E> = (E) -> Unit
 

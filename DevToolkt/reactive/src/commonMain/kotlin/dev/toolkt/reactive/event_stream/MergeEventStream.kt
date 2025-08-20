@@ -2,7 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.Transaction
 
 internal class MergeEventStream<E>(
     private val source1: EventStream<E>,

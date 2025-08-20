@@ -1,6 +1,6 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.reactive.managed_io.Actions
+import dev.toolkt.reactive.effect.Actions
 
 fun <V> CellSlot.Companion.createExternally(
     initialValue: V,

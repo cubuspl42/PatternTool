@@ -16,7 +16,7 @@ import org.w3c.dom.HTMLCanvasElement
 import dev.toolkt.js.threejs.THREE
 import dev.toolkt.js.threejs.THREE.Object3D
 import dev.toolkt.js.threejs.WebGLRendererParams
-import dev.toolkt.reactive.managed_io.Actions
+import dev.toolkt.reactive.effect.Actions
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 

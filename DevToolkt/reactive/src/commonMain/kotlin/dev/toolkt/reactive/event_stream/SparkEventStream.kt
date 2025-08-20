@@ -1,6 +1,6 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.effect.MomentContext
 
 internal class SparkEventStream<EventT> private constructor() : ManagedEventStream<EventT>() {
     companion object {

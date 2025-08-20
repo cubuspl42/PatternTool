@@ -26,7 +26,7 @@ abstract class StatefulReactiveList<E>(
                 override val dependentId = id
 
                 override fun handleUnconditionally(
-                    transaction: dev.toolkt.reactive.managed_io.Transaction,
+                    transaction: dev.toolkt.reactive.effect.Transaction,
                     event: Change<E>,
                 ) {
                     // Notify the listeners about the change...

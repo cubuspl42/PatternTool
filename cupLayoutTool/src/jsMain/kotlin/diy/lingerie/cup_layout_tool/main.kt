@@ -4,17 +4,13 @@ import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Point3D
 import dev.toolkt.geometry.curves.BezierCurve
-import dev.toolkt.reactive.managed_io.Actions
-import dev.toolkt.reactive.managed_io.Effect
-import dev.toolkt.reactive.managed_io.joinOf
+import dev.toolkt.reactive.effect.Actions
+import dev.toolkt.reactive.effect.joinOf
 import diy.lingerie.cup_layout_tool.application_state.ApplicationState
 import diy.lingerie.cup_layout_tool.application_state.DocumentState
-import diy.lingerie.cup_layout_tool.presentation.createRendererComponent
 import diy.lingerie.cup_layout_tool.presentation.createRootComponent
-import diy.lingerie.cup_layout_tool.presentation.createRootElement
 import kotlinx.browser.document
 import kotlinx.browser.window
-import org.w3c.dom.Element
 
 private val apexVertex = Point3D(x = 0.0, y = 0.0, z = 100.0)
 

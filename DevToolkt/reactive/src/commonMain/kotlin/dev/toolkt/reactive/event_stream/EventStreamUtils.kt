@@ -7,7 +7,7 @@ import dev.toolkt.reactive.Listener.Conclusion
 import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.Transaction
 
 internal fun <TargetT : Any, EventT> EventStream<EventT>.pinWeak(
     target: TargetT,

@@ -16,7 +16,7 @@ import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.event_stream.holdUnmanaged
 import dev.toolkt.reactive.event_stream.mergeWith
 import dev.toolkt.reactive.future.Future
-import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.effect.MomentContext
 import org.w3c.dom.Element
 import org.w3c.dom.events.MouseEvent
 import org.w3c.dom.svg.SVGElement

@@ -1,4 +1,4 @@
-package dev.toolkt.reactive.managed_io
+package dev.toolkt.reactive.effect
 
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.test_utils.runTestDefault

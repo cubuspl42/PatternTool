@@ -5,7 +5,7 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.newest
 import dev.toolkt.reactive.future.Future
-import dev.toolkt.reactive.managed_io.MomentContext
+import dev.toolkt.reactive.effect.MomentContext
 import org.w3c.dom.DOMRectReadOnly
 import org.w3c.dom.Element
 import org.w3c.dom.extra.ResizeObserver

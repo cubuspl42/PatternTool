@@ -3,8 +3,7 @@ package dev.toolkt.reactive.cell
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.core.platform.test_utils.runTestDefault
-import dev.toolkt.reactive.cell.setExternally
-import dev.toolkt.reactive.managed_io.Actions
+import dev.toolkt.reactive.effect.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals

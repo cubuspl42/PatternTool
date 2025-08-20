@@ -1,16 +1,12 @@
 package dev.toolkt.reactive.cell
 
 import dev.toolkt.core.platform.PlatformWeakReference
-import dev.toolkt.reactive.Listener
-import dev.toolkt.reactive.Listener.Conclusion
-import dev.toolkt.reactive.ListenerFn
-import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.event_stream.DependentEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.pinWeak
-import dev.toolkt.reactive.managed_io.MomentContext
-import dev.toolkt.reactive.managed_io.Transaction
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.effect.Transaction
 
 /**
  * A cell with an inherent state, i.e. such that is not a pure function of its sources (that cannot be recomputed).

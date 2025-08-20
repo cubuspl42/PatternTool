@@ -3,8 +3,8 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.sampleExternally
-import dev.toolkt.reactive.managed_io.endExternally
-import dev.toolkt.reactive.managed_io.jumpStartExternally
+import dev.toolkt.reactive.effect.endExternally
+import dev.toolkt.reactive.effect.jumpStartExternally
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

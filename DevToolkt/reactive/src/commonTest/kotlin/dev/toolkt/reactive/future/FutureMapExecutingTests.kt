@@ -4,9 +4,9 @@ import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.cell.sampleExternally
 import dev.toolkt.reactive.cell.setExternally
-import dev.toolkt.reactive.managed_io.Actions
-import dev.toolkt.reactive.managed_io.endExternally
-import dev.toolkt.reactive.managed_io.startExternally
+import dev.toolkt.reactive.effect.Actions
+import dev.toolkt.reactive.effect.endExternally
+import dev.toolkt.reactive.effect.startExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals

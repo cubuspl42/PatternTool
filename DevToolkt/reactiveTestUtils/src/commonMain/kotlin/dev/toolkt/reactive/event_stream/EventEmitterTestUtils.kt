@@ -1,7 +1,7 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.managed_io.Moments
-import dev.toolkt.reactive.managed_io.Actions
+import dev.toolkt.reactive.effect.Moments
+import dev.toolkt.reactive.effect.Actions
 
 fun <EventT> EventEmitter.Companion.createExternally(): EventEmitter<EventT> = Moments.external {
     EventEmitter.create()
