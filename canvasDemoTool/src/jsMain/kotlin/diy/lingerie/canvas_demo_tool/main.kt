@@ -16,7 +16,7 @@ import dev.toolkt.dom.reactive.utils.createTimeoutStream
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.event_stream.accum
+import dev.toolkt.reactive.event_stream.accumUnmanaged
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.HTMLDivElement
@@ -31,7 +31,7 @@ fun main() {
 }
 
 private fun createRootElement(): HTMLDivElement {
-    val radius = createTimeoutStream(delay = 16.milliseconds).accum(
+    val radius = createTimeoutStream(delay = 16.milliseconds).accumUnmanaged(
         initialValue = 50.0,
         transform = { acc, _ -> acc + 1.0 },
     )

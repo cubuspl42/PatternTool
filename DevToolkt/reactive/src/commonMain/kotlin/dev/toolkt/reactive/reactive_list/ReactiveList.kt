@@ -194,6 +194,7 @@ abstract class ReactiveList<out E> {
             eventStreams = eventStreams,
         )
 
+        // TODO: Add tests
         fun <ElementT> actuate(
             effectReactiveList: ReactiveList<Effect<ElementT>>,
         ): Effect<ReactiveList<ElementT>> {
@@ -332,4 +333,5 @@ fun <ElementT, ResultT> ReactiveList<ElementT>.actuateOf(
 ): Effect<ReactiveList<ResultT>> = ReactiveList.actuate(
     this.map {
         transform(it)
-    })
+    },
+)
