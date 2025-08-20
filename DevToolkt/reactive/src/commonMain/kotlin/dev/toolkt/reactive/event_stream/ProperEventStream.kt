@@ -1,6 +1,5 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
@@ -51,7 +50,7 @@ abstract class ProperEventStream<E> : EventStream<E>() {
         }
     }
 
-    final override fun singleUnmanaged(): EventStream<E> = SingleEventStream(source = this)
+    final override fun singleUnmanaged(): EventStream<E> = SingleEventStreamOg(source = this)
 
     context(momentContext: MomentContext) final override fun next(): Future<E> = NextFuture(source = this)
 

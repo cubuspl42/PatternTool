@@ -205,7 +205,7 @@ abstract class EventStream<out E> : EventSource<E> {
 
     abstract fun singleUnmanaged(): EventStream<E>
 
-    context(momentContext: MomentContext) fun single(): EventStream<E> = SingleEventStreamNg.construct(
+    context(momentContext: MomentContext) fun single(): EventStream<E> = SingleEventStream.construct(
         source = this,
     )
 
