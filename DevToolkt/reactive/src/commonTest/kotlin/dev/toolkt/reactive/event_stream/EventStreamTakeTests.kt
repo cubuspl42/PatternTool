@@ -4,6 +4,7 @@ import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
+import dev.toolkt.reactive.managed_io.Moments
 import dev.toolkt.reactive.test_utils.DetachedEventStreamVerifier
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
@@ -16,13 +17,17 @@ class EventStreamTakeTests {
     fun testTake_negative() {
         assertIs<IllegalArgumentException>(
             assertFails {
-                NeverEventStream.take(-1)
+                Moments.external {
+                    NeverEventStream.take(-1)
+                }
             },
         )
 
         assertIs<IllegalArgumentException>(
             assertFails {
-                EventEmitter<Int>().take(-2)
+                Moments.external {
+                    EventEmitter<Int>().take(-2)
+                }
             },
         )
     }
@@ -31,7 +36,9 @@ class EventStreamTakeTests {
     fun testTake_zero() {
         val eventEmitter = EventEmitter<Int>()
 
-        val takeStream = eventEmitter.take(0)
+        val takeStream = Moments.external {
+            eventEmitter.take(0)
+        }
 
         val streamVerifier = EventStreamVerifier.setup(
             eventStream = takeStream,
@@ -56,7 +63,9 @@ class EventStreamTakeTests {
     fun testTake_one() {
         val eventEmitter = EventEmitter<Int>()
 
-        val takeStream = eventEmitter.take(1)
+        val takeStream = Moments.external {
+            eventEmitter.take(1)
+        }
 
         val changesVerifier = EventStreamVerifier.setup(
             eventStream = takeStream,
@@ -88,7 +97,9 @@ class EventStreamTakeTests {
     fun testTake_two() {
         val eventEmitter = EventEmitter<Int>()
 
-        val takeStream = eventEmitter.take(2)
+        val takeStream = Moments.external {
+            eventEmitter.take(2)
+        }
 
         val changesVerifier = EventStreamVerifier.setup(
             eventStream = takeStream,
@@ -117,21 +128,26 @@ class EventStreamTakeTests {
     }
 
     @Test
-    fun testTake_letItGo() = runTestDefault {
+    fun testTake_collectable() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
-        val EventStreamRef = PlatformWeakReference(
-            eventEmitter.take(2),
+        val takeStreamRef = PlatformWeakReference(
+            Moments.external {
+                eventEmitter.take(3)
+            },
         )
 
-        ensureCollected(EventStreamRef)
+
+        ensureCollected(takeStreamRef)
     }
 
     @Test
     fun testTake_missed() = runTestDefault {
         val eventEmitter = EventEmitter<Int>()
 
-        val takeStream = eventEmitter.take(2)
+        val takeStream = Moments.external {
+            eventEmitter.take(2)
+        }
 
         eventEmitter.emitExternally(10)
         eventEmitter.emitExternally(20)
@@ -155,7 +171,9 @@ class EventStreamTakeTests {
         val eventEmitter = EventEmitter<Int>()
 
         val streamVerifier = DetachedEventStreamVerifier(
-            eventStream = eventEmitter.take(2),
+            eventStream = Moments.external {
+                eventEmitter.take(2)
+            },
         )
 
         PlatformSystem.collectGarbageForced()
