@@ -4,7 +4,7 @@ import dev.toolkt.core.platform.PlatformCleanable
 import dev.toolkt.core.platform.PlatformFinalizationRegistry
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.Listener.Conclusion
-import dev.toolkt.reactive.event_stream.EventSource
+import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.TargetingListener
 import dev.toolkt.reactive.managed_io.Transaction
 
@@ -35,7 +35,7 @@ interface HybridSubscription : Subscription {
     companion object {
         private val finalizationRegistry = PlatformFinalizationRegistry()
 
-        internal fun <TargetT : Any, EventT> EventSource<EventT>.listenHybrid(
+        internal fun <TargetT : Any, EventT> EventStream<EventT>.listenHybrid(
             target: TargetT,
             targetingListener: TargetingListener<TargetT, EventT>,
         ): HybridSubscription = object : HybridSubscription {

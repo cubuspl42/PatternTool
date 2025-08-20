@@ -53,7 +53,7 @@ interface TargetingListener<in TargetT : Any, in EventT> {
 /**
  * TODO: Nuke (but modernize [take] / [takeUntilNull] first)
  */
-internal fun <TargetT : Any, EventT> EventSource<EventT>.bindSourced(
+internal fun <TargetT : Any, EventT> EventStream<EventT>.bindSourced(
     listener: TargetingListener<TargetT, EventT>,
 ): SourcedListener<TargetT, EventT> = SourcedListener(
     source = this,
@@ -61,7 +61,7 @@ internal fun <TargetT : Any, EventT> EventSource<EventT>.bindSourced(
 )
 
 
-abstract class EventStream<out E> : EventSource<E> {
+abstract class EventStream<out E> {
     companion object {
         val Never: EventStream<Nothing> = NeverEventStream
 
@@ -166,6 +166,10 @@ abstract class EventStream<out E> : EventSource<E> {
         )
     }
 
+    abstract fun listen(
+        listener: Listener<E>,
+    ): Subscription
+
     abstract fun <Er> map(
         transform: (E) -> Er,
     ): EventStream<Er>
@@ -244,7 +248,6 @@ fun <E> EventStream<E>.forEach(
         action = action,
     )
 }
-
 
 context(actionContext: ActionContext) fun <E> EventStream<E>.forward(
     update: (E) -> Unit,
