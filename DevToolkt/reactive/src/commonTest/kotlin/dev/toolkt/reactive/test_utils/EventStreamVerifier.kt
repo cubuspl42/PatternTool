@@ -15,7 +15,8 @@ class EventStreamVerifier<E> private constructor(
     eventStream: EventStream<E>,
 ) {
     companion object {
-        // TODO: Migrate all usages to `listen`
+        // TODO: Migrate all usages to `listen` / `listenForever`
+        @Deprecated("Use listenForever instead", ReplaceWith("listenForever(eventStream)"))
         fun <E> setup(
             eventStream: EventStream<E>,
         ): EventStreamVerifier<E> = EventStreamVerifier(

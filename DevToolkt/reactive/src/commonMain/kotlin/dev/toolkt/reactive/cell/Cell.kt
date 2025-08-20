@@ -3,6 +3,7 @@ package dev.toolkt.reactive.cell
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.forEach
+import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.event_stream.holdUnmanaged
 import dev.toolkt.reactive.event_stream.takeUntilNull
 import dev.toolkt.reactive.managed_io.ActionContext
@@ -287,10 +288,10 @@ fun <V : Any, Vr : Any> Cell<V?>.mapNotNull(
     }
 }
 
-fun <V : Any> Cell<V?>.separateNonNull(): Cell<Cell<V>?> = this.map { value ->
+context(momentContext: MomentContext) fun <V : Any> Cell<V?>.separateNonNull(): Cell<Cell<V>?> = this.map { value ->
     when (value) {
         null -> null
-        else -> newValues.takeUntilNull().holdUnmanaged(value)
+        else -> newValues.takeUntilNull().hold(value)
     }
 }
 
