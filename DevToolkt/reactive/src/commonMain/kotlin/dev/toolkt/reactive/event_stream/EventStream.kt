@@ -203,6 +203,9 @@ abstract class EventStream<out E> : EventSource<E> {
         count: Int,
     ): EventStream<E>
 
+    /**
+     * TODO: Nuke (but nuke [dev.toolkt.reactive.future.ProperFuture] first (?)
+     */
     abstract fun singleUnmanaged(): EventStream<E>
 
     context(momentContext: MomentContext) fun single(): EventStream<E> = SingleEventStream.construct(

@@ -2,8 +2,8 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.core.platform.test_utils.runTestDefault
-import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import dev.toolkt.reactive.future.Future
+import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.seconds
@@ -13,7 +13,7 @@ class EventStreamNextTests {
     fun testNext() {
         val eventEmitter = EventEmitter<Int>()
 
-        val nextFuture = eventEmitter.next()
+        val nextFuture = eventEmitter.nextExternally()
 
         val onResultVerifier = EventStreamVerifier.setup(
             eventStream = nextFuture.onResult,
@@ -62,7 +62,7 @@ class EventStreamNextTests {
         val eventEmitter = EventEmitter<Int>()
 
         fun setup(): Pair<PlatformWeakReference<Future<Int>>, EventStreamVerifier<Int>> {
-            val nextFuture = eventEmitter.next()
+            val nextFuture = eventEmitter.nextExternally()
 
             val streamVerifier = EventStreamVerifier.setup(
                 eventStream = nextFuture.onResult,

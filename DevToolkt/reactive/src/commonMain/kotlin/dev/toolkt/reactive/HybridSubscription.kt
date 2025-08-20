@@ -8,7 +8,9 @@ import dev.toolkt.reactive.event_stream.EventSource
 import dev.toolkt.reactive.event_stream.TargetingListener
 import dev.toolkt.reactive.managed_io.Transaction
 
-// TODO: Nuke (but nuke SingleEventStreamOg first)
+/**
+ * TODO: Nuke (but nuke [dev.toolkt.reactive.event_stream.SingleEventStreamOg] first)
+ */
 interface HybridSubscription : Subscription {
     /**
      * The result of a subscription strengthening operation.

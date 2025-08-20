@@ -4,6 +4,8 @@ import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.future.Future
+import dev.toolkt.reactive.future.Future.Pending
+import dev.toolkt.reactive.future.PlainFuture
 import dev.toolkt.reactive.managed_io.MomentContext
 import dev.toolkt.reactive.managed_io.Transaction
 
@@ -52,7 +54,11 @@ abstract class ProperEventStream<E> : EventStream<E>() {
 
     final override fun singleUnmanaged(): EventStream<E> = SingleEventStreamOg(source = this)
 
-    context(momentContext: MomentContext) final override fun next(): Future<E> = NextFuture(source = this)
+    context(momentContext: MomentContext) final override fun next(): Future<E> = PlainFuture(
+        state = single().map {
+            Future.Fulfilled(it)
+        }.hold(Pending),
+    )
 
     final override fun <T : Any> pipe(
         target: T,
