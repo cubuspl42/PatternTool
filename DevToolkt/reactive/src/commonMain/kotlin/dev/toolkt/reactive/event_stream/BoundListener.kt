@@ -4,8 +4,7 @@ import dev.toolkt.reactive.HybridSubscription
 import dev.toolkt.reactive.Subscription
 
 /**
- * TODO: Nuke, but first nuke:
- *  - [BoundTargetedListener]
+ * TODO: Nuke
  */
 interface BoundListener {
     fun listen(): Subscription
