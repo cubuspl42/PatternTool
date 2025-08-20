@@ -14,8 +14,6 @@ class PlainFuture<out V>(
         it as? Fulfilled<V>
     }
 
-    override val onResult: EventStream<V> = onFulfilled.map { it.result }
-
     override fun <Vr> map(
         transform: (V) -> Vr,
     ): Future<Vr> = PlainFuture(
