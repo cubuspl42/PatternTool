@@ -82,10 +82,10 @@ fun handleManipulationStateEvents(
     canvas: HTMLCanvasElement,
     myRenderer: MyRenderer,
     interactionState: InteractionState,
-): Trigger {
+): Trigger = Trigger.prepared {
     val canvasMouseOffsetPointNdc = canvas.trackMouseOffsetPointNdc()
 
-    return interactionState.manipulationState.activateOf { manipulationStateNow ->
+    interactionState.manipulationState.activateOf { manipulationStateNow ->
         when (manipulationStateNow) {
             is IdleState -> handleIdleStateEvents(
                 canvas = canvas,

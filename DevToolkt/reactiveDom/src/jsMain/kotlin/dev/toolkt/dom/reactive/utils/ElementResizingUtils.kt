@@ -5,6 +5,7 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.newest
 import dev.toolkt.reactive.future.Future
+import dev.toolkt.reactive.managed_io.MomentContext
 import org.w3c.dom.DOMRectReadOnly
 import org.w3c.dom.Element
 import org.w3c.dom.extra.ResizeObserver
@@ -30,5 +31,5 @@ fun Element.getResizeEventStream(): EventStream<ResizeObserverEntry> = EventStre
     }
 }
 
-fun Element.getNewestContentRect(): Future<Cell<DOMRectReadOnly>> =
+context(momentContext: MomentContext) fun Element.getNewestContentRect(): Future<Cell<DOMRectReadOnly>> =
     getResizeEventStream().map { it.contentRect }.newest()

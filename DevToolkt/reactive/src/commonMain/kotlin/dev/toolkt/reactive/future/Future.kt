@@ -13,14 +13,28 @@ import dev.toolkt.reactive.managed_io.Schedule
 import dev.toolkt.reactive.managed_io.executeCurrent
 import dev.toolkt.reactive.managed_io.map
 
-abstract class Future<out V> {
-    sealed class State<out V>
+abstract class Future<out ResultT> {
+    sealed class State<out ResultT> {
+        abstract fun <TransformedResultT> map(
+            transform: (ResultT) -> TransformedResultT,
+        ): State<TransformedResultT>
+    }
 
-    data object Pending : State<Nothing>()
+    data object Pending : State<Nothing>() {
+        override fun <TransformedResultT> map(
+            transform: (Nothing) -> TransformedResultT,
+        ): State<TransformedResultT> = Pending
+    }
 
-    data class Fulfilled<out V>(
-        val result: V,
-    ) : State<V>()
+    data class Fulfilled<out ResultT>(
+        val result: ResultT,
+    ) : State<ResultT>() {
+        override fun <TransformedResultT> map(
+            transform: (ResultT) -> TransformedResultT,
+        ): State<TransformedResultT> = Fulfilled(
+            result = transform(result),
+        )
+    }
 
     object Hang : Future<Nothing>() {
         override val state: Cell<State<Nothing>> = Cell.Companion.of(Pending)
@@ -34,52 +48,56 @@ abstract class Future<out V> {
         override fun <Vr> map(transform: (Nothing) -> Vr): Future<Vr> = Hang
     }
 
-    data class Prefilled<V>(
-        val constResult: V,
-    ) : Future<V>() {
-        private val fulfilledState: Fulfilled<V>
+    data class Prefilled<ResultT>(
+        val constResult: ResultT,
+    ) : Future<ResultT>() {
+        private val fulfilledState: Fulfilled<ResultT>
             get() = Fulfilled(result = constResult)
 
-        override val state: Cell<State<V>> = Cell.of(fulfilledState)
+        override val state: Cell<State<ResultT>> = Cell.of(fulfilledState)
 
-        override val currentStateUnmanaged: State<V> = fulfilledState
+        override val currentStateUnmanaged: State<ResultT> = fulfilledState
 
-        override val onFulfilled: EventStream<Fulfilled<V>> = NeverEventStream
+        override val onFulfilled: EventStream<Fulfilled<ResultT>> = NeverEventStream
 
-        override val onResult: EventStream<V> = NeverEventStream
+        override val onResult: EventStream<ResultT> = NeverEventStream
 
-        override fun <Vr> map(transform: (V) -> Vr): Future<Vr> = Prefilled(
+        override fun <Vr> map(transform: (ResultT) -> Vr): Future<Vr> = Prefilled(
             constResult = transform(constResult),
         )
     }
 
     companion object {
-        fun <V> of(
-            constResult: V,
-        ): Future<V> = Prefilled(constResult)
+        fun <ResultT> of(
+            constResult: ResultT,
+        ): Future<ResultT> = Prefilled(constResult)
 
-        fun <V> join(
-            future: Future<Future<V>>,
-        ): Future<V> = JoinFuture(future)
+        fun <ResultT> join(
+            future: Future<Future<ResultT>>,
+        ): Future<ResultT> = JoinFuture(future)
 
-        context(momentContext: MomentContext) fun <V, V1 : V, V2 : V> oscillate2(
-            initialValue: V1,
-            selectNextValueFuture1: context(MomentContext) (V1) -> Future<V2>,
-            selectNextValueFuture2: context(MomentContext) (V2) -> Future<V1>,
-        ): Cell<V> = object {
+        context(momentContext: MomentContext) fun <
+                ResultT,
+                SpecificResultT1 : ResultT,
+                SpecificResultT2 : ResultT,
+                > oscillate2(
+            initialValue: SpecificResultT1,
+            switchPhase1: context(MomentContext) (SpecificResultT1) -> Future<SpecificResultT2>,
+            switchPhase2: context(MomentContext) (SpecificResultT2) -> Future<SpecificResultT1>,
+        ): Cell<ResultT> = object {
             context(momentContext: MomentContext) fun enterPhase1(
-                value1: V1,
-            ): Cell<V> = enterPhaseX(
+                value1: SpecificResultT1,
+            ): Cell<ResultT> = enterPhaseX(
                 valueX = value1,
-                selectNextValueFutureX = selectNextValueFuture1,
+                selectNextValueFutureX = switchPhase1,
                 enterPhaseY = { enterPhase2(it) },
             )
 
             context(momentContext: MomentContext) fun enterPhase2(
-                value2: V2,
-            ): Cell<V> = enterPhaseX(
+                value2: SpecificResultT2,
+            ): Cell<ResultT> = enterPhaseX(
                 valueX = value2,
-                selectNextValueFutureX = selectNextValueFuture2,
+                selectNextValueFutureX = switchPhase2,
                 enterPhaseY = { enterPhase1(it) },
             )
 
@@ -157,29 +175,29 @@ abstract class Future<out V> {
     fun null_(): Future<Nothing?> = map { null }
 
     fun thenExecute(
-        action: (V) -> Schedule,
+        action: (ResultT) -> Schedule,
     ): Schedule = onResult.singleUnmanaged().map {
         action(it)
     }.holdUnmanaged(Program.Noop).executeCurrent()
 
-    abstract val onResult: EventStream<V>
+    abstract val onResult: EventStream<ResultT>
 
-    abstract val state: Cell<State<V>>
+    abstract val state: Cell<State<ResultT>>
 
-    abstract val currentStateUnmanaged: State<V>
+    abstract val currentStateUnmanaged: State<ResultT>
 
-    abstract val onFulfilled: EventStream<Fulfilled<V>>
+    abstract val onFulfilled: EventStream<Fulfilled<ResultT>>
 
     abstract fun <Vr> map(
-        transform: (V) -> Vr,
+        transform: (ResultT) -> Vr,
     ): Future<Vr>
 
     context(momentContext: MomentContext) fun <Vr> mapAt(
-        transform: context(MomentContext) (V) -> Vr,
+        transform: context(MomentContext) (ResultT) -> Vr,
     ): Future<Vr> = PlainFuture(
         state = state.mapAt {
             when (it) {
-                is Fulfilled<V> -> Fulfilled(
+                is Fulfilled<ResultT> -> Fulfilled(
                     result = transform(it.result),
                 )
 
@@ -189,10 +207,10 @@ abstract class Future<out V> {
     )
 
     fun <Vr> mapExecuting(
-        transform: context(ActionContext) (V) -> Vr,
+        transform: context(ActionContext) (ResultT) -> Vr,
     ): Effect<Future<Vr>> = state.mapExecuting { stateNow ->
         when (stateNow) {
-            is Fulfilled<V> -> Fulfilled(
+            is Fulfilled<ResultT> -> Fulfilled(
                 result = transform(stateNow.result),
             )
 

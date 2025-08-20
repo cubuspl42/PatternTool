@@ -12,9 +12,11 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.switch
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.hold
 import dev.toolkt.reactive.event_stream.holdUnmanaged
 import dev.toolkt.reactive.event_stream.mergeWith
 import dev.toolkt.reactive.future.Future
+import dev.toolkt.reactive.managed_io.MomentContext
 import org.w3c.dom.Element
 import org.w3c.dom.events.MouseEvent
 import org.w3c.dom.svg.SVGElement
@@ -56,26 +58,29 @@ class SvgMouseGesture(
 ) : MouseGesture
 
 fun Element.onMouseOverGestureStarted(): EventStream<GenericMouseGesture> =
-    this.getMouseEnterEventStream().map { mouseEnterEvent ->
+    this.getMouseEnterEventStream().mapAt { mouseEnterEvent ->
         GenericMouseGesture(
-            newestMouseEvent = getMouseMoveEventStream().holdUnmanaged(mouseEnterEvent),
+            newestMouseEvent = getMouseMoveEventStream().hold(mouseEnterEvent),
             onFinished = getMouseLeaveEventStream().next().unit(),
         )
     }
 
-fun Element.trackMouseClientPoint(): Cell<Point?> = trackMouseFeature { it.clientPoint }
+context(momentContext: MomentContext) fun Element.trackMouseClientPoint(): Cell<Point?> =
+    trackMouseFeature { it.clientPoint }
 
-fun Element.trackMouseOffsetPoint(): Cell<Point?> = trackMouseFeature { it.offsetPoint }
+context(momentContext: MomentContext) fun Element.trackMouseOffsetPoint(): Cell<Point?> =
+    trackMouseFeature { it.offsetPoint }
 
-fun Element.trackMouseOffsetPointNdc(): Cell<Point?> = trackMouseFeature { it.offsetPointNdc }
+context(momentContext: MomentContext) fun Element.trackMouseOffsetPointNdc(): Cell<Point?> =
+    trackMouseFeature { it.offsetPointNdc }
 
-private fun <FeatureT : Any> Element.trackMouseFeature(
+context(momentContext: MomentContext) private fun <FeatureT : Any> Element.trackMouseFeature(
     extractFeature: (MouseEvent) -> FeatureT,
-): Cell<FeatureT?> = Future.oscillateUnmanaged2(
+): Cell<FeatureT?> = Future.oscillate2(
     initialValue = Cell.of(null),
     switchPhase1 = {
-        getMouseEnterEventStream().next().map { mouseEnterEvent ->
-            getMouseMoveEventStream().map(extractFeature).holdUnmanaged(extractFeature(mouseEnterEvent))
+        getMouseEnterEventStream().next().mapAt { mouseEnterEvent ->
+            getMouseMoveEventStream().map(extractFeature).hold(extractFeature(mouseEnterEvent))
         }
     },
     switchPhase2 = {
@@ -104,7 +109,7 @@ fun SVGElement.onSvgDragGestureStarted(
     button: ButtonId,
 ): EventStream<SvgMouseGesture> = this.getMouseDownEventStream(
     button = button,
-).map { targetMouseDownEvent ->
+).mapAt { targetMouseDownEvent ->
     val initialTargetOffsetPoint = targetMouseDownEvent.offsetPoint
 
     val terminatingEventStream = container.getMouseUpEventStream(button = button).mergeWith(
@@ -114,13 +119,14 @@ fun SVGElement.onSvgDragGestureStarted(
     SvgMouseGesture(
         point = container.getMouseMoveEventStream().map {
             it.offsetPoint
-        }.holdUnmanaged(initialTargetOffsetPoint),
+        }.hold(initialTargetOffsetPoint),
         onFinished = terminatingEventStream.next().unit(),
     )
 }
 
-fun <MouseGestureT : MouseGesture> EventStream<MouseGestureT>.track(): Cell<MouseGestureT?> = Future.oscillateUnmanaged2(
-    initialValue = null,
-    switchPhase1 = { next() },
-    switchPhase2 = { gesture -> gesture.onFinished.null_() },
-)
+context(momentContext: MomentContext) fun <MouseGestureT : MouseGesture> EventStream<MouseGestureT>.track(): Cell<MouseGestureT?> =
+    Future.oscillate2(
+        initialValue = null,
+        switchPhase1 = { next() },
+        switchPhase2 = { gesture -> gesture.onFinished.null_() },
+    )
