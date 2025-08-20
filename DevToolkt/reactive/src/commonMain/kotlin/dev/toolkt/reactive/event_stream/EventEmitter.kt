@@ -14,13 +14,6 @@ class EventEmitter<EventT> : ManagedEventStream<EventT>() {
         context(momentContext: MomentContext) fun <EventT> create(): EventEmitter<EventT> = EventEmitter()
     }
 
-    fun emitUnmanaged(event: EventT) {
-        notify(
-            transaction = TODO("Nuke unmanaged code"),
-            event,
-        )
-    }
-
     context(actionContext: ActionContext) fun emit(event: EventT) {
         // FIXME: Enqueue this! Test should catch this
         notify(
