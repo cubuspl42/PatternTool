@@ -2,6 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
+import dev.toolkt.core.platform.test_utils.assertCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.effect.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
@@ -166,14 +167,11 @@ class EventStreamSingleTests {
             actual = eventEmitter.hasListeners,
         )
 
-        // Force garbage collection
-        PlatformSystem.collectGarbageForced()
-
         // Verify that the single event stream allowed itself to be collected,
         // even though it was managing some internal state while waiting for
         // the first listener
-        assertNull(
-            actual = singleEventStreamWeakRef.get(),
+        assertCollected(
+            weakRef = singleEventStreamWeakRef,
         )
 
         // Verify that the single event unsubscribed from the source stream
