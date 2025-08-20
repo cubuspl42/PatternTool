@@ -2,6 +2,7 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
+import dev.toolkt.core.platform.test_utils.assertCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.effect.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
@@ -71,12 +72,9 @@ class CellMapAtTests {
             PlatformWeakReference(mappedCell)
         }
 
-        // Force the garbage collection
-        PlatformSystem.collectGarbageForced()
-
         // Verify that the mapped cell allowed itself to be collected
-        assertNull(
-            actual = mappedCellWeakRef.get(),
+        assertCollected(
+            weakRef = mappedCellWeakRef,
         )
 
         // Verify that the mapped cell unsubscribed from the source stream
@@ -132,12 +130,9 @@ class CellMapAtTests {
             PlatformWeakReference(mappedCell)
         }
 
-        // Force the garbage collection
-        PlatformSystem.collectGarbageForced()
-
         // Verify that the mapped cell allowed itself to be collected
-        assertNull(
-            actual = mappedCellWeakRef.get(),
+        assertCollected(
+            weakRef = mappedCellWeakRef,
         )
 
         // Verify that the mapped cell unsubscribed from the source stream

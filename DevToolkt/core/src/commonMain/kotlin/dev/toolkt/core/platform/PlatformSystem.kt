@@ -1,8 +1,5 @@
 package dev.toolkt.core.platform
 
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
-
 expect object PlatformSystem {
     /**
      * Hints the system to start a garbage collection run in a best-effort manner. This utility is meant to help with

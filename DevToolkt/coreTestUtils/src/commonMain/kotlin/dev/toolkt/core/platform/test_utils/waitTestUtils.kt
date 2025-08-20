@@ -84,6 +84,30 @@ suspend fun <T : Any> ensureCollected(
     )
 }
 
+suspend fun <T : Any> assertCollected(
+    weakRef: PlatformWeakReference<T>,
+) {
+    tailrec suspend fun assertCollectedRecursively(
+        remainingTryCount: Int,
+    ) {
+        val ref = weakRef.get() ?: return
+
+        if (remainingTryCount == 0) {
+            throw AssertionError("Expected the object to be garbage collected: $ref")
+        }
+
+        PlatformSystem.collectGarbageForced()
+
+        return assertCollectedRecursively(
+            remainingTryCount = remainingTryCount - 1,
+        )
+    }
+
+    return assertCollectedRecursively(
+        remainingTryCount = 16,
+    )
+}
+
 /**
  * Waits for [waitDuration], waking up every [pauseDuration] and putting stress on the garbage collector.
  */
