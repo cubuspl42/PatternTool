@@ -26,30 +26,3 @@ data class TargetedListener<TargetT : Any, EventT>(
     }
 }
 
-/**
- * TODO: Nuke, but first nuke:
- *  - [SourcedListener]
- */
-interface ISourcedListener<TargetT : Any> {
-    fun bindTarget(
-        target: TargetT,
-    ): BoundListener
-}
-
-/**
- * TODO: Nuke (but modernize [take] / [takeUntilNull] first)
- */
-data class SourcedListener<TargetT : Any, EventT>(
-    val source: EventStream<EventT>,
-    val listener: TargetingListener<TargetT, EventT>,
-) : ISourcedListener<TargetT> {
-    override fun bindTarget(
-        target: TargetT,
-    ): BoundListener = BoundTargetedListener(
-        source = source,
-        targetedListener = TargetedListener(
-            target = target,
-            listener = listener,
-        ),
-    )
-}
