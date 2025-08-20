@@ -1,7 +1,6 @@
 package dev.toolkt.reactive.future
 
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.event_stream.EventStream
 
 class PlainFuture<out V>(
     override val state: Cell<State<V>>,
@@ -9,10 +8,6 @@ class PlainFuture<out V>(
 
     override val currentStateUnmanaged: State<V>
         get() = state.currentValueUnmanaged
-
-    override val onFulfilled: EventStream<Fulfilled<V>> = state.newValues.mapNotNull {
-        it as? Fulfilled<V>
-    }
 
     override fun <Vr> map(
         transform: (V) -> Vr,

@@ -38,8 +38,6 @@ abstract class Future<out ResultT> {
 
         override val currentStateUnmanaged: State<Nothing> = Pending
 
-        override val onFulfilled: EventStream<Fulfilled<Nothing>> = EventStream.Never
-
         override fun <Vr> map(transform: (Nothing) -> Vr): Future<Vr> = Hang
     }
 
@@ -52,8 +50,6 @@ abstract class Future<out ResultT> {
         override val state: Cell<State<ResultT>> = Cell.of(fulfilledState)
 
         override val currentStateUnmanaged: State<ResultT> = fulfilledState
-
-        override val onFulfilled: EventStream<Fulfilled<ResultT>> = NeverEventStream
 
         override fun <Vr> map(transform: (ResultT) -> Vr): Future<Vr> = Prefilled(
             constResult = transform(constResult),
@@ -175,14 +171,15 @@ abstract class Future<out ResultT> {
     @Suppress("FunctionName")
     fun null_(): Future<Nothing?> = map { null }
 
+    val onFulfilled: EventStream<Fulfilled<ResultT>>
+        get() = state.newValues.mapNotNull { (it as? Future.Fulfilled<ResultT>) }
+
     val onResult: EventStream<ResultT>
         get() = state.newValues.mapNotNull { (it as? Future.Fulfilled<ResultT>)?.result }
 
     abstract val state: Cell<State<ResultT>>
 
     abstract val currentStateUnmanaged: State<ResultT>
-
-    abstract val onFulfilled: EventStream<Fulfilled<ResultT>>
 
     abstract fun <Vr> map(
         transform: (ResultT) -> Vr,
