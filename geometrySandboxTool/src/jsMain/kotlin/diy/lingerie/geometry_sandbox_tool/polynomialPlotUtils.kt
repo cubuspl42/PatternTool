@@ -4,13 +4,14 @@ import dev.toolkt.core.iterable.LinSpace
 import dev.toolkt.dom.pure.PureColor
 import dev.toolkt.dom.pure.PureSize
 import dev.toolkt.dom.pure.style.PurePosition
+import dev.toolkt.dom.reactive.components.Component
 import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasGroupElement
 import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasLineElement
 import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasPathElement
 import dev.toolkt.dom.reactive.extra.reactive_canvas.CanvasPolylineElement
-import dev.toolkt.dom.reactive.extra.reactive_canvas.createReactiveCanvasElement
+import dev.toolkt.dom.reactive.extra.reactive_canvas.createReactiveCanvasComponent
 import dev.toolkt.dom.reactive.style.ReactiveStyle
-import dev.toolkt.dom.reactive.utils.createResponsiveFlexElement
+import dev.toolkt.dom.reactive.utils.createResponsiveFlexComponent
 import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.Rectangle
 import dev.toolkt.geometry.transformations.PrimitiveTransformation
@@ -19,14 +20,14 @@ import dev.toolkt.math.algebra.polynomials.Polynomial
 import dev.toolkt.math.algebra.sample
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.reactive_list.ReactiveList
-import org.w3c.dom.Element
+import org.w3c.dom.HTMLDivElement
 
 fun createCanvasPolynomialPlot(
     polynomial: Cell<Polynomial>,
-): Element = createResponsiveFlexElement(
+): Component<HTMLDivElement> = createResponsiveFlexComponent(
     position = PurePosition.Relative,
 ) { size ->
-    createReactiveCanvasElement(
+    createReactiveCanvasComponent(
         style = ReactiveStyle(
             position = PurePosition.Absolute,
         ),

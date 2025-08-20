@@ -14,6 +14,7 @@ import dev.toolkt.geometry.x
 import dev.toolkt.geometry.y
 import dev.toolkt.math.algebra.sample
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.reactive_list.ReactiveList
 import kotlinx.browser.document
 import org.w3c.dom.extra.svg.SVGPathSegment
@@ -56,7 +57,7 @@ data class ReactiveBezierCurve(
     override val primitiveCurve: Cell<BezierCurve>
         get() = bezierCurve
 
-    fun createReactiveSvgPathElement(
+    context(momentContext: MomentContext) fun createReactiveSvgPathElement(
         style: ReactiveStyle,
     ): SVGPathElement = document.createReactiveSvgPathElement(
         style = style,
@@ -80,7 +81,7 @@ data class ReactiveBezierCurve(
         ),
     )
 
-    fun createReactiveExtendedSvgPolylineElement(
+    context(momentContext: MomentContext) fun createReactiveExtendedSvgPolylineElement(
         svgElement: SVGSVGElement,
     ): SVGElement {
         val maxT = 5.0

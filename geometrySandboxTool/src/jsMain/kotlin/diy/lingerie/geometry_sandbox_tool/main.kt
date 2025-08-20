@@ -7,9 +7,11 @@ import dev.toolkt.dom.pure.style.PureFlexAlignItems
 import dev.toolkt.dom.pure.style.PureFlexDirection
 import dev.toolkt.dom.pure.style.PureFlexItemStyle
 import dev.toolkt.dom.pure.style.PureFlexStyle
+import dev.toolkt.dom.reactive.components.Component
 import dev.toolkt.dom.reactive.style.ReactiveStyle
 import dev.toolkt.dom.reactive.utils.createReactiveTextNode
 import dev.toolkt.dom.reactive.utils.gestures.GenericMouseGesture
+import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivComponent
 import dev.toolkt.dom.reactive.utils.html.createReactiveHtmlDivElement
 import dev.toolkt.geometry.LineSegment
 import dev.toolkt.geometry.Point
@@ -26,15 +28,15 @@ import org.w3c.dom.HTMLDivElement
 
 fun main() {
     val rootElement = Actions.external {
-        createRootElement()
-    }
+        createRootElement().buildLeaf().start()
+    }.result
 
     document.body!!.apply {
         appendChild(rootElement)
     }
 }
 
-context(momentContext: MomentContext) private fun createRootElement(): HTMLDivElement {
+context(momentContext: MomentContext) private fun createRootElement(): Component<HTMLDivElement> {
     val lineSegment = LineSegment(
         start = Point(401.14355433959827, 374.2024184921395),
         end = Point(601.1435543395982, 374.2024184921395),
@@ -51,15 +53,15 @@ context(momentContext: MomentContext) private fun createRootElement(): HTMLDivEl
     )
 
     val userCurveSystem = UserCurveSystem(
-        userCurve2 = UserBezierCurve(
-            start = PropertyCell(initialValue = bezierCurve.start),
-            firstControl = PropertyCell(initialValue = bezierCurve.firstControl),
-            secondControl = PropertyCell(initialValue = bezierCurve.secondControl),
-            end = PropertyCell(initialValue = bezierCurve.end),
+        userCurve2 = UserBezierCurve.create(
+            initialStart = bezierCurve.start,
+            initialFirstControl = bezierCurve.firstControl,
+            initialSecondControl = bezierCurve.secondControl,
+            initialEnd = bezierCurve.end,
         ),
-        userCurve1 = UserLineSegment(
-            start = PropertyCell(initialValue = lineSegment.start),
-            end = PropertyCell(initialValue = lineSegment.end),
+        userCurve1 = UserLineSegment.create(
+            initialStart = lineSegment.start,
+            initialEnd = lineSegment.end,
         ),
     )
 
@@ -67,7 +69,7 @@ context(momentContext: MomentContext) private fun createRootElement(): HTMLDivEl
         userCurveSystem = userCurveSystem,
     )
 
-    return document.createReactiveHtmlDivElement(
+    return document.createReactiveHtmlDivComponent(
         style = ReactiveStyle(
             flexItemStyle = PureFlexItemStyle(
                 grow = 1.0,
@@ -81,26 +83,26 @@ context(momentContext: MomentContext) private fun createRootElement(): HTMLDivEl
             backgroundColor = Cell.of(PureColor.lightGray),
         ),
         children = ReactiveList.of(
-            document.createReactiveHtmlDivElement(
-                style = ReactiveStyle(
-                    flexItemStyle = PureFlexItemStyle(
-                        grow = 1.0,
-                    ),
-                    displayStyle = Cell.of(
-                        PureFlexStyle(
-                            direction = PureFlexDirection.Column,
+            Component.of(
+                document.createReactiveHtmlDivElement(
+                    style = ReactiveStyle(
+                        flexItemStyle = PureFlexItemStyle(
+                            grow = 1.0,
                         ),
+                        displayStyle = Cell.of(
+                            PureFlexStyle(
+                                direction = PureFlexDirection.Column,
+                            ),
+                        ),
+                        backgroundColor = Cell.of(PureColor.lightGray),
                     ),
-                    backgroundColor = Cell.of(PureColor.lightGray),
-                ),
-                children = ReactiveList.of(
-                    createTopBar(
-                        trackedMouseOverGesture = primaryViewport.trackedMouseOverGesture,
+                    children = ReactiveList.of(
+
+                        primaryViewport.element,
                     ),
-                    primaryViewport.element,
                 ),
             ),
-            document.createReactiveHtmlDivElement(
+            document.createReactiveHtmlDivComponent(
                 style = ReactiveStyle(
                     displayStyle = Cell.of(
                         PureFlexStyle(
@@ -126,7 +128,7 @@ context(momentContext: MomentContext) private fun createRootElement(): HTMLDivEl
     )
 }
 
-private fun createTopBar(
+context(momentContext: MomentContext) private fun createTopBar(
     trackedMouseOverGesture: Cell<GenericMouseGesture?>,
 ): HTMLDivElement = document.createReactiveHtmlDivElement(
     style = ReactiveStyle(
@@ -147,7 +149,7 @@ private fun createTopBar(
 )
 
 
-private fun createMouseOverGesturePreview(
+context(momentContext: MomentContext) private fun createMouseOverGesturePreview(
     mouseOverGestureNow: GenericMouseGesture?,
 ): HTMLDivElement = when (mouseOverGestureNow) {
     null -> document.createReactiveHtmlDivElement(

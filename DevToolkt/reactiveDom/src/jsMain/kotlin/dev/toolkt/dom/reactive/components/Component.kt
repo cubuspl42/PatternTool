@@ -11,9 +11,7 @@ interface Component<out ElementT : Node> {
         fun <ElementT : Node> of(
             element: ElementT,
         ): Component<ElementT> = object : Component<ElementT> {
-            override fun buildLeaf(): Effect<ElementT> {
-                return Effect.pure(element)
-            }
+            override fun buildLeaf(): Effect<ElementT> = Effect.pure(element)
         }
     }
 
