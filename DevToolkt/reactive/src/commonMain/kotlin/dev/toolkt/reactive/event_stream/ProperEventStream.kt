@@ -52,8 +52,6 @@ abstract class ProperEventStream<E> : EventStream<E>() {
         }
     }
 
-    final override fun singleUnmanaged(): EventStream<E> = SingleEventStreamOg(source = this)
-
     context(momentContext: MomentContext) final override fun next(): Future<E> = PlainFuture(
         state = single().map {
             Future.Fulfilled(it)

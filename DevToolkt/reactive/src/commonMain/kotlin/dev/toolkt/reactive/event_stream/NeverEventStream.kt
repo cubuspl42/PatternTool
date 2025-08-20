@@ -23,8 +23,6 @@ object NeverEventStream : EventStream<Nothing>() {
         return NeverEventStream
     }
 
-    override fun singleUnmanaged(): EventStream<Nothing> = NeverEventStream
-
     context(momentContext: MomentContext) override fun next(): Future<Nothing> = Future.Hang
 
     override fun forEachUnmanaged(
