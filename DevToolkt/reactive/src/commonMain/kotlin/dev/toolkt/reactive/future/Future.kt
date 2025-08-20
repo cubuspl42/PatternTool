@@ -71,7 +71,15 @@ abstract class Future<out ResultT> {
 
         fun <ResultT> join(
             future: Future<Future<ResultT>>,
-        ): Future<ResultT> = JoinFuture(future)
+        ): Future<ResultT> = PlainFuture(
+            state = future.state.switchOf { outerStateNow ->
+                when (outerStateNow) {
+                    is Fulfilled<Future<ResultT>> -> outerStateNow.result.state
+
+                    Pending -> Cell.of(Pending)
+                }
+            },
+        )
 
         context(momentContext: MomentContext) fun <
                 ResultT,
