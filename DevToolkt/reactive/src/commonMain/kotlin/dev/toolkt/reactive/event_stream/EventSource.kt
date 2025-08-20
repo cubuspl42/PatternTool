@@ -63,13 +63,7 @@ internal fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
     }
 }
 
-interface StrongEventSource<out EventT> {
-    fun listen(
-        listener: Listener<EventT>,
-    ): Subscription
-}
-
-fun <EventT> StrongEventSource<EventT>.listenInDependent(
+fun <EventT> EventSource<EventT>.listenInDependent(
     dependent: ProperEventStream<*>,
     listener: ListenerFn<EventT>,
 ): Subscription = listenInDependent(
@@ -79,7 +73,7 @@ fun <EventT> StrongEventSource<EventT>.listenInDependent(
 
 
 // TODO: Nuke?
-fun <EventT> StrongEventSource<EventT>.listenInDependent(
+fun <EventT> EventSource<EventT>.listenInDependent(
     dependentId: Int,
     listener: ListenerFn<EventT>,
 ): Subscription = listen(
@@ -97,7 +91,7 @@ fun <EventT> StrongEventSource<EventT>.listenInDependent(
 
 
 // TODO: Nuke, or at least move to tests?
-fun <EventT> StrongEventSource<EventT>.listenExternally(
+fun <EventT> EventSource<EventT>.listenExternally(
     listener: ListenerFn<EventT>,
 ): Subscription = listen(
     object : UnconditionalListener<EventT>() {
@@ -110,7 +104,11 @@ fun <EventT> StrongEventSource<EventT>.listenExternally(
     },
 )
 
-interface EventSource<out EventT> : StrongEventSource<EventT>
+interface EventSource<out EventT> {
+    fun listen(
+        listener: Listener<EventT>,
+    ): Subscription
+}
 
 internal fun <TargetT : Any, EventT> EventSource<EventT>.listenWeak(
     targetedListener: TargetedListener<TargetT, EventT>,

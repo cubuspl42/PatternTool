@@ -88,14 +88,8 @@ class ConcatAllReactiveList<ElementT>(
                             )
                         }
                     }
-
-                }
+                },
             )
-
-
-            private val outerSubscription2 = lists.changes.listen { outerChange ->
-
-            }
 
             private val innerSubscriptionEntries: MutablePrefixSumIndexedList<SubscriptionEntry> =
                 mutablePrefixSumIndexedListOf(
@@ -163,8 +157,7 @@ class ConcatAllReactiveList<ElementT>(
                                 oldListSize + listSizeDelta
                             }
                         }
-
-                    }
+                    },
                 )
 
                 innerSubscriptionEntries.setSubscriptionVia(
