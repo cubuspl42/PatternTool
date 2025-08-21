@@ -46,7 +46,7 @@ fun <T> runTestDefault(
     timeout = timeout,
 ) {
     // Although `runTest` accepts a `context` parameter, it throws an exception when `Dispatchers.Default` is passed
-    withContext(Dispatchers.Default) {
+    withContext(Dispatchers.Default.limitedParallelism(1)) {
         testBody()
     }
 }

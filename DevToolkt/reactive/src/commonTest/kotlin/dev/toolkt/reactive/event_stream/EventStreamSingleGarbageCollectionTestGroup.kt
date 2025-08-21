@@ -8,9 +8,11 @@ import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.effect.Actions
 import dev.toolkt.reactive.effect.Moments
+import kotlinx.coroutines.delay
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.microseconds
 
 data object EventStreamSingleGarbageCollectionTestGroup : AsyncTestGroup() {
     override val tests = listOf(
@@ -48,6 +50,9 @@ data object EventStreamSingleGarbageCollectionTestGroup : AsyncTestGroup() {
             assertNull(
                 actual = nonHappeningSingleEventStreamWeakRef.get(),
             )
+
+            // Ensure that all finalization callbacks had a chance to execute
+            delay(1.microseconds)
 
             // Verify that the single event unsubscribed from the source stream
             // as a part of the cleanup process
@@ -98,6 +103,9 @@ data object EventStreamSingleGarbageCollectionTestGroup : AsyncTestGroup() {
             assertNull(
                 actual = mappedEventStreamWeakRef.get(),
             )
+
+            // Ensure that all finalization callbacks had a chance to execute
+            delay(1.microseconds)
 
             assertFalse(
                 actual = loudEventEmitter.hasListeners,
