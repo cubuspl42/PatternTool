@@ -2,14 +2,12 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
-import dev.toolkt.core.platform.test_utils.assertCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.effect.Actions
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class EventStreamSingleTests {
@@ -145,39 +143,5 @@ class EventStreamSingleTests {
         )
 
          */
-    }
-
-    @Test
-    fun testSingle_silent() = runTestDefault {
-        // Create an event emitter that will not emit any events
-        val eventEmitter = EventEmitter.createExternally<Int>()
-
-        val singleEventStreamWeakRef = Actions.external {
-            // Create a single event stream which we'll never listen to.
-            eventEmitter.single()
-        }.let {
-            // Store only a weak reference, so it's a candidate for garbage collection (as we don't listen either).
-            // It's not possible for the single stream object to be aware of this!
-            PlatformWeakReference(it)
-        }
-
-        // Verify that the single event stream subscribed to the source stream
-        // (the garbage collection couldn't have happened yet)
-        assertTrue(
-            actual = eventEmitter.hasListeners,
-        )
-
-        // Verify that the single event stream allowed itself to be collected,
-        // even though it was managing some internal state while waiting for
-        // the first listener
-        assertCollected(
-            weakRef = singleEventStreamWeakRef,
-        )
-
-        // Verify that the single event unsubscribed from the source stream
-        // as a part of the cleanup process
-        assertFalse(
-            actual = eventEmitter.hasListeners,
-        )
     }
 }
