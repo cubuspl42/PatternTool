@@ -128,6 +128,34 @@ suspend fun <T : Any> assertCollected(
 }
 
 /**
+ * Asserts that the object referenced by [weakRef] is collected by the garbage collector.
+ *
+ * This function will keep checking if the object is collected, doubling the sleep duration
+ * between checks.
+ */
+suspend fun <T : Any> assertCollectedEb(
+    weakRef: PlatformWeakReference<T>,
+) {
+    tailrec suspend fun assertCollectedRecursively(
+        sleepDuration: Duration,
+    ) {
+        if (weakRef.get() == null) {
+            return
+        }
+
+        delay(sleepDuration)
+
+        assertCollectedRecursively(
+            sleepDuration = sleepDuration * 2,
+        )
+    }
+
+    return assertCollectedRecursively(
+        sleepDuration = 10.milliseconds,
+    )
+}
+
+/**
  * Waits for [waitDuration], waking up every [pauseDuration] and putting stress on the garbage collector.
  */
 suspend fun waitBusy(

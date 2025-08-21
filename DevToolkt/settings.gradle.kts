@@ -24,6 +24,7 @@ include(
     "reactive",
     "reactiveDom",
     "reactiveDomExtra",
+    "reactiveSystemTests",
     "reactiveTestUtils",
     "threeJsCompat",
 )
