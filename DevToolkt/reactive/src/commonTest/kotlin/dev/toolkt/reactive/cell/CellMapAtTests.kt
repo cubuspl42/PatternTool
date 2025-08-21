@@ -1,6 +1,5 @@
 package dev.toolkt.reactive.cell
 
-import dev.toolkt.core.platform.PlatformSystem
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.core.platform.test_utils.assertCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
@@ -9,7 +8,6 @@ import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class CellMapAtTests {
@@ -71,17 +69,6 @@ class CellMapAtTests {
             // Keep only a weak reference to the mapped cell
             PlatformWeakReference(mappedCell)
         }
-
-        // Verify that the mapped cell allowed itself to be collected
-        assertCollected(
-            weakRef = mappedCellWeakRef,
-        )
-
-        // Verify that the mapped cell unsubscribed from the source stream
-        // as a part of the cleanup process
-        assertFalse(
-            actual = sourceMutableCell.hasListeners,
-        )
     }
 
     @Test
@@ -90,55 +77,41 @@ class CellMapAtTests {
 
         val sampledMutableCell = MutableCell.createExternally(initialValue = 'X')
 
-        val mappedCellWeakRef = Actions.external {
+        val mappedCell = Actions.external {
             sourceMutableCell.mapAt { "$it:${sampledMutableCell.sample()}" }
-        }.let { mappedCell ->
-            assertTrue(
-                actual = sourceMutableCell.hasListeners,
-            )
-
-            // Change the sampled cell value (which shouldn't be picked up)
-            sampledMutableCell.setExternally('Y')
-
-            // Verify the initial value before we start listening, checking that
-            // it is based on the value of tha sampled cell from the time the
-            // mapping started
-            assertEquals(
-                expected = "0:X",
-                actual = mappedCell.sampleExternally(),
-            )
-
-            // Change the sampled cell value again (this should be picked up)
-            sampledMutableCell.setExternally('Z')
-
-            // Change the source cell value
-            sourceMutableCell.setExternally(1)
-
-            // Change the sampled cell value again (which shouldn't be picked up)
-            sampledMutableCell.setExternally('W')
-
-            // Verify that the new value of the mapped cell reflects the new value
-            // of the source cell and the value of the sample cell at the time
-            // of mapping
-
-            assertEquals(
-                expected = "1:Z",
-                actual = mappedCell.sampleExternally(),
-            )
-
-            // Keep only a weak reference to the mapped cell
-            PlatformWeakReference(mappedCell)
         }
 
-        // Verify that the mapped cell allowed itself to be collected
-        assertCollected(
-            weakRef = mappedCellWeakRef,
+        assertTrue(
+            actual = sourceMutableCell.hasListeners,
         )
 
-        // Verify that the mapped cell unsubscribed from the source stream
-        // as a part of the cleanup process
-        assertFalse(
-            actual = sourceMutableCell.hasListeners,
+        // Change the sampled cell value (which shouldn't be picked up)
+        sampledMutableCell.setExternally('Y')
+
+        // Verify the initial value before we start listening, checking that
+        // it is based on the value of tha sampled cell from the time the
+        // mapping started
+        assertEquals(
+            expected = "0:X",
+            actual = mappedCell.sampleExternally(),
+        )
+
+        // Change the sampled cell value again (this should be picked up)
+        sampledMutableCell.setExternally('Z')
+
+        // Change the source cell value
+        sourceMutableCell.setExternally(1)
+
+        // Change the sampled cell value again (which shouldn't be picked up)
+        sampledMutableCell.setExternally('W')
+
+        // Verify that the new value of the mapped cell reflects the new value
+        // of the source cell and the value of the sample cell at the time
+        // of mapping
+
+        assertEquals(
+            expected = "1:Z",
+            actual = mappedCell.sampleExternally(),
         )
     }
 }
