@@ -5,7 +5,9 @@ import dev.toolkt.reactive.Subscription
 internal class PassiveExternalEventStream<EventT> private constructor(
     private val subscribe: (Controller<EventT>) -> Subscription,
 ) : DependentEventStream<EventT>() {
-    override fun observe(): Subscription = subscribe(controller)
+    override fun observe(): Subscription {
+        return subscribe(controller)
+    }
 
     companion object {
         fun <EventT> construct(
