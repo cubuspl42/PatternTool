@@ -49,10 +49,13 @@ internal fun <TargetT : Any, EventT> EventStream<EventT>.listenWeak(
         },
     )
 
+    val targetHashCode = target.hashCode()
+    println("Registering target #$targetHashCode...")
+
     val cleanable = finalizationRegistry.register(
         target = target,
     ) {
-        println("Target cleared, cancelling the subscription")
+        println("Cleaning target #$targetHashCode")
         innerSubscription.cancel()
     }
 
