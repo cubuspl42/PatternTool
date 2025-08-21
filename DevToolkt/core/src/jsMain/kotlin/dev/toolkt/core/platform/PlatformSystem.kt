@@ -6,7 +6,7 @@ import kotlin.time.Duration.Companion.milliseconds
 actual object PlatformSystem {
     // These constants were increased whenever the lower value wasn't enough on the JS target
     // It's still not clear what's the "right" combination and how system-specific is it.
-    private const val gcTriggerCount = 8
+    private const val gcTriggerCount = 2
     private const val garbageObjectCount = 8_000_000
 
     private var garbage: Any? = null

@@ -87,24 +87,43 @@ suspend fun <T : Any> ensureCollected(
 suspend fun <T : Any> assertCollected(
     weakRef: PlatformWeakReference<T>,
 ) {
+    val maxTryCount = 8
+
+    @Suppress("VariableNeverRead") var garbage: Any? = null
+
+    @Suppress("AssignedValueIsNeverRead")
+    fun collectGarbage(size: Int) {
+        garbage = List(size = size) { 1 }
+    }
+
     tailrec suspend fun assertCollectedRecursively(
-        remainingTryCount: Int,
+        tryIndex: Int,
     ) {
         val ref = weakRef.get() ?: return
 
-        if (remainingTryCount == 0) {
+        if (tryIndex == maxTryCount) {
             throw AssertionError("Expected the object to be garbage collected: $ref")
         }
 
-        PlatformSystem.collectGarbageForced()
+        val garbageSize = tryIndex * 1_000_000
+
+        PlatformSystem.log("Garbage size: $garbageSize")
+
+        collectGarbage(garbageSize)
+
+        val duration = (tryIndex * 10).milliseconds
+
+        PlatformSystem.log("Waiting for: ${duration.inWholeMilliseconds} ms")
+
+        delay(duration)
 
         return assertCollectedRecursively(
-            remainingTryCount = remainingTryCount - 1,
+            tryIndex = tryIndex + 1,
         )
     }
 
     return assertCollectedRecursively(
-        remainingTryCount = 16,
+        tryIndex = 0,
     )
 }
 
