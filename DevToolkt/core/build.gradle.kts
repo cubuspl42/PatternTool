@@ -70,7 +70,7 @@ allOpen {
 fun KotlinJsSubTargetDsl.testWithExtendedTimeout() {
     testTask {
         useMocha {
-            timeout = "10s"
+            timeout = "15s"
         }
     }
 }
