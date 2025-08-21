@@ -2,6 +2,7 @@ package dev.toolkt.reactive
 
 import dev.toolkt.core.async_tests.GarbageCollectionTestSuite
 import dev.toolkt.core.platform.test_utils.runTestDefault
+import dev.toolkt.reactive.effect.EffectGarbageCollectionTestGroup
 import dev.toolkt.reactive.event_stream.EventStreamHoldGarbageCollectionTestGroup
 import dev.toolkt.reactive.event_stream.EventStreamMapAtGarbageCollectionTestGroup
 import dev.toolkt.reactive.event_stream.EventStreamSingleGarbageCollectionTestGroup
@@ -16,6 +17,7 @@ data object ReactiveGarbageCollectionTestSuite : GarbageCollectionTestSuite() {
         EventStreamSingleGarbageCollectionTestGroup,
         EventStreamHoldGarbageCollectionTestGroup,
         EventStreamMapAtGarbageCollectionTestGroup,
+        EffectGarbageCollectionTestGroup,
     )
 }
 
