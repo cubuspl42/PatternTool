@@ -1,7 +1,6 @@
 package dev.toolkt.core.platform
 
-import kotlinx.coroutines.delay
-import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.yield
 
 actual object PlatformSystem {
     actual fun collectGarbage() {
@@ -9,13 +8,9 @@ actual object PlatformSystem {
     }
 
     actual suspend fun collectGarbageForced() {
-        // On JVM, a double GC call + delay seems to always work
+        yield()
 
         System.gc()
-        delay(1.milliseconds)
-
-        System.gc()
-        delay(1.milliseconds)
     }
 
     actual fun log(value: Any?) {
