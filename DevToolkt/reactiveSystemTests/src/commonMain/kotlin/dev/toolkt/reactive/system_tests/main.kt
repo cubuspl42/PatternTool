@@ -11,6 +11,8 @@ val timeout = 10.seconds
 
 val systemTests = listOf(
     EventStreamSingleTest,
+    EventStreamMapAtTest,
+    EventStreamHoldTest,
 )
 
 suspend fun main() = coroutineScope {
@@ -23,7 +25,7 @@ suspend fun main() = coroutineScope {
                 println("Running system test ${systemTest::class.simpleName}...")
 
                 async {
-                    systemTest.execute()
+                    systemTest.executeTest()
                 }
             }.awaitAll()
         }
@@ -31,5 +33,7 @@ suspend fun main() = coroutineScope {
         println("All system tests completed successfully! ✅")
     } catch (_: TimeoutCancellationException) {
         println("System tests timed out! ❌")
+
+        throw AssertionError("System tests timed out")
     }
 }

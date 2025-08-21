@@ -8,7 +8,9 @@ import kotlin.coroutines.resume
 
 private val finalizationRegistry = PlatformFinalizationRegistry()
 
-suspend fun <T : Any> PlatformWeakReference<T>.awaitCollection() {
+suspend fun <T : Any> PlatformWeakReference<T>.awaitCollection(
+    tag: String,
+) {
     PlatformSystem.collectGarbageForced()
 
     suspendCancellableCoroutine { continuation ->
@@ -21,6 +23,8 @@ suspend fun <T : Any> PlatformWeakReference<T>.awaitCollection() {
         }
 
         continuation.invokeOnCancellation {
+            println("Cancelling the finalization listener for #$tag")
+
             cleanable.unregister()
         }
     }
