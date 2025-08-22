@@ -23,7 +23,7 @@ abstract class ActiveReactiveList<E>() : ReactiveList<E>() {
     final override fun <Er> map(
         behavior: Behavior,
         transform: (E) -> Er,
-    ): ReactiveList<Er> = ReactiveListMap(
+    ): ReactiveList<Er> = MapReactiveList(
         source = this,
         transform = transform,
     )
