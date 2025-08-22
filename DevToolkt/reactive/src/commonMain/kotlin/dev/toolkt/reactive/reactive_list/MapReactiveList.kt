@@ -1,6 +1,6 @@
 package dev.toolkt.reactive.reactive_list
 
-class ReactiveListMap<ElementT, TransformedElementT>(
+class MapReactiveList<ElementT, TransformedElementT>(
     source: ReactiveList<ElementT>,
     transform: (ElementT) -> TransformedElementT,
 ) : StatefulReactiveList<TransformedElementT>(
