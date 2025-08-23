@@ -6,7 +6,7 @@ import dev.toolkt.reactive.event_stream.mergeWith
 
 class DynamicDiffReactiveList<ElementT>(
     private val source: Cell<ReactiveList<ElementT>>,
-) : ActiveReactiveList<ElementT>() {
+) : ProperReactiveList<ElementT>() {
     override val changes: EventStream<Change<ElementT>> = source.divertOf {
         it.changes
     }.mergeWith(

@@ -4,7 +4,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.LoopedEventStream
 
 // TODO: Nuke in favor of ReactiveList.looped
-class LoopedReactiveList<E>() : ActiveReactiveList<E>() {
+class LoopedReactiveList<E>() : ProperReactiveList<E>() {
     private var loopedReactiveList: ReactiveList<E>? = null
 
     private val changesLooped = LoopedEventStream<Change<E>>()

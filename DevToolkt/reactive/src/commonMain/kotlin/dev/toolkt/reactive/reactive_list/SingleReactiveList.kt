@@ -5,7 +5,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 
 class SingleReactiveList<ElementT>(
     private val elementCell: Cell<ElementT>,
-) : ActiveReactiveList<ElementT>() {
+) : ProperReactiveList<ElementT>() {
     override val changes: EventStream<Change<ElementT>> = elementCell.newValues.mapNotNull { newValue ->
         val update = Change.Update.set(
             index = 0,

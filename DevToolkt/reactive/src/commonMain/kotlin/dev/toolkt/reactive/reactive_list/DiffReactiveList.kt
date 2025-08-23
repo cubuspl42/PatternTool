@@ -7,7 +7,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 // diff strategy)
 class DiffReactiveList<ElementT>(
     private val source: Cell<List<ElementT>>,
-) : ActiveReactiveList<ElementT>() {
+) : ProperReactiveList<ElementT>() {
     companion object {}
 
     override val changes: EventStream<Change<ElementT>> = source.newValues.map { newElements ->

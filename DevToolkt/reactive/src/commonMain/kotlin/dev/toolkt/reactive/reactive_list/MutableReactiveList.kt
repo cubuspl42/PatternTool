@@ -10,7 +10,7 @@ import dev.toolkt.reactive.event_stream.EventStream
 class MutableReactiveList<ElementT> private constructor(
     private val changeEmitter: EventEmitter<ReactiveList.Change<ElementT>>,
     initialContent: List<ElementT>,
-) : ActiveReactiveList<ElementT>() {
+) : ProperReactiveList<ElementT>() {
     companion object {
         context(momentContext: MomentContext) fun <ElementT> create(
             initialContent: List<ElementT>,

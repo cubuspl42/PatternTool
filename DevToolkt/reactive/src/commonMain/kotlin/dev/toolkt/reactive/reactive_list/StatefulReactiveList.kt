@@ -10,7 +10,7 @@ import dev.toolkt.reactive.event_stream.pinWeak
 abstract class StatefulReactiveList<E>(
     initialElements: List<E>,
     givenChanges: EventStream<Change<E>>,
-) : ActiveReactiveList<E>() {
+) : ProperReactiveList<E>() {
     private val storedElements: MutableList<E> = initialElements.toMutableList()
 
     override val currentElementsUnmanaged: List<E>

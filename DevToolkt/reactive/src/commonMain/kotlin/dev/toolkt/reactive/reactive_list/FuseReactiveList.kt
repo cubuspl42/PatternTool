@@ -13,7 +13,7 @@ import dev.toolkt.reactive.effect.Transaction
 
 internal class FuseReactiveList<ElementT>(
     private val source: ReactiveList<Cell<ElementT>>,
-) : ActiveReactiveList<ElementT>() {
+) : ProperReactiveList<ElementT>() {
     class ChangesEventStream<E>(
         private val source: ReactiveList<Cell<E>>,
     ) : DependentEventStream<ReactiveList.Change<E>>() {
