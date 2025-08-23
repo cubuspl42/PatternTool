@@ -6,7 +6,9 @@ import dev.toolkt.reactive.event_stream.vertex.DivertEventStreamVertex
 internal class DivertEventStream<EventT>(
     source: Cell<EventStream<EventT>>,
 ) : VertexEventStream<EventT>() {
-    override val vertex = DivertEventStreamVertex(
-        source = source,
-    )
+    override val vertex by lazy {
+        DivertEventStreamVertex(
+            source = source,
+        )
+    }
 }

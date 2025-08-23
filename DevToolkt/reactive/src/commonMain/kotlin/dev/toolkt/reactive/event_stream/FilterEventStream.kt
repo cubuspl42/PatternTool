@@ -7,8 +7,10 @@ internal class FilterEventStream<EventT>(
     source: EventStream<EventT>,
     predicate: context(MomentContext) (EventT) -> Boolean,
 ) : VertexEventStream<EventT>() {
-    override val vertex = FilterEventStreamVertex(
-        source = source,
-        predicate = predicate,
-    )
+    override val vertex by lazy {
+        FilterEventStreamVertex(
+            source = source,
+            predicate = predicate,
+        )
+    }
 }

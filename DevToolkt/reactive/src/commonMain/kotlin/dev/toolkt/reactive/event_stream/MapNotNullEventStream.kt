@@ -7,8 +7,10 @@ internal class MapNotNullEventStream<EventT, TransformedEventT : Any>(
     source: EventStream<EventT>,
     transform: context(MomentContext) (EventT) -> TransformedEventT?,
 ) : VertexEventStream<TransformedEventT>() {
-    override val vertex = MapNotNullEventStreamVertex(
-        source = source,
-        transform = transform,
-    )
+    override val vertex by lazy {
+        MapNotNullEventStreamVertex(
+            source = source,
+            transform = transform,
+        )
+    }
 }

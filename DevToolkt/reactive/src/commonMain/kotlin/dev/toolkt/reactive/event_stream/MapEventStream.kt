@@ -7,8 +7,10 @@ internal class MapEventStream<EventT, TransformedEventT>(
     source: EventStream<EventT>,
     transform: context(MomentContext) (EventT) -> TransformedEventT,
 ) : VertexEventStream<TransformedEventT>() {
-    override val vertex = MapEventStreamVertex(
-        source = source,
-        transform = transform,
-    )
+    override val vertex by lazy {
+        MapEventStreamVertex(
+            source = source,
+            transform = transform,
+        )
+    }
 }
