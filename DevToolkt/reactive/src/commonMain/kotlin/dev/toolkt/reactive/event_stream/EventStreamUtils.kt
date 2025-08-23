@@ -8,10 +8,19 @@ import dev.toolkt.reactive.ListenerFn
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.event_stream.vertex.EventStreamVertex
+import dev.toolkt.reactive.event_stream.vertex.subscribeNow
 
 internal fun <TargetT : Any, EventT> EventStream<EventT>.pinWeak(
     target: TargetT,
 ): Subscription = listenWeak(
+    target = target,
+    listener = TargetingListener.Noop,
+)
+
+internal fun <TargetT : Any, EventT> EventStreamVertex<EventT>.pinWeak(
+    target: TargetT,
+): Subscription = subscribeNowWeak(
     target = target,
     listener = TargetingListener.Noop,
 )
@@ -33,6 +42,47 @@ internal fun <TargetT : Any, EventT> EventStream<EventT>.listenWeak(
     val targetWeakRef = PlatformWeakReference(target)
 
     val innerSubscription = this.listen(
+        listener = object : Listener<EventT> {
+            override fun handle(
+                transaction: Transaction,
+                event: EventT,
+            ): Conclusion {
+                val target = targetWeakRef.get() ?: return Conclusion.StopListening
+
+                return listener.handle(
+                    transaction = transaction,
+                    target = target,
+                    event = event,
+                )
+            }
+        },
+    )
+
+    val targetHashCode = target.hashCode()
+    println("Registering target #$targetHashCode...")
+
+    val cleanable = finalizationRegistry.register(
+        target = target,
+    ) {
+        println("Cleaning target #$targetHashCode")
+        innerSubscription.cancel()
+    }
+
+    return object : Subscription {
+        override fun cancel() {
+            cleanable.clean()
+        }
+    }
+}
+
+// TODO: De-duplicate
+internal fun <TargetT : Any, EventT> EventStreamVertex<EventT>.subscribeNowWeak(
+    target: TargetT,
+    listener: TargetingListener<TargetT, EventT>,
+): Subscription {
+    val targetWeakRef = PlatformWeakReference(target)
+
+    val innerSubscription = this.subscribeNow(
         listener = object : Listener<EventT> {
             override fun handle(
                 transaction: Transaction,

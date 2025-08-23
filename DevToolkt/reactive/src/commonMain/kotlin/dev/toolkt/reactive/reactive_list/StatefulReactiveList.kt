@@ -21,10 +21,10 @@ abstract class StatefulReactiveList<E>(
     override val changes: EventStream<Change<E>> = object : VertexEventStream<Change<E>>() {
         private val weakReactiveList = PlatformWeakReference(this@StatefulReactiveList)
 
-        private val self = this // Kotlin doesn't ofer a label for `this@PassiveEventStream` (why?)
-
         // FIXME: Vertex should be lazy-initialized; this whole thing should be ported to a RL vertex
         override val vertex: EventStreamVertex<Change<E>> = object : PassiveEventStreamVertex<Change<E>>() {
+            private val self = this // Kotlin doesn't ofer a label for `this@PassiveEventStreamVertex` (why?)
+
             override fun observe(): Subscription = givenChanges.listen(
                 listener = object : UnconditionalListener<Change<E>>() {
                     override val dependentId = id
@@ -46,11 +46,11 @@ abstract class StatefulReactiveList<E>(
                     }
                 },
             )
-        }
 
-        init {
-            // Pin the event stream to keep the stored elements up-to-date even when there are no listeners
-            self.pinWeak(target = this@StatefulReactiveList)
+            init {
+                // Pin the event stream to keep the stored elements up-to-date even when there are no listeners
+                self.pinWeak(target = this@StatefulReactiveList)
+            }
         }
     }
 }

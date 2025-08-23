@@ -1,7 +1,7 @@
 package dev.toolkt.core.iterable
 
 // Thought: Rename to `removeAll`?
-fun <E> MutableList<E>.removeRange(indexRange: IntRange) {
+fun <ElementT> MutableList<ElementT>.removeRange(indexRange: IntRange) {
     val startIndex = indexRange.first
     val endIndex = indexRange.last
 
@@ -14,9 +14,9 @@ fun <E> MutableList<E>.removeRange(indexRange: IntRange) {
     }
 }
 
-fun <E> MutableList<E>.updateRange(
+fun <ElementT> MutableList<ElementT>.updateRange(
     indexRange: IntRange,
-    elements: Collection<E>,
+    elements: Collection<ElementT>,
 ) {
     if (!indexRange.isEmpty()) {
         removeRange(indexRange = indexRange)
@@ -25,18 +25,40 @@ fun <E> MutableList<E>.updateRange(
     addAll(indexRange.start, elements)
 }
 
+
+fun <ElementT> MutableList<ElementT>.updateRange(
+    indexRange: IntRange,
+    dispose: (ElementT) -> Unit,
+    newElements: List<ElementT>,
+) {
+    subList(
+        indexRange = indexRange,
+    ).forEach { element ->
+        dispose(element)
+    }
+
+    removeRange(
+        indexRange = indexRange,
+    )
+
+    addAll(
+        index = indexRange.first,
+        elements = newElements,
+    )
+}
+
 /**
  * Appends the given [element] to the end of this mutable list and returns the
  * index of the newly added element.
  */
-fun <E> MutableList<E>.append(element: E): Int {
+fun <ElementT> MutableList<ElementT>.append(element: ElementT): Int {
     add(element)
     return indices.last
 }
 
-fun <E> MutableList<E>.subList(
+fun <ElementT> MutableList<ElementT>.subList(
     indexRange: OpenEndRange<Int>,
-): List<E> = subList(
+): List<ElementT> = subList(
     fromIndex = indexRange.start,
     toIndex = indexRange.endExclusive,
 )
