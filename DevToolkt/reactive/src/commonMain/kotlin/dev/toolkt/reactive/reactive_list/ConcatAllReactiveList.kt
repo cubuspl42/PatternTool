@@ -14,10 +14,10 @@ import dev.toolkt.reactive.event_stream.PassiveEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.effect.Transaction
 
-class ConcatAllReactiveList<ElementT>(
+internal class ConcatAllReactiveList<ElementT>(
     private val lists: ReactiveList<ReactiveList<ElementT>>,
 ) : ProperReactiveList<ElementT>() {
-    internal data class SubscriptionEntry(
+    data class SubscriptionEntry(
         /**
          * A subscription to inner reactive list changes
          */
@@ -28,7 +28,7 @@ class ConcatAllReactiveList<ElementT>(
         val listSize: Int,
     )
 
-    internal class ChangesEventStream<ElementT>(
+    class ChangesEventStream<ElementT>(
         private val lists: ReactiveList<ReactiveList<ElementT>>,
     ) : PassiveEventStream<Change<ElementT>>() {
         override fun observe(): Subscription = object : Subscription {
