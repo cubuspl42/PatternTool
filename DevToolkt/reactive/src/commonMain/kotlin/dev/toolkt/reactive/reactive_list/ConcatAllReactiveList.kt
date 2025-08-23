@@ -10,9 +10,10 @@ import dev.toolkt.core.range.shift
 import dev.toolkt.core.range.width
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
-import dev.toolkt.reactive.event_stream.PassiveEventStream
-import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.VertexEventStream
+import dev.toolkt.reactive.event_stream.vertex.PassiveEventStreamVertex
 
 internal class ConcatAllReactiveList<ElementT>(
     private val lists: ReactiveList<ReactiveList<ElementT>>,
@@ -28,9 +29,9 @@ internal class ConcatAllReactiveList<ElementT>(
         val listSize: Int,
     )
 
-    class ChangesEventStream<ElementT>(
+    class ChangesEventStreamVertex<ElementT>(
         private val lists: ReactiveList<ReactiveList<ElementT>>,
-    ) : PassiveEventStream<Change<ElementT>>() {
+    ) : PassiveEventStreamVertex<Change<ElementT>>() {
         override fun observe(): Subscription = object : Subscription {
             private val outerSubscription = lists.changes.listen(
                 listener = object : UnconditionalListener<Change<ReactiveList<ElementT>>>() {
@@ -58,7 +59,7 @@ internal class ConcatAllReactiveList<ElementT>(
                         // The index range in the concatenated list
                         val updatedRange = prefixElementCount until (prefixElementCount + updatedElementCount)
 
-                        this@ChangesEventStream.notify(
+                        this@ChangesEventStreamVertex.notify(
                             transaction = transaction,
                             event = Change.single(
                                 update = Change.Update.change(
@@ -141,7 +142,7 @@ internal class ConcatAllReactiveList<ElementT>(
 
                             val listSizeDelta = update.updatedElements.size - update.indexRange.width
 
-                            this@ChangesEventStream.notify(
+                            this@ChangesEventStreamVertex.notify(
                                 transaction = transaction,
                                 event = Change.single(
                                     update = Change.Update.change(
@@ -171,6 +172,14 @@ internal class ConcatAllReactiveList<ElementT>(
                 innerSubscriptionEntries.forEach { it.subscription.cancel() }
                 innerSubscriptionEntries.clear()
             }
+        }
+    }
+
+    class ChangesEventStream<ElementT>(
+        private val lists: ReactiveList<ReactiveList<ElementT>>,
+    ) : VertexEventStream<Change<ElementT>>() {
+        override val vertex by lazy {
+            ChangesEventStreamVertex(lists = lists)
         }
     }
 
