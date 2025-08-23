@@ -16,7 +16,7 @@ import dev.toolkt.reactive.effect.Transaction
 
 class ConcatAllReactiveList<ElementT>(
     private val lists: ReactiveList<ReactiveList<ElementT>>,
-) : ActiveReactiveList<ElementT>() {
+) : ProperReactiveList<ElementT>() {
     internal data class SubscriptionEntry(
         /**
          * A subscription to inner reactive list changes
