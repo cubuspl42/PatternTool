@@ -4,6 +4,7 @@ import dev.toolkt.core.platform.PlatformNativeSet
 import dev.toolkt.core.platform.platformNativeSetOf
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.effect.Transaction
 import dev.toolkt.reactive.event_stream.EventStream
 

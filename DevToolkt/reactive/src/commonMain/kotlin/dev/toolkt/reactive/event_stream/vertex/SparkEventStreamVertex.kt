@@ -4,7 +4,7 @@ import dev.toolkt.reactive.effect.Transaction
 
 internal class SparkEventStreamVertex<EventT> private constructor() : ActiveEventStreamVertex<EventT>() {
     companion object {
-        fun <EventT> construct(
+        fun <EventT> cause(
             transaction: Transaction,
             event: EventT,
         ): SparkEventStreamVertex<EventT> = SparkEventStreamVertex<EventT>().apply {

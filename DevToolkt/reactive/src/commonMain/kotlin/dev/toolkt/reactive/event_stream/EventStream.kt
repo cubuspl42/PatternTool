@@ -56,7 +56,7 @@ interface EventStream<out EventT> {
 
         context(momentContext: MomentContext) fun <EventT> spark(
             event: EventT,
-        ): EventStream<EventT> = SparkEventStream.construct(
+        ): EventStream<EventT> = SparkEventStream.cause(
             event = event,
         )
 
@@ -138,11 +138,11 @@ interface EventStream<out EventT> {
          * is cancelled, the external source is deactivated.
          */
         context(actionContext: ActionContext) fun <EventT> activateExternal(
-            activate: (Controller<EventT>) -> Subscription,
+            start: (Controller<EventT>) -> Subscription,
         ): Effect<EventStream<EventT>> = object : Effect<EventStream<EventT>> {
             context(actionContext: ActionContext) override fun start(): Effective<EventStream<EventT>> =
-                ActiveExternalEventStream.construct(
-                    activate = activate,
+                ActiveExternalEventStream.start(
+                    start = start,
                 )
         }
     }
@@ -203,7 +203,7 @@ fun <E, Er> EventStream<E>.mapExecuting(
     transform: context(ActionContext) (E) -> Er,
 ): Effect<EventStream<Er>> = object : Effect<EventStream<Er>> {
     context(actionContext: ActionContext) override fun start(): Effective<EventStream<Er>> =
-        MapExecutingEventStream.construct(
+        MapExecutingEventStream.start(
             source = this@mapExecuting,
             transform = transform,
         )

@@ -7,13 +7,16 @@ import dev.toolkt.reactive.effect.Effective
 
 internal class ActiveExternalEventStream<EventT> private constructor() : BasicEventStream<EventT>() {
     companion object {
-        context(actionContext: ActionContext) fun <EventT> construct(
-            activate: (EventStream.Controller<EventT>) -> Subscription,
+        // FIXME: The external stream should be started in the mutation phase, but the subscription should (preferably)
+        //  be built up-front (in the propagation phase)
+        context(actionContext: ActionContext) fun <EventT> start(
+            start: (EventStream.Controller<EventT>) -> Subscription,
         ): Effective<ActiveExternalEventStream<EventT>> = ActiveExternalEventStream<EventT>().let { self ->
+
             Effective(
                 result = self,
                 handle = Effect.subscribeExternal {
-                    activate(self.controller)
+                    start(self.controller)
                 }
             )
         }
