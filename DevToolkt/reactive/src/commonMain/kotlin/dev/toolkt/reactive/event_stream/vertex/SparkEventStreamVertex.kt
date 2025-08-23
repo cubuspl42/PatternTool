@@ -2,7 +2,7 @@ package dev.toolkt.reactive.event_stream.vertex
 
 import dev.toolkt.reactive.effect.Transaction
 
-internal class SparkEventStreamVertex<EventT> private constructor() : EventStreamVertex<EventT>() {
+internal class SparkEventStreamVertex<EventT> private constructor() : ActiveEventStreamVertex<EventT>() {
     companion object {
         fun <EventT> construct(
             transaction: Transaction,
@@ -15,11 +15,5 @@ internal class SparkEventStreamVertex<EventT> private constructor() : EventStrea
                 )
             }
         }
-    }
-
-    override fun onResumed() {
-    }
-
-    override fun onPaused() {
     }
 }
