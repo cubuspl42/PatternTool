@@ -1,19 +1,12 @@
 package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Subscription
+import dev.toolkt.reactive.event_stream.vertex.PassiveExternalEventStreamVertex
 
 internal class PassiveExternalEventStream<EventT> private constructor(
-    private val subscribe: (EventStream.Controller<EventT>) -> Subscription,
-) : PassiveEventStream<EventT>() {
-    override fun observe(): Subscription {
-        return subscribe(controller)
-    }
-
-    companion object {
-        fun <EventT> construct(
-            subscribe: (EventStream.Controller<EventT>) -> Subscription,
-        ): PassiveExternalEventStream<EventT> = PassiveExternalEventStream(
-            subscribe = subscribe,
-        )
-    }
+    subscribe: (EventStream.Controller<EventT>) -> Subscription,
+) : VertexEventStream<EventT>() {
+    override val vertex = PassiveExternalEventStreamVertex(
+        subscribe = subscribe,
+    )
 }
