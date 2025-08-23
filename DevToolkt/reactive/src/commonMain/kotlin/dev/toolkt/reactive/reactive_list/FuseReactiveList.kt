@@ -7,16 +7,17 @@ import dev.toolkt.core.range.single
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.event_stream.PassiveEventStream
-import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.VertexEventStream
+import dev.toolkt.reactive.event_stream.vertex.PassiveEventStreamVertex
 
 internal class FuseReactiveList<ElementT>(
     private val source: ReactiveList<Cell<ElementT>>,
 ) : ProperReactiveList<ElementT>() {
-    class ChangesEventStream<E>(
+    class ChangesEventStreamVertex<E>(
         private val source: ReactiveList<Cell<E>>,
-    ) : PassiveEventStream<ReactiveList.Change<E>>() {
+    ) : PassiveEventStreamVertex<Change<E>>() {
         // Thought: This subscription object is quite heavy (has the size
         // of the original list), while a separate subscription is created for
         // each observer. This could be potentially improved by some sharing
@@ -52,7 +53,7 @@ internal class FuseReactiveList<ElementT>(
                             )
                         }
 
-                        this@ChangesEventStream.notify(
+                        this@ChangesEventStreamVertex.notify(
                             transaction = transaction,
                             event = ReactiveList.Change.single(
                                 update = ReactiveList.Change.Update.change(
@@ -96,7 +97,7 @@ internal class FuseReactiveList<ElementT>(
                             val currentIndex = innerSubscriptions.indexOfVia(handle = newInnerHandle)
                                 ?: throw AssertionError("No index found for handle $newInnerHandle.")
 
-                            this@ChangesEventStream.notify(
+                            this@ChangesEventStreamVertex.notify(
                                 transaction = transaction,
                                 event = ReactiveList.Change.single(
                                     update = ReactiveList.Change.Update.change(
@@ -125,8 +126,16 @@ internal class FuseReactiveList<ElementT>(
         }
     }
 
+    class ChangesEventStream<ElementT>(
+        private val source: ReactiveList<Cell<ElementT>>,
+    ) : VertexEventStream<Change<ElementT>>() {
+        override val vertex by lazy {
+            ChangesEventStreamVertex(source = source)
+        }
+    }
+
     override val changes: EventStream<Change<ElementT>> by weakLazy {
-        ChangesEventStream(source = source)
+        ChangesEventStream(source)
     }
 
     override val currentElementsUnmanaged: List<ElementT>
