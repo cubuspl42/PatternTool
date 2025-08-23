@@ -8,9 +8,8 @@ import dev.toolkt.reactive.future.Future.Pending
 import dev.toolkt.reactive.future.PlainFuture
 import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.effect.Transaction
-import dev.toolkt.reactive.event_stream.single
 
-abstract class ProperEventStream<E> : EventStream<E>() {
+abstract class ProperEventStream<EventT> : EventStream<EventT> {
     companion object {
         private var nextId = 0
     }
@@ -18,21 +17,21 @@ abstract class ProperEventStream<E> : EventStream<E>() {
     internal var id = nextId++
 
     final override fun <Er> map(
-        transform: (E) -> Er,
+        transform: (EventT) -> Er,
     ): EventStream<Er> = MapEventStream(
         source = this,
         transform = transform,
     )
 
     final override fun filter(
-        predicate: (E) -> Boolean,
-    ): EventStream<E> = FilterEventStream.construct(
+        predicate: (EventT) -> Boolean,
+    ): EventStream<EventT> = FilterEventStream.construct(
         source = this,
         predicate = predicate,
     )
 
     override fun <Er : Any> mapNotNull(
-        transform: (E) -> Er?,
+        transform: (EventT) -> Er?,
     ): EventStream<Er> = MapNotNullEventStream(
         source = this,
         transform = transform,
@@ -40,7 +39,7 @@ abstract class ProperEventStream<E> : EventStream<E>() {
 
     context(momentContext: MomentContext) final override fun take(
         count: Int,
-    ): EventStream<E> {
+    ): EventStream<EventT> {
         require(count >= 0)
 
         return when (count) {
@@ -53,7 +52,7 @@ abstract class ProperEventStream<E> : EventStream<E>() {
         }
     }
 
-    context(momentContext: MomentContext) final override fun next(): Future<E> = PlainFuture(
+    context(momentContext: MomentContext) final override fun next(): Future<EventT> = PlainFuture(
         state = single().map {
             Future.Fulfilled(it)
         }.hold(Pending),
@@ -61,20 +60,20 @@ abstract class ProperEventStream<E> : EventStream<E>() {
 
     final override fun <T : Any> pipe(
         target: T,
-        forward: (T, E) -> Unit,
+        forward: (T, EventT) -> Unit,
     ): Subscription = listenWeak(
         target = target,
         listener = forward,
     )
 
     override fun forEachUnmanaged(
-        effect: (E) -> Unit,
+        effect: (EventT) -> Unit,
     ) {
         listen(
-            listener = object : UnconditionalListener<E>() {
+            listener = object : UnconditionalListener<EventT>() {
                 override fun handleUnconditionally(
                     transaction: Transaction,
-                    event: E,
+                    event: EventT,
                 ) {
                     effect(event)
                 }

@@ -5,7 +5,7 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.future.Future
 import dev.toolkt.reactive.effect.MomentContext
 
-object NeverEventStream : EventStream<Nothing>() {
+object NeverEventStream : EventStream<Nothing> {
     override fun <Er> map(
         transform: (Nothing) -> Er,
     ): EventStream<Er> = NeverEventStream

@@ -139,8 +139,8 @@ abstract class BasicEventStream<EventT> : ProperEventStream<EventT>() {
         },
     )
 
-    protected val controller: Controller<EventT>
-        get() = object : Controller<EventT> {
+    protected val controller: EventStream.Controller<EventT>
+        get() = object : EventStream.Controller<EventT> {
             override fun accept(event: EventT) {
                 Transaction.executeAll { transaction ->
                     notify(

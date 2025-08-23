@@ -50,7 +50,7 @@ interface TargetingListener<in TargetT : Any, in EventT> {
     ): Listener.Conclusion
 }
 
-abstract class EventStream<out E> {
+interface EventStream<out EventT> {
     companion object {
         val Never: EventStream<Nothing> = NeverEventStream
 
@@ -153,36 +153,36 @@ abstract class EventStream<out E> {
         )
     }
 
-    abstract fun listen(
-        listener: Listener<E>,
+    fun listen(
+        listener: Listener<EventT>,
     ): Subscription
 
-    abstract fun <Er> map(
-        transform: (E) -> Er,
+    fun <Er> map(
+        transform: (EventT) -> Er,
     ): EventStream<Er>
 
-    abstract fun <Er : Any> mapNotNull(
-        transform: (E) -> Er?,
+    fun <Er : Any> mapNotNull(
+        transform: (EventT) -> Er?,
     ): EventStream<Er>
 
-    abstract fun filter(
-        predicate: (E) -> Boolean,
-    ): EventStream<E>
+    fun filter(
+        predicate: (EventT) -> Boolean,
+    ): EventStream<EventT>
 
-    context(momentContext: MomentContext) abstract fun take(
+    context(momentContext: MomentContext) fun take(
         count: Int,
-    ): EventStream<E>
+    ): EventStream<EventT>
 
-    context(momentContext: MomentContext) abstract fun next(): Future<E>
+    context(momentContext: MomentContext) fun next(): Future<EventT>
 
     // This stinks
-    abstract fun forEachUnmanaged(
-        effect: (E) -> Unit,
+    fun forEachUnmanaged(
+        effect: (EventT) -> Unit,
     )
 
-    abstract fun <T : Any> pipe(
+    fun <T : Any> pipe(
         target: T,
-        forward: (T, E) -> Unit,
+        forward: (T, EventT) -> Unit,
     ): Subscription
 }
 
