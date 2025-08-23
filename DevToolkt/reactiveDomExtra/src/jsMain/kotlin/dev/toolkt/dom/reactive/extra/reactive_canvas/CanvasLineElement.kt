@@ -4,6 +4,7 @@ import dev.toolkt.geometry.Point
 import dev.toolkt.geometry.transformations.Transformation
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.units
 import org.w3c.dom.CanvasRenderingContext2D
 
 class CanvasLineElement(

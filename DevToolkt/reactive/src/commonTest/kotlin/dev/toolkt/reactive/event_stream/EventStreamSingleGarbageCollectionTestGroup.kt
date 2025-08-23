@@ -8,6 +8,7 @@ import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.cell.createExternally
 import dev.toolkt.reactive.effect.Actions
 import dev.toolkt.reactive.effect.Moments
+import dev.toolkt.reactive.event_stream.single
 import kotlinx.coroutines.delay
 import kotlin.test.assertFalse
 import kotlin.test.assertNull

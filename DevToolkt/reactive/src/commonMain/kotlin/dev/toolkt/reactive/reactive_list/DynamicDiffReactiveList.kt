@@ -2,6 +2,7 @@ package dev.toolkt.reactive.reactive_list
 
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.mapAt
 import dev.toolkt.reactive.event_stream.mergeWith
 
 class DynamicDiffReactiveList<ElementT>(

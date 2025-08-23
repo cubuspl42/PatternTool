@@ -161,23 +161,6 @@ abstract class EventStream<out E> {
         transform: (E) -> Er,
     ): EventStream<Er>
 
-    fun <Er> mapAt(
-        transform: context(MomentContext) (E) -> Er,
-    ): EventStream<Er> = MapAtEventStream.construct(
-        source = this,
-        transform = transform,
-    )
-
-    fun <Er> mapExecuting(
-        transform: context(ActionContext) (E) -> Er,
-    ): Effect<EventStream<Er>> = object : Effect<EventStream<Er>> {
-        context(actionContext: ActionContext) override fun start(): Effective<EventStream<Er>> =
-            MapExecutingEventStream.construct(
-                source = this@EventStream,
-                transform = transform,
-            )
-    }
-
     abstract fun <Er : Any> mapNotNull(
         transform: (E) -> Er?,
     ): EventStream<Er>
@@ -186,20 +169,9 @@ abstract class EventStream<out E> {
         predicate: (E) -> Boolean,
     ): EventStream<E>
 
-    fun filterAt(
-        predicate: context(MomentContext) (E) -> Boolean,
-    ): EventStream<E> = FilterAtEventStream.construct(
-        source = this,
-        predicate = predicate,
-    )
-
     context(momentContext: MomentContext) abstract fun take(
         count: Int,
     ): EventStream<E>
-
-    context(momentContext: MomentContext) fun single(): EventStream<E> = SingleEventStream.construct(
-        source = this,
-    )
 
     context(momentContext: MomentContext) abstract fun next(): Future<E>
 
@@ -212,20 +184,37 @@ abstract class EventStream<out E> {
         target: T,
         forward: (T, E) -> Unit,
     ): Subscription
-
-    fun <T : Any> pipeAndForget(
-        target: T,
-        forward: (T, E) -> Unit,
-    ) {
-        // Forget the subscription, relying purely on garbage collection
-        pipe(
-            target = target,
-            forward = forward,
-        )
-    }
-
-    fun units(): EventStream<Unit> = map { }
 }
+
+fun <E> EventStream<E>.filterAt(
+    predicate: context(MomentContext) (E) -> Boolean,
+): EventStream<E> = FilterAtEventStream.construct(
+    source = this,
+    predicate = predicate,
+)
+
+context(momentContext: MomentContext) fun <E> EventStream<E>.single(): EventStream<E> = SingleEventStream.construct(
+    source = this,
+)
+
+fun <E> EventStream<E>.units(): EventStream<Unit> = map { }
+
+fun <E, Er> EventStream<E>.mapExecuting(
+    transform: context(ActionContext) (E) -> Er,
+): Effect<EventStream<Er>> = object : Effect<EventStream<Er>> {
+    context(actionContext: ActionContext) override fun start(): Effective<EventStream<Er>> =
+        MapExecutingEventStream.construct(
+            source = this@mapExecuting,
+            transform = transform,
+        )
+}
+
+fun <E, Er> EventStream<E>.mapAt(
+    transform: context(MomentContext) (E) -> Er,
+): EventStream<Er> = MapAtEventStream.construct(
+    source = this,
+    transform = transform,
+)
 
 fun <E> EventStream<E>.forEach(
     action: context(ActionContext) (E) -> Unit,
