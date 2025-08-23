@@ -3,6 +3,7 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.cell.holdExternally
 import dev.toolkt.reactive.cell.sampleExternally
+import dev.toolkt.reactive.event_stream.mapAt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

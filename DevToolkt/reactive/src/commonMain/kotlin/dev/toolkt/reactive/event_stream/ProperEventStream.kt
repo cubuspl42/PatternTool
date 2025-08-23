@@ -8,6 +8,7 @@ import dev.toolkt.reactive.future.Future.Pending
 import dev.toolkt.reactive.future.PlainFuture
 import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.event_stream.single
 
 abstract class ProperEventStream<E> : EventStream<E>() {
     companion object {
