@@ -5,6 +5,7 @@ import dev.toolkt.core.platform.platformNativeSetOf
 import dev.toolkt.reactive.Listener
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.event_stream.EventStream
 
 abstract class EventStreamVertex<EventT> {
     enum class State {
@@ -94,6 +95,18 @@ abstract class EventStreamVertex<EventT> {
             }
         }
     }
+
+    protected val controller: EventStream.Controller<EventT>
+        get() = object : EventStream.Controller<EventT> {
+            override fun accept(event: EventT) {
+                Transaction.executeAll { transaction ->
+                    notify(
+                        transaction = transaction,
+                        event = event,
+                    )
+                }
+            }
+        }
 
     /**
      * Called when the first listener is added.
