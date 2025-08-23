@@ -38,12 +38,15 @@ class EventStreamExternalTests {
                 controller.accept(event = event)
             }
 
-            externalSource.addListener(
-                listener = listener,
-            )
+            object : EventStream.ExternalSubscription {
+                override fun register() {
+                    externalSource.addListener(
+                        listener = listener,
+                    )
 
-            object : Subscription {
-                override fun cancel() {
+                }
+
+                override fun unregister() {
                     externalSource.removeListener(
                         listener = listener,
                     )

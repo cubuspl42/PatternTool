@@ -124,7 +124,7 @@ interface EventStream<out EventT> {
          * @return An [EventStream] that emits events from the external source.
          */
         fun <EventT> subscribeExternal(
-            subscribe: (Controller<EventT>) -> Subscription,
+            subscribe: (Controller<EventT>) -> ExternalSubscription,
         ): EventStream<EventT> = PassiveExternalEventStream(
             subscribe = subscribe,
         )
@@ -151,6 +151,12 @@ interface EventStream<out EventT> {
         fun accept(
             event: EventT,
         )
+    }
+
+    interface ExternalSubscription {
+        fun register()
+
+        fun unregister()
     }
 
     fun listen(
