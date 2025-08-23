@@ -4,19 +4,22 @@ import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.effect.Transaction
 import dev.toolkt.reactive.event_stream.EventStream
 
-class MapEventStreamVertex<EventT, TransformedEventT>(
+class MapNotNullEventStreamVertex<EventT, TransformedEventT : Any>(
     source: EventStream<EventT>,
-    private val transform: context(MomentContext) (EventT) -> TransformedEventT,
+    private val transform: context(MomentContext) (EventT) -> TransformedEventT?,
 ) : TransformingEventStreamVertex<EventT, TransformedEventT>(
     source = source,
 ) {
     override fun transformEvent(
         transaction: Transaction,
         event: EventT,
-    ): EventTransformation<TransformedEventT> = EventTransformation(
-        transformedEvent = with(transaction) {
+    ): EventTransformation<TransformedEventT>? {
+        val transformedEvent = with(transaction) {
             transform(event)
-        },
-    )
-}
+        } ?: return null
 
+        return EventTransformation(
+            transformedEvent = transformedEvent,
+        )
+    }
+}
