@@ -13,6 +13,11 @@ interface ActionContext : MomentContext {
 class Transaction private constructor(
     private val followupQueue: FollowupQueue,
 ) : ActionContext {
+    private enum class State {
+        Ongoing,
+        Finished,
+    }
+
     private class FollowupQueue {
         private val queue = ArrayDeque<(Transaction) -> Unit>()
 
@@ -60,18 +65,30 @@ class Transaction private constructor(
         }
     }
 
+    private var state = State.Ongoing
+
     private val enqueuedMutations = mutableListOf<() -> Unit>()
 
     fun finish() {
+        if (state == State.Finished) {
+            throw IllegalStateException("Transaction already finished")
+        }
+
         enqueuedMutations.forEach { mutate ->
             mutate()
         }
+
+        state = State.Finished
     }
 
     override val transaction: Transaction
         get() = this
 
     override fun enqueueMutation(mutate: () -> Unit) {
+        if (state == State.Finished) {
+            throw IllegalStateException("Transaction already finished")
+        }
+
         enqueuedMutations.add(mutate)
     }
 
@@ -84,6 +101,10 @@ class Transaction private constructor(
     fun enqueueFollowup(
         followup: (Transaction) -> Unit,
     ) {
+        if (state == State.Finished) {
+            throw IllegalStateException("Transaction already finished")
+        }
+
         followupQueue.enqueueFollowup(
             followupBlock = followup,
         )

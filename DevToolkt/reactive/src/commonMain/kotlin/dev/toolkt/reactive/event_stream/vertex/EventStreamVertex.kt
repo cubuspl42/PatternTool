@@ -16,6 +16,9 @@ abstract class EventStreamVertex<EventT> {
 
     private val listeners: PlatformNativeSet<Listener<EventT>> by lazy { platformNativeSetOf<Listener<EventT>>() }
 
+    val listenerCount: Int
+        get() = listeners.size
+
     /**
      * Adds a listener. If the listener is already registered, an exception is thrown.
      *
@@ -59,7 +62,7 @@ abstract class EventStreamVertex<EventT> {
     }
 
     private fun potentiallyPause() {
-        if (listeners.size == 0 && state == State.Resumed) {
+        if (listenerCount == 0 && state == State.Resumed) {
             state = State.Paused
 
             onPaused()
