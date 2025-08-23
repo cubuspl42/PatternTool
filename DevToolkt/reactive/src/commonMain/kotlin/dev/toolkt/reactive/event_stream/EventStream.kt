@@ -89,7 +89,7 @@ interface EventStream<out EventT> {
         fun <V> divert(
             nestedEventStream: Cell<EventStream<V>>,
         ): EventStream<V> = DivertEventStream(
-            nestedEventStream = nestedEventStream,
+            source = nestedEventStream,
         )
 
         fun <E> merge(
@@ -161,9 +161,9 @@ interface EventStream<out EventT> {
         transform: (EventT) -> Er,
     ): EventStream<Er>
 
-    fun <Er : Any> mapNotNull(
-        transform: (EventT) -> Er?,
-    ): EventStream<Er>
+    fun <TransformedEventT : Any> mapNotNull(
+        transform: (EventT) -> TransformedEventT?,
+    ): EventStream<TransformedEventT>
 
     fun filter(
         predicate: (EventT) -> Boolean,

@@ -19,26 +19,24 @@ abstract class ProperEventStream<EventT> : EventStream<EventT> {
     final override fun <Er> map(
         transform: (EventT) -> Er,
     ): EventStream<Er> = MapEventStream(
-        source = this,
-        transform = { event ->
+        source = this, transform = { event ->
             transform(event)
-        }
-    )
+        })
 
     final override fun filter(
         predicate: (EventT) -> Boolean,
     ): EventStream<EventT> = FilterEventStream(
-        source = this,
-        predicate = { event ->
+        source = this, predicate = { event ->
             predicate(event)
-        }
-    )
+        })
 
     override fun <Er : Any> mapNotNull(
         transform: (EventT) -> Er?,
     ): EventStream<Er> = MapNotNullEventStream(
         source = this,
-        transform = transform,
+        transform = { event ->
+            transform(event)
+        },
     )
 
     context(momentContext: MomentContext) final override fun take(

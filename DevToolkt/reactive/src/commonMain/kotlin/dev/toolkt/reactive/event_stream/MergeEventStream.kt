@@ -1,45 +1,14 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.Subscription
-import dev.toolkt.reactive.UnconditionalListener
-import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.event_stream.vertex.EventStreamVertex
+import dev.toolkt.reactive.event_stream.vertex.MergeEventStreamVertex
 
 internal class MergeEventStream<E>(
-    private val source1: EventStream<E>,
-    private val source2: EventStream<E>,
-) : PassiveEventStream<E>() {
-    override fun observe(): Subscription = object : Subscription {
-        private val subscription1 = source1.listen(
-            listener = object : UnconditionalListener<E>() {
-                override fun handleUnconditionally(
-                    transaction: Transaction,
-                    event: E,
-                ) {
-                    notify(
-                        transaction = transaction,
-                        event = event,
-                    )
-                }
-            },
-        )
-
-        private val subscription2 = source2.listen(
-            listener = object : UnconditionalListener<E>() {
-                override fun handleUnconditionally(
-                    transaction: Transaction,
-                    event: E,
-                ) {
-                    notify(
-                        transaction = transaction,
-                        event = event,
-                    )
-                }
-            },
-        )
-
-        override fun cancel() {
-            subscription1.cancel()
-            subscription2.cancel()
-        }
-    }
+    source1: EventStream<E>,
+    source2: EventStream<E>,
+) : VertexEventStream<E>() {
+    override val vertex: EventStreamVertex<E> = MergeEventStreamVertex(
+        source1 = source1,
+        source2 = source2,
+    )
 }

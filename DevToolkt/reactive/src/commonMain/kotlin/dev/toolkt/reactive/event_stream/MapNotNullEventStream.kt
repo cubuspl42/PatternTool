@@ -1,22 +1,14 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.event_stream.vertex.MapNotNullEventStreamVertex
 
 internal class MapNotNullEventStream<EventT, TransformedEventT : Any>(
     source: EventStream<EventT>,
-    private val transform: (EventT) -> TransformedEventT?,
-) : TransformingEventStream<EventT, TransformedEventT>(
-    source = source,
-) {
-    override fun transformEvent(
-        transaction: Transaction,
-        event: EventT,
-    ) {
-        val transformedEvent = transform(event) ?: return
-
-        notify(
-            transaction = transaction,
-            event = transformedEvent,
-        )
-    }
+    transform: context(MomentContext) (EventT) -> TransformedEventT?,
+) : VertexEventStream<TransformedEventT>() {
+    override val vertex = MapNotNullEventStreamVertex(
+        source = source,
+        transform = transform,
+    )
 }
