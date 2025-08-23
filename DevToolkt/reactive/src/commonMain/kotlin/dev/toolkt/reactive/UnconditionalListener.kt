@@ -15,6 +15,11 @@ abstract class UnconditionalListener<in EventT> : Listener<EventT> {
         return Listener.Conclusion.KeepListening
     }
 
+    /**
+     * Handle the [event].
+     *
+     * This method is called during the propagation phase.
+     */
     abstract fun handleUnconditionally(
         transaction: Transaction,
         event: EventT,

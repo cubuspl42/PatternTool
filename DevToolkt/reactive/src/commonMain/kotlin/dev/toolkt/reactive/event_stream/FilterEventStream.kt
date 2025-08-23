@@ -1,29 +1,14 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.event_stream.vertex.FilterEventStreamVertex
 
-internal class FilterEventStream<EventT> private constructor(
+internal class FilterEventStream<EventT>(
     source: EventStream<EventT>,
-    private val predicate: (EventT) -> Boolean,
-) : TransformingEventStream<EventT, EventT>(
-    source = source,
-) {
-    companion object {
-        fun <EventT> construct(
-            source: EventStream<EventT>,
-            predicate: (EventT) -> Boolean,
-        ): FilterEventStream<EventT> = FilterEventStream(
-            source = source,
-            predicate = predicate,
-        )
-    }
-
-    override fun transformEvent(transaction: Transaction, event: EventT) {
-        if (predicate(event)) {
-            notify(
-                transaction = transaction,
-                event = event,
-            )
-        }
-    }
+    predicate: context(MomentContext) (EventT) -> Boolean,
+) : VertexEventStream<EventT>() {
+    override val vertex = FilterEventStreamVertex(
+        source = source,
+        predicate = predicate,
+    )
 }
