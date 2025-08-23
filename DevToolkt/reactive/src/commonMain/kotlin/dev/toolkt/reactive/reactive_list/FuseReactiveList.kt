@@ -7,7 +7,7 @@ import dev.toolkt.core.range.single
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.cell.Cell
-import dev.toolkt.reactive.event_stream.DependentEventStream
+import dev.toolkt.reactive.event_stream.PassiveEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.effect.Transaction
 
@@ -16,7 +16,7 @@ internal class FuseReactiveList<ElementT>(
 ) : ProperReactiveList<ElementT>() {
     class ChangesEventStream<E>(
         private val source: ReactiveList<Cell<E>>,
-    ) : DependentEventStream<ReactiveList.Change<E>>() {
+    ) : PassiveEventStream<ReactiveList.Change<E>>() {
         // Thought: This subscription object is quite heavy (has the size
         // of the original list), while a separate subscription is created for
         // each observer. This could be potentially improved by some sharing

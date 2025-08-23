@@ -6,7 +6,7 @@ import dev.toolkt.reactive.effect.Transaction
 
 internal abstract class TransformingEventStream<E, Er>(
     private val source: EventStream<E>,
-) : DependentEventStream<Er>() {
+) : PassiveEventStream<Er>() {
     final override fun observe(): Subscription = source.listen(
         object : UnconditionalListener<E>() {
             override val dependentId = id

@@ -7,7 +7,7 @@ import dev.toolkt.reactive.effect.Transaction
 internal class MergeEventStream<E>(
     private val source1: EventStream<E>,
     private val source2: EventStream<E>,
-) : DependentEventStream<E>() {
+) : PassiveEventStream<E>() {
     override fun observe(): Subscription = object : Subscription {
         private val subscription1 = source1.listen(
             listener = object : UnconditionalListener<E>() {

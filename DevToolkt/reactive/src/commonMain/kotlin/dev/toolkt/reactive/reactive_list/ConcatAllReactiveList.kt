@@ -10,7 +10,7 @@ import dev.toolkt.core.range.shift
 import dev.toolkt.core.range.width
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
-import dev.toolkt.reactive.event_stream.DependentEventStream
+import dev.toolkt.reactive.event_stream.PassiveEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.effect.Transaction
 
@@ -30,7 +30,7 @@ class ConcatAllReactiveList<ElementT>(
 
     internal class ChangesEventStream<ElementT>(
         private val lists: ReactiveList<ReactiveList<ElementT>>,
-    ) : DependentEventStream<Change<ElementT>>() {
+    ) : PassiveEventStream<Change<ElementT>>() {
         override fun observe(): Subscription = object : Subscription {
             private val outerSubscription = lists.changes.listen(
                 listener = object : UnconditionalListener<Change<ReactiveList<ElementT>>>() {

@@ -2,7 +2,7 @@ package dev.toolkt.reactive.event_stream
 
 import dev.toolkt.reactive.Subscription
 
-internal abstract class DependentEventStream<EventT> : ManagedEventStream<EventT>() {
+internal abstract class PassiveEventStream<EventT> : ManagedEventStream<EventT>() {
     private var subscription: Subscription? = null
 
     final override fun onResumed() {
@@ -29,7 +29,7 @@ internal abstract class DependentEventStream<EventT> : ManagedEventStream<EventT
         val subscription = this.subscription ?: throw AssertionError("There's no subscription")
 
         subscription.cancel()
-        this@DependentEventStream.subscription = null
+        this@PassiveEventStream.subscription = null
     }
 
     protected abstract fun observe(): Subscription

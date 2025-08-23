@@ -8,7 +8,7 @@ import org.w3c.dom.events.EventTarget
 internal class EventTargetEventStream(
     private val eventTarget: EventTarget,
     private val type: String,
-) : DependentEventStream<Event>() {
+) : PassiveEventStream<Event>() {
     override fun observe(): Subscription {
         fun callback(
             event: Event,
