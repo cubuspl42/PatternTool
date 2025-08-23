@@ -1,11 +1,10 @@
 package dev.toolkt.dom.reactive.utils
 
-import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.effect.MomentContext
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.newest
 import dev.toolkt.reactive.future.Future
-import dev.toolkt.reactive.effect.MomentContext
 import org.w3c.dom.DOMRectReadOnly
 import org.w3c.dom.Element
 import org.w3c.dom.extra.ResizeObserver
@@ -20,12 +19,13 @@ fun Element.getResizeEventStream(): EventStream<ResizeObserverEntry> = EventStre
                 event = entry,
             )
         }
-    }.apply {
-        observe(this@getResizeEventStream)
     }
+    object : EventStream.ExternalSubscription {
+        override fun register() {
+            resizeObserver.observe(this@getResizeEventStream)
+        }
 
-    object : Subscription {
-        override fun cancel() {
+        override fun unregister() {
             resizeObserver.disconnect()
         }
     }
