@@ -6,7 +6,7 @@ import dev.toolkt.reactive.effect.Effective
 import dev.toolkt.reactive.effect.Transaction
 
 internal class MapExecutingEventStream<TransformedEventT> private constructor() :
-    ManagedEventStream<TransformedEventT>() {
+    BasicEventStream<TransformedEventT>() {
 
     companion object {
         context(actionContext: ActionContext) fun <EventT, TransformedEventT> construct(

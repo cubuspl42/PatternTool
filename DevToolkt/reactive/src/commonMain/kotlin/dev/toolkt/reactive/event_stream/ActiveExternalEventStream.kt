@@ -5,7 +5,7 @@ import dev.toolkt.reactive.effect.ActionContext
 import dev.toolkt.reactive.effect.Effect
 import dev.toolkt.reactive.effect.Effective
 
-internal class ActiveExternalEventStream<EventT> private constructor() : ManagedEventStream<EventT>() {
+internal class ActiveExternalEventStream<EventT> private constructor() : BasicEventStream<EventT>() {
     companion object {
         context(actionContext: ActionContext) fun <EventT> construct(
             activate: (Controller<EventT>) -> Subscription,

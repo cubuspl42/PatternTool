@@ -6,7 +6,7 @@ import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.effect.Transaction
 
-abstract class ManagedEventStream<EventT> : ProperEventStream<EventT>() {
+abstract class BasicEventStream<EventT> : ProperEventStream<EventT>() {
     enum class State {
         Paused, Resumed, Aborted,
     }

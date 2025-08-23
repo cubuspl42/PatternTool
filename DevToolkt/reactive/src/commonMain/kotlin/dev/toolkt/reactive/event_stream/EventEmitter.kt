@@ -3,7 +3,7 @@ package dev.toolkt.reactive.event_stream
 import dev.toolkt.reactive.effect.ActionContext
 import dev.toolkt.reactive.effect.MomentContext
 
-class EventEmitter<EventT> private constructor() : ManagedEventStream<EventT>() {
+class EventEmitter<EventT> private constructor() : BasicEventStream<EventT>() {
     companion object {
         /**
          * Creates a new [EventEmitter].
