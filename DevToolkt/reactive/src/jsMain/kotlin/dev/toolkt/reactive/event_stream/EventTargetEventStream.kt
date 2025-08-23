@@ -5,42 +5,31 @@ import org.w3c.dom.AddEventListenerOptions
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.EventTarget
 
-internal class EventTargetEventStream(
-    private val eventTarget: EventTarget,
-    private val type: String,
-) : PassiveEventStream<Event>() {
-    override fun observe(): Subscription {
-        fun callback(
-            event: Event,
-        ) {
-            notify(
-                transaction = TODO(),
-                event = event,
-            )
-        }
-
-        eventTarget.addEventListener(
-            type = type,
-            callback = ::callback,
-            options = AddEventListenerOptions(
-                passive = true,
-            ),
+fun EventTarget.getEventStream(
+    type: String,
+): EventStream<Event> = EventStream.subscribeExternal { controller ->
+    fun callback(
+        event: Event,
+    ) {
+        controller.accept(
+            event = event,
         )
+    }
 
-        return object : Subscription {
-            override fun cancel() {
-                eventTarget.removeEventListener(
-                    type = type,
-                    callback = ::callback,
-                )
-            }
+    this@getEventStream.addEventListener(
+        type = type,
+        callback = ::callback,
+        options = AddEventListenerOptions(
+            passive = true,
+        ),
+    )
+
+    object : Subscription {
+        override fun cancel() {
+            this@getEventStream.removeEventListener(
+                type = type,
+                callback = ::callback,
+            )
         }
     }
 }
-
-fun EventTarget.getEventStream(
-    type: String,
-): EventStream<Event> = EventTargetEventStream(
-    eventTarget = this,
-    type = type,
-)
