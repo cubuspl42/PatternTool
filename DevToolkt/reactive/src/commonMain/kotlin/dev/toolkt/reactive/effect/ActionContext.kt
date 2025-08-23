@@ -75,6 +75,12 @@ class Transaction private constructor(
         enqueuedMutations.add(mutate)
     }
 
+    /**
+     * Enqueues a follow-up operation to be executed in a new transaction right
+     * after the current transaction.
+     *
+     * @param followup The follow-up operation to be executed in the followup transaction's propagation phase
+     */
     fun enqueueFollowup(
         followup: (Transaction) -> Unit,
     ) {
