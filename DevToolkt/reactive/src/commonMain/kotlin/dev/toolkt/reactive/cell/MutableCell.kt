@@ -2,13 +2,19 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.reactive.effect.ActionContext
 import dev.toolkt.reactive.effect.MomentContext
-import dev.toolkt.reactive.event_stream.EventEmitter
 import dev.toolkt.reactive.event_stream.EventStream
+import dev.toolkt.reactive.event_stream.VertexEventStream
+import dev.toolkt.reactive.event_stream.vertex.EmitterEventStreamVertex
+import dev.toolkt.reactive.event_stream.vertex.EventStreamVertex
 
 class MutableCell<V> private constructor(
-    private val newValueEmitter: EventEmitter<V>,
+    private val newValueEmitterVertex: EmitterEventStreamVertex<V>,
     initialValue: V,
 ) : ProperCell<V>() {
+    class NewValuesEventStream<V>(
+        override val vertex: EventStreamVertex<V>,
+    ) : VertexEventStream<V>()
+
     companion object {
         /**
          * Creates a new [MutableCell] with the given [initialValue].
@@ -17,21 +23,19 @@ class MutableCell<V> private constructor(
          */
         context(momentContext: MomentContext) fun <V> create(
             initialValue: V,
-        ): MutableCell<V> {
-            return MutableCell(
-                newValueEmitter = EventEmitter.create(),
-                initialValue = initialValue,
-            )
-        }
+        ): MutableCell<V> = MutableCell(
+            newValueEmitterVertex = EmitterEventStreamVertex(),
+            initialValue = initialValue,
+        )
     }
 
     private var mutableValue: V = initialValue
 
     val hasListeners: Boolean
-        get() = newValueEmitter.hasListeners
+        get() = newValueEmitterVertex.listenerCount > 0
 
     override val newValues: EventStream<V>
-        get() = newValueEmitter
+        get() = NewValuesEventStream(vertex = newValueEmitterVertex)
 
     context(momentContext: MomentContext) override fun sample(): V = mutableValue
 
@@ -41,10 +45,15 @@ class MutableCell<V> private constructor(
     context(actionContext: ActionContext) fun set(
         newValue: V,
     ) {
-        actionContext.enqueueMutation {
-            mutableValue = newValue
-        }
+        actionContext.transaction.enqueueFollowup { followupTransaction ->
+            newValueEmitterVertex.emit(
+                transaction = followupTransaction,
+                event = newValue,
+            )
 
-        newValueEmitter.emit(newValue)
+            followupTransaction.enqueueMutation {
+                mutableValue = newValue
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.core.platform.test_utils.ensureCollected
 import dev.toolkt.core.platform.test_utils.runTestDefault
 import dev.toolkt.reactive.cell.Cell
+import dev.toolkt.reactive.cell.holdExternally
 import dev.toolkt.reactive.test_utils.EventStreamVerifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -14,7 +15,7 @@ class EventStreamHoldTests {
     fun testHold() {
         val eventEmitter = EventEmitter.createExternally<Int>()
 
-        val heldCell = eventEmitter.holdUnmanaged(0)
+        val heldCell = eventEmitter.holdExternally(0)
 
         val changesVerifier = EventStreamVerifier.setup(
             eventStream = heldCell.changes,
@@ -58,7 +59,7 @@ class EventStreamHoldTests {
     fun testHold_sampleOnly() = runTestDefault {
         val eventEmitter = EventEmitter.createExternally<Int>()
 
-        val heldCell = eventEmitter.holdUnmanaged(0)
+        val heldCell = eventEmitter.holdExternally(0)
 
         assertEquals(
             expected = 0,

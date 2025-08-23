@@ -27,29 +27,31 @@ abstract class StatefulCell<V>(
         override val vertex: EventStreamVertex<V> = object : PassiveEventStreamVertex<V>() {
             private val self = this // Kotlin doesn't ofer a label for `this@PassiveEventStreamVertex` (why?)
 
-            override fun observe() = givenValues.listen(listener = object : UnconditionalListener<V>() {
-                override fun handleUnconditionally(
-                    transaction: Transaction,
-                    event: V,
-                ) {
-                    val newValue = event
+            override fun observe() = givenValues.listen(
+                listener = object : UnconditionalListener<V>() {
+                    override fun handleUnconditionally(
+                        transaction: Transaction,
+                        event: V,
+                    ) {
+                        val newValue = event
 
-                    // Notify the listeners about the new value (if there are any)
-                    self.notify(
-                        transaction = transaction,
-                        event = event,
-                    )
+                        // Notify the listeners about the new value (if there are any)
+                        self.notify(
+                            transaction = transaction,
+                            event = event,
+                        )
 
-                    // ...and store it (only if needed)
-                    val cell = weakCell.get() ?: return
+                        // ...and store it (only if needed)
+                        val cell = weakCell.get() ?: return
 
-                    transaction.enqueueMutation {
-                        cell.storedValue = newValue
+                        transaction.enqueueMutation {
+                            cell.storedValue = newValue
+                        }
+
+                        return
                     }
-
-                    return
-                }
-            })
+                },
+            )
 
             init {
                 // Pin the event stream to keep the stored value up-to-date even when there are no listeners
