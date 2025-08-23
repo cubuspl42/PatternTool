@@ -3,7 +3,7 @@ package dev.toolkt.reactive.reactive_list
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.UnconditionalListener
-import dev.toolkt.reactive.event_stream.DependentEventStream
+import dev.toolkt.reactive.event_stream.PassiveEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.pinWeak
 
@@ -16,10 +16,10 @@ abstract class StatefulReactiveList<E>(
     override val currentElementsUnmanaged: List<E>
         get() = storedElements.toList()
 
-    override val changes: EventStream<Change<E>> = object : DependentEventStream<Change<E>>() {
+    override val changes: EventStream<Change<E>> = object : PassiveEventStream<Change<E>>() {
         private val weakReactiveList = PlatformWeakReference(this@StatefulReactiveList)
 
-        private val self = this // Kotlin doesn't ofer a label for `this@DependentEventStream` (why?)
+        private val self = this // Kotlin doesn't ofer a label for `this@PassiveEventStream` (why?)
 
         override fun observe(): Subscription = givenChanges.listen(
             listener = object : UnconditionalListener<Change<E>>() {

@@ -6,7 +6,7 @@ import dev.toolkt.reactive.effect.Transaction
 
 internal class StaticMergeAllEventStream<EventT>(
     private val sources: List<EventStream<EventT>>,
-) : DependentEventStream<EventT>() {
+) : PassiveEventStream<EventT>() {
     override fun observe(): Subscription = object : UnconditionalListener<EventT>(), Subscription {
         private val subscriptions = sources.map {
             it.listen(listener = this)

@@ -6,7 +6,7 @@ import dev.toolkt.reactive.cell.Cell
 import dev.toolkt.reactive.effect.Transaction
 
 // Thought: Merge with DivertEventStream?!
-internal abstract class MultiplexingEventStream<N, E> : DependentEventStream<E>() {
+internal abstract class MultiplexingEventStream<N, E> : PassiveEventStream<E>() {
     override fun observe(): Subscription = object : Subscription {
         private val outerSubscription = nestedObject.newValues.listen(
             listener = object : UnconditionalListener<N>() {

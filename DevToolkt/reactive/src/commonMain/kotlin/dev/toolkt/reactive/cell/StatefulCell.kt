@@ -2,7 +2,7 @@ package dev.toolkt.reactive.cell
 
 import dev.toolkt.core.platform.PlatformWeakReference
 import dev.toolkt.reactive.UnconditionalListener
-import dev.toolkt.reactive.event_stream.DependentEventStream
+import dev.toolkt.reactive.event_stream.PassiveEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.pinWeak
 import dev.toolkt.reactive.effect.MomentContext
@@ -17,12 +17,12 @@ abstract class StatefulCell<V>(
 ) : ProperCell<V>() {
     private var storedValue: V = initialValue
 
-    final override val newValues: EventStream<V> = object : DependentEventStream<V>() {
+    final override val newValues: EventStream<V> = object : PassiveEventStream<V>() {
         // The `newValues` stream cannot store a strong reference to its outer cell, as that would keep it alive even
         // when maintaining state is not needed anymore (as no objects have a proper reference to that cell anymore).
         private val weakCell = PlatformWeakReference(this@StatefulCell)
 
-        private val self = this // Kotlin doesn't ofer a label for `this@DependentEventStream` (why?)
+        private val self = this // Kotlin doesn't ofer a label for `this@PassiveEventStream` (why?)
 
         override fun observe() = givenValues.listen(
             listener = object : UnconditionalListener<V>() {

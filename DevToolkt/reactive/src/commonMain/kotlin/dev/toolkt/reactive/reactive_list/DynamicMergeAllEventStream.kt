@@ -3,13 +3,13 @@ package dev.toolkt.reactive.reactive_list
 import dev.toolkt.core.iterable.removeRange
 import dev.toolkt.core.iterable.subList
 import dev.toolkt.reactive.Subscription
-import dev.toolkt.reactive.event_stream.DependentEventStream
+import dev.toolkt.reactive.event_stream.PassiveEventStream
 import dev.toolkt.reactive.event_stream.EventStream
 import dev.toolkt.reactive.event_stream.listenInDependent
 
 internal class DynamicMergeAllEventStream<EventT>(
     private val eventStreams: ReactiveList<EventStream<EventT>>,
-) : DependentEventStream<EventT>() {
+) : PassiveEventStream<EventT>() {
     override fun observe(): Subscription {
         val mutableSubscriptions = eventStreams.currentElementsUnmanaged.mapTo(mutableListOf(), ::forwardFrom)
 
