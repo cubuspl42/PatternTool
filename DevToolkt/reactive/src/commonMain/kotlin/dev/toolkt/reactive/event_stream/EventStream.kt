@@ -125,7 +125,7 @@ interface EventStream<out EventT> {
          */
         fun <EventT> subscribeExternal(
             subscribe: (Controller<EventT>) -> Subscription,
-        ): EventStream<EventT> = PassiveExternalEventStream.construct(
+        ): EventStream<EventT> = PassiveExternalEventStream(
             subscribe = subscribe,
         )
 
