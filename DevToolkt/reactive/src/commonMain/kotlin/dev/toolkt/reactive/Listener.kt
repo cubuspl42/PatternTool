@@ -15,7 +15,11 @@ interface Listener<in EventT> {
         get() = null
 
     /**
-     * Handles the [event] within the [transaction].
+     * Handle the [event].
+     *
+     * @return Whether to keep listening or stop listening.
+     *
+     * This method is called during the propagation phase.
      */
     fun handle(
         transaction: Transaction,
