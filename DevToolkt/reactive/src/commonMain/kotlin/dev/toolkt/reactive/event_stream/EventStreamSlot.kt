@@ -1,38 +1,29 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.Listener
-import dev.toolkt.reactive.Subscription
 import dev.toolkt.reactive.cell.MutableCell
 import dev.toolkt.reactive.effect.ActionContext
+import dev.toolkt.reactive.effect.MomentContext
+import dev.toolkt.reactive.event_stream.vertex.DivertEventStreamVertex
+import dev.toolkt.reactive.event_stream.vertex.EventStreamVertex
 
-class EventStreamSlot<EventT>(
-    private val mutableEventStream: MutableCell<EventStream<EventT>>,
-    private val divertedEventStream: EventStream<EventT>,
-) : ProperEventStream<EventT>() {
+class EventStreamSlot<EventT> private constructor(
+    private val boundEventStream: MutableCell<EventStream<EventT>>,
+) : VertexEventStream<EventT>() {
     companion object {
-        context(actionContext: ActionContext) fun <EventT> create(): EventStreamSlot<EventT> {
-            val mutableEventStream = MutableCell.create<EventStream<EventT>>(
+        context(momentContext: MomentContext) fun <EventT> create(): EventStreamSlot<EventT> = EventStreamSlot(
+            boundEventStream = MutableCell.create(
                 initialValue = EventStream.Never,
-            )
-
-            val divertedEventStream = EventStream.divert(mutableEventStream)
-
-            return EventStreamSlot(
-                mutableEventStream = mutableEventStream,
-                divertedEventStream = divertedEventStream,
-            )
-        }
+            ),
+        )
     }
 
-    override fun listen(
-        listener: Listener<EventT>,
-    ): Subscription = divertedEventStream.listen(
-        listener = listener,
+    override val vertex: EventStreamVertex<EventT> = DivertEventStreamVertex(
+        source = boundEventStream,
     )
 
     context(actionContext: ActionContext) fun bind(
         eventStream: EventStream<EventT>,
     ) {
-        mutableEventStream.set(eventStream)
+        boundEventStream.set(eventStream)
     }
 }
