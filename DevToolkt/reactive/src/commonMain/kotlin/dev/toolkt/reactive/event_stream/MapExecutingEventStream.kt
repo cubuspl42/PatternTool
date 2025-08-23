@@ -1,47 +1,30 @@
 package dev.toolkt.reactive.event_stream
 
-import dev.toolkt.reactive.UnconditionalListener
 import dev.toolkt.reactive.effect.ActionContext
 import dev.toolkt.reactive.effect.Effective
-import dev.toolkt.reactive.effect.Transaction
+import dev.toolkt.reactive.event_stream.vertex.MapExecutingEventStreamVertex
+import dev.toolkt.reactive.toEffectHandle
 
-internal class MapExecutingEventStream<TransformedEventT> private constructor() :
-    BasicEventStream<TransformedEventT>() {
-
+internal class MapExecutingEventStream<TransformedEventT> private constructor(
+    override val vertex: MapExecutingEventStreamVertex<TransformedEventT>,
+) : VertexEventStream<TransformedEventT>() {
     companion object {
-        context(actionContext: ActionContext) fun <EventT, TransformedEventT> construct(
+        context(actionContext: ActionContext) fun <EventT, TransformedEventT> start(
             source: EventStream<EventT>,
             transform: context(ActionContext) (EventT) -> TransformedEventT,
-        ): Effective<MapExecutingEventStream<TransformedEventT>> = MapExecutingEventStream<TransformedEventT>().let { self ->
-            Effective(
-                result = self,
-                handle = source.watch(
-                    listener = object : UnconditionalListener<EventT>() {
-                        override fun handleUnconditionally(
-                            transaction: Transaction,
-                            event: EventT,
-                        ) {
-                            val transformedEvent = with(transaction) {
-                                transform(event)
-                            }
+        ): Effective<MapExecutingEventStream<TransformedEventT>> {
+            val (vertex, subscription) = MapExecutingEventStreamVertex.start(
+                transaction = actionContext.transaction,
+                source = source,
+                transform = transform,
+            )
 
-                            self.notify(
-                                transaction = transaction,
-                                event = transformedEvent,
-                            )
-                        }
-                    },
+            return Effective(
+                result = MapExecutingEventStream(
+                    vertex = vertex,
                 ),
+                handle = subscription.toEffectHandle(),
             )
         }
-    }
-
-    override fun onResumed() {
-    }
-
-    override fun onPaused() {
-    }
-
-    override fun onAborted() {
     }
 }

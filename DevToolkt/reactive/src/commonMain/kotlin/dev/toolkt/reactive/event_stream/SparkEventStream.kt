@@ -8,10 +8,10 @@ internal class SparkEventStream<EventT> private constructor(
     override val vertex: EventStreamVertex<EventT>,
 ) : VertexEventStream<EventT>() {
     companion object {
-        context(momentContext: MomentContext) fun <EventT> construct(
+        context(momentContext: MomentContext) fun <EventT> cause(
             event: EventT,
         ): SparkEventStream<EventT> = SparkEventStream(
-            vertex = SparkEventStreamVertex.construct(
+            vertex = SparkEventStreamVertex.cause(
                 transaction = momentContext.transaction,
                 event = event,
             ),

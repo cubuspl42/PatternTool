@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 
 class CellSwitchTests {
     @Test
-    fun testMap() {
+    fun testSwitch() {
         val mutableCell1 = MutableCell.createExternally(
             initialValue = 10,
         )
